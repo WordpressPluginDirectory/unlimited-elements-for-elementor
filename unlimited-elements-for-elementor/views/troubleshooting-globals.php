@@ -8,10 +8,13 @@
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 ?>
 
-<h1>Unlimited Elements - PHP Info</h1>
+<h1>Unlimited Elements - Global Variables</h1>
  
 
+<?php 
 
-<?php HelperHtmlUC::putPHPInfo();?>
-
+	GlobalsUC::printVars();
 	
+
+
+

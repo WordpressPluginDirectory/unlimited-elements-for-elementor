@@ -943,8 +943,6 @@ class UniteCreatorLayoutsExporterWork extends UniteCreatorExporterBase{
 	 * $layoutID - import to layout
 	 */
 	protected function importZipFile($filepath, $layoutID = null, $overwriteAddons = false){
-				
-		UniteFunctionsUC::throwError("Import layout zip file is not supported anymore");
 	
 		try{
 						
@@ -1017,7 +1015,6 @@ class UniteCreatorLayoutsExporterWork extends UniteCreatorExporterBase{
 				UniteFunctionsUC::throwError("Import layout zip file is not supported anymore");
 				
 				//$this->importZipFile($filepath, $layoutID, $overwriteAddons);
-				
 				break;
 			default:
 				UniteFunctionsUC::throwError("Wrong file: $filename");
