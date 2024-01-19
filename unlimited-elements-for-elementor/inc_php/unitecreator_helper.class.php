@@ -530,7 +530,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * convert url to full url
 		 */
 		public static function URLtoFull($url, $urlBase = null){
-			
+
 			if(is_numeric($url))		//protection for image id
 				return($url);
 
@@ -736,8 +736,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	public static function pathToFullUrl($path){
 
 		if(empty($path))
-			return ("");
-
+			return("");
+		
 		$url = self::pathToRelativeUrl($path);
 
 		$url = self::URLtoFull($url);
@@ -1358,7 +1358,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$handle = GlobalsUC::PLUGIN_NAME . "-" . $scriptName;
 
 		$url = GlobalsUC::$urlPlugin . $folder . "/" . $scriptName . ".js";
-
+				
 		UniteProviderFunctionsUC::addScript($handle, $url, $inFooter);
 	}
 

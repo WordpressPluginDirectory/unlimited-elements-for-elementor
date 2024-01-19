@@ -2686,6 +2686,7 @@ function UEDynamicFilters(){
 		var objTaxIDs = {};
 		var strSelectedTerms = "";
 		var search = "";
+		var price_from, price_to;
 		var orderby = null;
 		var orderby_metaname = null;
 		var orderby_metatype = null;
@@ -2873,6 +2874,11 @@ function UEDynamicFilters(){
 						
 					}
 					
+					//handle price
+					price_from = getVal(filterData,"price_from");
+					price_to = getVal(filterData,"price_to");
+					
+					
 					//handle sort
 					var argOrderby = getVal(filterData,"orderby");
 					if(argOrderby && argOrderby != "default"){
@@ -2888,6 +2894,7 @@ function UEDynamicFilters(){
 					
 					if(isLoadMoreMode == true)
 						isNoRefresh = true;
+					
 					
 				break;
 				default:
@@ -3019,6 +3026,12 @@ function UEDynamicFilters(){
 		
 		if(urlAddition_filtersTest)
 			urlAjax = addUrlParam(urlAjax, urlAddition_filtersTest);
+		
+		if(price_from)
+			urlAjax += "&ucpricefrom="+price_from;
+		
+		if(price_to)
+			urlAjax += "&ucpriceto="+price_to;
 		
 		if(page){
 			urlAjax += "&ucpage="+page;
@@ -3786,9 +3799,12 @@ function UEDynamicFilters(){
 	}
 	
 	/**
-	 * run function with trashold
+	 * run function with trashold, default is 500
 	 */
 	this.runWithTrashold = function(func, trashold){
+		
+		if(!trashold)
+			 var trashold = 500;
 		
 		if(g_vars.trashold_handle)
 			clearTimeout(g_vars.trashold_handle);

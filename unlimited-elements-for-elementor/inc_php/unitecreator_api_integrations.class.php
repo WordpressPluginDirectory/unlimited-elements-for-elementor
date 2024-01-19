@@ -752,14 +752,18 @@ class UniteCreatorAPIIntegrations{
 
 		foreach($rates as $rate){
 			$code = $rate->getCode();
+			$symbol = $rate->getSymbol();
+			$formattedRate = $rate->getRate($precision);
 
 			$data[$code] = array(
 				"id" => $rate->getId(),
 				"code" => $code,
 				"name" => $rate->getName(),
-				"symbol" => $rate->getSymbol(),
+				"symbol" => $symbol,
 				"flag" => $rate->getFlagUrl(),
-				"rate" => $rate->getRate($precision),
+				"rate" => $formattedRate,
+				"value_before" => "$symbol$formattedRate",
+				"value_after" => "$formattedRate$symbol",
 			);
 		}
 

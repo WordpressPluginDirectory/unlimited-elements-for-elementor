@@ -352,7 +352,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * onAjax action handler
 		 */
 		public static function onAjaxAction(){
-
+			
+			GlobalsUC::$isAjaxAction = true;
+			
 			$objActions = new UniteCreatorActions();
 			$objActions->onAjaxAction();
 

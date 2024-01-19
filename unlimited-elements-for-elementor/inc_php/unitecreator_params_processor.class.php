@@ -1033,34 +1033,34 @@ class UniteCreatorParamsProcessorWork{
 	 * @param  $param
 	 */
 	protected function getProcessedParamsValue_icon($data, $value, $param, $processType){
-		
-		
+
+
 		//get array item from simple array like value[0] = value
 		if(is_array($value) && count($value) == 1 && isset($value[0]))
 			$value = $value[0];
-		
-		
+
+
 		$isSVG = false;
 		$svgContent = null;
 
 		if(is_array($value) == true){
 
 			$library = UniteFunctionsUC::getVal($value, "library");
-			
+
 			if(isset($value["value"]))
 				$value = UniteFunctionsUC::getVal($value, "value");
-						
+
 			if($library == "svg"){
-								
+
 				$value = UniteFunctionsUC::getVal($value, "url");	//in case of svg
 				$isSVG = true;
-				
+
 				//value is "url" here
-				
+
 				if(!empty($value))
 					$value = HelperUC::URLtoFull($value);
-					
-				
+
+
 				//try to get the content
 				$putAs = UniteFunctionsUC::getVal($param, "put_svg_as");
 
@@ -1296,7 +1296,7 @@ class UniteCreatorParamsProcessorWork{
 	 * update params items for output
 	 */
 	public function processParamsForOutput($arrParams){
-
+				
 		$this->validateInited();
 
 		if(is_array($arrParams) == false)
@@ -1831,9 +1831,8 @@ class UniteCreatorParamsProcessorWork{
 
 			break;
 			case "currency_api":
-
+			case "weather_api":
 				$data = UniteCreatorAPIIntegrations::getInstance()->addDataToParams($data, $name);
-
 			break;
 		}
 
@@ -1957,7 +1956,8 @@ class UniteCreatorParamsProcessorWork{
 	 * @param $objParams
 	 */
 	public function getProcessedParamsValues($arrParams, $processType, $filterType = null){
-
+		
+				
 		self::validateProcessType($processType);
 
 		$arrParams = $this->processParamsForOutput($arrParams);
@@ -1967,7 +1967,7 @@ class UniteCreatorParamsProcessorWork{
 			usort($arrParams, array($this,"sortParamsBeforeProcess"));
 
 		$data = array();
-
+		
 		foreach($arrParams as $param){
 
 			$type = UniteFunctionsUC::getVal($param, "type");

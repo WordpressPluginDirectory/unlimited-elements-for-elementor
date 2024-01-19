@@ -167,8 +167,8 @@ function UniteSettingsUC(){
 				selectorNot += ", .uc-setting-items-panel select, .uc-setting-items-panel input, .uc-setting-items-panel textarea";
 			}
 
-			if(g_temp.isRepeaterExists == true)
-				selectorNot += ", .unite-settings-repeater *";
+			if(g_temp.isRepeaterExists === true)
+				selectorNot += ", .unite-setting-repeater *";
 
 		}
 
@@ -274,10 +274,6 @@ function UniteSettingsUC(){
 			break;
 			case "number":
 				type = "text";
-
-				if(objInput.hasClass("unite-setting-range"))
-					type="range";
-
 			break;
 			case "text":
 				if(objInput.hasClass("unite-color-picker"))
@@ -288,8 +284,6 @@ function UniteSettingsUC(){
 					type = "mp3";
 				else if (objInput.hasClass("unite-postpicker-input"))
 					type = "post";
-				else if (objInput.hasClass("unite-setting-range"))
-					type = "range";
 				else if (objInput.hasClass("unite-setting-link"))
 					type = "link";
 			break;
@@ -393,6 +387,9 @@ function UniteSettingsUC(){
 			case "dimentions":
 				value = getDimentionsInputData(objInput);
 			break;
+			case "range":
+				value = getRangeSliderInputValue(objInput);
+			break;
 			case "select2":
 			break;
 			case "gallery":
@@ -471,7 +468,6 @@ function UniteSettingsUC(){
 			switch(type){
 				case "select":
 					var selectedText = objInput.children("option:selected").html();
-					obj[name+"_unite_selected_text"] = selectedText;
 				break;
 				case "checkbox":
 					value = objInput.prop("checked");
@@ -553,27 +549,27 @@ function UniteSettingsUC(){
 		switch(type){
 			case "select":
 			case "textarea":
-			case "range":
 			case "text":
 			case "password":
-
-				if(!name)
-					return(false);
+				if (!name)
+					return;
 
 				defaultValue = objInput.data(dataname);
 
-				if(typeof defaultValue == "object")
+				if (typeof defaultValue === "object")
 					defaultValue = JSON.stringify(defaultValue);
 
-				if(type == "select"){
-					if(defaultValue === true)
+				if (type === "select") {
+					if (defaultValue === true)
 						defaultValue = "true";
-					if(defaultValue === false)
+					else if (defaultValue === false)
 						defaultValue = "false";
 				}
 
 				objInput.val(defaultValue);
 
+				if (type === "select")
+					objInput.trigger("change.select2");
 			break;
 			case "hidden":
 				defaultValue = objInput.data(dataname);
@@ -583,6 +579,16 @@ function UniteSettingsUC(){
 				defaultValue = objInput.data(dataname);
 				objInput.val(defaultValue);
 				objInput.trigger("input");
+			break;
+			case "dimentions":
+				defaultValue = objInput.data(dataname);
+
+				clearDimentionsInputValue(objInput, defaultValue);
+			break;
+			case "range":
+				defaultValue = objInput.data(dataname);
+
+				clearRangeSliderInputValue(objInput, defaultValue);
 			break;
 			case "color":
 
@@ -680,23 +686,14 @@ function UniteSettingsUC(){
 				*/
 
 			break;
-			case "dimentions":
-				//no clear for now
-			break;
 			case "gallery":
-
 				clearGallery(objInput);
-
 			break;
 			case "typography":
-
 				clearTypography(objInput);
-
 			break;
 			case "switcher":
-
 				clearSwitcher(objInput, dataname);
-
 			break;
 			default:
 
@@ -738,6 +735,9 @@ function UniteSettingsUC(){
 			case "text":
 			case "password":
 				objInput.val(value);
+
+				if (type === "select")
+					objInput.trigger("change.select2");
 			break;
 			case "hidden":
 				if(typeof value == "object"){
@@ -751,12 +751,6 @@ function UniteSettingsUC(){
 			case "addon":
 				objInput.val(value);
 				objInput.trigger("change");
-			break;
-			case "range":
-				value = parseFloat(value);
-
-				objInput.val(value);
-				objInput.trigger("input");
 			break;
 			case "color":
 				objInput.val(value);
@@ -805,6 +799,9 @@ function UniteSettingsUC(){
 			case "dimentions":
 				setDimentionsInputValue(objInput, value);
 			break;
+			case "range":
+				setRangeSliderInputValue(objInput, value);
+			break;
 			case "icon":
 				setIconInputValue(objInput, value);
 			break;
@@ -828,7 +825,7 @@ function UniteSettingsUC(){
 				objInput.val(value);
 			break;
 			case "select2":
-				objInput.select2("val",value);
+				objInput.select2("val", value);
 				objInput.trigger("change");
 			break;
 			case "gallery":
@@ -1015,149 +1012,130 @@ function UniteSettingsUC(){
 		return(objType);
 	}
 
+
 	function _______RANGE_SLIDER_____(){}
-
-
-	/**
-	 * get range input from input that can be range or text
-	 */
-	function getRangeInput(objInput){
-
-		var objRangeWrapper = objInput.parents(".unite-setting-range-wrapper");
-		if(objRangeWrapper.length == 0)
-			throw new Error("range input not found");
-
-		var inputText = objRangeWrapper.find("input.unite-setting-range");
-		return(inputText);
-	}
-
 
 	/**
 	 * init range slider
-	 * input can be input text or range
 	 */
-	function initRangeInput(objInput, funcChange){
+	function initRangeSlider(objWrapper, funcChange) {
+		var objSlider = objWrapper.find(".unite-setting-range-slider");
+		var objInput = objWrapper.find(".unite-setting-range-input");
 
-		var objRangeWrapper = objInput.parents(".unite-setting-range-wrapper");
-		if(objRangeWrapper.length == 0)
-			return(false);
-
-		var isInited = objRangeWrapper.data("inited");
-		if(isInited === true)
-			return(false);
-
-		var inputRange = objRangeWrapper.find("input[type='range']");
-		var inputText = objRangeWrapper.find("input.unite-setting-range");
-		if(inputText.length == 0)
-			throw new Error("range text field not found");
-
-
-		//on range change
-		inputRange.on("input", function(event){
-			var value = jQuery(this).val();
-			inputText.val(value);
-
-			//trigger instant event
-			funcChange(null, inputText, true);
-
+		objSlider.slider({
+			min: objSlider.data("min"),
+			max: objSlider.data("max"),
+			step: objSlider.data("step"),
+			value: objSlider.data("value"),
+			range: "min",
+			slide: function (event, ui) {
+				objInput.val(ui.value);
+			},
+			change: function (event) {
+				funcChange(event, objWrapper);
+			},
 		});
 
-		//on text change
-		inputText.on("input", function(){
-			var value = jQuery(this).val();
-
-			if(value === "")
-				value = jQuery(this).prop("placeholder");
-
-			inputRange.val(value);
+		objInput.on("input", function () {
+			objSlider.slider("value", objInput.val());
 		});
-
-		inputText.on("placeholder_change",function(){
-
-			inputText.trigger("input");
-		});
-
-		objRangeWrapper.data("inited", true);
 	}
 
+	/**
+	 * destroy range slider
+	 */
+	function destroyRangeSlider(objWrapper) {
+		var objSlider = objWrapper.find(".unite-setting-range-slider");
+		var objInput = objWrapper.find(".unite-setting-range-input");
+
+		objSlider.slider("destroy");
+		objInput.off("input");
+	}
+
+	/**
+	 * get range slider input value
+	 */
+	function getRangeSliderInputValue(objWrapper) {
+		var data = {};
+
+		data["size"] = objWrapper.find(".unite-setting-range-input").val();
+		data["unit"] = getUnitsPickerValue(objWrapper);
+
+		return data;
+	}
+
+	/**
+	 * set range slider input value
+	 */
+	function setRangeSliderInputValue(objWrapper, value) {
+		objWrapper.find(".unite-setting-range-input")
+			.val(value["size"])
+			.trigger("input");
+
+		setUnitsPickerValue(objWrapper, value["unit"]);
+	}
+
+	/**
+	 * clear range slider input data
+	 */
+	function clearRangeSliderInputValue(objWrapper, defaultValue) {
+		setRangeSliderInputValue(objWrapper, defaultValue);
+	}
 
 
 	function _______SELECT2_____(){}
 
 	/**
-	 * append plus icon
+	 * init select2
 	 */
-	function appendPlusIcon(objInput){
-
-		//first check if all options are selected
-		var objInputWrapper = objInput.parents('.unite-setting-input');
-		var objSelect = objInputWrapper.find('select');
-
-		if(!objSelect.length)
-		return(false);
-
-		var objOptions = objInputWrapper.find('option');
-
-		if(!objOptions.length)
-		return(false);
-
-		var objSelectedOptions = objInputWrapper.find('li.select2-selection__choice')
-		var numOptions = objOptions.length;
-		var numSelectedOptions = objSelectedOptions.length;
-
-		var isAlloptionsSelected = numOptions == numSelectedOptions;
-
-		if(isAlloptionsSelected == true)
-		return(false);
-
-		var objSelectedOptionsContainer = objInputWrapper.find('ul.select2-selection__rendered');
-
-		var objPlusButton = objInputWrapper.find('.select2-selection__uc-plus-button');
-
-		//check if button already exist
-		if(objPlusButton.length > 0)
-		return(false);
-
-		var plusButtonHtml = '<li class="select2-selection__choice select2-selection__uc-plus-button">+</li>';
-
-		//find inline cursor and insert plus button before
-		var objCursorInput = objInputWrapper.find('.select2-search--inline');
-
-		objSelectedOptionsContainer.append(plusButtonHtml);
-
-		objPlusButton = objInputWrapper.find('.select2-selection__uc-plus-button');
-
-		objPlusButton.insertBefore(objCursorInput)
-
-	}
-
-	function initSelect2(objInput) {
-
-		setTimeout(function () {
-			appendPlusIcon(objInput);
-		}, 400);
-
-		var dropdownParent = objInput.closest('.unite-setting-input');
+	function initSelect2(objInput, options) {
+		var isMultiple = objInput.prop("multiple") === true;
+		var dropdownParent = objInput.closest(".unite-setting-input");
 
 		if (dropdownParent.length === 0)
-			dropdownParent = objInput.closest('.unite-inputs');
+			dropdownParent = objInput.closest(".unite-inputs");
 
 		if (dropdownParent.length === 0)
-			dropdownParent = jQuery('body');
+			dropdownParent = jQuery("body");
 
-		objInput.select2({
+		var settings = jQuery.extend({
 			dropdownParent: dropdownParent,
+			closeOnSelect: isMultiple === false,
 			minimumResultsForSearch: 10,
 			templateResult: prepareTemplate,
 			templateSelection: prepareTemplate,
-		}).on("change", function () {
-			t.onSettingChange(null, objInput, true);
+		}, options);
 
-			appendPlusIcon(objInput);
-		}).on("select2:closing", function () {
+		objInput
+			.select2(settings)
+			.on("change", function () {
+				appendPlusButton();
+
+				t.onSettingChange(null, objInput, true);
+			}).on("select2:closing", function () {
 			// hide tipsy
 			jQuery(".select2-dropdown").find(".uc-tip").trigger("mouseleave");
 		});
+
+		appendPlusButton();
+
+		function appendPlusButton() {
+			var objOptions = objInput.find("option");
+			var objSelectedOptions = objOptions.filter(":selected");
+
+			if (objOptions.length === 0)
+				return;
+
+			// first check if all options are selected
+			if (objOptions.length === objSelectedOptions.length)
+				return;
+
+			// find inline search and insert plus button before
+			objInput
+				.next(".select2")
+				.find(".select2-search--inline")
+				.before("<li class=\"select2-selection__choice select2-selection__uc-plus-button\">+</li>");
+		}
 
 		function prepareTemplate(data) {
 			var $option = jQuery(data.element);
@@ -1174,9 +1152,8 @@ function UniteSettingsUC(){
 
 	function _______MULTI_SELECT_____(){}
 
-
 	/**
-	 * modify value for save, turrn to array
+	 * modify value for save, turn to array
 	 */
 	function multiSelectModifyForSet(value){
 
@@ -1954,9 +1931,9 @@ function UniteSettingsUC(){
 			return(false);
 
 		var objSapElements = g_objParent.find(elementClass);
-
+		
 		objElements.not(objSapElements).addClass("unite-setting-hidden");
-
+		
 		objSapElements.removeClass("unite-setting-hidden");
 	}
 
@@ -2708,56 +2685,36 @@ function UniteSettingsUC(){
 	/**
 	 * init dimentions
 	 */
-	function initDimentions(objInput, funcChange) {
-		
-		var objDevice = objInput.find(".unite-dimentions-device");
-		var objFields = objInput.find(".unite-dimentions-fields");
-		
-		var objUnits = objInput.find(".unite-dimentions-units");
-		
-		objDevice.on("change", function () {
-			const device = objDevice.val();
+	function initDimentions(objWrapper, funcChange) {
+		var objInputs = objWrapper.find(".unite-dimentions-field-input");
+		var objLink = objWrapper.find(".unite-dimentions-link");
 
-			objFields
-				.removeClass("ue-active")
-				.filter("[data-device=\"" + device + "\"]")
-				.addClass("ue-active");
+		objInputs.on("input", function (event) {
+			if (objLink.hasClass("ue-active") === true) {
+				var objInput = jQuery(this);
+				var value = objInput.val();
+
+				objInputs.not(objInput).val(value);
+			}
+
+			funcChange(event, objWrapper);
 		});
 
-		objFields.each(function () {
-			var objWrapper = jQuery(this);
-			var objInputs = objWrapper.find(".unite-dimentions-field-input");
-			var objLink = objWrapper.find(".unite-dimentions-link");
+		objLink.on("click", function (event) {
+			objLink.toggleClass("ue-active");
 
-			objInputs.on("input", function (event) {
-				if (objLink.hasClass("ue-active") === true) {
-					var objInput = jQuery(this);
-					var value = objInput.val();
+			if (objLink.hasClass("ue-active") === true) {
+				var value = objInputs.first().val();
 
-					objInputs.not(objInput).val(value);
-
-					funcChange(event, objInput);
-				}
-			});
-
-			objLink.on("click", function (event) {
-				objLink.toggleClass("ue-active");
-
-				var active = objLink.hasClass("ue-active");
-
-				if (objLink.hasClass("ue-active") === true) {
-					var value = objInputs.first().val();
-
-					objInputs.val(value);
-				}
-
-				initDimentions_updateLinkTitle(objLink);
-
-				funcChange(event, objInput);
-			});
+				objInputs.val(value);
+			}
 
 			initDimentions_updateLinkTitle(objLink);
+
+			funcChange(event, objWrapper);
 		});
+
+		initDimentions_updateLinkTitle(objLink);
 	}
 
 	/**
@@ -2775,9 +2732,8 @@ function UniteSettingsUC(){
 	 * destroy dimentions
 	 */
 	function destroyDimentions() {
-		g_objWrapper.find(".unite-dimentions-device").off("change");
-		g_objWrapper.find(".unite-dimentions-link").off("click");
 		g_objWrapper.find(".unite-dimentions-field-input").off("input");
+		g_objWrapper.find(".unite-dimentions-link").off("click");
 	}
 
 	/**
@@ -2802,7 +2758,7 @@ function UniteSettingsUC(){
 			data[key] = value;
 		});
 
-		data["unit"] = objWrapper.find(".unite-dimentions-units").val();
+		data["unit"] = getUnitsPickerValue(objWrapper);
 
 		return data;
 	}
@@ -2810,24 +2766,45 @@ function UniteSettingsUC(){
 	/**
 	 * set dimentions input value
 	 */
-	function setDimentionsInputValue(objInput, value){
-		objInput.find(".unite-dimentions-field-input").each(function () {
+	function setDimentionsInputValue(objWrapper, value) {
+		objWrapper.find(".unite-dimentions-field-input").each(function () {
 			var objInput = jQuery(this);
 			var key = objInput.data("key");
 
 			objInput.val(value[key]);
 		});
 
-		objInput.find(".unite-dimentions-link").each(function () {
+		objWrapper.find(".unite-dimentions-link").each(function () {
 			var objLink = jQuery(this);
 			var key = objLink.data("key");
 
-			objLink.toggleClass("ue-active", value[key] === "true");
+			objLink.toggleClass("ue-active", value[key] === true);
 
 			initDimentions_updateLinkTitle(objLink);
 		});
 
-		objInput.find(".unite-dimentions-units").val(value["unit"]);
+		setUnitsPickerValue(objWrapper, value["unit"]);
+	}
+
+	/**
+	 * clear dimentions input value
+	 */
+	function clearDimentionsInputValue(objWrapper, defaultValue) {
+		setDimentionsInputValue(objWrapper, defaultValue);
+	}
+
+	/**
+	 * get dimentions selector css
+	 */
+	function getDimentionsSelectorCss(objWrapper, css){
+		var value = getDimentionsInputData(objWrapper);
+
+		css = g_ucAdmin.replaceAll(css, "{{TOP}}", value.top + value.unit);
+		css = g_ucAdmin.replaceAll(css, "{{RIGHT}}", value.right + value.unit);
+		css = g_ucAdmin.replaceAll(css, "{{BOTTOM}}", value.bottom + value.unit);
+		css = g_ucAdmin.replaceAll(css, "{{LEFT}}", value.left + value.unit);
+
+		return css;
 	}
 
 
@@ -2860,7 +2837,7 @@ function UniteSettingsUC(){
 				});
 			}
 		}
-		
+
 		var urlAjax = g_ucAdmin.getUrlAjax("get_posts_list_forselect");
 
 		objSelect.select2({
@@ -2931,7 +2908,9 @@ function UniteSettingsUC(){
         	initPostPicker(objWrapper, arrData, value);
 
         });
-        
+
+
+
 	}
 
 
@@ -2962,12 +2941,12 @@ function UniteSettingsUC(){
 
 		var objRoot = objInput.closest(".unite-setting-link-wrapper");
 		var objToggle = objRoot.find(".unite-setting-link-toggle");
-		var objFields = objRoot.find(".unite-setting-link-fields");
+		var objOptions = objRoot.find(".unite-setting-link-options");
 
 		objToggle.on("click", function(event){
 			event.preventDefault();
 
-			objFields.stop().slideToggle(g_vars.animationDuration);
+			objOptions.stop().slideToggle(g_vars.animationDuration);
 		});
 	}
 
@@ -3166,46 +3145,35 @@ function UniteSettingsUC(){
 	/**
 	 * on body click
 	 */
-	function onTypographyBodyClick(e){
-
+	function onTypographyBodyClick(e) {
 		//dialog not opened - close
+		var objDialog = getTypographyDialog();
 
-		var objDialog = getTypographyDialog()
-
-		if(objDialog.is(":hidden"))
-			return(false);
+		if (objDialog.is(":hidden"))
+			return;
 
 		//dialog opened, click on the button or the dialog - close
-
 		var objElement = jQuery(e.target);
 
-		if(objElement.hasClass("unite-button-typography")){
-
-			return(false);
-		}
+		if (objElement.hasClass("unite-button-typography") === true)
+			return;
 
 		var objParentDialog = objElement.parents(".uc-dialog-typgoraphy");
 
-		if(objParentDialog.length)
-			return(false);
-
+		if (objParentDialog.length)
+			return;
 
 		//hide the dialog
-
 		objDialog.hide();
 
 		//apply the selectors
-
 		var objInput = objDialog.parents(".unite-settings-typography");
 
-		if(objInput.length == 0)
-			return(false);
-
+		if (objInput.length === 0)
+			return;
 
 		trace("apply the dialog selectors");
 		trace("move the values");
-
-
 	}
 
 	/**
@@ -3292,9 +3260,33 @@ function UniteSettingsUC(){
 
 	}
 
+	/**
+	 * get typography selectors css
+	 */
+	function getTypographySelectorsCss(objInput){
+		var css = "";
+		var objDialog = getTypographyDialog();
+		var objSelectedValues = objDialog.find(':selected');
+
+		objSelectedValues.each(function(){
+			var objSelected = jQuery(this);
+			var selectedIndex = objSelected.index();
+
+			//if first option selected - ignore
+			if(selectedIndex === 0)
+				return;
+
+			var selectedValue = objSelected.val();
+			var selectedCssProperty = objSelected.parents('select').data('fieldname');
+
+			css += selectedCssProperty+':'+selectedValue+';';
+		});
+
+		return css;
+	}
+
 
 	function __________FONTS_PANEL__________(){}
-
 
 	/**
 	 * on font panel setting change
@@ -3491,7 +3483,7 @@ function UniteSettingsUC(){
 	/**
 	 * destroy fonts panel
 	 */
-	this.destroyFontsPanel = function(){
+	function destroyFontsPanel(){
 
 		if(!g_temp.objFontsPanel)
 			return(false);
@@ -3502,328 +3494,237 @@ function UniteSettingsUC(){
 	}
 
 
-	/**
-	 * destroy repeaters
-	 */
-	this.destroyRepeaters = function(){
-
-		var objRepeaterItems = g_objParent.find(".unite-repeater-item");
-
-		if(objRepeaterItems.length == 0)
-			return(false);
-
-		var objRepeaters = g_objParent.find(".unite-settings-repeater");
-		objRepeaters.sortable("destroy");
-
-
-		jQuery.each(objRepeaterItems, function(index, item){
-
-			var objItem = jQuery(item);
-			var objSettings = objItem.data("itemsettings");
-			objSettings.destroy();
-		});
-
-		objRepeaterItems.find(".unite-repeater-item-head").off("click");
-
-	}
-
-
 	function _______REPEATERS_____(){}
 
 	/**
-	 * set repetaer values
+	 * init repeaters
 	 */
-	function setRepeaterValues(objWrapper, arrValues, takeDefault){
+	function initRepeaters() {
+		var objRepeaters = g_objWrapper.find(".unite-setting-repeater");
 
-		if(takeDefault === true)
-			var arrValues = objWrapper.data("itemvalues");
+		if (objRepeaters.length === 0)
+			return;
 
-		var objItemsWrapper = objWrapper.find(".unite-repeater-items");
-
-		//clear existing
-		objItemsWrapper.html("");
-
-		if(!arrValues)
-			return(false);
-
-		if(jQuery.isArray(arrValues) == false)
-			return(false);
-
-
-		jQuery.each(arrValues, function(index, objItemValues){
-
-			repeaterAddItem(null, objWrapper, objItemValues);
-
-		});
-
+		g_temp.isRepeaterExists = true;
 	}
-
-
-	/**
-	 * get repeater values
-	 */
-	function getRepeaterValues(objWrapper){
-
-		var objItemsWrapper = objWrapper.find(".unite-repeater-items");
-		var objItems = objItemsWrapper.find(".unite-repeater-item");
-
-		var arrItemsValues = [];
-
-		if(objItems.length == 0)
-			return(arrItemsValues);
-
-		jQuery.each(objItems, function(index, item){
-
-			var objItem = jQuery(item);
-
-			var objSettings = objItem.data("objsettings");
-
-			var itemValues = objSettings.getSettingsValues();
-
-			arrItemsValues.push(itemValues);
-
-		});
-
-		return(arrItemsValues);
-	}
-
-
-	/**
-	 * add repeater item
-	 */
-	function repeaterAddItem(event, objWrapper, objItemValues, objItemInsertAfter){
-
-		if(!objWrapper){
-			var objButton = jQuery(this);
-			var objWrapper = objButton.parents(".unite-settings-repeater");
-		}
-
-		var isNewItem = false;
-		if(!objItemValues)
-			isNewItem = true;
-
-		var isDuplicated = false;
-		if(objItemInsertAfter)
-			isDuplicated = true;
-
-		var objSettingsTemplate = objWrapper.find(".unite-repeater-template");
-		var objItemsWrapper = objWrapper.find(".unite-repeater-items");
-		var objEmptyText = objWrapper.find(".unite-repeater-emptytext")
-		var objItems = objItemsWrapper.find(".unite-repeater-item");
-
-		g_ucAdmin.validateDomElement(objItemsWrapper, "items wrapper");
-		g_ucAdmin.validateDomElement(objSettingsTemplate, "settings template");
-
-		//close other items, if not duplicated
-		if(isDuplicated == false)
-			objItems.addClass("unite-item-closed");
-
-		//set item title
-
-		if(isNewItem == false){
-
-			var itemTitle = objItemValues.title;
-		}else{
-
-			var itemTitle = objWrapper.data("itemtitle");
-			if(!itemTitle)
-				itemTitle = "Item";
-
-			var numItems = objItemsWrapper.children().length;
-			var currentNumItem = numItems+1;
-			itemTitle += " "+currentNumItem;
-
-		}
-
-		var deleteText = objWrapper.data("deletetext");
-		var duplicateText = objWrapper.data("duplicatext");
-
-		//append item
-		var htmlSettingsTemplate = objSettingsTemplate.html();
-
-		var addClass = "";
-		if(objItemInsertAfter)
-			addClass = " unite-item-closed";
-
-		var html = "<div class='unite-repeater-item"+addClass+"'>";
-		html += "	<div class='unite-repeater-item-head'>";
-		html += "		<a class='unite-repeater-trash unite-repeater-buttondelete' title='"+deleteText+"'><i class='fa fa-trash' aria-hidden='true'></i></a>";
-		html += "		<a class='unite-repeater-duplicate unite-repeater-buttonduplicate' title='"+duplicateText+"'><i class='fa fa-clone' aria-hidden='true'></i></a>";
-
-		html += "		<div class='unite-repeater-arrow'></div>";
-		html += "	<span>" + itemTitle+"</span>";
-		html += "	</div>";
-		html += "	<div class='unite-repeater-item-settings'>";
-		html += htmlSettingsTemplate;
-		html += "	</div>";
-		html += "</div>";
-
-		objEmptyText.hide();
-
-		var objItem = jQuery(html);
-
-		//change the id's
-
-		var objItemSettingsWrapper = objItem.find(".unite_settings_wrapper");
-		g_ucAdmin.validateDomElement(objItemSettingsWrapper, "item settigns wrapper");
-
-		var objOptions = objItemSettingsWrapper.data("options");
-
-		//replace setting IDs
-		var idPrefix = objOptions.id_prefix;
-		var newID = idPrefix+"item_"+g_ucAdmin.getRandomString(5)+"_";
-		html = g_ucAdmin.replaceAll(html, idPrefix, newID);
-
-		//put to the item again
-		var objItem = jQuery(html);
-		var objItemSettingsWrapper = objItem.find(".unite_settings_wrapper");
-
-		//change wrapper ID
-		var settingsWrapperID = "unite_settings_repeater_"+newID;
-		objItemSettingsWrapper.attr("id", settingsWrapperID);
-
-		g_ucAdmin.validateDomElement(objItemSettingsWrapper, "item settigns wrapper");
-
-		if(objItemInsertAfter){
-			objItem.insertAfter(objItemInsertAfter);
-		}
-		else
-		objItemsWrapper.append(objItem);
-
-		var objHeadTitle = objItem.find(".unite-repeater-item-head span");
-
-		var objItemSettings = new UniteSettingsUC();
-		objItemSettings.init(objItemSettingsWrapper);
-
-		var objInputTitle = objItemSettings.getInputByName("title");
-
-		objInputTitle.on("input",function(){
-
-			var objInput = jQuery(this);
-			var value = objInput.val();
-			objHeadTitle.html(value);
-		});
-
-		if(isNewItem == false){
-
-			objItemSettings.setValues(objItemValues);
-
-		}else{		//if new item
-
-			//Update item title input if available
-			if(objInputTitle)
-				objInputTitle.val(itemTitle);
-
-			//update generated ID
-			var objInputGeneratedID = objItemSettings.getInputByName("generated_id");
-			if(objInputGeneratedID){
-				var generatedID = g_ucAdmin.getRandomString(7);
-				objInputGeneratedID.val(generatedID);
-			}
-
-		}
-
-		objItem.data("objsettings", objItemSettings);
-
-		t.onSettingChange(null, objWrapper);
-
-	}
-
 
 	/**
 	 * init repeater
 	 */
-	function initRepeater(objWrapper){
-
-		var objButtonAdd = objWrapper.find(".unite-repeater-buttonadd");
-		var objItemsWrapper = objWrapper.find(".unite-repeater-items");
-		var objEmptyText = objWrapper.find(".unite-repeater-emptytext")
-
-		//init button
-		objButtonAdd.on("click",repeaterAddItem);
-
-		//init container sortable
+	function initRepeater(objWrapper) {
 		objWrapper.sortable({
 			items: ".unite-repeater-item",
-			handle: ".unite-repeater-item-head",
+			handle: ".unite-repeater-item-header",
 			cursor: "move",
 			axis: "y",
-			update: function(event, ui){
-
-				var objItem = ui.item;
-
+			update: function () {
 				t.onSettingChange(null, objWrapper);
-
-				objItem.data("just_moved",true);
-
-			}
+			},
 		});
 
-		//head on click
-		objWrapper.on("click", ".unite-repeater-item-head", function(){
+		objWrapper.on("click", ".unite-repeater-add", addRepeaterItem);
 
-			var objHead = jQuery(this);
-			var objItem = objHead.parents(".unite-repeater-item");
+		objWrapper.on("click", ".unite-repeater-item-title", function () {
+			var objItem = jQuery(this).closest(".unite-repeater-item");
 
-			var justMoved = objItem.data("just_moved");
-			if(justMoved === true){
-				objItem.data("just_moved", false);
-				return(true);
-			}
+			objItem
+				.closest(".unite-repeater-items")
+				.find(".unite-repeater-item")
+				.not(objItem)
+				.find(".unite-repeater-item-content")
+				.stop()
+				.slideUp(g_vars.animationDuration);
 
-			objItem.toggleClass("unite-item-closed");
-
+			objItem
+				.find(".unite-repeater-item-content")
+				.stop()
+				.slideToggle(g_vars.animationDuration);
 		});
 
-		//delete
+		objWrapper.on("click", ".unite-repeater-item-delete", function () {
+			jQuery(this).closest(".unite-repeater-item").remove();
 
-		objWrapper.on("click", ".unite-repeater-buttondelete", function(){
-
-			var objButton = jQuery(this);
-			var objItem = objButton.parents(".unite-repeater-item");
-			objItem.remove();
-
-			var numItems = objItemsWrapper.children().length;
-			if(numItems == 0)
-				objEmptyText.show();
+			if (objWrapper.find(".unite-repeater-item").length === 0)
+				objWrapper.find(".unite-repeater-empty").show();
 
 			t.onSettingChange(null, objWrapper);
-
 		});
 
-		objWrapper.on("click", ".unite-repeater-buttonduplicate", function(){
+		objWrapper.on("click", ".unite-repeater-item-duplicate", function () {
+			var objItem = jQuery(this).closest(".unite-repeater-item");
+			var itemValues = objItem.data("objsettings").getSettingsValues();
 
-			var objButton = jQuery(this);
-			var objItem = objButton.parents(".unite-repeater-item");
-
-			objItem.data("just_moved",true);
-
-			var itemSettings = objItem.data("objsettings");
-			var settingsValues = itemSettings.getSettingsValues();
-
-			repeaterAddItem(null, objWrapper, settingsValues, objItem);
-
+			addRepeaterItem(null, objWrapper, itemValues, objItem);
 		});
-
 	}
 
+	/**
+	 * add repeater item
+	 */
+	function addRepeaterItem(event, objWrapper, itemValues, objItemInsertAfter) {
+		if (!objWrapper)
+			objWrapper = jQuery(this).closest(".unite-setting-repeater");
+
+		var isNewItem = false;
+
+		if (!itemValues)
+			isNewItem = true;
+
+		var objSettingsTemplate = objWrapper.find(".unite-repeater-template");
+		var objItemsWrapper = objWrapper.find(".unite-repeater-items");
+		var objEmpty = objWrapper.find(".unite-repeater-empty");
+
+		g_ucAdmin.validateDomElement(objItemsWrapper, "items wrapper");
+		g_ucAdmin.validateDomElement(objSettingsTemplate, "settings template");
+
+		objEmpty.hide();
+
+		// get item title
+		var itemTitle;
+
+		if (isNewItem === true) {
+			itemTitle = objWrapper.data("item-title");
+
+			if (!itemTitle)
+				itemTitle = "Item";
+
+			var itemNumber = objWrapper.find(".unite-repeater-item").length + 1;
+
+			itemTitle += " " + itemNumber;
+		} else {
+			itemTitle = itemValues.title;
+		}
+
+		// get item html
+		var textDelete = objWrapper.data("text-delete");
+		var textDuplicate = objWrapper.data("text-duplicate");
+
+		var html = "<div class='unite-repeater-item'>";
+		html += " <div class='unite-repeater-item-header'>";
+		html += "	 <div class='unite-repeater-item-title'>" + itemTitle + "</div>";
+		html += "	 <div class='unite-repeater-item-actions'>";
+		html += "	  <button class='unite-repeater-item-action unite-repeater-item-duplicate uc-tip' title='" + textDuplicate + "'><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='M8.625.375H.375v8.25h8.25V.375Z' /><path d='M10.125 3.375h1.5v8.25h-8.25v-1.5' /></svg></button>";
+		html += "		<button class='unite-repeater-item-action unite-repeater-item-delete uc-tip' title='" + textDelete + "'><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'><path d='m1.5 1.5 9 9M10.5 1.5l-9 9' /></svg></button>";
+		html += "	 </div>";
+		html += "	</div>";
+		html += "	<div class='unite-repeater-item-content'>";
+		html += objSettingsTemplate.html();
+		html += "	</div>";
+		html += "</div>";
+
+		// change item settings IDs
+		var objItem = jQuery(html);
+		var objItemSettingsWrapper = objItem.find(".unite_settings_wrapper");
+
+		g_ucAdmin.validateDomElement(objItemSettingsWrapper, "item settings wrapper");
+
+		var options = objItemSettingsWrapper.data("options");
+		var idPrefix = options.id_prefix;
+		var newID = idPrefix + "item_" + g_ucAdmin.getRandomString(5) + "_";
+
+		html = g_ucAdmin.replaceAll(html, idPrefix, newID);
+
+		// change item settings wrapper ID
+		objItem = jQuery(html);
+		objItemSettingsWrapper = objItem.find(".unite_settings_wrapper");
+		objItemSettingsWrapper.attr("id", "unite_settings_repeater_" + newID);
+
+		if (objItemInsertAfter)
+			objItemInsertAfter.after(objItem);
+		else
+			objItemsWrapper.append(objItem);
+
+		// init item settings
+		var objItemSettings = new UniteSettingsUC();
+
+		objItemSettings.init(objItemSettingsWrapper);
+
+		objItem.data("objsettings", objItemSettings);
+
+		var objTitleInput = objItemSettings.getInputByName("title");
+		var objItemTitle = objItem.find(".unite-repeater-item-title");
+
+		objTitleInput.on("input", function () {
+			var value = objTitleInput.val();
+
+			objItemTitle.html(value);
+		});
+
+		if (isNewItem === true) {
+			// update title input
+			objTitleInput.val(itemTitle);
+
+			// update generated ID
+			var objGeneratedIdInput = objItemSettings.getInputByName("generated_id");
+
+			if (objGeneratedIdInput) {
+				var generatedId = g_ucAdmin.getRandomString(7);
+
+				objGeneratedIdInput.val(generatedId);
+			}
+		} else {
+			objItemSettings.setValues(itemValues);
+		}
+
+		t.onSettingChange(null, objWrapper);
+	}
 
 	/**
-	 * init repeaters globally
+	 * destroy repeaters
 	 */
-	function initRepeaters(){
+	function destroyRepeaters() {
+		g_objParent.find(".unite-setting-repeater").sortable("destroy");
+		g_objParent.find(".unite-repeater-add").off("click");
 
-		var objRepeaters = g_objWrapper.find(".unite-settings-repeater");
-		if(objRepeaters.length == 0)
-			return(false);
+		g_objParent.find(".unite-repeater-item").each(function () {
+			var objItem = jQuery(this);
+			var objSettings = objItem.data("objsettings");
 
-		g_temp.isRepeaterExists = true;
+			objSettings.destroy();
 
+			objItem.find(".unite-repeater-item-title").off("click");
+			objItem.find(".unite-repeater-item-delete").off("click");
+			objItem.find(".unite-repeater-item-duplicate").off("click");
+		});
+	}
+
+	/**
+	 * get repeater values
+	 */
+	function getRepeaterValues(objWrapper) {
+		var values = [];
+
+		objWrapper.find(".unite-repeater-item").each(function () {
+			var itemValues = jQuery(this).data("objsettings").getSettingsValues();
+
+			values.push(itemValues);
+		});
+
+		return values;
+	}
+
+	/**
+	 * set repeater values
+	 */
+	function setRepeaterValues(objWrapper, values, useDefault) {
+		objWrapper.find(".unite-repeater-items").empty();
+
+		if (useDefault === true)
+			values = objWrapper.data("itemvalues");
+
+		if (!values)
+			return;
+
+		if (jQuery.isArray(values) === false)
+			return;
+
+		jQuery.each(values, function (index, itemValues) {
+			addRepeaterItem(null, objWrapper, itemValues);
+		});
 	}
 
 
 	function _______SWITCHER_____(){}
-
 
 	/**
 	 * update switcher state by it's value
@@ -4010,30 +3911,34 @@ function UniteSettingsUC(){
 	 * @TODO: implement the hide/show, enabled/disables functionality
 	 */
 	function onControlSettingChange(event, input){
-
-		var debugControls = false;
+				
+		var debugControls = true;
 
 		if(!input)
 			input = this;
 
 		var objInput = jQuery(input);
 		var controlID = input.name;
-
+		
 		if(!controlID)
 			controlID = objInput.data("name");
 
 		if(!controlID)
 			return(true);
-
+		
 		var controlValue = getSettingInputValue(objInput);
 
+		trace(g_arrControls);
+		trace(controlID);
+		
 		if(!g_arrControls[controlID])
 			return(true);
-
+		
+		
 		g_temp.cacheValues = null;
 
 		var arrChildControls = g_arrControls[controlID];
-
+		
 		if(debugControls == true){
 			trace("controls change");
 			trace("parent value: " + controlValue)
@@ -4046,12 +3951,31 @@ function UniteSettingsUC(){
 		};
 
 		jQuery.each(arrChildControls, function(childName, objControl){
-			var objChildInput = jQuery(g_IDPrefix + childName);
-			var rowID = g_IDPrefix + childName + "_row";
+						
+			var isSap = g_ucAdmin.getVal(objControl, "forsap");
+			
+			if(isSap == true){	//sap
+				
+				var objChildInput = null;
+				var rowID = g_IDPrefix + "ucsap_"+childName;
+								
+			}else{		//setting
+					
+				var objChildInput = jQuery(g_IDPrefix + childName);
+				var rowID = g_IDPrefix + childName + "_row";
+				
+			}
+			
 			var objChildRow = jQuery(rowID);
-
-			if(objChildRow.length == 0)
+			
+			if(objChildRow.length == 0){
+				
+				if(debugControls == true){
+					trace("child not found: "+rowID);
+				}
+				
 				return(true);
+			}
 
 			var value = objControl.value;
 
@@ -4069,11 +3993,11 @@ function UniteSettingsUC(){
 			}
 
 			var inputTagName = "";
-			if(objChildInput.length)
+			if(objChildInput && objChildInput.length)
 				inputTagName = objChildInput.get(0).tagName;
-
+			
 			var isChildRadio = (inputTagName == "SPAN" && objChildInput.length && objChildInput.hasClass("radio_wrapper"));
-
+			
 			switch(objControl.type){
 				case "enable":
 				case "disable":
@@ -4120,7 +4044,7 @@ function UniteSettingsUC(){
 				break;
 				case "show":
 				case "hide":
-
+					
 					if(action == "show")
 						objChildRow.removeClass("unite-setting-hidden");
 					else
@@ -4141,218 +4065,187 @@ function UniteSettingsUC(){
 		if(!g_objParent)
 			return(false);
 
-		g_objParent.find("select").trigger("change");
+		g_objParent.find("select:not(.unite-responsive-picker, .unite-units-picker)").trigger("change");
 		g_objParent.find("input[type='radio']:checked").trigger("click");
 
 	}
 
-	function _______RESPNSIVE_ICONS_____(){}
 
+	function _______RESPONSIVE_PICKER_____(){}
 
 	/**
-	 * on icon click
+	 * init responsive picker
 	 */
-	function onResponsiveIconClick(){
+	function initResponsivePicker() {
+		g_objWrapper.find(".unite-responsive-picker").each(function () {
+			var objPicker = jQuery(this);
 
-		var objIcon = jQuery(this);
+			objPicker.on("change", function () {
+				var id = objPicker.closest(".unite-setting-row").data("responsive-id");
+				var device = objPicker.val();
 
-		var iconsWrapper = objIcon.parents('.unite-settings-responsive-wrapper');
+				var objRow = objPicker.closest(".unite-list-settings")
+					.find(".unite-setting-row[data-responsive-id=\"" + id + "\"]")
+					.addClass("unite-hidden")
+					.filter("[data-responsive-device=\"" + device + "\"]")
+					.removeClass("unite-hidden");
 
-		var responsiveIdHolder = iconsWrapper.parents('li.unite-setting-row');
+				objRow.find(".unite-responsive-picker")
+					.val(device)
+					.trigger("change.select2");
+			});
 
-		var responsiveId = responsiveIdHolder.data("responsiveid");
+			initSelect2(objPicker, {
+				dropdownParent: objPicker.parent(),
+			});
+		});
+	}
 
-
-		//open icons if closed
-
-		if(iconsWrapper.hasClass('unite-settings-responsive-wrapper__open') == false){
-			iconsWrapper.addClass('unite-settings-responsive-wrapper__open')
-			return;
-		}
-
-		//change click, change the responsive type
-
-		iconsWrapper.removeClass('unite-settings-responsive-wrapper__open');
-
-		var selectedDevice = objIcon.data("device");
-
-
-		//hide other rows
-
-		var rowElements = jQuery(responsiveIdHolder).parents('ul.unite-list-settings').find('li[data-responsiveid="'+responsiveId+'"]');
-
-		rowElements.addClass('uc-responsive-hidden');
-
-		//show the device row
-
-		var deviceRow = rowElements.filter('.unite-setting-row__'+selectedDevice);
-
-		deviceRow.removeClass('uc-responsive-hidden');
-
-
+	/**
+	 * get responsive picker value for element
+	 */
+	function getResponsivePickerValue(objElement) {
+		return objElement.closest(".unite-setting-row").data("responsive-device");
 	}
 
 
+	function _______UNITS_PICKER_____(){}
+
 	/**
-	 * init responsive icons
+	 * init units picker
 	 */
-	function initResponsiveIcons(){
+	function initUnitsPicker() {
+		g_objWrapper.find(".unite-units-picker").each(function () {
+			var objPicker = jQuery(this);
 
-		var objInputs = getObjInputs();
-
-		var objIcons = objInputs.find(".unite-settings-responsive-icon");
-
-		objIcons.on("click", onResponsiveIconClick);
-
+			initSelect2(objPicker, {
+				dropdownParent: objPicker.parent(),
+			});
+		});
 	}
+
+	/**
+	 * get units picker for element
+	 */
+	function getUnitsPickerForElement(objElement) {
+		return objElement.closest(".unite-setting-row").find(".unite-units-picker");
+	}
+
+	/**
+	 * get units picker value for element
+	 */
+	function getUnitsPickerValue(objElement) {
+		return getUnitsPickerForElement(objElement).val();
+	}
+
+	/**
+	 * set units picker value for element
+	 */
+	function setUnitsPickerValue(objElement, value) {
+		getUnitsPickerForElement(objElement).val(value).trigger("change.select2");
+	}
+
 
 	function _________SELECTORS__________(){}
 
 	/**
 	 * get selectors css
 	 */
-	function getTypographySelectorsCss(objInput){
-
+	this.getSelectorsCss = function () {
+		var objInputs = getObjInputs();
 		var css = "";
 
-		var objDialog = getTypographyDialog();
+		jQuery.each(objInputs, function () {
+			var objInput = jQuery(this);
+			var inputCss = getInputSelectorCss(objInput);
 
-		var objSelectedValues = objDialog.find(':selected');
-
-		objSelectedValues.each(function(){
-
-			var objSelected = jQuery(this);
-			var selectedIndex = objSelected.index();
-
-			//if first option selected - ignore
-			if(selectedIndex == 0)
-			return(true);
-
-			var selectedValue = objSelected.val();
-			var selectedCssProperty = objSelected.parents('select').data('fieldname');
-
-			css += selectedCssProperty+':'+selectedValue+';';
-
+			if (inputCss)
+				css += inputCss + "\n";
 		});
 
-
-		return(css);
+		return css;
 	}
 
 	/**
 	 * check if the input has selector
 	 */
-	function isInputHasSelector(objInput){
+	function isInputHasSelector(objInput) {
+		var selectors = objInput.data("selectors");
 
-		var objSelectors = objInput.data("selectors");
+		if (selectors)
+			return true;
 
-		if(objSelectors)
-			return(true);
-
-		return(false);
+		return false;
 	}
-
 
 	/**
 	 * get input selector css
 	 */
-	function getInputSelectorCss(objInput){
+	function getInputSelectorCss(objInput) {
+		var selectors = objInput.data("selectors");
 
-		var objSelectors = objInput.data("selectors");
+		if (!selectors)
+			return;
 
-		if(!objSelectors)
-			return(null);
+		var selector = g_ucAdmin.getVal(selectors, "selector");
+		var selectorCss = g_ucAdmin.getVal(selectors, "selector_value");
 
-		var selector = g_ucAdmin.getVal(objSelectors,"selector");
+		if (!selector) {
+			// get last selector
+			var lastSelectorVal = Object.values(selectors).pop();
 
-		var selectorCss = null;
-
-		if(!selector){
-
-			// selector = g_ucAdmin.getVal(objSelectors,"selector");
-			jQuery.each(objSelectors, function(selectorNum, selectorVal){
-
-				//find last value
-				var lastValue = Object.values(objSelectors).pop();
-
-				//if last value, then no coma after value
-				if(selectorVal == lastValue)
-				selector += selectorVal
+			jQuery.each(selectors, function (selectorNum, selectorVal) {
+				//if last value, then no comma after value
+				if (selectorVal === lastSelectorVal)
+					selector += selectorVal;
 				else
-				selector += selectorVal+','
-
+					selector += selectorVal + ",";
 			});
-
-			var type = getInputType(objInput);
-
-			switch(type){
-				case "typography":
-					selectorCss = getTypographySelectorsCss(objInput);
-				break;
-				default:
-					return(null);
-				break;
-			}
 		}
 
-		if(!selectorCss)
-			var selectorCss = g_ucAdmin.getVal(objSelectors,"selector_value");
-
+		var type = getInputType(objInput);
 		var value = getSettingInputValue(objInput);
+		var unit = "px";
 
-		if(typeof value == "object"){
-			trace("handle obj value for selector");
-			return(false);
+		switch (type) {
+			case "dimentions":
+				selectorCss = getDimentionsSelectorCss(objInput, selectorCss);
+			break;
+			case "range":
+				unit = value["unit"];
+				value = value["size"];
+			break;
+			case "typography":
+				selectorCss = getTypographySelectorsCss(objInput);
+			break;
 		}
 
-		//for empty value, skip
+		if (typeof value === "string" || typeof value === "number") {
+			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{VALUE}}", value);
+			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{SIZE}}", value);
+			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{UNIT}}", unit);
+		}
 
-		if(value == "")
-			return("");
+		if (!selectorCss)
+			return;
 
-		//var type = getInputType(objInput);
+		var css = selector + "{" + selectorCss + "}";
+		var device = getResponsivePickerValue(objInput);
 
+		switch (device) {
+			case "tablet":
+				css = "@media(max-width:1024px){" + css + "}";
+			break;
+			case "mobile":
+				css = "@media(max-width:768px){" + css + "}";
+			break;
+		}
 
-		selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{VALUE}}", value);
-
-		selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{SIZE}}", value);
-
-		//temporary work around, will be switched later
-
-		selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{UNIT}}", "px");
-
-
-		var outputCss = selector+"{"+selectorCss+"}";
-
-		return(outputCss);
+		return css;
 	}
-
-
-	/**
-	 * get selectors css
-	 */
-	this.getSelectorsCss = function(){
-
-		var objInputs = getObjInputs();
-
-		var css = "";
-
-		jQuery.each(objInputs, function(index, input){
-			var objInput = jQuery(input);
-
-			var inputCss = getInputSelectorCss(objInput);
-
-			if(inputCss)
-				css += inputCss+"\n";
-		});
-
-		return(css);
-	}
-
 
 
 	function _______EVENTS_____(){}
-
 
 	/**
 	 * update events (in case of ajax set)
@@ -4396,10 +4289,6 @@ function UniteSettingsUC(){
 		if(objInput.length == 0)
 			return(false);
 
-		var type = getInputType(objInput);
-		if(type == "range")
-			objInput = getRangeInput(objInput);
-
 		var arrPlaceholderGroup = objInput.data("placeholder_group");
 
 		if(!arrPlaceholderGroup)
@@ -4437,7 +4326,8 @@ function UniteSettingsUC(){
 	 * run on setting change
 	 */
 	this.onSettingChange = function(event, objInput, isInstantChange){
-		
+
+
 		if(g_temp.enableTriggerChange == false)
 			return(true);
 
@@ -4623,10 +4513,7 @@ function UniteSettingsUC(){
 				initDimentions(objInput, funcChange);
 			break;
 			case "range":
-				initRangeInput(objInput, funcChange);
-			break;
-			case "map":
-				initMapPicker(objInput);
+				initRangeSlider(objInput, funcChange);
 			break;
 			case "addon":
 				initAddonPicker(objInput);
@@ -4653,9 +4540,7 @@ function UniteSettingsUC(){
 				initAddFieldsEvents(objInput);
 			break;
 			case "switcher":
-
 				initSwitcherEvents(objInput);
-
 			break;
 			default:
 				//custom setting
@@ -4879,15 +4764,13 @@ function UniteSettingsUC(){
 		}
 
 		if(g_temp.objFontsPanel)
-			t.destroyFontsPanel();
+			destroyFontsPanel();
 
 		if(g_temp.isRepeaterExists)
-			t.destroyRepeaters();
+			destroyRepeaters();
 
-		//destroy icon pickers
+		destroyRangeSlider();
 		destroyIconPickers();
-
-		//destroy dimentions
 		destroyDimentions();
 
 		//destroy custom setting types
@@ -5041,7 +4924,9 @@ function UniteSettingsUC(){
 
 		initRepeaters();
 
-		initResponsiveIcons();
+		initResponsivePicker();
+
+		initUnitsPicker();
 
 		t.initFontsPanel();
 

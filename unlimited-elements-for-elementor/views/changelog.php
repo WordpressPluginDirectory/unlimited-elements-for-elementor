@@ -173,7 +173,7 @@ class UCChangelogView extends WP_List_Table{
 		$this->displayHeader();
 
 		?>
-		<form class="unite-inputs" method="get">
+		<form method="get">
 			<?php $this->displayHiddenFields(); ?>
 			<?php $this->views(); ?>
 			<?php parent::display(); ?>
@@ -390,7 +390,7 @@ class UCChangelogView extends WP_List_Table{
 	 * @return void
 	 */
 	private function processExportAction(){
-
+	
 		global $wpdb;
 
 		$filters = $this->getFilters();
@@ -399,6 +399,7 @@ class UCChangelogView extends WP_List_Table{
 			SELECT id
 			FROM {$this->service->getTable()}
 			WHERE {$this->getWhere($filters)}
+			ORDER BY {$this->getOrderBy()}
 		";
 
 		$ids = $wpdb->get_col($sql);
@@ -407,9 +408,17 @@ class UCChangelogView extends WP_List_Table{
 		$lines = array();
 
 		foreach($items as $item){
+			
+			$addonVersion = UniteFunctionsUC::getVal($item, "addon_version");
+			
+			$title = $item["addon_title"];
+			
+			if(!empty($addonVersion))
+				$title .= " ({$addonVersion})";
+			
 			$lines[] = implode(" - ", array(
-				$item["addon_title"],
 				$item["type_title"],
+				$title,
 				$item["text"],
 			));
 		}
@@ -445,6 +454,7 @@ class UCChangelogView extends WP_List_Table{
 			SELECT id
 			FROM $table
 			WHERE $where
+			ORDER BY {$this->getOrderBy()}
 			LIMIT {$this->getLimit()}
 			OFFSET {$this->getOffset()}
 		";
@@ -470,26 +480,17 @@ class UCChangelogView extends WP_List_Table{
 		global $wpdb;
 
 		$sql = "
-			SELECT addon_id
+			SELECT addon_id, addon_title
 			FROM {$this->service->getTable()}
 			GROUP BY addon_id
 			ORDER BY addon_id
 		";
 
 		$results = $wpdb->get_results($sql);
-		$addon = new UniteCreatorAddon();
 		$items = array();
 
 		foreach($results as $result){
-			try {
-				$addon->initByID($result->addon_id);
-
-				$result->addon_title = $addon->getTitle();
-			} catch(Exception $exception) {
-				$result->addon_title = sprintf(__("#%s (not found)", "unlimited-elements-for-elementor"), $result->addon_id);
-			}
-
-			$items[$result->addon_id] = $result->addon_title;
+			$items[$result->addon_id] = $this->service->getAddonTitle($result->addon_id, $result->addon_title);
 		}
 
 		return $items;
@@ -627,6 +628,18 @@ class UCChangelogView extends WP_List_Table{
 	}
 
 	/**
+	 * Get the sorting clause.
+	 *
+	 * @return string
+	 */
+	private function getOrderBy(){
+
+		$orderBy = "created_at DESC";
+
+		return $orderBy;
+	}
+
+	/**
 	 * Get the limit.
 	 *
 	 * @return int
@@ -693,18 +706,20 @@ class UCChangelogView extends WP_List_Table{
 		$id = "filter-$name";
 
 		?>
-		<label class="screen-reader-text" for="<?php esc_attr_e($id); ?>"><?php esc_html_e($label); ?></label>
-		<select id="<?php esc_attr_e($id); ?>" name="<?php esc_attr_e($name); ?>">
-			<option value=""><?php esc_html_e($allLabel); ?></option>
-			<?php foreach($options as $value => $label): ?>
-				<option
-					value="<?php esc_attr_e($value); ?>"
-					<?php echo $value === $selectedValue ? "selected" : ""; ?>
-				>
-					<?php esc_html_e($label); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
+		<span class="uc-filter-select">
+			<label class="screen-reader-text" for="<?php esc_attr_e($id); ?>"><?php esc_html_e($label); ?></label>
+			<select id="<?php esc_attr_e($id); ?>" name="<?php esc_attr_e($name); ?>">
+				<option value=""><?php esc_html_e($allLabel); ?></option>
+				<?php foreach($options as $value => $label): ?>
+					<option
+						value="<?php esc_attr_e($value); ?>"
+						<?php echo $value === $selectedValue ? "selected" : ""; ?>
+					>
+						<?php esc_html_e($label); ?>
+					</option>
+				<?php endforeach; ?>
+			</select>
+		</span>
 		<?php
 	}
 
@@ -721,11 +736,11 @@ class UCChangelogView extends WP_List_Table{
 		?>
 		<script>
 			jQuery(document).ready(function () {
-				jQuery(".tablenav select").each(function () {
+				jQuery(".uc-filter-select select").each(function () {
 					var objSelect = jQuery(this);
 
 					objSelect.select2({
-						dropdownParent: objSelect.closest(".actions"),
+						dropdownParent: objSelect.parent(),
 						minimumResultsForSearch: 10,
 					});
 				});

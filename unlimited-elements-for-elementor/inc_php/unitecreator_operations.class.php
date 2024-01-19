@@ -264,7 +264,7 @@ class UCOperations extends UniteElementsBaseUC{
 		$urlImage = HelperUC::URLtoRelative($urlImage);
 
 		$info = HelperUC::getImageDetails($urlImage);
-
+		
 		//check thumbs path
 		$pathThumbs = $info["path_thumbs"];
 
@@ -626,7 +626,7 @@ class UCOperations extends UniteElementsBaseUC{
 	 * put posts meta fields debug
 	 */
 	public function putPostsCustomFieldsDebug($arrPosts, $showCustomFields = false){
-
+		
 		if(empty($arrPosts))
 			return (false);
 
@@ -634,7 +634,7 @@ class UCOperations extends UniteElementsBaseUC{
 
 		foreach($arrPosts as $post){
 			$postID = $post->ID;
-
+			
 			$this->putPostCustomFieldsDebug($postID, $showCustomFields);
 		}
 	}
@@ -1057,7 +1057,7 @@ class UCOperations extends UniteElementsBaseUC{
 	 * get last query data
 	 */
 	public function getLastQueryData(){
-		
+
 		$query = GlobalsProviderUC::$lastPostQuery;
 
 		if(empty($query)){
@@ -1075,13 +1075,13 @@ class UCOperations extends UniteElementsBaseUC{
 		$numPosts = 0;
 		if(isset($query->posts))
 			$numPosts = count($query->posts);
-		
+
 		$totalPosts = 0;
 		if(isset($query->found_posts))
 			$totalPosts = $query->found_posts;
 
 		$arrQuery = $query->query;
-				
+
 		$postType = UniteFunctionsUC::getVal($arrQuery, "post_type");
 
 		$orderBy = UniteFunctionsUC::getVal($arrQuery, "orderby");

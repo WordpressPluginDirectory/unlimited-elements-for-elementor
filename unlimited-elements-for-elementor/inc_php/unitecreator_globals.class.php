@@ -102,7 +102,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static $blankWindowMode = false;
 
 		public static $view_default;
-
+		
+		public static $isAjaxAction = false;
+		public static $ajaxAction;
+		public static $isTesting = false;
+		
+		
 		public static $table_addons;
 		public static $table_categories;
 		public static $table_layouts;
@@ -182,7 +187,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static $isAdminRTL = false;
 		public static $enableInsideWidgetFreeVersionNotifiaction = true;
 		public static $colorPickerType = "spectrum";
-
+		
 
 		/**
 		 * init globals

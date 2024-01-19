@@ -246,18 +246,15 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$this->addMultiSelect($name."_role_exclude", $arrRoles, __("Exclude Roles", "unlimited-elements-for-elementor"), $roleExclude, $params);
 		
 		//---- exclude user -----
-		
 		$arrAuthors = UniteFunctionsWPUC::getArrAuthorsShort();
-		
-		$params = array();
-		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-		$params["is_multiple"] = true;
-		$params["placeholder"] = __("Select one or more users", "unlimited-elements-for-elementor");
-		$params["elementor_condition"] = $arrConditionCustom;
 		
 		$arrAuthorsFlipped = array_flip($arrAuthors);
 		
-		$this->addMultiSelect($name."_exclude_authors", $arrAuthorsFlipped, __("Exclude By Specific Users", "unlimited-elements-for-elementor"), "", $params);
+		
+		//---------- exclude users new ---------
+						
+		$this->addPostIDSelect($name."_exclude_authors", __("Exclude Users", "unlimited-elements-for-elementor"), $arrConditionCustom, "users");
+		
 		
 		//---- include users -----
 		
@@ -613,6 +610,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$addAttrib = "data-taxonomyname='{$name}_taxonomy' data-isalltax='true'";
 		
 		$this->addPostIDSelect($name."_exclude", __("Exclude Terms", "unlimited-elements-for-elementor"), $elementorCondition, "terms", $addAttrib);
+		
 		
 		//----- exclude all the parents tree --------------
 		
@@ -1030,6 +1028,12 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$addAttrib = " data-datatype='terms'";
 			$placeholder = "All--Terms";
 		}
+
+		if($isForWoo === "users"){
+			$addAttrib = " data-datatype='users'";
+			$placeholder = "All--Users";
+		}
+		
 		
 		if(isset($params["placeholder"])){
 			$placeholder = $params["placeholder"];
@@ -1868,6 +1872,21 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 		
 		$this->addHr($name."_before_exclude_by",$params);
+		
+		// --------- add include by cetrain terms (for related posts) -------------
+				
+		$arrTaxonomies = UniteFunctionsWPUC::getAllTaxonomiesAssoc();
+		
+		$params = array();
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
+		$params["is_multiple"] = true;
+		$params["description"] = __("When selected, posts with listed taxonomies only will be included","unlimited-elements-for-elementor");
+		
+		$params["elementor_condition"] = $arrRelatedOnlyCondition;
+		
+		$arrTaxonomies = array_flip($arrTaxonomies);
+				
+		$this->addMultiSelect($name."_related_taxonomies", $arrTaxonomies, __("Include By Taxonomies", "unlimited-elements-for-elementor"), "", $params);
 		
 		
 		// --------- add exclude by -------------

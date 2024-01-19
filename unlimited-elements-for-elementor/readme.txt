@@ -3,7 +3,7 @@ Contributors: unitecms, valiano, iritmega
 Donate link: http://unlimited-elements.com/
 Tags: elementor, elements, addons, elementor addons, elementor widget, page builder, builder, visual editor, wordpress page builder, elementor
 Requires at least: 3.5
-Tested up to: 6.4.1
+Tested up to: 6.4.2
 Stable tag: 1.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -1236,6 +1236,42 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+version 1.5.93: 2024-01-18:
+
+* Feature: Introduced the option 'slider_video_autoplay' to galleries, enabling video autoplay when changing items.
+* Feature: Added the option to include specific taxonomies in related posts queries.
+* Feature: Implemented automatic recognition of video thumbnail IDs in certain gallery types based on relevant post meta.
+* Feature: Added functionality for the price range filter.
+* Change: Updated the Freemius version.
+* Change: Modified the text format for the export change log.
+* Change: Restored the "import with images" feature after incorporating file type checks for security.
+* Fix: Enhanced the handling of multiple user records for the 'exclude users' option in the users query (Ajax-based).
+* Fix: Corrected URL CSS and JS inclusion issues in Elementor editor.
+* Fix: Corrected a bug related to "mini cart widget" in PHP in specific cases.
+
+* Feature - Card Carousel (Free) - Introduced 'Hide Item' option. This new functionality allows users to hide items instead of deleting them permanently, offering a more reversible and flexible approach to item management.
+* Feature - Post Grid (Pro) - Implemented 'Layout Type: Above' option. This new functionality allows users to change the position of the content box to above the image.
+* Feature - Thumbnail Gallery (Pro) - Introduced 'Video Autoplay' option. This new functionality enables automatic playback of videos each time they become active, enhancing the user experience with seamless video transitions.
+* Feature - Compact Gallery (Free) - Introduced 'Video Autoplay' option. This new functionality enables automatic playback of videos each time they become active, enhancing the user experience with seamless video transitions.
+* Feature - Grid Gallery (Pro) - Introduced 'Video Autoplay' option. This new functionality enables automatic playback of videos each time they become active, enhancing the user experience with seamless video transitions.
+* Feature - Slider Gallery (Free) - Introduced 'Video Autoplay' option. This new functionality enables automatic playback of videos each time they become active, enhancing the user experience with seamless video transitions.
+* Feature - Flip Box Carousel (Pro) - Introduced option for back icon alignment, providing users the flexibility to customize the alignment of the back icon.
+* Feature - Post List (Free) - Implemented 'Image Scale' option for regular and hover states. This new feature allows users to customize the scaling of images independently for regular and hover states, enhancing visual presentation.
+* Change - Flip Box Carousel (Pro) - Implemented conditional rendering of CSS to reduce unused styles, resulting in improved performance, SEO, and faster load times for enhanced user experience.
+* Change - Content Accordion (Free) - Improved 'Expand All Accordion' functionality, now allowing users to close the accordion by clicking the same button again for a more intuitive and user-friendly experience.
+* Fix - WooCommerce Product Grid (Pro) - Implemented protection against buttons not being vertically aligned in specific cases.
+* Fix - Flip Box Carousel (Pro) - Resolved an issue where links were not functioning properly when clicking on the back icon.
+* Fix - WooCommerce Product Grid (Pro) - Resolved issue with the product button not being clickable in some cases.
+* Fix - Post Carousel (Pro) - Resolved issue with the side-by-side layout.
+* Feature - Logo Grid (Free) - Enhanced responsiveness for item 'Padding' option. This update ensures that item padding adjusts effectively across various screen sizes and device resolutions for a consistent layout.
+* Feature - Logo Grid (Free) - Implemented 'Direction' option. This new feature is particularly useful for RTL (Right-to-Left) websites, allowing users to specify the direction of the widget's layout for improved compatibility.
+* Feature - Content Accordion (Free) - Introduced a new feature that allows the expansion of all accordion items by clicking on an external element with the class "ue-content-accordion-expand-all".
+* Feature - Memory Game (Pro) - Introduced template option for success message, Allowing users to show Elementor template as success message.
+* Feature - Memory Game (Pro) - Added 'Completion Time' option, enabling users to show the time it took to complete the game for a more informative and engaging experience.
+* Feature - Content Accordion (Free) - Introduced 'Additional Header Content' option in the accordion, allowing users to include additional content after the header title.
+* Feature - Post Accordion (Free) - Implemented 'Open Links in New Tab' option. This new functionality allows users to configure links to open in a new tab, enhancing control over the navigation experience.
+* Feature - Side Menu (Pro) - Added an option to add a logo to the side menu layout.
+
 
 version 1.5.92: 2024-01-04:
 
@@ -1337,6 +1373,7 @@ version 1.5.84: 2023-09-20
 
 * Fix: added support for webp in the manager
 * Fix: allow fetching images from media library post type for the galleries 
+
 
 
 version 1.5.83: 2023-08-22

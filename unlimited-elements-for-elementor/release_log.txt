@@ -1,5 +1,21 @@
 
 
+
+version 1.5.93:
+
+* Change: updated freemius version
+* Change: changed export change log text format
+* feature: added option: slider_video_autoplay to the galleries for autoplay the videos as item changes
+* feature: added option include by certain taxonomies in related posts query
+* feature: added automatic recognition of video thumbnail id in some sort of galleries by relevant post meta
+* bug fix: made the exclude users option in users query handle many user records (ajax based)
+* bug fix: fixed some wrong url css and js includes issues in elementor editor
+* bug fix: fixed some mini cart info bug in some cases in php
+* change: returned the "import with images", after including filtype check (for security).
+* feature: added functionality for the price range filter
+
+
+
 version 1.5.92:
 
 * Feature: Introduced the change log option in the widget editor.
