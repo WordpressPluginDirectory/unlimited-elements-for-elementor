@@ -264,7 +264,7 @@ class UCOperations extends UniteElementsBaseUC{
 		$urlImage = HelperUC::URLtoRelative($urlImage);
 
 		$info = HelperUC::getImageDetails($urlImage);
-		
+
 		//check thumbs path
 		$pathThumbs = $info["path_thumbs"];
 
@@ -626,7 +626,7 @@ class UCOperations extends UniteElementsBaseUC{
 	 * put posts meta fields debug
 	 */
 	public function putPostsCustomFieldsDebug($arrPosts, $showCustomFields = false){
-		
+
 		if(empty($arrPosts))
 			return (false);
 
@@ -634,7 +634,7 @@ class UCOperations extends UniteElementsBaseUC{
 
 		foreach($arrPosts as $post){
 			$postID = $post->ID;
-			
+
 			$this->putPostCustomFieldsDebug($postID, $showCustomFields);
 		}
 	}

@@ -243,7 +243,8 @@ class UniteCreatorAssets{
 		
 		if(empty($arrDelete))
 			return(false);
-		
+			
+			
 		foreach($arrDelete as $dir){
 			
 			$pathDir = $path.$dir;

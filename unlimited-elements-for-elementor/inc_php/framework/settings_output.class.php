@@ -1746,12 +1746,18 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		protected function getOptions(){
 
 			$idPrefix = $this->settings->getIDPrefix();
-			
+
 			$options = array();
 			$options["show_saps"] = $this->showSaps;
 			$options["saps_type"] = $this->sapsType;
 			$options["id_prefix"] = $idPrefix;
-
+			
+			//add google fonts
+			$fontData = HelperUC::getFontPanelData();
+			$googleFonts = UniteFunctionsUC::getVal($fontData, "arrGoogleFonts");
+			
+			$options["google_fonts"] = $googleFonts;
+			
 			return($options);
 		}
 
@@ -1778,7 +1784,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * insert settings into saps array
 		 */
 		private function groupSettingsIntoSaps(){
-
+			
 		    $arrSaps = $this->settings->getArrSaps();
 		    $arrSettings = $this->settings->getArrSettings();
 
@@ -1786,7 +1792,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		    foreach($arrSettings as $key=>$setting){
 
 		        $sapID = $setting["sap"];
-
+				
 		        if(isset($arrSaps[$sapID]["settings"]))
 		            $arrSaps[$sapID]["settings"][] = $setting;
 		            else
@@ -1804,22 +1810,33 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 */
 		protected function drawTypographySetting($setting){
 
-			if($this->isSidebar == false){
+			if($this->isSidebar === false){
 				dmp("the typography attribute will be available in elementor");
-				return(false);
-			}
 
-			$addHtml = $this->getDefaultAddHtml($setting);
+				return;
+			}
 
 			$this->isTypographyExists = true;
 
+			$addHtml = $this->getDefaultAddHtml($setting);
+
 			?>
-		      <div id="<?php echo esc_attr($setting["id"])?>" data-settingtype="typography" class="unite-setting-input-object unite-settings-typography" data-name="<?php echo esc_attr($setting["name"])?>" <?php echo $addHtml?> >
-
-		        	<span class="unite-button-secondary unite-button-typography"><?php _e("Choose Styles","unlimited-elements-for-elementor") ?></span>
-
-			  </div>
-
+			<div
+				id="<?php esc_attr_e($setting["id"]); ?>"
+				class="unite-setting-input-object unite-typography"
+				data-name="<?php esc_attr_e($setting["name"]); ?>"
+				data-settingtype="typography"
+				<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
+			>
+				<button
+					class="unite-typography-button uc-tip"
+					title="<?php esc_attr_e("Edit", "unlimited-elements-for-elementor"); ?>"
+				>
+					<svg class="unite-typography-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+						<path stroke-linejoin="round" d="m9 1 2 2-7 7-3 1 1-3 7-7Z" />
+					</svg>
+				</button>
+			</div>
 			<?php
 		}
 
@@ -1829,26 +1846,20 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		protected function drawTypographyDialog(){
 
 			$settings = new UniteCreatorSettings();
-
 			$settings->addTypographyDialogSettings();
 
 			$output = new UniteSettingsOutputSidebarUC();
-
 			$output->init($settings);
 
-		   ?>
-				<div class="uc-dialog-typgoraphy unite-settings-exclude">
-
-		   			<?php $output->draw("settings_typography_dialog", false); ?>
-
-				</div>
+			?>
+			<div class="unite-typography-dialog unite-settings-exclude">
+				<?php $output->draw("settings_typography_dialog", false); ?>
+			</div>
 			<?php
-
 		}
 
 
 		private function a______DRAW_GENERAL_____(){}
-
 
 		/**
 		 * get controls for client side
@@ -2119,9 +2130,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 */
 		protected function drawSettingsBottom(){
 
-			if($this->isTypographyExists && $this->isSidebar == true)
+			if($this->isSidebar === true && $this->isTypographyExists === true)
 				$this->drawTypographyDialog();
-
 		}
 
 		/**

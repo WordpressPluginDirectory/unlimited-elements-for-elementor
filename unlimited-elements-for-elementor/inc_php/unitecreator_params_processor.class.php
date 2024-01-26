@@ -364,11 +364,8 @@ class UniteCreatorParamsProcessorWork{
 					}
 
 					if(isset($arrGoogleFonts[$styleValue])){
-
-						$googleFontUrl = $arrGoogleFonts[$styleValue];
-
-						$urlGoogleFont = "https://fonts.googleapis.com/css?family=".$googleFontUrl;
-
+						$urlGoogleFont = HelperHtmlUC::getGoogleFontUrl($arrGoogleFonts[$styleValue]);
+						
 						if(!empty($this->addon)){
 							//$urlGoogleFont .= "&amp;fromaddon=".$this->addon->getName();
 							$this->addon->addCssInclude($urlGoogleFont);
@@ -1296,7 +1293,7 @@ class UniteCreatorParamsProcessorWork{
 	 * update params items for output
 	 */
 	public function processParamsForOutput($arrParams){
-				
+
 		$this->validateInited();
 
 		if(is_array($arrParams) == false)
@@ -1695,11 +1692,11 @@ class UniteCreatorParamsProcessorWork{
 
 		$isDebug = false;
 
-		//not given - return current date
-
+		//not given or wrong type - return current date
+		
 		$formatFullDate = "d-M-Y, H:i";
-
-		if(empty($value)){
+		
+		if(empty($value) || is_array($value)){
 
 			//$stamp = time();
 			//$data[$name."_stamp"] = $stamp;
@@ -1956,8 +1953,8 @@ class UniteCreatorParamsProcessorWork{
 	 * @param $objParams
 	 */
 	public function getProcessedParamsValues($arrParams, $processType, $filterType = null){
-		
-				
+
+
 		self::validateProcessType($processType);
 
 		$arrParams = $this->processParamsForOutput($arrParams);
@@ -1967,7 +1964,7 @@ class UniteCreatorParamsProcessorWork{
 			usort($arrParams, array($this,"sortParamsBeforeProcess"));
 
 		$data = array();
-		
+
 		foreach($arrParams as $param){
 
 			$type = UniteFunctionsUC::getVal($param, "type");

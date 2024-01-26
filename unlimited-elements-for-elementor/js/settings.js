@@ -16,7 +16,7 @@ function UniteSettingsUC(){
 	var g_vars = {
 		NOT_UPDATE_OPTION: "unite_settings_no_update_value",
 		keyupTrashold: 500,
-		animationDuration: 300,
+		animationDuration: 300
 	};
 
 	var g_temp = {
@@ -25,7 +25,6 @@ function UniteSettingsUC(){
 		enableTriggerChange: true,
 		cacheValues: null,
 		objItemsManager: null,
-		objFontsPanel:null,
 		isSidebar: false,
 		isInited: false,
 		customSettingsKey: "custom_setting_type",
@@ -129,7 +128,7 @@ function UniteSettingsUC(){
 				var objTip = jQuery(this);
 
 				return objTip.data("tipsy-gravity") || "s";
-			},
+			}
 		});
 
 		jQuery("body").on("click", ".uc-tip", function () {
@@ -151,7 +150,7 @@ function UniteSettingsUC(){
 
 		//include
 		var selectors = "input, textarea, select, .unite-setting-inline-editor, .unite-setting-input-object";
-		var selectorNot = "input[type='button'], input[type='range'], input[type='search']";
+		var selectorNot = "input[type='button'], input[type='range'], input[type='search'], .unite-responsive-picker, .unite-units-picker";
 
 		if(g_temp.disableExcludeSelector !== true)
 			selectorNot += ", .unite-settings-exclude *";
@@ -372,9 +371,6 @@ function UniteSettingsUC(){
 			case "items":
 				value = g_temp.objItemsManager.getItemsData();
 			break;
-			case "fonts":
-				value = t.getFontsPanelData();
-			break;
 			case "map":
 				value = objInput.data("mapdata");
 			break;
@@ -385,10 +381,13 @@ function UniteSettingsUC(){
 				value = multiSelectModifyAfterGet(value);
 			break;
 			case "dimentions":
-				value = getDimentionsInputData(objInput);
+				value = getDimentionsValue(objInput);
 			break;
 			case "range":
-				value = getRangeSliderInputValue(objInput);
+				value = getRangeSliderValue(objInput);
+			break;
+			case "typography":
+				value = getTypographyValue(objInput);
 			break;
 			case "select2":
 			break;
@@ -583,12 +582,17 @@ function UniteSettingsUC(){
 			case "dimentions":
 				defaultValue = objInput.data(dataname);
 
-				clearDimentionsInputValue(objInput, defaultValue);
+				clearDimentionsValue(objInput, defaultValue);
 			break;
 			case "range":
 				defaultValue = objInput.data(dataname);
 
-				clearRangeSliderInputValue(objInput, defaultValue);
+				clearRangeSliderValue(objInput, defaultValue);
+			break;
+			case "typography":
+				defaultValue = objInput.data(dataname);
+
+				clearTypographyValue(objInput, defaultValue);
 			break;
 			case "color":
 
@@ -642,11 +646,9 @@ function UniteSettingsUC(){
 				clearLinkInputValue(objInput, defaultValue);
 			break;
 			case "post":
-
 				defaultValue = objInput.data(dataname);
 
 				setPostPickerValue(objInput, defaultValue);
-
 			break;
 			case "items":
 				if(dataname != "initval")
@@ -676,21 +678,18 @@ function UniteSettingsUC(){
 				//no clear for now
 
 				/*
-				g_temp.enableTriggerChange = false;
+				t.disableTriggerChange();
 
 				defaultValue = objInput.data(dataname);
 				objInput.select2("val",defaultValue);
 				objInput.trigger("change");
 
-				g_temp.enableTriggerChange = true;
+				t.enableTriggerChange();
 				*/
 
 			break;
 			case "gallery":
 				clearGallery(objInput);
-			break;
-			case "typography":
-				clearTypography(objInput);
 			break;
 			case "switcher":
 				clearSwitcher(objInput, dataname);
@@ -797,10 +796,13 @@ function UniteSettingsUC(){
 				objInput.trigger("change");
 			break;
 			case "dimentions":
-				setDimentionsInputValue(objInput, value);
+				setDimentionsValue(objInput, value);
 			break;
 			case "range":
-				setRangeSliderInputValue(objInput, value);
+				setRangeSliderValue(objInput, value);
+			break;
+			case "typography":
+				setTypographyValue(objInput, value);
 			break;
 			case "icon":
 				setIconInputValue(objInput, value);
@@ -872,6 +874,8 @@ function UniteSettingsUC(){
 			clearInput(objInput, dataname, checkboxDataName);
 		});
 
+		applyControls(objInputs);
+
 	};
 
 
@@ -920,11 +924,11 @@ function UniteSettingsUC(){
 		if(!objInput || objInput.length == 0)
 			return(false);
 
-		g_temp.enableTriggerChange = false;
+		t.disableTriggerChange();
 
 		setInputValue(objInput, value);
 
-		g_temp.enableTriggerChange = true;
+		t.enableTriggerChange();
 
 	};
 
@@ -936,16 +940,14 @@ function UniteSettingsUC(){
 
 		validateInited();
 
-		if(noClear !== true)
-			this.clearSettings();
-
+		if (noClear !== true)
+			t.clearSettings();
 
 		//if empty values - exit
-		if(typeof objValues != "object"){
-			return(false);
-		}
+		if (typeof objValues !== "object")
+			return;
 
-		g_temp.enableTriggerChange = false;
+		t.disableTriggerChange();
 
 		var objInputs = getObjInputs();
 
@@ -986,14 +988,35 @@ function UniteSettingsUC(){
 
 		});
 
-		applyControls();
+		applyControls(objInputs);
 
-		g_temp.enableTriggerChange = true;
+		t.enableTriggerChange();
 
 	};
 
-	function _________CUSTOM_SETTING_TYPES__________(){}
+	/**
+	 * determine whether the change event trigger is disabled
+	 */
+	this.isTriggerChangeDisabled = function () {
+		return g_temp.enableTriggerChange === false;
+	};
 
+	/**
+	 * enable the change event trigger
+	 */
+	this.enableTriggerChange = function () {
+		g_temp.enableTriggerChange = true;
+	};
+
+	/**
+	 * disable the change event trigger
+	 */
+	this.disableTriggerChange = function () {
+		g_temp.enableTriggerChange = false;
+	};
+
+
+	function _________CUSTOM_SETTING_TYPES__________(){}
 
 	/**
 	 * get custom setting type, if empty setting name - returrn all types
@@ -1033,11 +1056,15 @@ function UniteSettingsUC(){
 			},
 			change: function (event) {
 				funcChange(event, objWrapper);
-			},
+			}
 		});
 
 		objInput.on("input", function () {
 			objSlider.slider("value", objInput.val());
+		});
+
+		setUnitsPickerChangeHandler(objWrapper, function () {
+			funcChange(null, objWrapper);
 		});
 	}
 
@@ -1053,9 +1080,9 @@ function UniteSettingsUC(){
 	}
 
 	/**
-	 * get range slider input value
+	 * get range slider value
 	 */
-	function getRangeSliderInputValue(objWrapper) {
+	function getRangeSliderValue(objWrapper) {
 		var data = {};
 
 		data["size"] = objWrapper.find(".unite-setting-range-input").val();
@@ -1065,9 +1092,9 @@ function UniteSettingsUC(){
 	}
 
 	/**
-	 * set range slider input value
+	 * set range slider value
 	 */
-	function setRangeSliderInputValue(objWrapper, value) {
+	function setRangeSliderValue(objWrapper, value) {
 		objWrapper.find(".unite-setting-range-input")
 			.val(value["size"])
 			.trigger("input");
@@ -1078,8 +1105,8 @@ function UniteSettingsUC(){
 	/**
 	 * clear range slider input data
 	 */
-	function clearRangeSliderInputValue(objWrapper, defaultValue) {
-		setRangeSliderInputValue(objWrapper, defaultValue);
+	function clearRangeSliderValue(objWrapper, defaultValue) {
+		setRangeSliderValue(objWrapper, defaultValue);
 	}
 
 
@@ -1103,7 +1130,7 @@ function UniteSettingsUC(){
 			closeOnSelect: isMultiple === false,
 			minimumResultsForSearch: 10,
 			templateResult: prepareTemplate,
-			templateSelection: prepareTemplate,
+			templateSelection: prepareTemplate
 		}, options);
 
 		objInput
@@ -1931,9 +1958,9 @@ function UniteSettingsUC(){
 			return(false);
 
 		var objSapElements = g_objParent.find(elementClass);
-		
+
 		objElements.not(objSapElements).addClass("unite-setting-hidden");
-		
+
 		objSapElements.removeClass("unite-setting-hidden");
 	}
 
@@ -2499,7 +2526,7 @@ function UniteSettingsUC(){
 
 				if (iconPos > containerHeight)
 					objContainer.scrollTop(iconPos - (containerHeight / 2 - 50));
-			},
+			}
 		});
 
 		// on filter input
@@ -2598,7 +2625,7 @@ function UniteSettingsUC(){
 		var params = {
 			name: name,
 			icons: arrIcons,
-			template: iconsTemplate,
+			template: iconsTemplate
 		};
 
 		if (optParams)
@@ -2655,7 +2682,7 @@ function UniteSettingsUC(){
 			var svgArray = [{
 				id: imageId,
 				url: imageUrl,
-				library: 'svg',
+				library: 'svg'
 			}];
 
 			return svgArray;
@@ -2715,6 +2742,10 @@ function UniteSettingsUC(){
 		});
 
 		initDimentions_updateLinkTitle(objLink);
+
+		setUnitsPickerChangeHandler(objWrapper, function () {
+			funcChange(null, objWrapper);
+		});
 	}
 
 	/**
@@ -2737,9 +2768,9 @@ function UniteSettingsUC(){
 	}
 
 	/**
-	 * get dimentions input value
+	 * get dimentions value
 	 */
-	function getDimentionsInputData(objWrapper) {
+	function getDimentionsValue(objWrapper) {
 		var data = {};
 
 		objWrapper.find(".unite-dimentions-field-input").each(function () {
@@ -2764,9 +2795,9 @@ function UniteSettingsUC(){
 	}
 
 	/**
-	 * set dimentions input value
+	 * set dimentions value
 	 */
-	function setDimentionsInputValue(objWrapper, value) {
+	function setDimentionsValue(objWrapper, value) {
 		objWrapper.find(".unite-dimentions-field-input").each(function () {
 			var objInput = jQuery(this);
 			var key = objInput.data("key");
@@ -2787,17 +2818,17 @@ function UniteSettingsUC(){
 	}
 
 	/**
-	 * clear dimentions input value
+	 * clear dimentions value
 	 */
-	function clearDimentionsInputValue(objWrapper, defaultValue) {
-		setDimentionsInputValue(objWrapper, defaultValue);
+	function clearDimentionsValue(objWrapper, defaultValue) {
+		setDimentionsValue(objWrapper, defaultValue);
 	}
 
 	/**
 	 * get dimentions selector css
 	 */
 	function getDimentionsSelectorCss(objWrapper, css){
-		var value = getDimentionsInputData(objWrapper);
+		var value = getDimentionsValue(objWrapper);
 
 		css = g_ucAdmin.replaceAll(css, "{{TOP}}", value.top + value.unit);
 		css = g_ucAdmin.replaceAll(css, "{{RIGHT}}", value.right + value.unit);
@@ -3109,178 +3140,169 @@ function UniteSettingsUC(){
 
 	}
 
-	function __________TYPOGRAPHY_PANEL__________(){}
+	function __________TYPOGRAPHY__________(){}
 
 	/**
-	 * clear typography dialog
+	 * init typography
 	 */
-	function clearTypography(objInput){
-
-		trace("clear typography");
-
-	}
-
-	/**
-	 * open typography dialog
-	 */
-	function onTypographyButtonClick(){
-
-		var objButton = jQuery(this);
-
-		var objInput = objButton.parents(".unite-settings-typography");
-
-		//show the dialog element
-
-		var objTypographyDialog = getTypographyDialog();
-
-		objInput.append(objTypographyDialog);
-
-		objTypographyDialog.show();
-
-		//set the settings
-
-	}
-
-
-	/**
-	 * on body click
-	 */
-	function onTypographyBodyClick(e) {
-		//dialog not opened - close
-		var objDialog = getTypographyDialog();
-
-		if (objDialog.is(":hidden"))
-			return;
-
-		//dialog opened, click on the button or the dialog - close
-		var objElement = jQuery(e.target);
-
-		if (objElement.hasClass("unite-button-typography") === true)
-			return;
-
-		var objParentDialog = objElement.parents(".uc-dialog-typgoraphy");
-
-		if (objParentDialog.length)
-			return;
-
-		//hide the dialog
-		objDialog.hide();
-
-		//apply the selectors
-		var objInput = objDialog.parents(".unite-settings-typography");
-
-		if (objInput.length === 0)
-			return;
-
-		trace("apply the dialog selectors");
-		trace("move the values");
-	}
-
-	/**
-	 * on typography selectors change
-	 */
-	function onTypgoraphySelectorsChange(){
+	function initTypography(objWrapper) {
+		
+		initTypographyDialog();
 
 		var objDialog = getTypographyDialog();
 
-		var objSettings = objDialog.data("settings");
+		// note: append dialog for fields initialization
+		objWrapper.append(objDialog);
 
-		var cssSelectors = objSettings.getSelectorsCss();
+		objWrapper.find(".unite-typography-button").on("click", function (event) {
+			event.stopPropagation();
 
-		trace(cssSelectors);
+			var containsDialog = objWrapper.find(objDialog).length === 1;
 
-		trace("selectors change");
+			if (containsDialog === true) {
+				objDialog.stop().slideToggle(g_vars.animationDuration);
+			} else {
+				objWrapper.append(objDialog);
 
+				objDialog.stop().slideDown(g_vars.animationDuration);
+			}
+
+			setTypographyDialogChangeHandler(function (value, css) {
+								
+				objWrapper.data("value", value).data("css", css);
+			});
+
+			setTypographyDialogValue(objWrapper.data("value"));
+		});
+
+		jQuery(document).on("click", function (event) {
+			if (objDialog.is(":hidden") === true)
+				return;
+
+			var objElement = jQuery(event.target);
+
+			if (objElement.closest(".unite-typography-dialog").length === 1)
+				return;
+
+			objDialog.stop().slideUp(g_vars.animationDuration);
+		});
 	}
 
 	/**
-	 * init the typography dialog
+	 * destroy typography
 	 */
-	function initTypographyDialog(){
-
-		var objDialog = getTypographyDialog();
-
-		if(objDialog.length == 0)
-			throw new Error("missing typography dialog");
-
-		var isInited = objDialog.data("is_inited");
-
-		if(isInited === true)
-			return(false);
-
-		//init settings
-
-		var objSettings = new UniteSettingsUC();
-
-		var objSettingsElement = objDialog.find(".unite-settings");
-
-		var options = {disable_exclude_selector: true};
-
-		objSettings.init(objSettingsElement, options);
-
-		objSettings.setEventOnSelectorsChange(onTypgoraphySelectorsChange);
-
-		objDialog.data("is_inited", true);
-		objDialog.data("settings", objSettings);
-
-		//init the body click event
-
-		jQuery("body:not(.unite-button-typography)").on('click', onTypographyBodyClick);
-
-
+	function destroyTypography() {
+		g_objWrapper.find(".unite-typography-button").off("click");
 	}
-
-
-	/**
-	 * get the dialog
-	 */
-	function getTypographyDialog(){
-
-		var objDialog = g_objWrapper.find('.uc-dialog-typgoraphy');
-
-		if(objDialog.length == 0)
-			throw new Error("typography dialog not found");
-
-
-		return(objDialog);
-	}
-
 
 	/**
 	 * init typography dialog
 	 */
-	function initTypography(objInput){
+	function initTypographyDialog() {
+		
+		var objDialog = getTypographyDialog();
 
-		initTypographyDialog();
+		if (objDialog.length === 0)
+			throw new Error("Missing typography dialog.");
 
-		var objButton = objInput.find('.unite-button-typography');
+		var isInited = objDialog.data("inited");
 
-		//open dialog
-		objButton.on('click', onTypographyButtonClick);
+		if (isInited === true)
+			return;
 
+		var objSettings = new UniteSettingsUC();
+		var objSettingsElement = objDialog.find(".unite-settings");
+		var options = { disable_exclude_selector: true };
+
+		objSettings.init(objSettingsElement, options);
+
+		objSettings.setEventOnSelectorsChange(function () {
+			var value = objSettings.getSettingsValues();
+			var css = objSettings.getSelectorsCss();
+			var onChange = objDialog.data("on_change");
+
+			if (typeof onChange === "function")
+				onChange(value, css);
+		});
+
+		objDialog.data("inited", true).data("settings", objSettings);
 	}
 
 	/**
-	 * get typography selectors css
+	 * get typography dialog
 	 */
-	function getTypographySelectorsCss(objInput){
-		var css = "";
-		var objDialog = getTypographyDialog();
-		var objSelectedValues = objDialog.find(':selected');
+	function getTypographyDialog() {
+		return g_objWrapper.find(".unite-typography-dialog");
+	}
 
-		objSelectedValues.each(function(){
-			var objSelected = jQuery(this);
-			var selectedIndex = objSelected.index();
+	/**
+	 * get typography dialog css
+	 */
+	function getTypographyDialogCss() {
+		var objSettings = getTypographyDialog().data("settings");
 
-			//if first option selected - ignore
-			if(selectedIndex === 0)
-				return;
+		return objSettings.getSelectorsCss();
+	}
 
-			var selectedValue = objSelected.val();
-			var selectedCssProperty = objSelected.parents('select').data('fieldname');
+	/**
+	 * set typography dialog value
+	 */
+	function setTypographyDialogValue(value) {
+		
+		var objSettings = getTypographyDialog().data("settings");
 
-			css += selectedCssProperty+':'+selectedValue+';';
-		});
+		objSettings.disableTriggerChange();
+		objSettings.setValues(value);
+		objSettings.enableTriggerChange();
+	}
+
+	/**
+	 * set typography dialog change handler
+	 */
+	function setTypographyDialogChangeHandler(handler) {
+		getTypographyDialog().data("on_change", handler);
+	}
+
+	/**
+	 * get typography value
+	 */
+	function getTypographyValue(objWrapper) {
+		return objWrapper.data("value") || {};
+	}
+
+	/**
+	 * set typography value
+	 */
+	function setTypographyValue(objWrapper, value) {
+		
+		value = value || {};
+
+		setTypographyDialogValue(value);
+
+		var css = getTypographyDialogCss();
+
+		objWrapper.data("value", value).data("css", css);
+
+		t.onSettingChange(null, objWrapper);
+	}
+
+	/**
+	 * clear typography value
+	 */
+	function clearTypographyValue(objWrapper, defaultValue) {
+		
+		setTypographyValue(objWrapper, defaultValue || {});
+		
+	}
+
+	/**
+	 * get typography selector css
+	 */
+	function getTypographySelectorCss(objWrapper, selector) {
+		
+		var css = objWrapper.data("css") || "";
+
+		css = g_ucAdmin.replaceAll(css, "{{SELECTOR}}", selector);
 
 		return css;
 	}
@@ -3312,188 +3334,6 @@ function UniteSettingsUC(){
 	}
 
 
-	/**
-	 * init fonts panel
-	 */
-	this.initFontsPanel = function(objFontsWrapper){
-
-		if(!objFontsWrapper)
-			var objFontsWrapper = g_objParent.find(".uc-setting-fonts-panel");
-
-		if(objFontsWrapper.length == 0)
-			return(false);
-
-		//if init without parent
-		if(!g_objParent)
-			g_objParent = objFontsWrapper.parent();
-
-
-		g_temp.objFontsPanel = objFontsWrapper.find(".uc-fontspanel");
-		if(g_temp.objFontsPanel.length == 0){
-			g_temp.objFontsPanel = null;
-			return(null);
-		}
-
-
-		//checkbox event
-		g_temp.objFontsPanel.find(".uc-fontspanel-toggle").on("click",function(){
-
-			var objCheck = jQuery(this);
-			var sectionID = objCheck.data("target");
-			var objSection = jQuery("#" + sectionID);
-			g_ucAdmin.validateDomElement(objSection, "fonts panel section");
-
-			if(objCheck.prop("checked") === true){
-				objSection.show();
-			}else{
-				objSection.hide();
-			}
-		});
-
-		//init inputs
-		var objInputs = g_temp.objFontsPanel.find("input, select");
-		jQuery.each(objInputs, function(index, input){
-			var objInput = jQuery(input);
-
-			initInputEvents(objInput, onFontPanelInputChange);
-		});
-
-		return(g_temp.objFontsPanel);
-	};
-
-
-	/**
-	 * get fonts panel data
-	 */
-	this.getFontsPanelData = function(){
-
-		if(!g_temp.objFontsPanel)
-			return(null);
-
-		var objData = {};
-		var objCheckboxes = g_temp.objFontsPanel.find(".uc-fontspanel-toggle");
-		jQuery.each(objCheckboxes, function(index, checkbox){
-
-			var objCheckbox = jQuery(checkbox);
-
-			if(objCheckbox.prop("checked") === false)
-				return(true);
-
-			var sectionID = objCheckbox.data("target");
-			var sectionName = objCheckbox.data("sectionname");
-
-			var objSection = jQuery("#" + sectionID);
-			g_ucAdmin.validateDomElement(objSection, "fonts panel section "+sectionID);
-
-			//get fields values
-			var objFields = objSection.find(".uc-fontspanel-field");
-
-			var fieldsValues = {};
-			jQuery.each(objFields, function(index, field){
-
-				var objField = jQuery(field);
-
-				var fieldName = objField.data("fieldname");
-				var value = objField.val();
-
-				if(jQuery.trim(value) == "")
-					return(true);
-
-				fieldsValues[fieldName] = value;
-
-			});
-
-			if(jQuery.isEmptyObject(fieldsValues) == false)
-				objData[sectionName] = fieldsValues;
-
-		});
-
-		return(objData);
-	};
-
-
-	/**
-	 * set fonts panel data
-	 */
-	function setFontPanelData(objInput, arrData){
-
-		clearFontsPanelData(objInput);
-
-		jQuery.each(arrData, function(sectionName, objFields){
-
-			//check toggle
-			var objToggle = objInput.find(".uc-fontspanel-toggle-"+sectionName);
-			if(objToggle.length == 0)
-				return(true);
-
-			objToggle.prop("checked", true);
-
-			//open section
-			var sectionID = objToggle.data("target");
-
-			var objSection = jQuery("#"+sectionID);
-
-			g_ucAdmin.validateDomElement(objSection, "section: "+sectionID);
-
-			objSection.show();
-
-			//go through the section fields
-			jQuery.each(objFields, function(fieldName, fieldValue){
-
-				var objInput = objSection.find(".uc-fontspanel-field[data-fieldname="+fieldName+"]");
-
-				if(!objInput || objInput.length == 0){
-
-					if(fieldName == "mobile-size")
-						return(true);
-
-					throw new Error("field not found: "+fieldName);
-				}
-
-				setInputValue(objInput, fieldValue);
-
-			});
-
-		});
-
-	}
-
-
-	/**
-	 * clear data
-	 */
-	function clearFontsPanelData(objInput){
-
-		//uncheck toggles
-		var objToggles = objInput.find(".uc-fontspanel-toggle");
-
-		objToggles.prop("checked", false);
-
-		//hide fields
-		var objSections = objInput.find(".uc-fontspanel-section");
-		objSections.hide();
-
-		//clear inputs
-		var objInputs = objSections.find("input.uc-fontspanel-field");
-		objInputs.val("");
-
-	}
-
-
-	/**
-	 * destroy fonts panel
-	 */
-	function destroyFontsPanel(){
-
-		if(!g_temp.objFontsPanel)
-			return(false);
-
-		g_temp.objFontsPanel.find(".uc-fontspanel-toggle").off("click");
-		g_temp.objFontsPanel = null;
-
-	}
-
-
 	function _______REPEATERS_____(){}
 
 	/**
@@ -3519,7 +3359,7 @@ function UniteSettingsUC(){
 			axis: "y",
 			update: function () {
 				t.onSettingChange(null, objWrapper);
-			},
+			}
 		});
 
 		objWrapper.on("click", ".unite-repeater-add", addRepeaterItem);
@@ -3911,34 +3751,30 @@ function UniteSettingsUC(){
 	 * @TODO: implement the hide/show, enabled/disables functionality
 	 */
 	function onControlSettingChange(event, input){
-				
-		var debugControls = true;
+
+		var debugControls = false;
 
 		if(!input)
 			input = this;
 
 		var objInput = jQuery(input);
 		var controlID = input.name;
-		
+
 		if(!controlID)
 			controlID = objInput.data("name");
 
 		if(!controlID)
 			return(true);
-		
+
 		var controlValue = getSettingInputValue(objInput);
 
-		trace(g_arrControls);
-		trace(controlID);
-		
 		if(!g_arrControls[controlID])
 			return(true);
-		
-		
+
 		g_temp.cacheValues = null;
 
 		var arrChildControls = g_arrControls[controlID];
-		
+
 		if(debugControls == true){
 			trace("controls change");
 			trace("parent value: " + controlValue)
@@ -3995,9 +3831,9 @@ function UniteSettingsUC(){
 			var inputTagName = "";
 			if(objChildInput && objChildInput.length)
 				inputTagName = objChildInput.get(0).tagName;
-			
+
 			var isChildRadio = (inputTagName == "SPAN" && objChildInput.length && objChildInput.hasClass("radio_wrapper"));
-			
+
 			switch(objControl.type){
 				case "enable":
 				case "disable":
@@ -4044,7 +3880,7 @@ function UniteSettingsUC(){
 				break;
 				case "show":
 				case "hide":
-					
+
 					if(action == "show")
 						objChildRow.removeClass("unite-setting-hidden");
 					else
@@ -4060,14 +3896,9 @@ function UniteSettingsUC(){
 	/**
 	 * apply controls if available
 	 */
-	function applyControls(){
-
-		if(!g_objParent)
-			return(false);
-
-		g_objParent.find("select:not(.unite-responsive-picker, .unite-units-picker)").trigger("change");
-		g_objParent.find("input[type='radio']:checked").trigger("click");
-
+	function applyControls(objInputs){
+		objInputs.filter("select").trigger("change");
+		objInputs.filter("input[type='radio']:checked").trigger("click");
 	}
 
 
@@ -4096,7 +3927,7 @@ function UniteSettingsUC(){
 			});
 
 			initSelect2(objPicker, {
-				dropdownParent: objPicker.parent(),
+				dropdownParent: objPicker.parent()
 			});
 		});
 	}
@@ -4115,11 +3946,20 @@ function UniteSettingsUC(){
 	 * init units picker
 	 */
 	function initUnitsPicker() {
+		
 		g_objWrapper.find(".unite-units-picker").each(function () {
 			var objPicker = jQuery(this);
 
 			initSelect2(objPicker, {
-				dropdownParent: objPicker.parent(),
+				dropdownParent: objPicker.parent()
+			});
+
+			objPicker.on("change", function () {
+				var value = objPicker.val();
+				var onChange = objPicker.data("on_change");
+
+				if (typeof onChange === "function")
+					onChange(value);
 			});
 		});
 	}
@@ -4145,27 +3985,81 @@ function UniteSettingsUC(){
 		getUnitsPickerForElement(objElement).val(value).trigger("change.select2");
 	}
 
+	/**
+	 * set units picker change handler
+	 */
+	function setUnitsPickerChangeHandler(objElement, handler) {
+		getUnitsPickerForElement(objElement).data("on_change", handler);
+	}
+
 
 	function _________SELECTORS__________(){}
 
 	/**
+	 * get selectors css includes if exists
+	 */
+	this.getSelectorsIncludes = function(){
+		
+		var objInputs = getObjInputs();
+		var objOutputIncludes = {};
+
+		jQuery.each(objInputs, function () {
+			
+			var objInput = jQuery(this);
+			var objIncludes = getInputSelectorIncludes(objInput);
+			
+			if(!objIncludes || objIncludes.length == 0)
+				return(true);
+			
+			jQuery.extend(objOutputIncludes, objIncludes);
+			
+		});
+		
+		return(objOutputIncludes);
+	}
+	
+	/**
+	 * get css include for selector if exists
+	 */
+	function getInputSelectorIncludes(objInput){
+		
+		//@TODO: Dima - finish please this function
+		//the fonts are here: 
+		
+		var outputExample = {};
+		
+		var handle = "uc_google_font_"+"abril_fatface";		//important - this handle should be identical to php generated
+		
+		var objInlcude = {};
+		objInlcude["type"] = "css";
+		objInlcude["handle"] = handle;	
+		objInlcude["url"] = "https://fonts.googleapis.com/css?family=Abril+Fatface";
+		
+		outputExample[handle] = objInlcude;
+		
+		return(outputExample);
+	}
+	
+	
+	/**
 	 * get selectors css
 	 */
 	this.getSelectorsCss = function () {
+		
 		var objInputs = getObjInputs();
 		var css = "";
 
 		jQuery.each(objInputs, function () {
 			var objInput = jQuery(this);
 			var inputCss = getInputSelectorCss(objInput);
-
+			
 			if (inputCss)
 				css += inputCss + "\n";
 		});
 
 		return css;
 	}
-
+	
 	/**
 	 * check if the input has selector
 	 */
@@ -4182,6 +4076,7 @@ function UniteSettingsUC(){
 	 * get input selector css
 	 */
 	function getInputSelectorCss(objInput) {
+		
 		var selectors = objInput.data("selectors");
 
 		if (!selectors)
@@ -4206,23 +4101,28 @@ function UniteSettingsUC(){
 		var type = getInputType(objInput);
 		var value = getSettingInputValue(objInput);
 		var unit = "px";
+		var size;
 
 		switch (type) {
 			case "dimentions":
 				selectorCss = getDimentionsSelectorCss(objInput, selectorCss);
 			break;
 			case "range":
-				unit = value["unit"];
-				value = value["size"];
+				size = value.size;
+				unit = value.unit;
+				value = size + unit;
 			break;
 			case "typography":
-				selectorCss = getTypographySelectorsCss(objInput);
+				selectorCss = getTypographySelectorCss(objInput, selector);
+				
+				
+				
 			break;
 		}
 
 		if (typeof value === "string" || typeof value === "number") {
 			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{VALUE}}", value);
-			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{SIZE}}", value);
+			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{SIZE}}", size || value);
 			selectorCss = g_ucAdmin.replaceAll(selectorCss, "{{UNIT}}", unit);
 		}
 
@@ -4230,6 +4130,13 @@ function UniteSettingsUC(){
 			return;
 
 		var css = selector + "{" + selectorCss + "}";
+
+		switch (type) {
+			case "typography":
+				css = selectorCss;
+			break;
+		}
+
 		var device = getResponsivePickerValue(objInput);
 
 		switch (device) {
@@ -4326,9 +4233,7 @@ function UniteSettingsUC(){
 	 * run on setting change
 	 */
 	this.onSettingChange = function(event, objInput, isInstantChange){
-
-
-		if(g_temp.enableTriggerChange == false)
+		if(t.isTriggerChangeDisabled() === true)
 			return(true);
 
 		var dataOldValue = "unite_setting_oldvalue";
@@ -4479,7 +4384,7 @@ function UniteSettingsUC(){
 		if(!funcChange)
 			funcChange = t.onSettingChange;
 
-		if(g_temp.enableTriggerChange == false)
+		if(t.isTriggerChangeDisabled() === true)
 			return(true);
 
 		//run instant
@@ -4515,6 +4420,9 @@ function UniteSettingsUC(){
 			case "range":
 				initRangeSlider(objInput, funcChange);
 			break;
+			case "typography":
+				initTypography(objInput);
+			break;
 			case "addon":
 				initAddonPicker(objInput);
 			break;
@@ -4532,9 +4440,6 @@ function UniteSettingsUC(){
 			break;
 			case "gallery":
 				initGallery(objInput);
-			break;
-			case "typography":
-				initTypography(objInput);
 			break;
 			case "link":
 				initAddFieldsEvents(objInput);
@@ -4647,7 +4552,7 @@ function UniteSettingsUC(){
 
 		if(typeof objOptions != "object")
 			throw new Error("The options should be an object");
-
+		
 		g_objWrapper.removeAttr("data-options");
 
 		var arrOptions = ["show_saps","saps_type","id_prefix"];
@@ -4660,10 +4565,10 @@ function UniteSettingsUC(){
 			delete objOptions[optionKey];
 
 		});
-
+				
 		//merge with other options
 		jQuery.extend(g_options, objOptions);
-
+		
 		if(g_options["id_prefix"])
 			g_IDPrefix = "#"+g_options["id_prefix"];
 
@@ -4763,15 +4668,14 @@ function UniteSettingsUC(){
 			g_objParent.find(".uc-setting-items-panel-button").off("click");
 		}
 
-		if(g_temp.objFontsPanel)
-			destroyFontsPanel();
 
 		if(g_temp.isRepeaterExists)
 			destroyRepeaters();
 
-		destroyRangeSlider();
-		destroyIconPickers();
 		destroyDimentions();
+		destroyIconPickers();
+		destroyRangeSlider();
+		destroyTypography();
 
 		//destroy custom setting types
 		var objCustomTypes = getCustomSettingType();
@@ -4907,10 +4811,9 @@ function UniteSettingsUC(){
 		if(g_objWrapper)
 			g_temp.settingsID = g_objWrapper.prop("id");
 
-		g_temp.enableTriggerChange = false;
-
 		g_temp.disableExcludeSelector =	g_ucAdmin.getVal(options, "disable_exclude_selector");
 
+		t.disableTriggerChange();
 
 		validateInited();
 
@@ -4928,8 +4831,6 @@ function UniteSettingsUC(){
 
 		initUnitsPicker();
 
-		t.initFontsPanel();
-
 		initGlobalEvents();
 
 		t.updateEvents();
@@ -4942,7 +4843,7 @@ function UniteSettingsUC(){
 
 		g_temp.isInited = true;
 
-		g_temp.enableTriggerChange = true;
+		t.enableTriggerChange();
 
 	};
 

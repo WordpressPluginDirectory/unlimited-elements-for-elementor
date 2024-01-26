@@ -937,6 +937,29 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 						default:
 							UniteFunctionsUC::throwError("Param \"$type\" subtype \"$subtype\" is not implemented.");
 					}
+				case UniteCreatorDialogParam::PARAM_TYPOGRAPHY:
+					switch($subtype){
+						case "family":
+							return "font-family:{{VALUE}};";
+						case "size":
+							return "font-size:{{VALUE}};";
+						case "style":
+							return "font-style:{{VALUE}};";
+						case "weight":
+							return "font-weight:{{VALUE}};";
+						case "decoration":
+							return "text-decoration:{{VALUE}};";
+						case "transform":
+							return "text-transform:{{VALUE}};";
+						case "line-height":
+							return "line-height:{{VALUE}};";
+						case "letter-spacing":
+							return "letter-spacing:{{VALUE}};";
+						case "word-spacing":
+							return "word-spacing:{{VALUE}};";
+						default:
+							UniteFunctionsUC::throwError("Param \"$type\" subtype \"$subtype\" is not implemented.");
+					}
 				case UniteCreatorDialogParam::PARAM_PADDING:
 					return "padding-top:{{TOP}};padding-right:{{RIGHT}};padding-bottom:{{BOTTOM}};padding-left:{{LEFT}};";
 				case UniteCreatorDialogParam::PARAM_MARGINS:
@@ -946,6 +969,14 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				default:
 					UniteFunctionsUC::throwError("Param \"$type\" is not implemented.");
 			}
+		}
+
+		/**
+		 * get google font url
+		 */
+		public static function getGoogleFontUrl($family){
+
+			return "https://fonts.googleapis.com/css?display=swap&family=" . $family;
 		}
 
 		/**

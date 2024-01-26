@@ -157,7 +157,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		//-----------------------------------------------------------------------------------------------
 		// add the section value to the setting
 		private function checkAndAddSap($setting){
-
+			
 			$setting["sap"] = $this->currentSapKey;
 
 			return($setting);

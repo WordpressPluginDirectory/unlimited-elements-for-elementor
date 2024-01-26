@@ -384,13 +384,43 @@ class UCChangelogView extends WP_List_Table{
 		return $result;
 	}
 
+	
+	/**
+	 * sort export items
+	 */
+	public function sortExportItems($item1, $item2){
+				
+		$arrNumbers = array(
+			"feature"=>1,
+			"change"=>2,
+			"fix"=>3,
+			"other"=>4
+		);
+		
+		$type1 = UniteFunctionsUC::getVal($item1, "type");
+		$type2 = UniteFunctionsUC::getVal($item2, "type");
+		
+		$num1 = UniteFunctionsUC::getVal($arrNumbers, $type1, 4);
+		$num2 = UniteFunctionsUC::getVal($arrNumbers, $type2, 4);
+		
+		if($num1 == $num2)
+			return(0);
+			
+		if($num1 > $num2)
+			return(1);
+			
+		return(-1);
+		
+	}
+	
+	
 	/**
 	 * Process the export action.
 	 *
 	 * @return void
 	 */
 	private function processExportAction(){
-	
+
 		global $wpdb;
 
 		$filters = $this->getFilters();
@@ -407,22 +437,22 @@ class UCChangelogView extends WP_List_Table{
 
 		$lines = array();
 
+		usort($items, array($this,"sortExportItems"));
+				
 		foreach($items as $item){
-			
-			$addonVersion = UniteFunctionsUC::getVal($item, "addon_version");
-			
 			$title = $item["addon_title"];
-			
-			if(!empty($addonVersion))
-				$title .= " ({$addonVersion})";
-			
-			$lines[] = implode(" - ", array(
-				$item["type_title"],
-				$title,
-				$item["text"],
-			));
-		}
 
+			if(empty($item["addon_version"]) === false)
+				$title .= " ({$item["addon_version"]})";
+			
+			$type = $item["type_title"];
+			$text = $item["text"];
+			 
+			$line = "* {$type}: {$title} - {$text}";
+			
+			$lines[] = $line;
+		}
+				
 		$filename = "changelog-" . current_time("mysql") . ".txt";
 		$content = implode("\n", $lines);
 

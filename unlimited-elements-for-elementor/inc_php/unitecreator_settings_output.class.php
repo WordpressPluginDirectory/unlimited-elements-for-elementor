@@ -391,7 +391,7 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 		}
 
 		$error = UniteFunctionsUC::getGetVar("google_connect_error", $error, UniteFunctionsUC::SANITIZE_NOTHING);
-
+		
 		if(empty($accessToken) === false){
 			?>
 			<div class="uc-google-connect-message">
@@ -415,6 +415,9 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 		}
 
 		if(empty($error) === false){
+			
+			$error = esc_html($error);
+			
 			?>
 			<div class="uc-google-connect-error">
 				<?php echo sprintf(__("Error: %s", "unlimited-elements-for-elementor"), $error); ?>
@@ -483,9 +486,9 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 	 * @param $setting
 	 */
 	protected function drawImageAddonInput($setting){
-		
+
 		$previewStyle = "";
-		
+
 		$value = UniteFunctionsUC::getVal($setting, "value");
 
 		$urlBase = UniteFunctionsUC::getVal($setting, "url_base");
@@ -500,17 +503,15 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 		$urlImage = "";
 
 		if(!empty($value)){
-			
 			$urlFull = $urlBase . $value;
-			
+
 			$urlImage = $urlFull;
-			
+
 			$previewStyle = "";
 			
 			$urlThumb = $value;		//maybe change
 			
 			$urlThumbFull = HelperUC::URLtoFull($urlThumb);
-			
 			if(!empty($previewStyle))
 				$previewStyle .= ";";
 
@@ -632,7 +633,7 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 	 * override setting
 	 */
 	protected function drawImageInput($setting){
-		
+
 		//add source param
 		$source = UniteFunctionsUC::getVal($setting, "source");
 		if($source == "addon")
@@ -845,7 +846,7 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 	 */
 	private function getFontsPanelHtmlFields($arrParams, $arrFontsData, $addTemplate = false){
 
-		$arrData = HelperUC::getFontPanelData($addTemplate);
+		$arrData = HelperUC::getFontPanelData();
 
 		if($addTemplate == true)
 			$arrFontsTemplate = UniteCreatorPageBuilder::getPageFontNames(true);
@@ -912,12 +913,9 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 				$selectFontTemplate = HelperHtmlUC::getHTMLSelect($arrFontsTemplate, $fontTemplate, "data-fieldname='template' class='{$classInput}'", true, "not_chosen", esc_html__("---- Select Page Font----", "unlimited-elements-for-elementor"));
 
 			$selectFontFamily = HelperHtmlUC::getHTMLSelect($arrData["arrFontFamily"], $fontFamily, "data-fieldname='font-family' class='{$classInput}'", true, "not_chosen", esc_html__("Select Font Family", "unlimited-elements-for-elementor"));
-
 			$selectFontWeight = HelperHtmlUC::getHTMLSelect($arrData["arrFontWeight"], $fontWeight, "data-fieldname='font-weight' class='{$classInput}'", false, "not_chosen", esc_html__("Select", "unlimited-elements-for-elementor"));
-
 			$selectLineHeight = HelperHtmlUC::getHTMLSelect($arrData["arrLineHeight"], $lineHeight, "data-fieldname='line-height' class='{$classInput}'", false, "not_chosen", esc_html__("Select", "unlimited-elements-for-elementor"));
 			$selectTextDecoration = HelperHtmlUC::getHTMLSelect($arrData["arrTextDecoration"], $textDecoration, "data-fieldname='text-decoration' class='{$classInput}'", false, "not_chosen", esc_html__("Select Text Decoration", "unlimited-elements-for-elementor"));
-
 			$selectFontStyle = HelperHtmlUC::getHTMLSelect($arrData["arrFontStyle"], $fontStyle, "data-fieldname='font-style' class='{$classInput}'", false, "not_chosen", esc_html__("Select", "unlimited-elements-for-elementor"));
 
 			$classSection = "uc-fontspanel-details";
@@ -1074,12 +1072,12 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 			$arrFontFamily = array();
 			$arrTabletSize = array();
 		}else{
-			$arrFontStyle = UniteFunctionsUC::arrayToAssoc($arrData["arrFontStyle"]);
-			$arrFontWeight = UniteFunctionsUC::arrayToAssoc($arrData["arrFontWeight"]);
+			$arrFontStyle = $arrData["arrFontStyle"];
+			$arrFontWeight = $arrData["arrFontWeight"];
 			$arrFontSize = UniteFunctionsUC::arrayToAssoc($arrData["arrFontSize"]);
 			$arrMobileSize = UniteFunctionsUC::arrayToAssoc($arrData["arrMobileSize"]);
 			$arrLineHeight = UniteFunctionsUC::arrayToAssoc($arrData["arrLineHeight"]);
-			$arrTextDecoration = UniteFunctionsUC::arrayToAssoc($arrData["arrTextDecoration"]);
+			$arrTextDecoration = $arrData["arrTextDecoration"];
 
 			$arrFontFamily = UniteFunctionsUC::addArrFirstValue($arrData["arrFontFamily"], "[Select Font Family]", $valueNotChosen);
 			$arrFontStyle = UniteFunctionsUC::addArrFirstValue($arrFontStyle, "[Select Style]", $valueNotChosen);

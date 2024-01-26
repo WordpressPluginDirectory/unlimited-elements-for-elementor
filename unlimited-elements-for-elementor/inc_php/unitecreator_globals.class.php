@@ -200,7 +200,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(defined("UC_DEBUG_AJAX_ERRORS") && UC_DEBUG_AJAX_ERRORS === true)
 				self::$debugAjaxErrors = true;
-
+			
 			UniteProviderFunctionsUC::initGlobalsBase();
 
 			self::$current_protocol = "http://";
@@ -289,7 +289,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * //check if active only if in admin side
 		 */
 		public static function initAfterIncludes(){
-
+			
 			$product = HelperUC::getProductFromRequest();
 			if(empty($product))
 				$product = self::PLUGIN_NAME;
@@ -308,7 +308,14 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				GlobalsUC::$SHOW_TRACE_FRONT = true;
 				GlobalsUC::$SHOW_TRACE = true;
 			}
-
+			
+			//show errors by url
+			
+			$showAjaxErrors = HelperUC::hasPermissionsFromQuery("showajaxerrors");
+			
+			if($showAjaxErrors == true)	
+				self::$debugAjaxErrors = true;
+			
 		}
 
 

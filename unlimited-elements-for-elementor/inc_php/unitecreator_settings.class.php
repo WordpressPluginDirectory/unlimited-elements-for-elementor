@@ -1562,7 +1562,7 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			$this->addSap($title, $catID, $tab);
 
 			//handle sap conditions
-			
+
 			$sapParams["name"] = $catID;
 			$this->addByCreatorParam_handleConditions($sapParams, true);
 

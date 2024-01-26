@@ -51,7 +51,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * Enter description here ...
 		 */
 		public static function validatePluginStartup(){
-			
+
 			if(function_exists("simplexml_load_file") == false)
 				UniteFunctionsUC::throwError("Your php missing SimpleXML Extension. The plugin can't work without this extension because it has many xml files to load. Please enable this extension in php.ini");
 
@@ -112,11 +112,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(!empty(self::$arrFontPanelData))
 				return(self::$arrFontPanelData);
-
-			require GlobalsUC::$pathSettings."font_panel_data.php";
-
-			self::$arrFontPanelData = $arrData;
-
+			
+			self::$arrFontPanelData = require GlobalsUC::$pathSettings."font_panel_data.php";
+			
 			return(self::$arrFontPanelData);
 		}
 
@@ -736,8 +734,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	public static function pathToFullUrl($path){
 
 		if(empty($path))
-			return("");
-		
+			return ("");
+
 		$url = self::pathToRelativeUrl($path);
 
 		$url = self::URLtoFull($url);
@@ -1358,7 +1356,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$handle = GlobalsUC::PLUGIN_NAME . "-" . $scriptName;
 
 		$url = GlobalsUC::$urlPlugin . $folder . "/" . $scriptName . ".js";
-				
+
 		UniteProviderFunctionsUC::addScript($handle, $url, $inFooter);
 	}
 

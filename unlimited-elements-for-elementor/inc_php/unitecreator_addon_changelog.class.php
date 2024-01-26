@@ -70,31 +70,29 @@ class UniteCreatorAddonChangelog{
 	 *
 	 * @param int $addonId
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function getAddonVersion($addonId){
-		
+
 		try{
 			$addon = new UniteCreatorAddon();
 			$addon->initByID($addonId);
-			
+
 			$options = $addon->getOptions();
-			
-			if(isset($options["is_free_addon"]) == false)
-				return(null);
-			
+
+			if(isset($options["is_free_addon"]) === false)
+				return null;
+
 			$isFree = UniteFunctionsUC::getVal($options, "is_free_addon");
-			
 			$isFree = UniteFunctionsUC::strToBool($isFree);
-						
+
+			if($isFree === true)
+				return __("Free", "unlimited-elements-for-elementor");
+
+			return __("Pro", "unlimited-elements-for-elementor");
 		}catch(Exception $exception){
 			return null;
 		}
-
-		if($isFree === true)
-			return __("Free", "unlimited-elements-for-elementor");
-		
-		return __("Pro", "unlimited-elements-for-elementor");
 	}
 
 	/**
@@ -206,7 +204,7 @@ class UniteCreatorAddonChangelog{
 	public function updateChangelog($id, $data){
 
 		$result = UniteFunctionsWPUC::processDBTransaction(function() use ($id, $data){
-		
+
 			global $wpdb;
 
 			$ids = is_array($id) ? $id : array($id);

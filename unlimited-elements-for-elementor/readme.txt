@@ -1236,6 +1236,43 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+
+version 1.5.94: 2024-01-25:
+
+* Feature: added option to message individual fields for the form
+* Change: removed instagram blocked api message - the instagram functionality is active now!
+* Change: added default values to currency fields
+* Fix: fixed small php bug regarding date field in items
+* Fix: fixed some small xss vulnurability that pachstack discovered
+
+* Feature: Number Field (Pro) - Introduced 'Enable Date Field in Formula' option. This new functionality enables the use of Date Field in formula by allowing the addition or subtraction of days.
+* Feature: Unlimited Charts (Pro) - Introduced 'Remove Items with 0 Value' option. This new functionality automatically excludes items with a value of 0 from charts.
+* Feature: WordPress Menu (Free) - Implemented 'Hover Effect' option. This new functionality allows users to choose from a variety of hover link effects, enhancing the visual presentation with dynamic animations.
+* Feature: Hotspots (Pro) - Introduced customizable popup positioning, providing users with the option to define the exact position rather than relying on preset center alignment.
+* Feature: Event List (Pro) - Introduced 'Event End Date' option, allowing users to display event end date and time.
+* Feature: Event List (Pro) - Implemented 'Calendar Horizontal Align' option. This new functionality allows users to customize the horizontal alignment of the calendar, providing better control over its placement within the layout.
+* Feature: Product Carousel (Pro) - Introduced functionality to hide navigation arrows automatically when the number of products is less than a specified value.
+* Feature: Dropdown Field (Pro) - Introduced 'Multisource' option. This functionality allows users to select the source of checkbox values as posts, products, etc., providing versatile options for integrating diverse content.
+* Feature: Checkbox Field (Pro) - Introduced 'Multisource' option. This functionality allows users to select the source of checkbox values as posts, products, etc., providing versatile options for integrating diverse content.
+* Feature: Checkbox Field (Pro) - Implemented 'Checkbox Value Handling' options. This new functionality allows users to choose the checkbox value type from options such as sum, individual number, or individual text, providing flexibility in handling checkbox values.
+* Feature: Masonry Gallery (Pro) - Introduced 'Title Typography' and 'Description Typography' options. These new functionalities allow users to customize the typography settings for titles and descriptions.
+* Feature: Masonry Gallery (Pro) - Implemented 'Tile Background Color' option. This new functionality allows users to customize the background color of tiles, providing enhanced visual control over the widget's appearance.
+* Feature: Hotspots (Pro) - Added 'Popup Image Size' option, allowing users to customize the size of popup images.
+* Feature: WooCommerce Product Carousel (Pro) - Introduced functionality to hide navigation arrows automatically when the number of products is less than a specified value.
+* Feature: Logo Carousel (Pro) - Implemented 'Open Links In New Tab' option. This new functionality allows users to specify whether links should open in a new tab with Source type posts, products, etc.
+* Feature: Content Ticker (Pro) - Added Option to add an Image for each ticker item.
+* Change: Hotspots (Pro) - Enabled 'Image Size Select' option for the Image, allowing users to choose from different image resolutions for enhanced flexibility and visual customization.
+* Change: Icon Carousel (Pro) - Improved 'Item Minimum Height' option by expanding the range of values.
+* Fix: Fullscreen Menu (Free) - Improved protection from Elementor sticky section interference.
+* Fix: vCard (Pro) - Issue with QR code not displaying when 'Include Image in Contact' is enabled has been resolved.
+* Fix: Dropdown Field (Pro) - Resolved issue with 'Field Name' not appearing during email sending. The fix ensures that the field name is now properly displayed in email notifications.
+* Fix: Mega Menu (Pro) - Resolved horizontal scroll issue. The fix ensures that the layout no longer experiences unintended horizontal scrolling, providing a more stable and user-friendly experience.
+* Fix: Scroll To Top (Free) - Resolved issue where the icon wasn't visible on the frontend. The fix ensures proper visibility of the icon, addressing the bug and improving the overall appearance.
+* Fix: Fullscreen Menu (Free) - Resolved issue with the 'Disable Page Scroll' option not working in some cases. The fix ensures consistent functionality, preventing page scrolling as intended.
+* Fix: Text Field (Free) - Resolved input width issue. The fix ensures that input elements now display with the correct width.
+
+
+
 version 1.5.93: 2024-01-18:
 
 * Feature: Introduced the option 'slider_video_autoplay' to galleries, enabling video autoplay when changing items.

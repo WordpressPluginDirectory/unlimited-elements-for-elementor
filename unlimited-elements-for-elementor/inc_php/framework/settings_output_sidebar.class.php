@@ -153,6 +153,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 
 			$baseClass = "unite-setting-row";
 
+			$type = UniteFunctionsUC::getVal($setting, "type");
 			$text = UniteFunctionsUC::getVal($setting, "text");
 			$description = UniteFunctionsUC::getVal($setting, "description");
 
@@ -163,7 +164,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 				$toDrawText = false;
 
 			$settingID = $setting["id"];
-			
+
 			$labelBlock = UniteFunctionsUC::getVal($setting, "label_block");
 			$labelBlock = UniteFunctionsUC::strToBool($labelBlock);
 
@@ -191,7 +192,12 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 			$rowClass = $this->drawSettingRow_getRowClass($setting, $baseClass);
 
 			?>
-			<li id="<?php echo esc_attr($settingID); ?>_row" <?php echo $addAttr; ?> <?php echo UniteProviderFunctionsUC::escAddParam($rowClass); ?>>
+			<li
+				id="<?php esc_attr_e($settingID); ?>_row"
+				<?php echo UniteProviderFunctionsUC::escAddParam($rowClass); ?>
+				<?php echo UniteProviderFunctionsUC::escAddParam($addAttr); ?>
+				data-type="<?php esc_attr_e($type); ?>"
+			>
 
 				<div class="unite-setting-field">
 
@@ -251,7 +257,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
              $rowClass = $this->drawSettingRow_getRowClass($setting);
 
              $classAdd = UniteFunctionsUC::getVal($setting, UniteSettingsUC::PARAM_CLASSADD);
-			
+
              if(!empty($classHidden))
 				$classAdd .= $classHidden;
 
@@ -327,9 +333,11 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 				
 				$name = UniteFunctionsUC::getVal($sap, "name");
 				
+				//generate name if missing
 				if(empty($name))
-					UniteFunctionsUC::throwError("drawSapBefore function: Missing Sap name!");
-
+					$name = "unnamed_".UniteFunctionsUC::getRandomString();
+				
+				
 				$sapID = $this->idPrefix."ucsap_{$name}";
 				
 			?>
@@ -378,7 +386,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
              $rowClass = $this->drawSettingRow_getRowClass($setting);
 
              $settingID = $setting["id"];
-			
+
 			?>
     			  	<li id="<?php echo esc_attr($settingID)?>_row" <?php echo UniteProviderFunctionsUC::escAddParam($rowClass)?>>
 

@@ -1,6 +1,15 @@
 
 
 
+version 1.5.94:
+
+* Feature: added option to message individual fields for the form
+* Change: removed instagram blocked api message - the instagram functionality is active now!
+* Change: added default values to currency fields
+* bug fix: fixed small php bug regarding date field in items
+* bug fix: fixed some small xss vulnurability that pachstack discovered
+
+
 version 1.5.93:
 
 * Change: updated freemius version
