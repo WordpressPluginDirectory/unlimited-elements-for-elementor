@@ -16,6 +16,10 @@ class UniteCreatorElementorControls{
 	 */
 	private function getRepeaterDefaultItems($objAddon){
     	
+		if(GlobalsUnlimitedElements::$isImporting == true)
+			return(array());
+		
+		
 		$arrItems = array();
 		
 		$urlImages = GlobalsUC::$urlPluginImages;

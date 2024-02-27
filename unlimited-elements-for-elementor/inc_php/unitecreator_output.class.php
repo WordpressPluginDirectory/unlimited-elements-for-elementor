@@ -1750,18 +1750,25 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * place output by shortcode
 	 */
 	public function getHtmlBody($scriptHardCoded = true, $putCssIncludes = false, $putCssInline = true, $params = null){
-
+		
 		$this->validateInited();
 
+		
+		//render the js inside "template" tag always if available
+		
+		if(GlobalsProviderUC::$renderJSForHiddenContent == true)
+			$scriptHardCoded = true;
+			
+		
 		$title = $this->addon->getTitle(true);
-
+				
 		$isOutputComments = HelperProviderCoreUC_EL::getGeneralSetting("output_wrapping_comments");
 
 		$settings = HelperProviderCoreUC_EL::getGeneralSettingsValues();
 		$isOutputComments = UniteFunctionsUC::strToBool($isOutputComments);
 
 		try{
-
+			
 			$html = $this->objTemplate->getRenderedHtml(self::TEMPLATE_HTML);
 			$html = $this->processHtml($html);
 
@@ -1773,7 +1780,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			//make css
 			$css = $this->objTemplate->getRenderedHtml(self::TEMPLATE_CSS);
-
+			
 			$js = $this->objTemplate->getRenderedHtml(self::TEMPLATE_JS);
 
 			//fetch selectors (add google font includes on the way)
@@ -1850,7 +1857,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			//add html
 
 			$output .= "\n\n			".$html;
-
+			
 			$isOutputJs = false;
 			if(!empty($js))
 				$isOutputJs = true;
@@ -1861,22 +1868,22 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			//output js
 
 			if($isOutputJs == true){
-
+				
 				$isJSAsModule = $this->addon->getOption("js_as_module");
 				$isJSAsModule = UniteFunctionsUC::strToBool($isJSAsModule);
 
 				$title = $this->addon->getTitle();
-
+				
 				$js = "\n/* $title scripts: */ \n\n".$js;
 
 				$addonName = $this->addon->getAlias();
-
+				
 				$handle = $this->getScriptHandle("ue_script_".$addonName);
-
-				//self::
-
+				
 				if($scriptHardCoded == false){
+					
 					UniteProviderFunctionsUC::printCustomScript($js, false, $isJSAsModule, $handle);
+					
 				}
 				else{
 					$wrapInTimeout = UniteFunctionsUC::getVal($params, "wrap_js_timeout");
@@ -1895,7 +1902,9 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 					}
 
 					$output .= "\n\n			<script type=\"{$jsType}\" {$htmlHandle} >";
-
+					
+					//$output .= "console.log('run script: ".$addonName."');";	//uncomment for some tests if needed
+					
 					if(!empty($wrapStart))
 						$output .= "\n		".$wrapStart;
 

@@ -1,5 +1,5 @@
 === Unlimited Elements For Elementor (Free Widgets, Addons, Templates) ===
-Contributors: unitecms, valiano, iritmega
+Contributors: unitecms, valiano, iritmega, amitkeren
 Donate link: http://unlimited-elements.com/
 Tags: elementor, elements, addons, elementor addons, elementor widget, page builder, builder, visual editor, wordpress page builder, elementor
 Requires at least: 3.5
@@ -14,9 +14,7 @@ Elementor all-in-one addons pack that offers a wide range of features to enhance
 == Description ==
 
 
-<strong>Elementor</strong> users, elevate your web design experience with <strong>Unlimited Elements for Elementor</strong>.
-An all in one plugin that instantly gives you the most advanced widgets and tools to make better Elementor websites faster.  Take your WordPress website to the next level. 
-
+<strong>Elementor</strong> users, elevate your web design experience with <strong>Unlimited Elements for Elementor</strong>. An all in one plugin that instantly gives you the most advanced widgets and tools to make better Elementor websites faster.  Take your WordPress website to the next level. 
 
 <a href="https://unlimited-elements.com/elementor-widgets/">View Elementor Widgets Demos</a>
 <br>
@@ -71,758 +69,755 @@ Find everything you need in one convenient package and supercharge your <strong>
 
 === Creative Widgets for Elementor ===
 
-1. [Flip Box Widget for Elementor (Free)](https://unlimited-elements.com/flip-box-widget-for-elementor/) -  Attract attention from website visitors with the Flip Box widget for Elementor pages. It adds a playful hover effect to your website content, keeping users engaged and increasing interaction.
 
-2. [SVG Animation Widget for Elementor (Free)](https://unlimited-elements.com/svg-animation-widget-for-elementor) -  The SVG animation widget for Elementor simplifies the process of creating stunning SVG animations for your website. You don't need any coding skills - simply copy and paste your SVG code, and your animated icon is good to go.
+1. [Flip Box Widget for Elementor (Free)](https://unlimited-elements.com/flip-box-widget-for-elementor/)  Attract attention from website visitors with the Flip Box widget for Elementor pages. It adds a playful hover effect to your website content, keeping users engaged and increasing interaction.
 
-3. [Animated Hamburger Icon Widget for Elementor (Free)](https://unlimited-elements.com/animated-hamburger-icon-for-elementor/) -  Enhance your Elementor Pro popups effortlessly by using the animated hamburger icon widget. Take it a step further by incorporating a menu within a popup, creating a captivating full-screen menu experience.
+2. [SVG Animation Widget for Elementor (Free)](https://unlimited-elements.com/svg-animation-widget-for-elementor)  The SVG animation widget for Elementor simplifies the process of creating stunning SVG animations for your website. You don't need any coding skills - simply copy and paste your SVG code, and your animated icon is good to go.
 
-4. [Lordicon: Animated Icons Widget for Elementor (Free)](https://unlimited-elements.com/lordicon-animated-icons-widget-for-elementor/) -  Discover the power of Lordicons, an extensive animated icon library featuring over 1500 free and premium Lottie animations. Effortlessly download icons as Lottie JSON files or simply copy the CDN link. Unleash the potential of your designs with Lordicons!
+3. [Animated Hamburger Icon Widget for Elementor (Free)](https://unlimited-elements.com/animated-hamburger-icon-for-elementor/)  Enhance your Elementor Pro popups effortlessly by using the animated hamburger icon widget. Take it a step further by incorporating a menu within a popup, creating a captivating full-screen menu experience.
 
-5. [Timeline Bullets Widget for Elementor (Free)](https://unlimited-elements.com/timeline-bullets-widget-for-elementor/) -  Showcase your features or services using bullet points for easy readability of important information. Customize the settings of the Timeline Bullets widget to achieve your desired appearance and functionality.
+4. [Lordicon: Animated Icons Widget for Elementor (Free)](https://unlimited-elements.com/lordicon-animated-icons-widget-for-elementor/)  Discover the power of Lordicons, an extensive animated icon library featuring over 1500 free and premium Lottie animations. Effortlessly download icons as Lottie JSON files or simply copy the CDN link. Unleash the potential of your designs with Lordicons!
 
-6. [Blob Shapes Widget for Elementor (Free)](https://unlimited-elements.com/blob-shape-widget-for-elementor/) -  Transform images into captivating and dynamic blob shapes with mesmerizing morphing effects using this incredible Elementor widget. Unleash your creativity with random, distinctive, and natural-looking blobs that will add a touch of uniqueness to your designs.
+5. [Timeline Bullets Widget for Elementor (Free)](https://unlimited-elements.com/timeline-bullets-widget-for-elementor/)  Showcase your features or services using bullet points for easy readability of important information. Customize the settings of the Timeline Bullets widget to achieve your desired appearance and functionality.
 
-7. [Number Box Widget for Elementor (Free)](https://unlimited-elements.com/number-box-widget-widget-for-elementor/) -  Enhance your designs with eye-catching number blocks in various styles. The Number Box widget for Elementor allows you to display content for easy-to-follow diagrams and clear instructions.
+6. [Blob Shapes Widget for Elementor (Free)](https://unlimited-elements.com/blob-shape-widget-for-elementor/)  Transform images into captivating and dynamic blob shapes with mesmerizing morphing effects using this incredible Elementor widget. Unleash your creativity with random, distinctive, and natural-looking blobs that will add a touch of uniqueness to your designs.
 
-8. [Icon Bullets Widget for Elementor (Free)](https://unlimited-elements.com/docs/icon-bullets/) -  Elevate your feature lists with the Icon Bullets widget. Showcase distinct icons and styles for each item, personalize icon titles and accompanying text. Effortlessly emphasize key features on your Elementor website using the Bullets widget.
+7. [Number Box Widget for Elementor (Free)](https://unlimited-elements.com/number-box-widget-widget-for-elementor/)  Enhance your designs with eye-catching number blocks in various styles. The Number Box widget for Elementor allows you to display content for easy-to-follow diagrams and clear instructions.
 
-9. [Image Zoom Magnifier Widget for Elementor (Pro)](https://unlimited-elements.com/image-zoom-magnifier-widget-for-elementor/) -  The Image Zoom Magnifier is an Elementor widget that creates a direction-aware magnifying glass effect. It offers inner zoom functionality for any image, allowing you to easily enlarge images with a touch, click, or mouseover. Enhance your image viewing experience with this incredible tool!
+8. [Icon Bullets Widget for Elementor (Free)](https://unlimited-elements.com/docs/icon-bullets/)  Elevate your feature lists with the Icon Bullets widget. Showcase distinct icons and styles for each item, personalize icon titles and accompanying text. Effortlessly emphasize key features on your Elementor website using the Bullets widget.
 
-10. [Icon Box Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/icon-box-accordion-widget-for-elementor/) -  The Icon Box Accordion widget creates a visually appealing layout of icon boxes with an interactive accordion effect. When hovered upon, the icon boxes expand and display additional information.
+9. [Image Zoom Magnifier Widget for Elementor (Pro)](https://unlimited-elements.com/image-zoom-magnifier-widget-for-elementor/)  The Image Zoom Magnifier is an Elementor widget that creates a direction-aware magnifying glass effect. It offers inner zoom functionality for any image, allowing you to easily enlarge images with a touch, click, or mouseover. Enhance your image viewing experience with this incredible tool!
 
-11. [Morph Slider Widget for Elementor (Pro)](https://unlimited-elements.com/morph-slider-widget-for-elementor/) -  The Morph Slider allows you to easily create stunning image slideshows for your Elementor website. It utilizes a WebGL-based Image slider effect with advanced transitions such as noise, displacement, blend, and color mix to design one-of-a-kind visuals.
+10. [Icon Box Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/icon-box-accordion-widget-for-elementor/)  The Icon Box Accordion widget creates a visually appealing layout of icon boxes with an interactive accordion effect. When hovered upon, the icon boxes expand and display additional information.
 
-12. [Scroll Image Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/image-reveal-on-scroll-widget-for-elementor) -  Enhance your Elementor website design with the Scroll Image Reveal widget. This impressive feature creates an engaging reveal effect on your images as users scroll to them.
+11. [Morph Slider Widget for Elementor (Pro)](https://unlimited-elements.com/morph-slider-widget-for-elementor/)  The Morph Slider allows you to easily create stunning image slideshows for your Elementor website. It utilizes a WebGL-based Image slider effect with advanced transitions such as noise, displacement, blend, and color mix to design one-of-a-kind visuals.
 
-13. [Image Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/image-accordion-widget-for-elementor/) -  The Image Accordion widget enables you to present a collection of images in a compact and interactive manner. Additionally, it offers the flexibility to reveal more details or showcase a larger view of each image.
+12. [Scroll Image Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/image-reveal-on-scroll-widget-for-elementor)  Enhance your Elementor website design with the Scroll Image Reveal widget. This impressive feature creates an engaging reveal effect on your images as users scroll to them.
 
-14. [Image Shapes Widget for Elementor (Pro)](https://unlimited-elements.com/image-shapes-for-elementor-page-builder/) -  Enhance your image design effortlessly with the Image Shapes Elementor widget. Easily create captivating images using pre-defined clipping masks, unlocking endless possibilities for your element layouts. Explore a variety of shapes to add a touch of creativity to your designs.
+13. [Image Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/image-accordion-widget-for-elementor/)  The Image Accordion widget enables you to present a collection of images in a compact and interactive manner. Additionally, it offers the flexibility to reveal more details or showcase a larger view of each image.
 
-15. [Particle Image Widget for Elementor (Pro)](https://unlimited-elements.com/image-particle-widget-for-elementor/) -  Enhance your images with a captivating dispersion interactive distortion effect using the Particle Image widget for Elementor. Transform any image into a mesmerizing visual experience.
+14. [Image Shapes Widget for Elementor (Pro)](https://unlimited-elements.com/image-shapes-for-elementor-page-builder/)  Enhance your image design effortlessly with the Image Shapes Elementor widget. Easily create captivating images using pre-defined clipping masks, unlocking endless possibilities for your element layouts. Explore a variety of shapes to add a touch of creativity to your designs.
 
-16. [Icon Tabs Widget for Elementor (Pro)](https://unlimited-elements.com/icon-tabs-widget-for-elementor) -  The Icon Tab widget for Elementor allows you to effortlessly display your text on your page, neatly organized into horizontal or vertical tabs. With the option to customize your tabs using icons, you can create an interactive and enjoyable reading experience for your website visitors.
+15. [Particle Image Widget for Elementor (Pro)](https://unlimited-elements.com/image-particle-widget-for-elementor/)  Enhance your images with a captivating dispersion interactive distortion effect using the Particle Image widget for Elementor. Transform any image into a mesmerizing visual experience.
 
-17. [Background Switcher Widget for Elementor (Pro)](https://unlimited-elements.com/background-switcher-widget-for-elementor/) -  The Background Switcher widget lets you create stylish content boxes. When you hover over a content box, it dynamically changes the background for the entire section. Impress your audience with smooth and seamless background transitions as they interact with your website.
+16. [Icon Tabs Widget for Elementor (Pro)](https://unlimited-elements.com/icon-tabs-widget-for-elementor)  The Icon Tab widget for Elementor allows you to effortlessly display your text on your page, neatly organized into horizontal or vertical tabs. With the option to customize your tabs using icons, you can create an interactive and enjoyable reading experience for your website visitors.
 
-18. [Scroll Sequence Widget for Elementor (Pro)](https://unlimited-elements.com/scroll-sequance-widget-for-elementor/) -  Elevate your website with the Scroll Sequence Widget. Convert collections of images into captivating web experiences. Engage your audience with seamless animations of image sequences, all triggered by scrolling.
+17. [Background Switcher Widget for Elementor (Pro)](https://unlimited-elements.com/background-switcher-widget-for-elementor/)  The Background Switcher widget lets you create stylish content boxes. When you hover over a content box, it dynamically changes the background for the entire section. Impress your audience with smooth and seamless background transitions as they interact with your website.
 
-19. [Before After Widget for Elementor (Pro)](https://unlimited-elements.com/before-after-widget-for-elementor/) -  Effortlessly compare changes using the Before After widget. Experience the transformation at a glance, whether it's photos, designs, or anything else. Elevate your visual storytelling with ease!
+18. [Icon Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/icon-accordion-widget-for-elementor/)  The Icon Accordion widget for Elementor page builder offers a wide selection of styles to create interactive collapsible content with different layouts on your page. Each accordion item can be accompanied by an icon for enhanced visual representation.
 
-20. [Shape Bullets Widget for Elementor (Pro)](https://unlimited-elements.com/shape-bullets-widget-for-elementor/) -  The Shape Bullets Widget for Elementor simplifies the creation of a well-structured bulleted list. Each item can have its own unique icon, enclosed in visually appealing shapes. This enhances visual appeal and improves organization and readability.
+19. [Before After Widget for Elementor (Pro)](https://unlimited-elements.com/before-after-widget-for-elementor/)  Effortlessly compare changes using the Before After widget. Experience the transformation at a glance, whether it's photos, designs, or anything else. Elevate your visual storytelling with ease!
 
-21. [Rhombus Grid Widget for Elementor (Pro)](https://unlimited-elements.com/rhombus-grid-widget-for-elementor/) -  Use the Rhombus Grid widget for Elementor to create a unique and creative layout style for your content. Let your creativity shine and engage your audience with a visually striking design that will make a lasting impact.
+20. [Shape Bullets Widget for Elementor (Pro)](https://unlimited-elements.com/shape-bullets-widget-for-elementor/)  The Shape Bullets Widget for Elementor simplifies the creation of a well-structured bulleted list. Each item can have its own unique icon, enclosed in visually appealing shapes. This enhances visual appeal and improves organization and readability.
 
-22. [Flip Box Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/flip-box-carousel-widget-for-elementor/) -  Enhance your Elementor page with the captivating Flip Box Carousel effect. Add a dynamic touch to showcase your content engagingly and interactively. Each item in the carousel acts as a flip box, revealing compelling additional content.
+21. [Flip Box Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/flip-box-carousel-widget-for-elementor/)  Enhance your Elementor page with the captivating Flip Box Carousel effect. Add a dynamic touch to showcase your content engagingly and interactively. Each item in the carousel acts as a flip box, revealing compelling additional content.
 
-23. [Icon Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/icon-accordion-widget-for-elementor/) -  The Icon Accordion widget for Elementor page builder offers a wide selection of styles to create interactive collapsible content with different layouts on your page. Each accordion item can be accompanied by an icon for enhanced visual representation.
+22. [Scroll Sequence Widget for Elementor (Pro)](https://unlimited-elements.com/scroll-sequance-widget-for-elementor/)  Elevate your website with the Scroll Sequence Widget. Convert collections of images into captivating web experiences. Engage your audience with seamless animations of image sequences, all triggered by scrolling.
 
-24. [Christmas Icons Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-icons-widget-for-elementor/) -  The Christmas Icons widget provides 25 specially designed icons for the festive season. Each icon comes with 3 unique styles, adding a delightful touch to your holiday designs.
+23. [Rhombus Grid Widget for Elementor (Pro)](https://unlimited-elements.com/rhombus-grid-widget-for-elementor/)  Use the Rhombus Grid widget for Elementor to create a unique and creative layout style for your content. Let your creativity shine and engage your audience with a visually striking design that will make a lasting impact.
+
+24. [Christmas Icons Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-icons-widget-for-elementor/)  The Christmas Icons widget provides 25 specially designed icons for the festive season. Each icon comes with 3 unique styles, adding a delightful touch to your holiday designs.
 
 
 === Tools for Elementor ===
 
-1. [Contact Form 7 Widget for Elementor (Free)](https://unlimited-elements.com/contact-form-7-widget-for-elementor/) -  The Contact Form 7 widget is a valuable tool that makes customizing the appearance of your contact forms in the Elementor page builder easier. With this widget, you can enhance the visual appeal of your contact forms directly from the page builder interface.
+1. [Animated Mouse Scroll Icon Widget for Elementor (Free)](https://unlimited-elements.com/animated-mouse-scroll-icon-widget-for-elementor/)  The Animated Mouse Scroll Icon is a captivating animation that prompts users to explore further content by scrolling down the page.
 
-2. [Animated Mouse Scroll Icon Widget for Elementor (Free)](https://unlimited-elements.com/animated-mouse-scroll-icon-widget-for-elementor/) -  The Animated Mouse Scroll Icon is a captivating animation that prompts users to explore further content by scrolling down the page.
+2. [Contact Form 7 Widget for Elementor (Free)](https://unlimited-elements.com/contact-form-7-widget-for-elementor/)  The Contact Form 7 widget is a valuable tool that makes customizing the appearance of your contact forms in the Elementor page builder easier. With this widget, you can enhance the visual appeal of your contact forms directly from the page builder interface.
 
-3. [Notification Widget for Elementor (Free)](https://unlimited-elements.com/notification-widget-for-elementor) -  The Notification widget allows you to easily display an eye-catching alert box and draw attention to important messages on your Elementor website.
+3. [Notification Widget for Elementor (Free)](https://unlimited-elements.com/notification-widget-for-elementor)  The Notification widget allows you to easily display an eye-catching alert box and draw attention to important messages on your Elementor website.
 
-4. [Event Box Widget for Elementor (Free)](https://unlimited-elements.com/event-box-widget-for-elementor) -  Enhance your website with the Event Box widget. It's designed to showcase events and special occasions in a stunning display. Present your events in a user-friendly format, complete with a call-to-action button for seamless ticket purchase or event enrollment.
+4. [Event Box Widget for Elementor (Free)](https://unlimited-elements.com/event-box-widget-for-elementor)  Enhance your website with the Event Box widget. It's designed to showcase events and special occasions in a stunning display. Present your events in a user-friendly format, complete with a call-to-action button for seamless ticket purchase or event enrollment.
 
-5. [Image Tooltip Widget for Elementor (Free)](https://unlimited-elements.com/image-tooltip-widget-for-elementor/) -  The Image Tooltip widget provides a simple way to add tooltips to images on a webpage, allowing for additional information or call-to-action text. It also supports linking the image to another page.
+5. [Image Tooltip Widget for Elementor (Free)](https://unlimited-elements.com/image-tooltip-widget-for-elementor/)  The Image Tooltip widget provides a simple way to add tooltips to images on a webpage, allowing for additional information or call-to-action text. It also supports linking the image to another page.
 
-6. [360° Product Viewer Widget for Elementor (Pro)](https://unlimited-elements.com/360-product-viewer-widget-for-elementor/) -  Present your product from all perspectives using the immersive 360° Product Viewer widget for Elementor. This powerful tool allows customers to interact with and examine every intricate detail, giving them a complete understanding of your product.
+6. [360° Product Viewer Widget for Elementor (Pro)](https://unlimited-elements.com/360-product-viewer-widget-for-elementor/)  Present your product from all perspectives using the immersive 360° Product Viewer widget for Elementor. This powerful tool allows customers to interact with and examine every intricate detail, giving them a complete understanding of your product.
 
-7. [Currency Converter Widget for Elementor (Pro)](https://unlimited-elements.com/currency-converter-widget-for-elementor/) -  Easily convert currencies with our intuitive Currency Converter widget. Stay updated on real-time exchange rates and effortlessly calculate conversions on your website.
+7. [Currency Converter Widget for Elementor (Pro)](https://unlimited-elements.com/currency-converter-widget-for-elementor/)  Easily convert currencies with our intuitive Currency Converter widget. Stay updated on real-time exchange rates and effortlessly calculate conversions on your website.
 
-8. [Job Listing Widget for Elementor (Pro)](https://unlimited-elements.com/job-listing-widget-for-elementor/) -  Effortlessly post detailed job listings using the Job Listing widget for Elementor. Attract potential candidates and simplify the recruitment process by showcasing a wide range of positions, breaking through geographical barriers, and emphasizing the required qualifications and skills for each role.
+8. [Image Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/image-scroll-widget-for-elementor/)  Elevate your image display effortlessly with the Image Scroll Widget. This feature enables a seamless vertical scroll, smoothly moving images from top to bottom as users hover over them.
 
-9. [Event List Widget for Elementor (Pro)](https://unlimited-elements.com/event-list-widget-for-elementor/) -  The Event List Widget makes it easy to display upcoming events and special occasions on your Elementor websites. You can populate the widget with dynamic data using posts and connect it to advanced filters and tools for added functionality.
+9. [Job Listing Widget for Elementor (Pro)](https://unlimited-elements.com/job-listing-widget-for-elementor/)  Effortlessly post detailed job listings using the Job Listing widget for Elementor. Attract potential candidates and simplify the recruitment process by showcasing a wide range of positions, breaking through geographical barriers, and emphasizing the required qualifications and skills for each role.
 
-10. [Hotspots Widget for Elementor (Pro)](https://unlimited-elements.com/hotspots-for-elementor-page-builder/) -  Improve your images with interactive hotspots featuring tooltips and the choice of a built-in popup. Each hotspot popup can include an image and descriptive text, creating an engaging user experience.
+10. [Event List Widget for Elementor (Pro)](https://unlimited-elements.com/event-list-widget-for-elementor/)  The Event List Widget makes it easy to display upcoming events and special occasions on your Elementor websites. You can populate the widget with dynamic data using posts and connect it to advanced filters and tools for added functionality.
 
-11. [360 Panorama Virtual Tour Widget for Elementor (Pro)](https://unlimited-elements.com/360-panorama-virtual-tour-widget-for-elementor/) -  Create captivating 360 tours on your Elementor website. Allow visitors to remotely explore your place and stay engaged. With a virtual tour, they can navigate through your location in a 360 panoramic view, getting a realistic feel of its appearance.
+11. [Hotspots Widget for Elementor (Pro)](https://unlimited-elements.com/hotspots-for-elementor-page-builder/)  Improve your images with interactive hotspots featuring tooltips and the choice of a built-in popup. Each hotspot popup can include an image and descriptive text, creating an engaging user experience.
 
-12. [QR Code Widget for Elementor (Pro)](https://unlimited-elements.com/qr-code-widget-for-elementor/) -  The QR Code widget for Elementor simplifies the process of creating and integrating QR codes into your WordPress website. Generate QR codes for text, phone numbers, links, or email addresses with ease, enhancing user engagement and interaction.
+12. [360 Panorama Virtual Tour Widget for Elementor (Pro)](https://unlimited-elements.com/360-panorama-virtual-tour-widget-for-elementor/)  Create captivating 360 tours on your Elementor website. Allow visitors to remotely explore your place and stay engaged. With a virtual tour, they can navigate through your location in a 360 panoramic view, getting a realistic feel of its appearance.
 
-13. [Layers Widget for Elementor (Pro)](https://unlimited-elements.com/layers-widget-for-elementor/) -  Effortlessly layer images, text, shapes, and icons on your Elementor pages with the Image Layers widget, a straightforward solution for precise positioning and design flexibility.
+13. [QR Code Widget for Elementor (Pro)](https://unlimited-elements.com/qr-code-widget-for-elementor/)  The QR Code widget for Elementor simplifies the process of creating and integrating QR codes into your WordPress website. Generate QR codes for text, phone numbers, links, or email addresses with ease, enhancing user engagement and interaction.
+
+14. [Layers Widget for Elementor (Pro)](https://unlimited-elements.com/layers-widget-for-elementor/)  Effortlessly layer images, text, shapes, and icons on your Elementor pages with the Image Layers widget, a straightforward solution for precise positioning and design flexibility.
 
 
 === Post Widgets for Elementor ===
 
-1. [Post Tabs Widget for Elementor (Free)](https://unlimited-elements.com/post-tabs-for-elementor/) -  The Post Tabs widget allows you to create custom-made tab designs and display your WordPress posts in an interactive tab layout. Use the Post Tabs widget to show your most important and profitable blog pieces by sequence and category. Manage the output of your posts using the advanced post-selection to query your posts to your website visitors.
+1. [Post Tabs Widget for Elementor (Free)](https://unlimited-elements.com/post-tabs-for-elementor/)  Create engaging tab designs for showcasing your WordPress posts using the Post Tabs widget. Organize your top blog pieces by tags or categories in an interactive layout.
 
-2. [Post Accordion Widget for Elementor (Free)](https://unlimited-elements.com/post-accordions-for-elementor/) -  The Post Accordion Widget displays WordPress posts, pages, products, or even custom post types as a unique interactive accordion layout. Create fully customized and beautiful post accordions with advanced customization and styling options. The Post Accordion widget lets you present a lot of information in a small space by collapsing and condensing the text. This is great for saving space on your Elementor web page or blog post.  With the Post Accordion, visitors can scan item titles and select to expand an item only if it is relevant to their needs and read more text about the certain item.
+2. [Post Accordion Widget for Elementor (Free)](https://unlimited-elements.com/post-accordions-for-elementor/)  The Post Accordion Widget in WordPress lets you display posts, pages, products, or custom post types in a distinctive and interactive accordion layout. It condenses information, saving space. Visitors can quickly scan titles and expand relevant items to read more, catering to their specific needs and interests.
 
-3. [Post Carousel Lite Widget for Elementor (Free)](https://unlimited-elements.com/post-carousel-lite-widget-for-elementor) -  The Post Carousel widget allows you to choose a set of posts, pages, products, or any custom post type based on category, tags, or author and present them in an interactive carousel format.
+3. [Post Carousel Lite Widget for Elementor (Free)](https://unlimited-elements.com/post-carousel-lite-widget-for-elementor)  The Post Carousel Lite widget allows you to choose a collection of posts, pages, products, or any custom post type. You can filter them by category, tags, or author. These selected items are then presented in a visually appealing and interactive carousel format.
 
-4. [Post Blocks Widget for Elementor (Free)](https://unlimited-elements.com/post-blocks-widget-for-elementor) - 
+4. [Post Blocks Widget for Elementor (Free)](https://unlimited-elements.com/post-blocks-widget-for-elementor)  The Post Blocks widgets offer a sleek grid layout that beautifully showcases your blog posts in a captivating card design when using Elementor. It allows for advanced filters based on post type, taxonomy, and more.
 
-5. [Post List Widget for Elementor (Free)](https://unlimited-elements.com/post-list-widget-for-elementor) -  The Post List widget lets you display your WordPress posts in a list layout with multiple columns. You can also add advanced filtering, pagination, load more button, and even infinite scroll to any post list your desire.
+5. [Post List Widget for Elementor (Free)](https://unlimited-elements.com/post-list-widget-for-elementor)  The Post List widget allows you to display your WordPress posts in an attractive list format with multiple columns. You can enhance your post lists by adding advanced filtering, pagination, a load more button, or even infinite scroll.
 
-6. [Post Ticker Widget for Elementor (Free)](https://unlimited-elements.com/post-news-ticker-widget-for-elementor) -  Display a horizontal post news ticker on your website using WordPress posts, pages, products, or any other custom post type with the help of the Post News Ticker. The Post Ticker is a widget that can show the chosen posts one at a time in the order and amount you've specified in the post query settings. This widget is greater for showcasing your news items as a post ticker on your Elementor website. Showcase the latest breaking news headlines on your website in an interactive ticker layout with the post ticker widget.
+6. [Post Ticker Widget for Elementor (Free)](https://unlimited-elements.com/post-news-ticker-widget-for-elementor)  The Post News Ticker displays a horizontal news ticker on your website. It supports various content types like posts, pages, and custom post types. Ideal for showcasing news items in an engaging news ticker layout. Keep your visitors informed with the latest breaking news headlines.
 
-7. [Tag Cloud Widget for Elementor (Pro)](https://unlimited-elements.com/tag-cloud-widget-for-elementor/) -  Showcase your WordPress tags and categories in different ways using the Taxonomy Widget for Elementor. Tags are usually single words, and the importance of each tag is shown with font size or color.
+7. [Tag Cloud Widget for Elementor (Pro)](https://unlimited-elements.com/tag-cloud-widget-for-elementor/)  The Tag Cloud widget enhances the display of your WordPress tags and categories, highlighting the importance of each tag by varying its size. Presenting your taxonomies in unique and captivating ways enhances the visual appeal of your website the navigation easier and more engaging for visitors.
 
-8. [Post Horizontal Timeline Widget for Elementor (Pro)](https://unlimited-elements.com/post-horizontal-timeline-widget-for-elementor/) - 
+8. [Post Horizontal Timeline Widget for Elementor (Pro)](https://unlimited-elements.com/post-horizontal-timeline-widget-for-elementor/)  The Post Horizontal Timeline widget presents your WordPress posts in an engaging horizontal timeline format. This interactive carousel highlights the published date of each post, enabling you to showcase the chronological order of your content in a visually appealing manner.
 
-9. [Author List Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-author-list-widget/) - 
+9. [Author List Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-author-list-widget/)  The Author List widget allows you to effortlessly showcase a list of post authors and provide links to their respective post archives page.
 
-10. [Post Tile Widget for Elementor (Pro)](https://unlimited-elements.com/post-tiles-widget-for-elementor) - 
+10. [Post Tile Widget for Elementor (Pro)](https://unlimited-elements.com/post-tiles-widget-for-elementor)  The Post Tile widget provides a stylish and unique way to display your posts on your Elementor page. It arranges posts in a grid layout, with attractive text overlays on the featured image. Additionally, a well-designed calendar indicates the publication date of each post, adding to its visual appeal.
 
-11. [Post Slider Widget for Elementor (Pro)](https://unlimited-elements.com/post-sliders/) -  The Post Slider widget displays WordPress posts, pages, products, or even custom post types as unique interactive sliders with beautiful layouts. Display your blog posts in a beautiful slider that will catch the attention of your readers. The Posts Slider is an amazing widget that will help you highlight your post content and output the exact posts you want to show using advanced post-selection to query your widget output.
+11. [Post Slider Widget for Elementor (Pro)](https://unlimited-elements.com/post-sliders/)  The Post Slider widget enables you to display your posts, pages, products, or custom post types in interactive sliders with beautiful layouts. It helps you grab your readers' attention by showcasing your blog posts in an appealing slider.
 
-12. [Post Grid Widget for Elementor (Pro)](https://unlimited-elements.com/post-grid-widget-for-elementor/) -  The Post Grid widget places multiple posts in an aesthetic post grid layout. The purpose of this widget is to let you organize and display your posts on your Elementor website.
+12. [Post Grid Widget for Elementor (Pro)](https://unlimited-elements.com/post-grid-widget-for-elementor/)  The Post Grid widget arranges multiple posts in an attractive grid layout. It allows you to easily organize and showcase your posts with filters on your Elementor website.
 
-13. [Post Card Slider Widget for Elementor (Pro)](https://unlimited-elements.com/blog-card-slider-widget-for-elementor) - 
+13. [Post Card Slider Widget for Elementor (Pro)](https://unlimited-elements.com/blog-card-slider-widget-for-elementor)  The Post Card Slider Widget presents an engaging slider layout to highlight your posts. With advanced query options, you have full control to filter your products as desired. This versatile widget is ideal for showcasing your latest, popular, or featured posts.
 
-14. [Post Magazine Grid Widget for Elementor (Pro)](https://unlimited-elements.com/post-magazine-grid-widget-for-elementor/) -  Showcase your WordPress tags and categories in different ways using the Taxonomy Widget for Elementor. The Taxonomy Terms widget allows you to create an archive-type navigation menu using a taxonomy. The widget generates a list of the terms that belong to a specific taxonomy so that each item can be clicked to navigate easily to the term archive on your Elementor website.
+14. [Post Magazine Grid Widget for Elementor (Pro)](https://unlimited-elements.com/post-magazine-grid-widget-for-elementor/)  The Post Magazine Grid allows you to create visually captivating magazine layouts. With a metro-style grid format, each post can have its own column and row span. This flexible solution helps you maximize space, emphasize specific posts, and enables easy navigation with filters.
 
-15. [Post Timeline Widget for Elementor (Pro)](https://unlimited-elements.com/post-timeline-widget-for-elementor/) - 
+15. [Post Timeline Widget for Elementor (Pro)](https://unlimited-elements.com/post-timeline-widget-for-elementor/)  The Post Timeline widget provides an eye-catching way to display your blog posts, pages, or custom posts in a timeline format. With customizable filters, you can easily personalize the display and navigate through the content. It's ideal for presenting events or posts in a clear and organized chronological order.
 
-16. [Post Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/post-scroll-widget-for-elementor) -  This Post Scroll widget is the best way to showcase all the latest posts to website visitors. The widget allows you to scroll down recently posted titles in a widget, with the posts scrolling vertically from bottom to top. This is an elegant way of presenting all your latest post content to users. Used the advanced post selection options to query your posts and showcase the exact content you want to show users. Create a post scroller for the most viewed posts or products. Use the post scroll not just for posts but also for pages, products, or any other custom post type you may have on your Elementor website.
+16. [Post Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/post-scroll-widget-for-elementor)  The Post Scroll widget is used for showcasing your latest posts in a sleek vertical slider. Customize the content you want to highlight with advanced options. Engage users with a captivating vertical scroll of recently published posts, creating an immersive and exciting experience.
 
-17. [Taxonomy Terms Widget for Elementor (Pro)](https://unlimited-elements.com/taxonomy-terms-widget-for-elementor/) -  Showcase your WordPress tags and categories in different ways using the Taxonomy Widget for Elementor. The Taxonomy Terms widget allows you to create an archive-type navigation menu using a taxonomy. The widget generates a list of the terms that belong to a specific taxonomy so that each item can be clicked to navigate easily to the term archive on your Elementor website.
+17. [Taxonomy Terms Widget for Elementor (Pro)](https://unlimited-elements.com/taxonomy-terms-widget-for-elementor/)  The Taxonomy Terms Widget for Elementor allows you to showcase WordPress tags and categories in unique ways. It helps you generate a list of terms from a specific taxonomy, making it easy for visitors to click and navigate to the term archive on your Elementor website.
 
-18. [Post Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/post-carousels-for-elementor/) -  The Post Carousel widget allows you to quickly showcase posts, pages, products, or custom post types in a beautiful interactive carousel layout.
+18. [Post Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/post-carousels-for-elementor/)  The Post Carousel widget allows you to easily display posts, pages, products, or custom post types in an attractive and interactive carousel layout. This layout saves space and provides filters for a better user experience.
 
-19. [Masonry Post Grid Widget for Elementor (Pro)](https://unlimited-elements.com/masonry-post-grid-widget-for-elementor) - 
+19. [Masonry Post Grid Widget for Elementor (Pro)](https://unlimited-elements.com/masonry-post-grid-widget-for-elementor)  The Masonry Post Grid is a great option to display your posts in a visually appealing masonry grid style. The masonry layout gives your website a modern and dynamic look that stands out from traditional grid layouts.
 
 
 === Post Filters & Tools for Elementor ===
 
-1. [Post Navigation Widget for Elementor (Free)](https://unlimited-elements.com/post-navigation-widget-for-elementor/) -  Used in any single post template to dynamically display navigation links to other posts.
+1. [Post Navigation Widget for Elementor (Free)](https://unlimited-elements.com/post-navigation-widget-for-elementor/)  The Post Navigation feature is employed in single post templates to dynamically display links to other posts, allowing for easy navigation between them.
 
-2. [Post Pagination Widget for Elementor (Free)](https://unlimited-elements.com/post-pagination-widget-for-elementor/) -  The post pagination widget is used in posts archive pages or with a post widget in any Elementor page.
+2. [Post Pagination Widget for Elementor (Free)](https://unlimited-elements.com/post-pagination-widget-for-elementor/)  The Pagination Widget improves browsing by allowing easy navigation between post results. The widget enhances the user experience, ensuring smooth transitions and effortless content exploration.
 
-3. [AJAX Search Widget for Elementor (Pro)](https://unlimited-elements.com/ajax-search-widget-for-elementor/) -  The fastest AJAX search widget for your WordPress website. Easily add a live search bar to any Elementor website.
+3. [AJAX Search Widget for Elementor (Pro)](https://unlimited-elements.com/ajax-search-widget-for-elementor/)  The fastest AJAX Search widget for your WordPress website. Easily add a live search bar to any Elementor website.  Empower your visitors to find what they're looking for quickly and efficiently, enhancing their overall user experience on your site.
 
-4. [Dynamic Post Popup Widget for Elementor (Pro)](https://unlimited-elements.com/dynamic-post-popup-widget-for-elementor/) -  Add a quick preview popup for Posts or WooCommerce products to quickly access more information in a popup rather than exiting the page.
+4. [Dynamic Post Popup Widget for Elementor (Pro)](https://unlimited-elements.com/dynamic-post-popup-widget-for-elementor/)  The Dynamic Post Popup improves the user experience by offering a quick view popup for Posts or WooCommerce products. This enables users to access extra information without leaving the page, ensuring a smooth browsing experience.
 
-5. [Tabs Filter Widget for Elementor (Pro)](https://unlimited-elements.com/tabs-filter-widget-for-elementor/) -  The Tabs Filter is the best post filtering widget for Elementor. You can ad post filters using category and tag taxonomies.
+5. [Tabs Filter Widget for Elementor (Pro)](https://unlimited-elements.com/tabs-filter-widget-for-elementor/)  User-friendly Tabs Filter widget, ensuring easy categorization, quick selection, and live display.   It allows you to display relevant posts, pages, products, or custom post types based on their assigned tags and categories.
 
-6. [Checkboxes Filter Widget for Elementor (Pro)](https://unlimited-elements.com/checkboxes-filter-widget-for-elementor/) - 
+6. [Checkboxes Filter Widget for Elementor (Pro)](https://unlimited-elements.com/checkboxes-filter-widget-for-elementor/)  Enhance filtering capabilities with the use of multi-select Checkboxes Filter, enabling flexible and personalized searches for an improved user experience.
 
-7. [Active Filters Widget for Elementor (Pro)](https://unlimited-elements.com/active-filters-widget-for-elementor/) -  The Active Filters Widget for Elementor is your go-to tool for a seamless and user-friendly filtering experience. With this widget, users can effortlessly track and visualize their applied filters on post widgets, allowing them to make informed selections and reset filters with ease. Say goodbye to confusion and hello to streamlined content navigation, all thanks to this intuitive and visually appealing filter management solution.
+7. [Active Filters Widget for Elementor (Pro)](https://unlimited-elements.com/active-filters-widget-for-elementor/)  The Active Filters Widget helps users track and visualize applied filters easily. It enables informed selections and effortless resetting of filters. Simplify content navigation with this intuitive filter management solution, eliminating confusion and enhancing user experience.
 
-8. [Clear Filters Widget for Elementor (Pro)](https://unlimited-elements.com/clear-filters-widget-for-elementor/) -  The Clear Filters Widget for Elementor is the ultimate solution for decluttering and simplifying your filtering process. It empowers users to quickly reset all applied filters on post widgets, ensuring a fresh start and a clean slate for their browsing experience. With just one click, users can enjoy the convenience of easily clearing filters and navigating content with renewed clarity and simplicity, making it a must-have tool for efficient content exploration.
+8. [Clear Filters Widget for Elementor (Pro)](https://unlimited-elements.com/clear-filters-widget-for-elementor/)  The Clear Filters Widget for Elementor simplifies the filtering process by allowing users to reset applied filters with one click. It provides a fresh start and enhances the browsing experience, making it an essential tool for efficient content exploration.
 
-9. [Select Dropdown Filter Widget for Elementor (Pro)](https://unlimited-elements.com/select-dropdown-filter-widget-for-elementor/) -  The Select Dropdown Filter is the best post filtering widget for Elementor. You can add post filters using category and tag taxonomies. Our filtering system allows users to quickly and easily find the products or posts they are looking for by selecting various options from a drop-down list directly on your Elementor website.
+9. [Select Dropdown Filter Widget for Elementor (Pro)](https://unlimited-elements.com/select-dropdown-filter-widget-for-elementor/)  The Select Dropdown Filter is a powerful post filtering widget for Elementor. Effortlessly add filters based on category and tag taxonomies. Swiftly locate desired products or posts by selecting options from a user-friendly drop-down list embedded on your Elementor website.
 
-10. [Post Query Summary Widget for Elementor (Pro)](https://unlimited-elements.com/post-query-summary-widget-for-elementor/) -  Show the post query summary when using any of the post widgets in the widget library.
+10. [Post Query Summary Widget for Elementor (Pro)](https://unlimited-elements.com/post-query-summary-widget-for-elementor/)  The Post Query Summary provides quick feedback by showing the number of posts or pages found before and after applying filters. It is suggested to display the post query summary when using any of the post widgets from the widget library.
 
-11. [Search Filter Widget for Elementor (Pro)](https://unlimited-elements.com/search-filter-widget-for-elementor/) -  Use the Search Filter widget with any of our post widgets to help users filter the content on your website.
+11. [Search Filter Widget for Elementor (Pro)](https://unlimited-elements.com/search-filter-widget-for-elementor/)  The Search Filter transforms the search experience with instant real-time results, optimizing user experience on your Elementor website. Engage visitors with a robust search feature and live results for enhanced speed and efficiency.
 
-12. [Load More / Infinite Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/load-more-infinite-scroll-widget-for-elementor/) -  Add a load more button to your post or product grids. You can even make an infinite scroll effect that works with AJAX.
+12. [Load More / Infinite Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/load-more-infinite-scroll-widget-for-elementor/)  Improve the user experience on your post or product grids by adding a "Load More" button or using an infinite scroll effect. These options enhance user interaction in your post or product widgets, providing convenience with a Load More Button or elegance with Infinite Scroll.
 
-13. [Sorting Filter Widget for Elementor (Pro)](https://unlimited-elements.com/sorting-filter-widget-for-elementor/) -  Ease content exploration on your website as users filter and sort with minimal effort.
+13. [Sorting Filter Widget for Elementor (Pro)](https://unlimited-elements.com/sorting-filter-widget-for-elementor/)  Improve the browsing experience on your website with the Sorting Filter. Enable users to effortlessly filter and sort content, streamlining content exploration with minimal effort.
 
 
 === Form Builder for Elementor ===
 
-1. [Text Field Widget for Elementor (Free)](https://unlimited-elements.com/form-builder/) - 
+1. [Text Field Widget for Elementor (Free)](https://unlimited-elements.com/form-builder/)  The Text Field widget is a basic input box for users to provide short, written responses, ideal for capturing names, addresses, or other concise text entries.
 
-2. [Textarea Field Widget for Elementor (Free)](https://unlimited-elements.com/form-builder/) - 
+2. [Textarea Field Widget for Elementor (Free)](https://unlimited-elements.com/form-builder/)  The Textarea Field widget is a multi-line input box suitable for longer text entries, such as comments or messages.
 
-3. [Submit Button Widget for Elementor (Free)](https://unlimited-elements.com/form-builder/) - 
+3. [Submit Button Widget for Elementor (Free)](https://unlimited-elements.com/form-builder/)  The Submit Button widget triggers form submission and additional actions like saving, notifications, webhooks, and more.
 
-4. [Email Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+4. [Dropdown Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Dropdown Field widget is a menu that allows users to select one option from a list that drops down when activated.
 
-5. [Checkbox Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+5. [Checkbox Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Checkbox Field widget is a small box where you can check or uncheck to select from multiple choices. You can make it look like a button or use images to add a touch of fun and interaction.
 
-6. [Dropdown Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+6. [Email Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Email Field widget is a text input area designed to collect and validate email addresses.
 
-7. [Number Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+7. [Number Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Number Field widget is a space for entering numbers in a form, perfect for tasks like calculations or providing numeric input. Frequently used in calculators and forms where precise numerical data is needed.
 
-8. [Date Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+8. [Date Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Date Field widget is a calendar-like interface for selecting a date, making it easier to choose dates without worrying about the correct format.
 
-9. [Radio Button Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+9. [Radio Button Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Radio Button Field widget is a set of mutually exclusive options presented as buttons, where users can select only one option.
 
-10. [Phone Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+10. [Phone Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Phone Field widget is a text input box formatted to accept and validate phone numbers.
 
-11. [Slider Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+11. [Slider Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Slider Field widget is a graphical control that users can slide along a track to select a value within a predefined range.
 
-12. [Message Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+12. [Message Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Message Field widget is a specialized field for presenting messages or information based on conditions or calculations within the form, offering dynamic content display and user guidance.
 
-13. [Confirm Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
+13. [Confirm Field Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Confirm Field widget is a valuable form element, presenting a single checkbox that prompts users to confirm their agreement with the terms or policies before submitting the form data.
 
-14. [Multi Step Form Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/) - 
-
+14. [Multi Step Form Widget for Elementor (Pro)](https://unlimited-elements.com/form-builder/)  The Multi Step Form widget allows you to create a step-by-step form with multiple pages, guiding users through the submission process. It enhances user experience by breaking down complex forms into manageable sections and reduces form abandonment.
 
 
 === Woo Widgets for Elementor ===
 
-1. [Woo Product List Widget for Elementor (Free)](https://unlimited-elements.com/woocommerce-product-list-widget-for-elementor/) -  Showcase your WooCommerce products in an attractive list layout with many customization options. You can choose how many products to show per page, what information to display about each product, and much more.
+1. [Woo Product List Widget for Elementor (Free)](https://unlimited-elements.com/woocommerce-product-list-widget-for-elementor/)  Display your WooCommerce products in an attractive list format with many customization options. Adjust the number of products per page, choose product details shown, and explore customization choices to improve your showcase.
 
-2. [Woo Mini Cart Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-mini-cart-widget-for-elementor/) -  The WooCommerce Mini Cart widget for Elementor is a powerful tool that enhances the user experience of online shoppers. This widget seamlessly integrates with WooCommerce, the popular e-commerce plugin for WordPress, allowing you to effortlessly display a compact and interactive shopping cart on your website. Shoppers can easily view the items in their cart, adjust quantities, and proceed to checkout without leaving the current page. With customizable design options and smooth animations, this widget not only streamlines the shopping process but also enhances the overall aesthetics of your online store, making it a must-have for Elementor users looking to optimize their WooCommerce websites.
+2. [Woo Mini Cart Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-mini-cart-widget-for-elementor/)  The Woo Mini Cart widget for Elementor boosts online shopping experience by integrating a compact, interactive cart into your website. It offers smooth navigation, customization, and aesthetic enhancements for Elementor users optimizing their WooCommerce sites.
 
-3. [Woo Product Grid Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-grid-widget-for-elementor/) -  The WooCommerce Product Grid is a powerful widget that allows you to present your products in the most appealing style on your Elementor pages. Showcase your products in multiple layouts and design the with unlimited customization possibilities.
+3. [Woo Product Grid Widget for Elementor (Pro)](https://unlimited-elements.com/woo-product-grid-widget-for-elementor/)  The Woo Product Grid widget helps you display products in a visually appealing way on your Elementor pages. You can choose different layouts and customize them for a stunning WooCommerce product presentation.
 
-4. [Woo Product Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-carousel-widget-for-elementor) -  The Woocommerce product carousel helps showcase your Woocommerce products on any Elementor page in an interactive carousel format.
+4. [Woo Product Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-carousel-widget-for-elementor)  The Woo product carousel enables you to display your WooCommerce products in an engaging interactive carousel format on any Elementor page.
 
-5. [Woo AJAX Search Widget for Elementor (Pro)](https://work.unlimited-elements.com/woocommerce-ajax-search/) -  The fastest AJAX search widget for your WordPress website. Easily add a live search bar to any Elementor website.
+5. [Woo AJAX Search Widget for Elementor (Pro)](https://work.unlimited-elements.com/woocommerce-ajax-search/)  The Woo AJAX Search stands out as the fastest AJAX search widget for your e-commerce platform. Seamlessly integrate a live search bar into any WooCommerce website.
 
-6. [Woo Product Slider Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-slider-widget-for-elementor) - 
+6. [Woo Product Slider Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-slider-widget-for-elementor)  Showcase your WooCommerce products on any Elementor page with an engaging slider layout using the Woo Product Slider. Enjoy full control over all settings for a seamless display experience.
 
-7. [Woo Category Grid Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-category-grid-for-elemenetor/) -  The WooCommerce Category Grid Widget helps you showcase WooCommerce categories in a responsive grid layout inside of Elementor. Set the grid number of columns in each row and the gap between the grid items to customize your WooCommerce Category Grid. The perfect solution to display your product categories on your Elementor shop page in a stylish grid layout.
+7. [Woo Category Grid Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-category-grid-for-elemenetor/)  The Woo Category Grid widget allows you to display WooCommerce categories in a responsive grid layout within Elementor. Customize the number of columns and gap between items to create your WooCommerce Category Grid.
 
-8. [Woo Category Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-category-carousel-widget-for-elementor/) - 
+8. [Woo Category Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-category-carousel-widget-for-elementor/)  The Woo Category Carousel Widget enables you to display WooCommerce categories in an engaging carousel format within Elementor.
 
-9. [Quantity Increment Buttons Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-grid-widget-for-elementor/) - 
+9. [Quantity Increment Buttons Widget for Elementor (Pro)](https://unlimited-elements.com/woocommerce-product-grid-widget-for-elementor/)  Include this widget within a loop item to incorporate Quantity Increment Buttons into your loop grid. These buttons enable users to seamlessly add multiple products to their shopping cart directly from the grid.
 
 
 === Marketing Widgets for Elementor ===
 
-1. [Call To Action Button Widget for Elementor (Free)](https://unlimited-elements.com/call-to-action-button-widget-for-elementor/) -  Use the call to action button widget on your Elementor website to get visitors moving in the right direction quickly. The widget consists of many design options to make the button blend with your website design. The Call to Action widget is an effective marketing tool for Elementor users. It allows you to add CTAs throughout your website so that you can direct visitors where you want them to go. With this widget, you can create buttons with links such as, phone number, SMS, email, facebook messenger, or WhatsApp, or use just a simple link for redirecting visitors to a special offer or featured product page.
+1. [Timer Countdown Widget for Elementor (Free)](https://unlimited-elements.com/timer-countdowns-for-elementor-page-builder/)  Easily generate a stunning, animated countdown clock add-on to showcase on your Elementor website. Countdown to any date with a personalized timer of your own.
 
-2. [Price List Widget for Elementor (Free)](https://unlimited-elements.com/price-list-widget-for-elementor/) -  Using the Price List widget create stunning pricing menus on your Elementor website. This widget is great for restaurant menus or even showing your products or services with price tags. The widget displays a list of items, services, or anything else you want and is highly customizable! The Price List widget allows you to create beautiful, professional catalogs and menus that list pricing information. Display prices in the form of beautiful lists with the Price List Widget for Elementor.
+2. [Product Box Widget for Elementor (Free)](https://unlimited-elements.com/product-box-widget-for-elementor/)  The Product Box widget helps you easily display your products and services.
 
-3. [Overlay Product Box Widget for Elementor (Free)](https://unlimited-elements.com/overlay-product-box-widget-for-elementor/) - 
+3. [Price List Widget for Elementor (Free)](https://unlimited-elements.com/price-list-widget-for-elementor/)  Utilize the Price List widget to design appealing pricing menus on your Elementor site. Perfect for restaurant menus or displaying products/services with prices, this widget provides customizable lists.
 
-4. [Business Hours Widget for Elementor (Free)](https://unlimited-elements.com/business-hours-widget-for-elementor) - 
+4. [Counter Widget for Elementor (Free)](https://unlimited-elements.com/statistic-counters-for-elementor)  The Counter widget displays your business statistics, showcasing fun facts and figures on your Elementor website.
 
-5. [List Widget for Elementor (Free)](https://unlimited-elements.com/list-widget-for-elementor/) -  Create styled ordered and unordered lists easily. The ordered list will add index numbers automatically to your list items.
+5. [Pricing Table Widget for Elementor (Free)](https://unlimited-elements.com/pricing-table-widget-for-elementor/)  The Pricing Table widget streamlines creating eye-catching pricing tables on your Elementor website with customization options for a great layout. Customize header, features, price, badge, button, and footer effortlessly to match your site's packages.
 
-6. [Review Box Widget for Elementor (Free)](https://unlimited-elements.com/review-box-widget-for-elementor) -  Simply create and display reviews on your Elementor website to build customers’ trust and increase SEO.
+6. [Overlay Product Box Widget for Elementor (Free)](https://unlimited-elements.com/overlay-product-box-widget-for-elementor/)  Utilize the Overlay Product Box to showcase product or service packages elegantly, including pricing and features.
 
-7. [Product Card Widget for Elementor (Free)](http://unlimited-elements.com/food-menu-box-widget-for-elementor/) - 
+7. [Business Hours Widget for Elementor (Free)](https://unlimited-elements.com/business-hours-widget-for-elementor)  The business hours widget allows you to display your work hours seamlessly on your Elementor pages.   Customize the design and display your business hours in a clean, organized fashion.
 
-8. [Timer Countdown Widget for Elementor (Free)](https://unlimited-elements.com/timer-countdowns-for-elementor-page-builder/) -  Instantly create a beautiful, animated countdown clock addon, to share on  your Elementor website. Count down to a date with your own unique timer.
+8. [Call To Action Button Widget for Elementor (Free)](https://unlimited-elements.com/call-to-action-button-widget-for-elementor/)  Utilize Elementor's call-to-action button widget to effectively lead visitors. It offers design flexibility, improving your site's look and acting as a powerful marketing tool. Place CTAs across your site to guide visitors with links for phone numbers, SMS, email, social media, or promotions.
 
-9. [Counter Widget for Elementor (Free)](https://unlimited-elements.com/statistic-counters-for-elementor) -  Showcasing your business statistics and show fun facts and figures on your Elementor website.
+9. [List Widget for Elementor (Free)](https://unlimited-elements.com/list-widget-for-elementor/)  Use the List widget to easily create chic ordered and unordered lists. The ordered list function will add index numbers to your items, while the unordered list will show each item with an icon.
 
-10. [Product Box Widget for Elementor (Free)](https://unlimited-elements.com/product-box-widget-for-elementor/) - 
+10. [Review Box Widget for Elementor (Free)](https://unlimited-elements.com/review-box-widget-for-elementor)  Enhance customer trust and boost SEO by effortlessly generating and showcasing reviews on your Elementor website.
 
-11. [Pricing Table Widget for Elementor (Free)](https://unlimited-elements.com/pricing-table-widget-for-elementor/) -  The Pricing Table widget makes it easy to create beautiful, readable pricing tables for your website. With loads of customization options, you can make your pricing tables eye-catching and interactive, boosting conversions on your site. Enhance the layout and appearance of the pricing table with just a few clicks and make it look great on your Elementor website. You can effortlessly customize the header, features, price, badge, button, and even the pricing table’s footer to your liking. Change the currency, price, or symbol, or with ease, and adjust the content of the pricing table to match your website packages.
+11. [Product Card Widget for Elementor (Free)](http://unlimited-elements.com/food-menu-box-widget-for-elementor/)  The Product Card widget lets you showcase your products or services neatly in a card layout, complete with price, rating, and a call-to-action button.
 
-12. [Pricing Table Flip Box Widget for Elementor (Pro)](https://unlimited-elements.com/pricing-flip-box-widget-for-elementor/) -  The Pricing Table Flip Box allows you to showcase the prices for your products, services, or packages in a beautiful flip box pricing table.
+12. [Pricing Table Flip Box Widget for Elementor (Pro)](https://unlimited-elements.com/pricing-flip-box-widget-for-elementor/)  The Pricing Table Flip Box enables you to elegantly display the prices of your products, services, or packages in a captivating flip box pricing table design.
 
-13. [Unlimited Google Maps Widget for Elementor (Pro)](https://unlimited-elements.com/google-maps-widget-for-elementor) -  Display beautiful google maps with multiple markers on your Elementor website in a matter of seconds.
+13. [Unlimited Google Maps Widget for Elementor (Pro)](https://unlimited-elements.com/google-maps-widget-for-elementor)  Utilize the Unlimited Google Maps widget to effortlessly display captivating Google Maps on your Elementor website in seconds, featuring multiple markers and an info window. Benefit from location navigator and live search capabilities.
 
-14. [List Marquee Widget for Elementor (Pro)](https://unlimited-elements.com/list-marquee-widget-for-elementor/) - 
+14. [List Marquee Widget for Elementor (Pro)](https://unlimited-elements.com/list-marquee-widget-for-elementor/)  Utilize the List Marquee feature to animate your text with a horizontal scroll using the text marquee. Each item is customizable with an icon and corresponding text.
 
-15. [Review Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/card-testimonial-review-carousel-widget-for-elementor) -  The Reviews Carousel increases the visibility reviews you want to highlight to your users by letting you display them throughout your site in an interactive carousel format.
+15. [Review Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/card-testimonial-review-carousel-widget-for-elementor)  The Reviews Carousel boosts the visibility of chosen reviews on your site. Display them in a dynamic carousel format to engage users effectively.
 
-16. [Copy Coupon Code Widget for Elementor (Pro)](https://unlimited-elements.com/copy-coupon-code-widget-for-elementor) -  Click to copy the coupon code to the clipboard. This widget makes it easy for users to redeem your promotions coupon codes. Giveaways, marketing, and more can all benefit from the Coupon Code Widget that will help you turn more visitors into sales. Create engaging, beautiful, and highly-targeting discount code sections and coupon popups for website and product promotions. Simply input the phrase of your button, the text you want to reveal, and the URL – and our easy-to-use widget will produce a reveal button for you to use on your Elementor website. With this Elementor widget, you can effortlessly convert more visitors into purchasers. Generate more leads, sales, or email subscribers by creating adding the Copy Coupon Code to your website.
+16. [Copy Coupon Code Widget for Elementor (Pro)](https://unlimited-elements.com/copy-coupon-code-widget-for-elementor)  Use the Coupon Code Widget to easily boost sales on your Elementor website. Create attractive discount sections, reveal buttons, and popups for promotions. Convert more visitors into purchasers and generate leads effortlessly.
 
-17. [Timer Countdown Banner Widget for Elementor (Pro)](https://unlimited-elements.com/timer-countdown-banner-widget-for-elementor) -  An awesome countdown banner with a a call to action button.
+17. [Timer Countdown Banner Widget for Elementor (Pro)](https://unlimited-elements.com/timer-countdown-banner-widget-for-elementor)  Utilize the Timer Countdown Banner to craft an interactive countdown banner featuring a prominent call-to-action button. Tailor the content, link the button to any destination, and personalize its style to align with your preferences.
 
-18. [Product Bullets Widget for Elementor (Pro)](https://unlimited-elements.com/product-bullets-widget-for-elementor) - 
+18. [Product Highlights Widget for Elementor (Pro)](https://unlimited-elements.com/two-column-product-bullets-widget-for-elementor/)  Create visually appealing product feature lists to assist potential buyers in making purchase decisions and gaining a deeper understanding of your products.
 
-19. [Price Box Widget for Elementor (Pro)](https://unlimited-elements.com/price-box-widget-for-elementor/) - 
+19. [Icon Mobile Menu Widget for Elementor (Pro)](https://unlimited-elements.com/icon-mobile-menu-for-elementor)  Icon Mobile Menu is an excellent tool for incorporating an icon menu to enhance the visibility of your CTA buttons for website visitors on mobile devices.
 
-20. [Icon Mobile Menu Widget for Elementor (Pro)](https://unlimited-elements.com/icon-mobile-menu-for-elementor) -  A perfect way to add an icon menu for making your CTA buttons stand out for website visitors using mobile devices.
+20. [Product Bullets Widget for Elementor (Pro)](https://unlimited-elements.com/product-bullets-widget-for-elementor)  The product bullets widget enables you to showcase your features or services with concise bullet points, enhancing readability and highlighting key information for users.
 
-21. [Floating Chat Buttons Widget for Elementor (Pro)](https://unlimited-elements.com/floating-chat-buttons-widget-for-elementor) -  Floating action buttons that display the primary actions in your Elementor website. Provide quick access to social icons or any important or common actions to increase conversions.
+21. [Price Box Widget for Elementor (Pro)](https://unlimited-elements.com/price-box-widget-for-elementor/)  The price box widget enables you to elegantly display your pricing plans with flexibility and style.
 
-22. [Product Highlights Widget for Elementor (Pro)](https://unlimited-elements.com/two-column-product-bullets-widget-for-elementor/) -  Design a visually attractive product feature lists that will help your potential buyers to make purchase decision and learn more about your products.
+22. [Memory Game Widget for Elementor (Pro)](https://unlimited-elements.com/memory-game-widget-for-elementor/)  Challenge your memory with this engaging memory game designed for the Elementor widget.  Fully customizable, adjust the number of cards, choose images and add text for an entertaining and interactive element on your website.
 
-23. [Memory Game Widget for Elementor (Pro)](https://unlimited-elements.com/memory-game-widget-for-elementor/) - 
+23. [Pricing Plans Widget for Elementor (Pro)](https://unlimited-elements.com/pricing-plans-widget-for-elementor)  Utilize the Pricing Plans widget to present comprehensive information to prospective clients clearly and concisely, facilitating their decision-making process.
 
-24. [WhatsApp Chat Widget for Elementor (Pro)](https://unlimited-elements.com/whatsapp-chat-widget-for-elementor) -  A floating WhatsApp button that  allows your website visitors to start a chat  conversation from your website directly to your WhatsApp phone number with just one click.
+24. [vCard Widget for Elementor (Pro)](https://unlimited-elements.com/vcard-widget-for-elementor/)  The vCard allows you to share contact details in a format that's easily readable on different email platforms and phones, making it simple for users to swiftly download contact information.
 
-25. [Pricing Plans Widget for Elementor (Pro)](https://unlimited-elements.com/pricing-plans-widget-for-elementor) -  Use the Pricing Plans widget to display all the information to your potential clients in the clearest and comparable way and help them make a choice.
+25. [Floating Chat Buttons Widget for Elementor (Pro)](https://unlimited-elements.com/floating-chat-buttons-widget-for-elementor)  Elevate your Elementor website with floating action buttons showcasing primary actions. Enhance user experience by offering swift access to social icons or key actions, boosting conversions effectively.
 
-26. [vCard Widget for Elementor (Pro)](https://unlimited-elements.com/vcard-widget-for-elementor/) -  The vCard enables you to send contact information in a format that can be easily read in other e-mail programs and phones for users to download contact information quickly and easily.
+26. [WhatsApp Chat Widget for Elementor (Pro)](https://unlimited-elements.com/whatsapp-chat-widget-for-elementor)  Implement a floating WhatsApp button enabling your website visitors to initiate a chat directly to your WhatsApp phone number with a single click.
 
-27. [Product Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/product-carousel-widget-for-elementor) - 
+27. [Product Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/product-carousel-widget-for-elementor)  Showcase your products with style using the Product Carousel widget. Elevate your display to captivate your audience with an interactive experience. 
 
 
 === Loop Builder for Elementor ===
 
-1. [Loop Grid Widget for Elementor (Pro)](https://unlimited-elements.com/loop-grid-widget-for-elementor/) -  Effortlessly generate diverse grid layouts from single templates using the Loop Grid Widget for enhanced design flexibility.
+1. [Loop Grid Widget for Elementor (Pro)](https://unlimited-elements.com/loop-grid-widget-for-elementor/)  Effortlessly generate diverse grid layouts from single templates using the Loop Grid Widget for enhanced design flexibility.
 
-2. [Loop Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/loop-carousel-widget-for-elementor/) -  Experience seamless carousel creation with the Loop Carousel Widget, effortlessly turning single items into dynamic, visually engaging slides.
+2. [Loop Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/loop-carousel-widget-for-elementor/)  Experience seamless carousel creation with the Loop Carousel Widget, effortlessly turning single items into dynamic, visually engaging slides.
 
-3. [Loop Tabs Widget for Elementor (Pro)](https://unlimited-elements.com/loop-tabs-widget-for-elementor/) -  Effortlessly organize and showcase content with the Loop Tabs Widget, enabling the transformation of individual items into a dynamic and user-friendly tabbed interface.
+3. [Loop Tabs Widget for Elementor (Pro)](https://unlimited-elements.com/loop-tabs-widget-for-elementor/)  Effortlessly organize and showcase content with the Loop Tabs Widget, enabling the transformation of individual items into a dynamic and user-friendly tabbed interface.
 
-4. [Loop Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/loop-accordion-widget-for-elementor/) -  Simplify content display with the Loop Accordion Widget, seamlessly converting individual elements into a collapsible and organized accordion format for enhanced user interaction.
+4. [Loop Accordion Widget for Elementor (Pro)](https://unlimited-elements.com/loop-accordion-widget-for-elementor/)  Simplify content display with the Loop Accordion Widget, seamlessly converting individual elements into a collapsible and organized accordion format for enhanced user interaction.
 
-5. [Loop Slider Widget for Elementor (Pro)](https://unlimited-elements.com/loop-slider-widget-for-elementor/) -  Elevate your content presentation with the Loop Slider Widget. Convert individual items into a seamlessly transitioning slideshow for a visually stunning and user-friendly experience.
+5. [Loop Slider Widget for Elementor (Pro)](https://unlimited-elements.com/loop-slider-widget-for-elementor/)  Elevate your content presentation with the Loop Slider Widget. Convert individual items into a seamlessly transitioning slideshow for a visually stunning and user-friendly experience.
 
-6. [Dynamic Popup Button Widget for Elementor (Pro)](https://unlimited-elements.com/loop-grid-widget-for-elementor/) - 
+6. [Dynamic Popup Button Widget for Elementor (Pro)](https://unlimited-elements.com/loop-grid-widget-for-elementor/) 
 
 
 === Remote Control Widgets for Elementor ===
 
-1. [Remote Arrows Widget for Elementor (Free)](https://unlimited-elements.com/remote-arrows-widget-for-elementor/) -  Use the Remote Control Arrows widget to control navigation in interactive widgets such as sliders, carousels, accordions, tabs, and more. Now you have ultimate flexibility over your arrow navigation styles and you can create multiple layouts by editing the settings. Create vertical and horizontal arrow navigation and connect to any widget inside of the Unlimited Elements widget library.
+1. [Remote Arrows Widget for Elementor (Free)](https://unlimited-elements.com/remote-arrows-widget-for-elementor/)  Use the Remote Control Arrows widget to control navigation in interactive widgets such as sliders, carousels, accordions, tabs, and more. Now you have ultimate flexibility over your arrow navigation styles and you can create multiple layouts by editing the settings. Create vertical and horizontal arrow navigation and connect to any widget inside of the Unlimited Elements widget library.
 
-2. [Remote Bullets Widget for Elementor (Free)](https://unlimited-elements.com/remote-bullets-widget-for-elementor/) -  Change between slides with the help of the Remote Bullets widget. Use the Remote control bullets to control navigation in interactive widgets such as sliders, carousels, accordions, tabs, and more. Enable numbers in your bullets to make the navigation dots have a pagination look and feel. Style the bullets vertically or horizontally to achieve the exact layout you need on your website.
+2. [Remote Bullets Widget for Elementor (Free)](https://unlimited-elements.com/remote-bullets-widget-for-elementor/)  Change between slides with the help of the Remote Bullets widget. Use the Remote control bullets to control navigation in interactive widgets such as sliders, carousels, accordions, tabs, and more. Enable numbers in your bullets to make the navigation dots have a pagination look and feel. Style the bullets vertically or horizontally to achieve the exact layout you need on your website.
 
-3. [Remote Counter Widget for Elementor (Free)](https://unlimited-elements.com/remote-counter-widget-for-elementor/) - 
+3. [Remote Counter Widget for Elementor (Free)](https://unlimited-elements.com/remote-counter-widget-for-elementor/) 
 
-4. [Remote Play Pause Widget for Elementor (Free)](https://unlimited-elements.com/remote-control-widgets) - 
+4. [Remote Play Pause Widget for Elementor (Free)](https://unlimited-elements.com/remote-control-widgets) 
 
-5. [Remote Tabs Widget for Elementor (Pro)](https://unlimited-elements.com/remote-tabs-widget-for-elementor) -  Control your content using remote control tabs to create advanced interactive layouts. Break your website content into multiple tabs that can be folded and unfolded to organize the content and make the user's experience more friendly. Use the Remote Tabs to control other widgets and trigger specific items open. Can connect to a variety of different widgets like accordions, tabs, carousels, and sliders.
+5. [Remote Tabs Widget for Elementor (Pro)](https://unlimited-elements.com/remote-tabs-widget-for-elementor)  Control your content using remote control tabs to create advanced interactive layouts. Break your website content into multiple tabs that can be folded and unfolded to organize the content and make the user's experience more friendly. Use the Remote Tabs to control other widgets and trigger specific items open. Can connect to a variety of different widgets like accordions, tabs, carousels, and sliders.
 
-6. [Remote Dropdown Widget for Elementor (Pro)](https://unlimited-elements.com/remote-dropdown-widget-for-elementor/) - 
+6. [Remote Dropdown Widget for Elementor (Pro)](https://unlimited-elements.com/remote-dropdown-widget-for-elementor/) 
 
-7. [Remote Link Widget for Elementor (Pro)](https://unlimited-elements.com/remote-link-widget-for-elementor) -  Remote Link widget helps navigate to specific items inside of interactive widgets. Create advanced flexible layouts with full design control by creating a link that will help users find the content they want to read faster. Use the Remote Link widget to activate specific items in carousels, sliders, accordions and tabs.
+7. [Remote Link Widget for Elementor (Pro)](https://unlimited-elements.com/remote-link-widget-for-elementor)  Remote Link widget helps navigate to specific items inside of interactive widgets. Create advanced flexible layouts with full design control by creating a link that will help users find the content they want to read faster. Use the Remote Link widget to activate specific items in carousels, sliders, accordions and tabs.
 
-8. [Remote Item Navigation Widget for Elementor (Pro)](https://unlimited-elements.com/remote-item-navigation-widget-for-elementor/) -  Remote Item Navigation widget helps to build advanced layouts together with interactive widgets. Create customized navigation buttons for the layout of your widgets to create flexible designed layouts. Use Icons, Images, or Text for the navigation buttons and style them according to your website's look and feel. Control navigation in interactive widgets such as sliders, carousels, accordions, tabs, and more.
+8. [Remote Item Navigation Widget for Elementor (Pro)](https://unlimited-elements.com/remote-item-navigation-widget-for-elementor/)  Remote Item Navigation widget helps to build advanced layouts together with interactive widgets. Create customized navigation buttons for the layout of your widgets to create flexible designed layouts. Use Icons, Images, or Text for the navigation buttons and style them according to your website's look and feel. Control navigation in interactive widgets such as sliders, carousels, accordions, tabs, and more.
 
-9. [Remote Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/remote-scroll-widget-for-elementor/) - 
+9. [Remote Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/remote-scroll-widget-for-elementor/) 
 
 
 === Menu Widgets for Elementor ===
 
-1. [WordPress Menu Widget for Elementor (Free)](https://unlimited-elements.com/wordpress-menu-widget-for-elementor/) -  The WordPress Menu Widget is a helpful tool that allows you to easily create navigation menus for your Elementor websites. It offers advanced styling options and mobile-friendly behavior, enabling you to create multi-level menus quickly.
+1. [WordPress Menu Widget for Elementor (Free)](https://unlimited-elements.com/wordpress-menu-widget-for-elementor/)  The WordPress Menu Widget is a helpful tool that allows you to easily create navigation menus for your Elementor websites. It offers advanced styling options and mobile-friendly behavior, enabling you to create multi-level menus quickly.
 
-2. [Fullscreen Menu Widget for Elementor (Free)](https://unlimited-elements.com/fullscreen-menu-widget-for-elementor/) -  Create an awesome Elementor Full-Screen Menu​ easily using this widget.  The easiest way to add a hamburger icon that triggers a fullscreen menu overlay with a close button.
+2. [Fullscreen Menu Widget for Elementor (Free)](https://unlimited-elements.com/fullscreen-menu-widget-for-elementor/)  Create an awesome Elementor Full-Screen Menu​ easily using this widget.  The easiest way to add a hamburger icon that triggers a fullscreen menu overlay with a close button.
 
-3. [List Menu Widget for Elementor (Free)](https://unlimited-elements.com/simple-list-menu-widget-for-elementor) -  The List Menu widget is a responsive and free WordPress menu for Elementor. You can easily use the widget to add an awesome menu to your website and improve website navigation. It is easy to customize and configure.
+3. [List Menu Widget for Elementor (Free)](https://unlimited-elements.com/simple-list-menu-widget-for-elementor)  The List Menu widget is a responsive and free WordPress menu for Elementor. You can easily use the widget to add an awesome menu to your website and improve website navigation. It is easy to customize and configure.
 
-4. [Mega Menu Widget for Elementor (Pro)](https://unlimited-elements.com/mega-menu-widget-for-elementor/) -  Create a unique Mega Menu on your website by adding images, icons, maps, or any other Elementor widget to your menu. Create any sort of Mega Menu layout directly inside of the Elementor page builder. Use sections as menu items and design with no limits. Use the Mega Menu Inner Links widget to create the layouts for your Mega Menu items easily with maximum design flexibility. We made it easy to design your Mega Menu item dropdowns just drag and drop widgets to your section and connect to a menu item using an ID. The Mega Menu widget is simple to use and doesn’t require any technical expertise. With just a few quick clicks, you can modify the widget to fit your needs using our straightforward settings.
+4. [Mega Menu Widget for Elementor (Pro)](https://unlimited-elements.com/mega-menu-widget-for-elementor/)  Create a unique Mega Menu on your website by adding images, icons, maps, or any other Elementor widget to your menu. Create any sort of Mega Menu layout directly inside of the Elementor page builder. Use sections as menu items and design with no limits. Use the Mega Menu Inner Links widget to create the layouts for your Mega Menu items easily with maximum design flexibility. We made it easy to design your Mega Menu item dropdowns just drag and drop widgets to your section and connect to a menu item using an ID. The Mega Menu widget is simple to use and doesn’t require any technical expertise. With just a few quick clicks, you can modify the widget to fit your needs using our straightforward settings.
 
-5. [Mega Menu Inner Links Widget for Elementor (Pro)](https://unlimited-elements.com/mega-menu-inner-links-widget-for-elementor/) -  The ultimate widget for adding Inner Links into your Mega Menu.  Use the Mega Menu Inner Links widget to create the layouts for your Mega Menu items easily with maximum design flexibility. Each link can have an icon or image, title and description.
+5. [Mega Menu Inner Links Widget for Elementor (Pro)](https://unlimited-elements.com/mega-menu-inner-links-widget-for-elementor/)  The ultimate widget for adding Inner Links into your Mega Menu.  Use the Mega Menu Inner Links widget to create the layouts for your Mega Menu items easily with maximum design flexibility. Each link can have an icon or image, title and description.
 
-6. [Side Menu Widget for Elementor (Pro)](http://unlimited-elements.com/side-menu-widget-for-elementor) -  Off Canvas sidebar with a WordPress menu inside that can include icon links and a search bar. Use the toggle button to open the side menu and the close icon to close it.
+6. [Side Menu Widget for Elementor (Pro)](http://unlimited-elements.com/side-menu-widget-for-elementor)  Off Canvas sidebar with a WordPress menu inside that can include icon links and a search bar. Use the toggle button to open the side menu and the close icon to close it.
 
-7. [Liquid Full Screen Menu Widget for Elementor (Pro)](https://unlimited-elements.com/liquid-fullscreen-menu-widget-for-elementor) -  A toggle button that animates into a fullscreen menu with a trendy liquid goo effect.
+7. [Liquid Full Screen Menu Widget for Elementor (Pro)](https://unlimited-elements.com/liquid-fullscreen-menu-widget-for-elementor)  A toggle button that animates into a fullscreen menu with a trendy liquid goo effect.
 
-Code Credit:
-https://github.com/ykob/shape-overlays
+8. [One Page Scroll Navigation Widget for Elementor (Pro)](https://unlimited-elements.com/one-page-scroll-navigation-widget-for-elementor)  The best one-page scroll navigation menu solution for Elementor one-page websites. An advanced navigation widget that helps you create a smooth scrolling experience for your, website visitors. Help your website visitors navigate easily & improve the user experience on your Elementor website. The One Page Scroll Navigation widget is super-easy to configure. You can easily add a section ID to each anchor link and set up your one-page website within a few minutes.
 
-8. [One Page Scroll Navigation Widget for Elementor (Pro)](https://unlimited-elements.com/one-page-scroll-navigation-widget-for-elementor) -  The best one-page scroll navigation menu solution for Elementor one-page websites. An advanced navigation widget that helps you create a smooth scrolling experience for your, website visitors. Help your website visitors navigate easily & improve the user experience on your Elementor website. The One Page Scroll Navigation widget is super-easy to configure. You can easily add a section ID to each anchor link and set up your one-page website within a few minutes.
+9. [Circle Menu Widget for Elementor (Pro)](http://unlimited-elements.com/circle-menu-widget-for-elementor)  The circle menu widget is a circular layout that distributes links evenly around its radius. Create a radial menu design on your Elementor website in just seconds. You can achieve different circle navigation menu variations using the styling options. Display your call-to-action links in a circular format to create a trendy and unique look and feel for your Elementor website. The circle menu can be used for social links, inner links on your website, or even contact links for a user profile.
 
-9. [Circle Menu Widget for Elementor (Pro)](http://unlimited-elements.com/circle-menu-widget-for-elementor) -  The circle menu widget is a circular layout that distributes links evenly around its radius. Create a radial menu design on your Elementor website in just seconds. You can achieve different circle navigation menu variations using the styling options. Display your call-to-action links in a circular format to create a trendy and unique look and feel for your Elementor website. The circle menu can be used for social links, inner links on your website, or even contact links for a user profile.
-
-10. [Accordion Menu Widget for Elementor (Pro)](https://unlimited-elements.com/accordion-menu-widget-for-elementor) -  This widget is an excellent way of adding an interactive accordion menu to your Elementor website. It works with the WordPress menu system and allows you to create attractive accordion menus with just a couple of clicks.
+10. [Accordion Menu Widget for Elementor (Pro)](https://unlimited-elements.com/accordion-menu-widget-for-elementor)  This widget is an excellent way of adding an interactive accordion menu to your Elementor website. It works with the WordPress menu system and allows you to create attractive accordion menus with just a couple of clicks.
 
 
 === Content Widgets for Elementor ===
 
-1. [Content Accordion Widget for Elementor (Free)](https://unlimited-elements.com/content-accordion-widget-for-elementor/) -  Display your website content in an interactive accordion widget. Load Elementor templates into your accordion items to create advanced accordion layouts. Each accordion-item can be assigned its own template to create a versatile design. Sync together two or more item-based widgets to create advanced creative layouts that will blow your website visitor’s minds. Create the layouts you have always dreamt of without needing a single line of code. Use remote control widgets to let users navigate between different accordion items. The remote controls will make the user experience on your Elementor website more unique and more friendly.
+1. [Content Accordion Widget for Elementor (Free)](https://unlimited-elements.com/content-accordion-widget-for-elementor/)  Display your website content in an interactive accordion widget. Load Elementor templates into your accordion items to create advanced accordion layouts. Each accordion-item can be assigned its own template to create a versatile design. Sync together two or more item-based widgets to create advanced creative layouts that will blow your website visitor’s minds. Create the layouts you have always dreamt of without needing a single line of code. Use remote control widgets to let users navigate between different accordion items. The remote controls will make the user experience on your Elementor website more unique and more friendly.
 
-2. [Simple Popup Widget for Elementor (Free)](https://unlimited-elements.com/simple-popup-widget-for-elementor/) -  Simple Popup Widget for Elementor is designed to help you create stunning popups and increase your website’s engagement. Easily create custom popups on the fly right within the Elementor page builder.
+2. [Simple Popup Widget for Elementor (Free)](https://unlimited-elements.com/simple-popup-widget-for-elementor/)  Simple Popup Widget for Elementor is designed to help you create stunning popups and increase your website’s engagement. Easily create custom popups on the fly right within the Elementor page builder.
 
-3. [Content Tabs Widget for Elementor (Free)](https://unlimited-elements.com/content-tabs-widget-for-elementor/) -  The Content Tabs widget allows users to navigate various types of content on your website in an interactive tabs layout. Create a collection of headings in one content area, each connected header in the list can activate a different content area associated with it by click. Use tabs to break your content down into multiple parts that may be collapsed and expanded to make the page more tidy and user-friendly.
+3. [Content Tabs Widget for Elementor (Free)](https://unlimited-elements.com/content-tabs-widget-for-elementor/)  The Content Tabs widget allows users to navigate various types of content on your website in an interactive tabs layout. Create a collection of headings in one content area, each connected header in the list can activate a different content area associated with it by click. Use tabs to break your content down into multiple parts that may be collapsed and expanded to make the page more tidy and user-friendly.
 
-4. [Expanding Content Cards Widget for Elementor (Pro)](https://unlimited-elements.com/expanding-content-cards-widget-for-elementor/) -  Display multiple content cards in an interactive vertical accordion. Just click on the card and it will automatically expand to show the content inside of it.
+4. [Expanding Content Cards Widget for Elementor (Pro)](https://unlimited-elements.com/expanding-content-cards-widget-for-elementor/)  Display multiple content cards in an interactive vertical accordion. Just click on the card and it will automatically expand to show the content inside of it.
 
-5. [Content Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/content-carousel-widget-for-elementor/) -  Content carousel allows you to create an interactive carousel where the content for each slide can be anything you want: images, text, HTML, and even Elementor templates.
+5. [Content Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/content-carousel-widget-for-elementor/)  Content carousel allows you to create an interactive carousel where the content for each slide can be anything you want: images, text, HTML, and even Elementor templates.
 
-6. [Content Grid Widget for Elementor (Pro)](https://unlimited-elements.com/content-grid-widget-for-elementor/) -  The Content Grid widget for Elementor displays your content in a grid layout managed by items or different multi-source types.
+6. [Content Grid Widget for Elementor (Pro)](https://unlimited-elements.com/content-grid-widget-for-elementor/)  The Content Grid widget for Elementor displays your content in a grid layout managed by items or different multi-source types.
 
-7. [Mega Slider Widget for Elementor (Pro)](https://unlimited-elements.com/mega-slider-widget-for-elementor/) -  Easily turn sections into slider slides from any Elementor page on the fly. You can now amaze your website visitors with jaw-dropping slider designs that look amazing on any device.
+7. [Mega Slider Widget for Elementor (Pro)](https://unlimited-elements.com/mega-slider-widget-for-elementor/)  Easily turn sections into slider slides from any Elementor page on the fly. You can now amaze your website visitors with jaw-dropping slider designs that look amazing on any device.
 
-8. [Unfold Content Widget for Elementor (Pro)](https://unlimited-elements.com/unfold-content-widget-for-elementor/) -  The Unfold Content widget is one of the space-saving widgets that may help you organize the look of your page by hiding long content that doesn't have to be shown by default.
+8. [Unfold Content Widget for Elementor (Pro)](https://unlimited-elements.com/unfold-content-widget-for-elementor/)  The Unfold Content widget is one of the space-saving widgets that may help you organize the look of your page by hiding long content that doesn't have to be shown by default.
 
-9. [Content Slider Widget for Elementor (Pro)](https://unlimited-elements.com/content-slider-widget-for-elementor) -  Content slider is the most extensive and user-friendly Elementor widget for building amazing sliders. Create stunning animated sliders inside of your web designs in seconds.
+9. [Content Slider Widget for Elementor (Pro)](https://unlimited-elements.com/content-slider-widget-for-elementor)  Content slider is the most extensive and user-friendly Elementor widget for building amazing sliders. Create stunning animated sliders inside of your web designs in seconds.
 
-10. [Content Switcher Widget for Elementor (Pro)](https://unlimited-elements.com/content-switcher-widget-for-elementor/) -  Allow users to switch between two or more types of content using interactive toggle buttons. You can even load Elementor templates as content to make advanced content switcher layouts. The content switcher is ideal for showcasing pricing tables, and pricing plans on your website. You can switch between different content types like images, and text, or even use Elementor templates for the content.
+10. [Content Switcher Widget for Elementor (Pro)](https://unlimited-elements.com/content-switcher-widget-for-elementor/)  Allow users to switch between two or more types of content using interactive toggle buttons. You can even load Elementor templates as content to make advanced content switcher layouts. The content switcher is ideal for showcasing pricing tables, and pricing plans on your website. You can switch between different content types like images, and text, or even use Elementor templates for the content.
 
-11. [Unlimited Table Widget for Elementor (Pro)](http://unlimited-elements.com/unlimited-table-widget-for-elementor/) -  Unlimited Table Widget gives you the easiest way to create table layouts using Elementor. Easily create beautiful tables with sorting and filters.
+11. [Unlimited Table Widget for Elementor (Pro)](http://unlimited-elements.com/unlimited-table-widget-for-elementor/)  Unlimited Table Widget gives you the easiest way to create table layouts using Elementor. Easily create beautiful tables with sorting and filters.
 
-12. [Toggle Box Widget for Elementor (Pro)](https://unlimited-elements.com/toggle-box-widget-for-elementor/) -  Create a content box with a toggle button that can show more information when clicking on it.
+12. [Toggle Box Widget for Elementor (Pro)](https://unlimited-elements.com/toggle-box-widget-for-elementor/)  Create a content box with a toggle button that can show more information when clicking on it.
 
-13. [Unlimited Grid Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-grid-widget-for-elementor/) -  Create advanced content layouts using an easy-to-use grid system with ultimate flexibility.
+13. [Unlimited Grid Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-grid-widget-for-elementor/)  Create advanced content layouts using an easy-to-use grid system with ultimate flexibility.
 
-14. [Content Ticker Widget for Elementor (Pro)](https://unlimited-elements.com/content-ticker-widget-for-elementor/) - 
+14. [Content Ticker Widget for Elementor (Pro)](https://unlimited-elements.com/content-ticker-widget-for-elementor/) 
 
 
 === Media Widgets for Elementor ===
 
-1. [Slider Gallery Widget for Elementor (Free)](https://unlimited-elements.com/slider-gallery-widget-for-elementor/) -  Beautifully Designed, Powerful, and easy to Customize Slider Gallery for Elementor. Add multiple images to your slider gallery and use multiple gallery sources such as posts, products, Instagram images, video items, or an ACF gallery field to populate your Slider Gallery widget. You can present the images in an eye-catching slider with tons of customization and styling options. Draw attention to your photos, videos, and products in a beautiful image or video slider gallery. Choose your slide transition speed and transition style. Connect the Slider Gallery to Remote Control Widgets to create advanced layouts with unlimited possibilities.
+1. [Slider Gallery Widget for Elementor (Free)](https://unlimited-elements.com/slider-gallery-widget-for-elementor/)  Beautifully Designed, Powerful, and easy to Customize Slider Gallery for Elementor. Add multiple images to your slider gallery and use multiple gallery sources such as posts, products, Instagram images, video items, or an ACF gallery field to populate your Slider Gallery widget. You can present the images in an eye-catching slider with tons of customization and styling options. Draw attention to your photos, videos, and products in a beautiful image or video slider gallery. Choose your slide transition speed and transition style. Connect the Slider Gallery to Remote Control Widgets to create advanced layouts with unlimited possibilities.
 
-2. [Tile Gallery Widget for Elementor (Free)](https://unlimited-elements.com/tile-gallery-widget-for-elementor/) -  This widget is an effective tool for adding a tile grid image gallery slider to your website. The gallery lets you navigate using bullets or arrows and opens the images or videos in a light-box.
+2. [Tile Gallery Widget for Elementor (Free)](https://unlimited-elements.com/tile-gallery-widget-for-elementor/)  This widget is an effective tool for adding a tile grid image gallery slider to your website. The gallery lets you navigate using bullets or arrows and opens the images or videos in a light-box.
 
-3. [Compact Gallery Widget for Elementor (Free)](https://unlimited-elements.com/compact-gallery-widget-for-elementor/) -  This widget is an effective tool for adding a Minimalistic Image and Video Gallery to your Elementor website.
+3. [Compact Gallery Widget for Elementor (Free)](https://unlimited-elements.com/compact-gallery-widget-for-elementor/)  This widget is an effective tool for adding a Minimalistic Image and Video Gallery to your Elementor website.
 
-4. [Simple Slider Widget for Elementor (Free)](https://unlimited-elements.com/simple-slider-widget-for-elementor/) - 
+4. [Simple Slider Widget for Elementor (Free)](https://unlimited-elements.com/simple-slider-widget-for-elementor/) 
 
-5. [Random Image Widget for Elementor (Free)](https://unlimited-elements.com/random-image-widget-for-elementor/) -  Create a sequence of images to display a random image on your webpage each time the page is loaded. The widget shows a randomly picked image from a list of images defined by items. Each specific image can be linked using the link field. Each image can have a title showing before or after the image.
+5. [Random Image Widget for Elementor (Free)](https://unlimited-elements.com/random-image-widget-for-elementor/)  Create a sequence of images to display a random image on your webpage each time the page is loaded. The widget shows a randomly picked image from a list of images defined by items. Each specific image can be linked using the link field. Each image can have a title showing before or after the image.
 
-6. [Grid Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/grid-gallery-widget-for-elementor/) -  This widget is an effective tool for adding a grid panel image and video gallery to your Elementor website.
+6. [Grid Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/grid-gallery-widget-for-elementor/)  This widget is an effective tool for adding a grid panel image and video gallery to your Elementor website.
 
-7. [Masonry Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/masonry-gallery-widget-for-elementor/) -  Add an amazing masonry image and video grid with a pretty lightbox effect on your Elementor Pages.
+7. [Masonry Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/masonry-gallery-widget-for-elementor/)  Add an amazing masonry image and video grid with a pretty lightbox effect on your Elementor Pages.
 
-8. [Carousel Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/carousel-gallery-widget-for-elementor/) -  This widget is an effective tool for adding a responsive carousel image and video media carousel to your website.
+8. [Carousel Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/carousel-gallery-widget-for-elementor/)  This widget is an effective tool for adding a responsive carousel image and video media carousel to your website.
 
-9. [Thumbnail Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-gallery-widget-for-elementor/) -  The Thumbnails Gallery Widget allows you to add multiple images to your image gallery with sleek thumbnail navigation. You can present any amount of images in an eye-catching slider gallery with a thumbnail panel. Create several types of thumbnail galleries such as a Video thumbnail gallery, WordPress posts thumbnail gallery, WooCommerce products thumbnail gallery, Instagram thumbnail gallery, or just a simple Image thumbnail gallery.
+9. [Thumbnail Gallery Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-gallery-widget-for-elementor/)  The Thumbnails Gallery Widget allows you to add multiple images to your image gallery with sleek thumbnail navigation. You can present any amount of images in an eye-catching slider gallery with a thumbnail panel. Create several types of thumbnail galleries such as a Video thumbnail gallery, WordPress posts thumbnail gallery, WooCommerce products thumbnail gallery, Instagram thumbnail gallery, or just a simple Image thumbnail gallery.
 
-10. [Audio Playlist Widget for Elementor (Pro)](https://unlimited-elements.com/audio-playlist-widget-for-elementor) -  Create MP3 Audio Playlists inside of Elementor. Use this widget to add the ability to create unlimited numbers of playlists, albums, and audio tracks.
+10. [Audio Playlist Widget for Elementor (Pro)](https://unlimited-elements.com/audio-playlist-widget-for-elementor)  Create MP3 Audio Playlists inside of Elementor. Use this widget to add the ability to create unlimited numbers of playlists, albums, and audio tracks.
 
-11. [Audio Player Widget for Elementor (Pro)](https://unlimited-elements.com/audio-player-widget-for-elementor/) -  MP3 Music Player is a very easy to use Audio Player for Elementor. It gives you the ability to add unlimited audio tracks to any page using our Elementor addon let users listen to music on your website.
+11. [Audio Player Widget for Elementor (Pro)](https://unlimited-elements.com/audio-player-widget-for-elementor/)  MP3 Music Player is a very easy to use Audio Player for Elementor. It gives you the ability to add unlimited audio tracks to any page using our Elementor addon let users listen to music on your website.
 
-12. [Thumbnail Slider Widget for Elementor (Pro)](https://unlimited-elements.com/thumbnail-slider-widget-for-elementor/) - 
+12. [Thumbnail Slider Widget for Elementor (Pro)](https://unlimited-elements.com/thumbnail-slider-widget-for-elementor/) 
 
-13. [Image and Video Content Slider Widget for Elementor (Pro)](https://unlimited-elements.com/image-video-content-slider-widget-for-elementor) - 
+13. [Image and Video Content Slider Widget for Elementor (Pro)](https://unlimited-elements.com/image-video-content-slider-widget-for-elementor) 
 
-14. [Video Playlist Widget for Elementor (Pro)](https://unlimited-elements.com/video-playlist-widget-for-elementor/) - 
+14. [Video Playlist Widget for Elementor (Pro)](https://unlimited-elements.com/video-playlist-widget-for-elementor/) 
 
 
 === Carousel Widgets for Elementor ===
 
-1. [Card Carousel Widget for Elementor (Free)](https://unlimited-elements.com/card-carousel-widget-for-elementor/) -  Use the card carousel widget to display two or more pieces of content in a carousel format. Create any kind of carousel you can think about.
+1. [Card Carousel Widget for Elementor (Free)](https://unlimited-elements.com/card-carousel-widget-for-elementor/)  Use the card carousel widget to display two or more pieces of content in a carousel format. Create any kind of carousel you can think about.
 
-2. [Unlimited Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-carousel-widget-for-elementor) -  The Image Card Carousel allows you to quickly add beautiful images in an interactive carousel layout with a title, text, and button on each card. You can style every element to make your carousel more appealing and add dot or arrow navigation to control the carousel. This widget is the best solution to create an advanced-looking carousel inside of your Elementor website.
+2. [Unlimited Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-carousel-widget-for-elementor)  The Image Card Carousel allows you to quickly add beautiful images in an interactive carousel layout with a title, text, and button on each card. You can style every element to make your carousel more appealing and add dot or arrow navigation to control the carousel. This widget is the best solution to create an advanced-looking carousel inside of your Elementor website.
 
-3. [Coverflow Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/coverflow-carousel-widget-for-elementor/) -  Coverflow carousel is a special kind of widget, that shows slides next to each other with a 3D effect and a reflection. This widget supports 4 different styles: Coverflow, Flat, Wheel, and Carousel.
+3. [Coverflow Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/coverflow-carousel-widget-for-elementor/)  Coverflow carousel is a special kind of widget, that shows slides next to each other with a 3D effect and a reflection. This widget supports 4 different styles: Coverflow, Flat, Wheel, and Carousel.
 
-4. [Icon Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/icon-carousel-widget-for-elementor/) - 
+4. [Icon Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/icon-carousel-widget-for-elementor/) 
 
-5. [Material Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/material-carousel-widget-for-elementor/) - 
+5. [Material Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/material-carousel-widget-for-elementor/) 
 
-6. [Overlay Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/overlay-carousel-widget-for-elementor) - 
+6. [Overlay Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/overlay-carousel-widget-for-elementor) 
 
-7. [Swipe Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/swipe-css-carousel-widget-for-elementor/) - 
+7. [Swipe Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/swipe-css-carousel-widget-for-elementor/) 
 
-8. [Portfolio Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/portfolio-carousel-widget-for-elementor/) - 
+8. [Portfolio Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/portfolio-carousel-widget-for-elementor/) 
 
-9. [Justified Image Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/justified-image-carousel-widget-for-elementor/) -  Show images with different width dimensions all in the same height in an interactive carousel with arrow and dot navigation. Present your photos in all their glory, without cropping them, and create a beautiful justified image carousel on your Elementor Website. Connect the Justified Image Carousel to Remote Control Widgets and create advanced layouts with unlimited possibilities.
+9. [Justified Image Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/justified-image-carousel-widget-for-elementor/)  Show images with different width dimensions all in the same height in an interactive carousel with arrow and dot navigation. Present your photos in all their glory, without cropping them, and create a beautiful justified image carousel on your Elementor Website. Connect the Justified Image Carousel to Remote Control Widgets and create advanced layouts with unlimited possibilities.
 
 
 === Infographic Widgets for Elementor ===
 
-1. [Unlimited Timeline Widget for Elementor (Free)](https://unlimited-elements.com/unlimited-timeline-widget-for-elementor) -  Showcase your story or company history in a vertical timeline layout using the powerful Unlimited Timeline addon for Elementor.
+1. [Unlimited Timeline Widget for Elementor (Free)](https://unlimited-elements.com/unlimited-timeline-widget-for-elementor)  Showcase your story or company history in a vertical timeline layout using the powerful Unlimited Timeline addon for Elementor.
 
-2. [Linear Progress Bar Widget for Elementor (Free)](https://unlimited-elements.com/linear-progress-bar-widget-for-elementor) - 
+2. [Linear Progress Bar Widget for Elementor (Free)](https://unlimited-elements.com/linear-progress-bar-widget-for-elementor) 
 
-3. [Pie chart Widget for Elementor (Free)](https://unlimited-elements.com/pie-chart-for-elementor) - 
+3. [Pie chart Widget for Elementor (Free)](https://unlimited-elements.com/pie-chart-for-elementor) 
 
-4. [Line Chart Widget for Elementor (Free)](https://unlimited-elements.com/unlimited-charts-widget-for-elementor/) - 
+4. [Line Chart Widget for Elementor (Free)](https://unlimited-elements.com/unlimited-charts-widget-for-elementor/) 
 
-5. [Interactive Circle Infographic Widget for Elementor (Pro)](https://unlimited-elements.com/interactive-circle-infographic-widget-for-elementor/) -  The Circle Infographic widget for Elementor is a simple and engaging way to present data, processes, concepts, structures and more. Helps your audience understand an entire cycle using a circular interactive tab layout.
+5. [Interactive Circle Infographic Widget for Elementor (Pro)](https://unlimited-elements.com/interactive-circle-infographic-widget-for-elementor/)  The Circle Infographic widget for Elementor is a simple and engaging way to present data, processes, concepts, structures and more. Helps your audience understand an entire cycle using a circular interactive tab layout.
 
-6. [Unlimited Charts Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-charts-widget-for-elementor) -  The easy way to include animated, interactive graphs and charts on your Elementor website. 6 Chart styles included: Bar Chart, Line Chart, Pie Chart, Doughnut Chart, Radar Chart and Polar Area Chart.
+6. [Unlimited Charts Widget for Elementor (Pro)](https://unlimited-elements.com/unlimited-charts-widget-for-elementor)  The easy way to include animated, interactive graphs and charts on your Elementor website. 6 Chart styles included: Bar Chart, Line Chart, Pie Chart, Doughnut Chart, Radar Chart and Polar Area Chart.
 
-7. [Funnel & Pyramid Widget for Elementor (Pro)](https://unlimited-elements.com/funnel-pyramid-widget-for-elementor/) -  Funnel & Pyramid charts are in the shape of a triangle. These charts are best used when your data is organized in some kind of hierarchical way and the levels indicate some kind of progressive order.
+7. [Funnel & Pyramid Widget for Elementor (Pro)](https://unlimited-elements.com/funnel-pyramid-widget-for-elementor/)  Funnel & Pyramid charts are in the shape of a triangle. These charts are best used when your data is organized in some kind of hierarchical way and the levels indicate some kind of progressive order.
 
-8. [Step Process Widget for Elementor (Pro)](https://unlimited-elements.com/step-process-widget-for-elementor) -  Showcase process/steps with unique layout variations. Create  visual diagrams of step by step instructions to simplify processes to your website visitors.
+8. [Step Process Widget for Elementor (Pro)](https://unlimited-elements.com/step-process-widget-for-elementor)  Showcase process/steps with unique layout variations. Create  visual diagrams of step by step instructions to simplify processes to your website visitors.
 
-9. [Circle Progress Bar Widget for Elementor (Pro)](https://unlimited-elements.com/circle-progress-bar-widget-for-elementor/) - 
+9. [Circle Progress Bar Widget for Elementor (Pro)](https://unlimited-elements.com/circle-progress-bar-widget-for-elementor/) 
 
-10. [Semi Circle Progress Bar Widget for Elementor (Pro)](https://unlimited-elements.com/semi-circle-progress-bar-widget-for-elementor/) - 
+10. [Semi Circle Progress Bar Widget for Elementor (Pro)](https://unlimited-elements.com/semi-circle-progress-bar-widget-for-elementor/) 
 
-11. [Vertical Progress Bar Widget for Elementor (Pro)](https://unlimited-elements.com/vertical-progress-bar-widget-for-elementor) - 
+11. [Vertical Progress Bar Widget for Elementor (Pro)](https://unlimited-elements.com/vertical-progress-bar-widget-for-elementor) 
 
 
 === Testimonials for Elementor ===
 
-1. [Testimonial Box Widget for Elementor (Free)](https://unlimited-elements.com/box-testimonial-widget-for-elementor/) - 
+1. [Testimonial Box Widget for Elementor (Free)](https://unlimited-elements.com/box-testimonial-widget-for-elementor/) 
 
-2. [Testimonial Card Widget for Elementor (Free)](https://unlimited-elements.com/logo-card-testimonial-widget-for-elementor) - 
+2. [Testimonial Card Widget for Elementor (Free)](https://unlimited-elements.com/logo-card-testimonial-widget-for-elementor)  Utilize the Testimonial Card widget to effortlessly incorporate customer or client testimonials, reviews, and feedback onto your website.
 
-3. [Testimonial Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/testimonial-carousel-widget-for-elementor/) - 
+3. [Testimonial Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/testimonial-carousel-widget-for-elementor/) 
 
 
 === Team Members for Elementor ===
 
-1. [Team Member Card Widget for Elementor (Free)](http://unlimited-elements.com/team-member-card-widget-for-elementor/) -  The team member card widget allows you to showcase your staff, employees, or any type of people in a card format on your Elementor website. Spotlight your team with the Team Member Card Widget for Elementor. Gain the client's trust by establishing a personal connection with each and every team member. Showcase information like the team member's image, position, title, and social links to make users engage with the team members on your Elementor website.
+1. [Team Member Card Widget for Elementor (Free)](http://unlimited-elements.com/team-member-card-widget-for-elementor/)  The team member card widget allows you to showcase your staff, employees, or any type of people in a card format on your Elementor website. Spotlight your team with the Team Member Card Widget for Elementor. Gain the client's trust by establishing a personal connection with each and every team member. Showcase information like the team member's image, position, title, and social links to make users engage with the team members on your Elementor website.
 
-2. [Team Member Box Widget for Elementor (Free)](https://unlimited-elements.com/team-member-box-overlay-widget-for-elementor) -  The Team Member Box widget allows you to showcase your staff, employees, or any type of people on your Elementor website easily & fast. The Team Member Box Widget for Elementor is the best way to show off your team members. This widget will make sure that your team looks their best. The Team Member Widget allows you to add your team members' images, positions, and descriptions so that their role in the company is clear. By displaying your team members' social media profile links on your website it is easy for visitors to connect with them.
+2. [Team Member Box Widget for Elementor (Free)](https://unlimited-elements.com/team-member-box-overlay-widget-for-elementor)  The Team Member Box widget allows you to showcase your staff, employees, or any type of people on your Elementor website easily & fast. The Team Member Box Widget for Elementor is the best way to show off your team members. This widget will make sure that your team looks their best. The Team Member Widget allows you to add your team members' images, positions, and descriptions so that their role in the company is clear. By displaying your team members' social media profile links on your website it is easy for visitors to connect with them.
 
-3. [Team Member Carousel Widget for Elementor (Pro)](http://unlimited-elements.com/team-member-carousel-widget-for-elementor/) -  Team Member Carousel lets you arrange multiple Team Member profiles in an interactive carousel layout with dot and arrow navigation. Each Team Member profile is saved as a separate card containing the team member Name, Position, Description, Image, and Social Media accounts. The Team Member Carousel widget for Elementor allows you to create stunning team member sections. Get complete control over formatting and design for each component so that your team looks its best. Showcase your staff, employees or any type of people in an interactive carousel format.
+3. [Team Member Carousel Widget for Elementor (Pro)](http://unlimited-elements.com/team-member-carousel-widget-for-elementor/)  Team Member Carousel lets you arrange multiple Team Member profiles in an interactive carousel layout with dot and arrow navigation. Each Team Member profile is saved as a separate card containing the team member Name, Position, Description, Image, and Social Media accounts. The Team Member Carousel widget for Elementor allows you to create stunning team member sections. Get complete control over formatting and design for each component so that your team looks its best. Showcase your staff, employees or any type of people in an interactive carousel format.
 
-4. [Team Member Icon Effect Widget for Elementor (Pro)](https://unlimited-elements.com/icon-team-member-widget-for-elementor) - 
+4. [Team Member Icon Effect Widget for Elementor (Pro)](https://unlimited-elements.com/icon-team-member-widget-for-elementor) 
 
-5. [Team Member Grid Widget for Elementor (Pro)](http://unlimited-elements.com/team-member-grid-widget-for-elementor/) -  Team Member Grid is a widget that allows you to create the most customizable team showcase. Team Member Grid allows you to show your team quickly and easily with numerous customization possibilities. Team Member Grid for Elementor makes it quick and easy to add your team member profiles to your webpage. You can edit team member information and social links with just a few clicks. Showcase your staff, employees, or any type of people in a grid layout on your Elementor website.
+5. [Team Member Grid Widget for Elementor (Pro)](http://unlimited-elements.com/team-member-grid-widget-for-elementor/)  Team Member Grid is a widget that allows you to create the most customizable team showcase. Team Member Grid allows you to show your team quickly and easily with numerous customization possibilities. Team Member Grid for Elementor makes it quick and easy to add your team member profiles to your webpage. You can edit team member information and social links with just a few clicks. Showcase your staff, employees, or any type of people in a grid layout on your Elementor website.
 
-6. [Team Member Sliding Effect Widget for Elementor (Pro)](https://unlimited-elements.com/sliding-effect-team-member-widget-for-elementor) - 
+6. [Team Member Sliding Effect Widget for Elementor (Pro)](https://unlimited-elements.com/sliding-effect-team-member-widget-for-elementor) 
 
 
 === Content Boxes for Elementor ===
 
-1. [Image Zoom Content Box Widget for Elementor (Free)](https://unlimited-elements.com/image-zoom-content-box-widget-for-elementor/) -  Use the widget to draw attention to vital facts in a professional yet fun way. It will allow your audience to learn about your products, features, services, or events in one spot.
+1. [Image Zoom Content Box Widget for Elementor (Free)](https://unlimited-elements.com/image-zoom-content-box-widget-for-elementor/)  Use the widget to draw attention to vital facts in a professional yet fun way. It will allow your audience to learn about your products, features, services, or events in one spot.
 
-2. [Image Card Widget for Elementor (Free)](https://unlimited-elements.com/image-card-content-box-widget-for-elementor/) - 
+2. [Image Card Widget for Elementor (Free)](https://unlimited-elements.com/image-card-content-box-widget-for-elementor/) 
 
-3. [Content Box Hover Text Reveal Widget for Elementor (Free)](https://unlimited-elements.com/hover-text-reveal-content-box-widget-for-elementor/) - 
+3. [Content Box Hover Text Reveal Widget for Elementor (Free)](https://unlimited-elements.com/hover-text-reveal-content-box-widget-for-elementor/) 
 
-4. [Icon Image Content Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-image-content-box-widget-for-elementor) - 
+4. [Icon Image Content Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-image-content-box-widget-for-elementor) 
 
-5. [Icon Content Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-content-box-widget-for-elementor) - 
+5. [Icon Content Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-content-box-widget-for-elementor) 
 
-6. [Content Box Zoom Caption Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/zoom-caption-reveal-content-box-widget-for-elementor) - 
+6. [Content Box Zoom Caption Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/zoom-caption-reveal-content-box-widget-for-elementor) 
 
-7. [Content Box Overlay Widget for Elementor (Pro)](https://unlimited-elements.com/subtle-overlay-content-box-widget-for-elementor/) - 
+7. [Content Box Overlay Widget for Elementor (Pro)](https://unlimited-elements.com/subtle-overlay-content-box-widget-for-elementor/) 
 
-8. [Animated Border Content Box Widget for Elementor (Pro)](https://unlimited-elements.com/animated-border-content-box-widget-for-elementor) - 
+8. [Animated Border Content Box Widget for Elementor (Pro)](https://unlimited-elements.com/animated-border-content-box-widget-for-elementor) 
 
-9. [Content Box Sliding Effect Widget for Elementor (Pro)](https://unlimited-elements.com/sliding-content-box-widget-for-elementor/) - 
+9. [Content Box Sliding Effect Widget for Elementor (Pro)](https://unlimited-elements.com/sliding-content-box-widget-for-elementor/) 
 
 
 === Instagram Widgets for Elementor ===
 
-1. [Instagram Latest Image Widget for Elementor (Free)](https://unlimited-elements.com/latest-instagram-image-widget-for-elementor) - 
+1. [Instagram Latest Image Widget for Elementor (Free)](https://unlimited-elements.com/latest-instagram-image-widget-for-elementor) 
 
-2. [Instagram Feed Widget for Elementor (Pro)](https://unlimited-elements.com/instagram-feed-widget-for-elementor/) -  The Instagram Feed widget is the best solution for showcasing images from your Instagram profile on your Elementor website. It's a flexible and simple solution for amazing-looking Instagram layouts.
+2. [Instagram Feed Widget for Elementor (Pro)](https://unlimited-elements.com/instagram-feed-widget-for-elementor/)  The Instagram Feed widget is the best solution for showcasing images from your Instagram profile on your Elementor website. It's a flexible and simple solution for amazing-looking Instagram layouts.
 
-3. [Instagram Box Widget for Elementor (Pro)](https://unlimited-elements.com/instagram-teaser-box-for-elementor/) - 
+3. [Instagram Box Widget for Elementor (Pro)](https://unlimited-elements.com/instagram-teaser-box-for-elementor/) 
 
-4. [Instagram Card Widget for Elementor (Pro)](https://unlimited-elements.com/instagram-card-widget-for-elementor/) - 
+4. [Instagram Card Widget for Elementor (Pro)](https://unlimited-elements.com/instagram-card-widget-for-elementor/) 
 
-5. [Instagram Metro Grid Widget for Elementor (Pro)](https://unlimited-elements.com/metro-instagram-widget-for-elementor) - 
+5. [Instagram Metro Grid Widget for Elementor (Pro)](https://unlimited-elements.com/metro-instagram-widget-for-elementor) 
 
 
 === Logo Widgets for Elementor ===
 
-1. [Logo Grid Widget for Elementor (Free)](https://unlimited-elements.com/logo-grid-widget-for-elementor/) - 
+1. [Logo Grid Widget for Elementor (Free)](https://unlimited-elements.com/logo-grid-widget-for-elementor/) 
 
-2. [Logo Card Widget for Elementor (Free)](https://unlimited-elements.com/logo-card-widget-for-elementor) - 
+2. [Logo Card Widget for Elementor (Free)](https://unlimited-elements.com/logo-card-widget-for-elementor) 
 
-3. [Logo Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/logo-carousel-widget-for-elementor/) -  The logo carousel widget helps you showcase multiple logos in a responsive carousel layout with arrow and dot navigation. Create a logo carousel to showcase your client or partner logos on your Elementor website. The Logo Carousel makes your brand or sponsor logos shine. You can pick your desired carousel settings, add logos as items, and style up each feature to make a great first impression on your website visitors and potential customers.
+3. [Logo Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/logo-carousel-widget-for-elementor/)  The logo carousel widget helps you showcase multiple logos in a responsive carousel layout with arrow and dot navigation. Create a logo carousel to showcase your client or partner logos on your Elementor website. The Logo Carousel makes your brand or sponsor logos shine. You can pick your desired carousel settings, add logos as items, and style up each feature to make a great first impression on your website visitors and potential customers.
 
-4. [Logo Marquee Widget for Elementor (Pro)](https://unlimited-elements.com/logo-marquee-widget-for-elementor) -  The Logo Marquee widget will help you display multiple logos of your clients or sponsors in an interactive marquee layout style. This widget is perfect for displaying images that automatically scroll vertically or horizontally on your Elementor website. Easily add or remove logos from your logo marquee. Each logo can have a custom link depending on your use case. Add the pause on hover function to make the scrolling stop when users hover over the carousel marquee.
+4. [Logo Marquee Widget for Elementor (Pro)](https://unlimited-elements.com/logo-marquee-widget-for-elementor)  The Logo Marquee widget will help you display multiple logos of your clients or sponsors in an interactive marquee layout style. This widget is perfect for displaying images that automatically scroll vertically or horizontally on your Elementor website. Easily add or remove logos from your logo marquee. Each logo can have a custom link depending on your use case. Add the pause on hover function to make the scrolling stop when users hover over the carousel marquee.
 
 
 === Hover Effects for Elementor ===
 
-1. [Rollover Image Effect Widget for Elementor (Free)](https://unlimited-elements.com/rollover-image-effect-widget-for-elementor/) -  Create a visual effect when one picture replaces the other when the user hovers over it with the pointer. Swap an image when a user hovers over the widget with his mouse cursor. When users hover over the image, they will see the visual effect of one picture replacing another on your Elementor website. The Rollover Image Effect widget can be used to swap out images when a user hovers over the widget with his mouse cursor.
+1. [Rollover Image Effect Widget for Elementor (Free)](https://unlimited-elements.com/rollover-image-effect-widget-for-elementor/)  Create a visual effect when one picture replaces the other when the user hovers over it with the pointer. Swap an image when a user hovers over the widget with his mouse cursor. When users hover over the image, they will see the visual effect of one picture replacing another on your Elementor website. The Rollover Image Effect widget can be used to swap out images when a user hovers over the widget with his mouse cursor.
 
-2. [Link Hover Effects Widget for Elementor (Free)](https://unlimited-elements.com/link-hover-effects/) - 
+2. [Link Hover Effects Widget for Elementor (Free)](https://unlimited-elements.com/link-hover-effects/) 
 
-3. [Icon Hover Effects Widget for Elementor (Free)](https://unlimited-elements.com/icon-hover-effects-for-elementor/) - 
+3. [Icon Hover Effects Widget for Elementor (Free)](https://unlimited-elements.com/icon-hover-effects-for-elementor/) 
 
-4. [Creative Button Hovers Widget for Elementor (Free)](https://unlimited-elements.com/creative-button-hover-widget-for-elementor/) -  Quickly add awesome buttons with creative hover effects in your Elementor pages. There is no limit to your creativity with our button hover effects widget.
+4. [Creative Button Hovers Widget for Elementor (Free)](https://unlimited-elements.com/creative-button-hover-widget-for-elementor/)  Quickly add awesome buttons with creative hover effects in your Elementor pages. There is no limit to your creativity with our button hover effects widget.
 
-5. [Caption Hover Effects Widget for Elementor (Free)](https://unlimited-elements.com/caption-hover-effects/) - 
+5. [Caption Hover Effects Widget for Elementor (Free)](https://unlimited-elements.com/caption-hover-effects/) 
 
-6. [Banner Hover Effects Widget for Elementor (Pro)](https://unlimited-elements.com/banner-hover-effect-widgets-for-elementor/) - 
+6. [Banner Hover Effects Widget for Elementor (Pro)](https://unlimited-elements.com/banner-hover-effect-widgets-for-elementor/) 
 
-7. [iHover Effect Widget for Elementor (Pro)](https://unlimited-elements.com/ihover-for-elementor/) - 
+7. [iHover Effect Widget for Elementor (Pro)](https://unlimited-elements.com/ihover-for-elementor/) 
 
-8. [Border Link Hover Effects Widget for Elementor (Pro)](https://unlimited-elements.com/border-link-hover-effects-widget-for-elementor/) - 
-
-9. [Image Scroll Widget for Elementor (Pro)](https://unlimited-elements.com/scrolling-screenshot-widget-for-elementor) -  Add a long screenshot that will scroll when you hover over it.
+8. [Border Link Hover Effects Widget for Elementor (Pro)](https://unlimited-elements.com/border-link-hover-effects-widget-for-elementor/) 
 
 
 === Button Widgets for Elementor ===
 
-1. [Button Group Widget for Elementor (Free)](https://unlimited-elements.com/button-group-widget-for-elementor/) -  The most efficient way to create advanced multiple button layouts. Create advanced button layouts with an unlimited amount of buttons. Add trendy action buttons in your Elementor sections  and give each button different styles. Add hover animations to make your buttons stand out. Create social links using icons and directing to your social media accounts. Use SVG icons to create customized looking buttons on your website.
+1. [Button Group Widget for Elementor (Free)](https://unlimited-elements.com/button-group-widget-for-elementor/)  The most efficient way to create advanced multiple button layouts. Create advanced button layouts with an unlimited amount of buttons. Add trendy action buttons in your Elementor sections  and give each button different styles. Add hover animations to make your buttons stand out. Create social links using icons and directing to your social media accounts. Use SVG icons to create customized looking buttons on your website.
 
-2. [Gradient Button Widget for Elementor (Free)](https://unlimited-elements.com/gradient-button-widget-for-elementor/) - 
+2. [Gradient Button Widget for Elementor (Free)](https://unlimited-elements.com/gradient-button-widget-for-elementor/) 
 
-3. [Video Play Button Widget for Elementor (Free)](https://unlimited-elements.com/video-play-button-popup-widget-for-elementor/) - 
+3. [Video Play Button Widget for Elementor (Free)](https://unlimited-elements.com/video-play-button-popup-widget-for-elementor/) 
 
-4. [Overlay Button Widget for Elementor (Free)](https://unlimited-elements.com/overlay-button-widget-for-elementor/) - 
+4. [Overlay Button Widget for Elementor (Free)](https://unlimited-elements.com/overlay-button-widget-for-elementor/) 
 
-5. [Parallelogram Button Widget for Elementor (Free)](https://unlimited-elements.com/parellogram-button-widget-for-elementor/) - 
+5. [Parallelogram Button Widget for Elementor (Free)](https://unlimited-elements.com/parellogram-button-widget-for-elementor/) 
 
-6. [Underline Animated Button Widget for Elementor (Free)](https://unlimited-elements.com/underline-animated-button-widget-for-elementor/) - 
+6. [Underline Animated Button Widget for Elementor (Free)](https://unlimited-elements.com/underline-animated-button-widget-for-elementor/) 
 
-7. [Multi Line Button Widget for Elementor (Free)](https://unlimited-elements.com/multi-line-button-widget-for-elementor/) -  A button with more than one line of text and an optional icon.
+7. [Multi Line Button Widget for Elementor (Free)](https://unlimited-elements.com/multi-line-button-widget-for-elementor/)  A button with more than one line of text and an optional icon.
 
-8. [Toggle Text Button Widget for Elementor (Free)](https://unlimited-elements.com/toggle-text-button-widget-for-elementor/) - 
+8. [Toggle Text Button Widget for Elementor (Free)](https://unlimited-elements.com/toggle-text-button-widget-for-elementor/) 
 
-9. [Scroll To Top Widget for Elementor (Free)](unlimited-elements.com/scroll-to-top-widget-for-elementor) -  Scroll to Top buttons allows visitors to go back to the top of your website with a single click. This improves web navigation and gives your current site design a more professional appearance.
+9. [Scroll To Top Widget for Elementor (Free)](unlimited-elements.com/scroll-to-top-widget-for-elementor)  Scroll to Top buttons allows visitors to go back to the top of your website with a single click. This improves web navigation and gives your current site design a more professional appearance.
 
-10. [Dark Mode Widget for Elementor (Free)](https://unlimited-elements.com/dark-mode-widget-for-elementor/) - 
+10. [Dark Mode Widget for Elementor (Free)](https://unlimited-elements.com/dark-mode-widget-for-elementor/) 
 
-11. [Button Icon Hover Effect Widget for Elementor (Pro)](https://unlimited-elements.com/icon-hover-effect-button-widget-for-elementor/) - 
+11. [Button Icon Hover Effect Widget for Elementor (Pro)](https://unlimited-elements.com/icon-hover-effect-button-widget-for-elementor/) 
 
-12. [Glare Button Effect Widget for Elementor (Pro)](https://unlimited-elements.com/glare-effect-button-widget-for-elementor/) - 
+12. [Glare Button Effect Widget for Elementor (Pro)](https://unlimited-elements.com/glare-effect-button-widget-for-elementor/) 
 
-13. [Gradient Hover Effect Button Widget for Elementor (Pro)](https://unlimited-elements.com/gradient-hover-effect-button-widget-for-elementor/) - 
+13. [Gradient Hover Effect Button Widget for Elementor (Pro)](https://unlimited-elements.com/gradient-hover-effect-button-widget-for-elementor/) 
 
-14. [Liquid Button Widget for Elementor (Pro)](https://unlimited-elements.com/liquid-button-widget-for-elementor/) - 
+14. [Liquid Button Widget for Elementor (Pro)](https://unlimited-elements.com/liquid-button-widget-for-elementor/) 
 
-15. [Dropdown Button Widget for Elementor (Pro)](https://unlimited-elements.com/dropdown-button-widget-for-elementor/) - 
+15. [Dropdown Button Widget for Elementor (Pro)](https://unlimited-elements.com/dropdown-button-widget-for-elementor/) 
 
-16. [Border Button Effect Widget for Elementor (Pro)](https://unlimited-elements.com/border-button-effect-widget-for-elementor/) - 
+16. [Border Button Effect Widget for Elementor (Pro)](https://unlimited-elements.com/border-button-effect-widget-for-elementor/) 
 
-17. [Icon Pointer Button Widget for Elementor (Pro)](https://unlimited-elements.com/icon-pointer-button-widget-for-elementor/) - 
+17. [Icon Pointer Button Widget for Elementor (Pro)](https://unlimited-elements.com/icon-pointer-button-widget-for-elementor/) 
 
-18. [Simple Artistic Button Widget for Elementor (Pro)](https://unlimited-elements.com/simple-artistic-button-widget-for-elementor/) - 
+18. [Simple Artistic Button Widget for Elementor (Pro)](https://unlimited-elements.com/simple-artistic-button-widget-for-elementor/) 
 
-19. [Underline Link Hover Effect Widget for Elementor (Pro)](http://unlimited-elements.com/underline-link-hover-effect-widget-for-elementor) - 
+19. [Underline Link Hover Effect Widget for Elementor (Pro)](http://unlimited-elements.com/underline-link-hover-effect-widget-for-elementor) 
 
-20. [Neon Glowing Button Effect Widget for Elementor (Pro)](https://unlimited-elements.com/neon-glowing-button-effect-widget-for-elementor/) -  This widget creates an awesome neon glow effect for your call-to-action buttons in Elementor. The marketing tool that can easily increase your audience interactions.
+20. [Neon Glowing Button Effect Widget for Elementor (Pro)](https://unlimited-elements.com/neon-glowing-button-effect-widget-for-elementor/)  This widget creates an awesome neon glow effect for your call-to-action buttons in Elementor. The marketing tool that can easily increase your audience interactions.
 
-21. [Christmas Button Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-button-widget-for-elementor) - 
+21. [Christmas Button Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-button-widget-for-elementor) 
 
 
 === Typography for Elementor ===
 
-1. [Text Rotator Widget for Elementor (Free)](https://unlimited-elements.com/text-rotator-for-elementor-page-builder/) - 
+1. [Text Rotator Widget for Elementor (Free)](https://unlimited-elements.com/text-rotator-for-elementor-page-builder/) 
 
-2. [3D Text Widget for Elementor (Free)](https://unlimited-elements.com/3d-text-effect-for-elementor/) - 
+2. [3D Text Widget for Elementor (Free)](https://unlimited-elements.com/3d-text-effect-for-elementor/) 
 
-3. [Gradient Underline Text Effect Widget for Elementor (Free)](https://unlimited-elements.com/gradient-underline-text-effect-widget-for-elementor/) - 
+3. [Gradient Underline Text Effect Widget for Elementor (Free)](https://unlimited-elements.com/gradient-underline-text-effect-widget-for-elementor/) 
 
-4. [Dual Color Heading Widget for Elementor (Free)](https://unlimited-elements.com/dual-color-heading-widget-for-elementor/) - 
+4. [Dual Color Heading Widget for Elementor (Free)](https://unlimited-elements.com/dual-color-heading-widget-for-elementor/) 
 
-5. [Stroke Text Effect Widget for Elementor (Free)](https://unlimited-elements.com/stroke-text-effect-widget-for-elementor/) - 
+5. [Stroke Text Effect Widget for Elementor (Free)](https://unlimited-elements.com/stroke-text-effect-widget-for-elementor/) 
 
-6. [Gradient Text Effect Widget for Elementor (Free)](https://unlimited-elements.com/gradient-text-effect-for-elementor/) - 
+6. [Gradient Text Effect Widget for Elementor (Free)](https://unlimited-elements.com/gradient-text-effect-for-elementor/) 
 
-7. [Text Marquee Effect Widget for Elementor (Free)](https://unlimited-elements.com/text-marquee-for-elementor/) -  The Text Marquee widget is a scrolling piece of text displayed horizontally across your Elementor webpage.
+7. [Text Marquee Effect Widget for Elementor (Free)](https://unlimited-elements.com/text-marquee-for-elementor/)  The Text Marquee widget is a scrolling piece of text displayed horizontally across your Elementor webpage.
 
-8. [Scroll Text Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/scroll-reveal-text-widget-for-elementor/) - 
+8. [Scroll Text Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/scroll-reveal-text-widget-for-elementor/) 
 
-9. [Futuristic Typing Text Effect Widget for Elementor (Pro)](https://unlimited-elements.com/futuristic-typing-text-effect-widget-for-elementor/) - 
+9. [Futuristic Typing Text Effect Widget for Elementor (Pro)](https://unlimited-elements.com/futuristic-typing-text-effect-widget-for-elementor/) 
 
-10. [Animated Split Text Widget for Elementor (Pro)](https://unlimited-elements.com/animated-split-text-widget-for-elementor/) - 
+10. [Animated Split Text Widget for Elementor (Pro)](https://unlimited-elements.com/animated-split-text-widget-for-elementor/) 
 
-11. [Sideways Vertical Text Widget for Elementor (Pro)](https://unlimited-elements.com/sideways-vertical-text-widget-for-elementor) - 
+11. [Sideways Vertical Text Widget for Elementor (Pro)](https://unlimited-elements.com/sideways-vertical-text-widget-for-elementor) 
 
-12. [Image Background Text Effect Widget for Elementor (Pro)](https://unlimited-elements.com/image-background-text-effect-widget-for-elementor/) - 
+12. [Image Background Text Effect Widget for Elementor (Pro)](https://unlimited-elements.com/image-background-text-effect-widget-for-elementor/) 
 
-13. [Typewriter Text Effect Widget for Elementor (Pro)](https://unlimited-elements.com/typewriter-text-effect-for-elementor/) - 
+13. [Typewriter Text Effect Widget for Elementor (Pro)](https://unlimited-elements.com/typewriter-text-effect-for-elementor/) 
 
-14. [Side Line Heading Widget for Elementor (Pro)](https://unlimited-elements.com/side-line-heading-widget-for-elementor/) - 
+14. [Side Line Heading Widget for Elementor (Pro)](https://unlimited-elements.com/side-line-heading-widget-for-elementor/) 
 
-15. [Christmas Text Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-text-widget-for-elementor) - 
+15. [Christmas Text Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-text-widget-for-elementor) 
 
 
 === Icon Boxes for Elementor ===
 
-1. [Icon Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-box-widget-for-elementor/) - 
+1. [Icon Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-box-widget-for-elementor/) 
 
-2. [Icon Card Widget for Elementor (Free)](https://unlimited-elements.com/material-footer-card-widget-for-elementor) - 
+2. [Icon Card Widget for Elementor (Free)](https://unlimited-elements.com/material-footer-card-widget-for-elementor) 
 
-3. [Icon Number Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-button-number-box-widget-for-elementor) - 
+3. [Icon Number Box Widget for Elementor (Free)](https://unlimited-elements.com/icon-button-number-box-widget-for-elementor) 
 
-4. [Twist Hover Icon Box Widget for Elementor (Free)](https://unlimited-elements.com/twist-hover-icon-box-widget-for-elementor/) - 
+4. [Twist Hover Icon Box Widget for Elementor (Free)](https://unlimited-elements.com/twist-hover-icon-box-widget-for-elementor/) 
 
-5. [Sliding Icon Box Widget for Elementor (Free)](https://unlimited-elements.com/solid-color-icon-box-widget-for-elementor) - 
+5. [Sliding Icon Box Widget for Elementor (Free)](https://unlimited-elements.com/solid-color-icon-box-widget-for-elementor) 
 
-6. [Animated Icon Box Widget for Elementor (Pro)](https://unlimited-elements.com/animated-icon-box-widget-for-elementor/) - 
+6. [Animated Icon Box Widget for Elementor (Pro)](https://unlimited-elements.com/animated-icon-box-widget-for-elementor/) 
 
-7. [Icon Box Hover Effect Widget for Elementor (Pro)](https://unlimited-elements.com/icon-box-hover-effect-widget-for-elementor/) - 
+7. [Icon Box Hover Effect Widget for Elementor (Pro)](https://unlimited-elements.com/icon-box-hover-effect-widget-for-elementor/) 
 
-8. [Animated Border Icon Box Widget for Elementor (Pro)](https://unlimited-elements.com/animated-border-icon-box-widget-for-elementor/) - 
+8. [Animated Border Icon Box Widget for Elementor (Pro)](https://unlimited-elements.com/animated-border-icon-box-widget-for-elementor/) 
 
-9. [Icon Box Content Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/content-reveal-icon-box-widget-for-elementor/) - 
+9. [Icon Box Content Reveal Widget for Elementor (Pro)](https://unlimited-elements.com/content-reveal-icon-box-widget-for-elementor/) 
 
-10. [Overlay Icon Box Widget for Elementor (Pro)](https://unlimited-elements.com/solid-color-overlay-icon-box-widget-for-elementor) - 
+10. [Overlay Icon Box Widget for Elementor (Pro)](https://unlimited-elements.com/solid-color-overlay-icon-box-widget-for-elementor) 
 
 
 === Block Quotes for Elementor ===
 
-1. [Block Quote Box Widget for Elementor (Free)](https://unlimited-elements.com/block-quote-box-widget-for-elementor) - 
+1. [Block Quote Box Widget for Elementor (Free)](https://unlimited-elements.com/block-quote-box-widget-for-elementor) 
 
-2. [Block Quote Card Widget for Elementor (Free)](https://unlimited-elements.com/material-block-quote-widget-for-elementor/) - 
+2. [Block Quote Card Widget for Elementor (Free)](https://unlimited-elements.com/material-block-quote-widget-for-elementor/) 
 
-3. [Block Quote Carousel Box Widget for Elementor (Free)](https://unlimited-elements.com/block-quote-carousel-box-widget-for-elementor) - 
+3. [Block Quote Carousel Box Widget for Elementor (Free)](https://unlimited-elements.com/block-quote-carousel-box-widget-for-elementor) 
 
-4. [Block Quote Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/block-quote-carousel-widget-for-elementor/) - 
+4. [Block Quote Carousel Widget for Elementor (Pro)](https://unlimited-elements.com/block-quote-carousel-widget-for-elementor/) 
 
-5. [Block Quote Slider Widget for Elementor (Pro)](https://unlimited-elements.com/block-quote-slider-widget-for-elementor) - 
+5. [Block Quote Slider Widget for Elementor (Pro)](https://unlimited-elements.com/block-quote-slider-widget-for-elementor) 
 
 
 === Social Network Icons for Elementor ===
 
-1. [Social Icons Glare Effect Widget for Elementor (Free)](https://unlimited-elements.com/glare-social-icons-widget-for-elementor/) - 
+1. [Social Icons Glare Effect Widget for Elementor (Free)](https://unlimited-elements.com/glare-social-icons-widget-for-elementor/) 
 
-2. [3d Social Icon Buttons Widget for Elementor (Free)](https://unlimited-elements.com/3d-social-icon-buttons-widget-for-elementor) - 
+2. [3d Social Icon Buttons Widget for Elementor (Free)](https://unlimited-elements.com/3d-social-icon-buttons-widget-for-elementor) 
 
-3. [Square to Circle Social Icons Widget for Elementor (Free)](https://unlimited-elements.com/square-to-circle-social-icon-button-widgets-for-elementor) - 
+3. [Square to Circle Social Icons Widget for Elementor (Free)](https://unlimited-elements.com/square-to-circle-social-icon-button-widgets-for-elementor) 
 
-4. [Rotating Social Icons Widget for Elementor (Free)](https://unlimited-elements.com/rotating-social-icon-button-widgets-for-elementor) - 
+4. [Rotating Social Icons Widget for Elementor (Free)](https://unlimited-elements.com/rotating-social-icon-button-widgets-for-elementor) 
 
-5. [Social Icons With Label Widget for Elementor (Free)](https://unlimited-elements.com/label-social-icon-button-widgets-for-elementor) - 
+5. [Social Icons With Label Widget for Elementor (Free)](https://unlimited-elements.com/label-social-icon-button-widgets-for-elementor) 
 
-6. [Shape Social Icons Widget for Elementor (Pro)](https://unlimited-elements.com/shape-social-icon-button-widgets-for-elementor) - 
+6. [Shape Social Icons Widget for Elementor (Pro)](https://unlimited-elements.com/shape-social-icon-button-widgets-for-elementor) 
 
-7. [Social Icons With Circle Fill Effect Widget for Elementor (Pro)](https://unlimited-elements.com/circle-fill-social-icon-button-widgets-for-elementor) - 
+7. [Social Icons With Circle Fill Effect Widget for Elementor (Pro)](https://unlimited-elements.com/circle-fill-social-icon-button-widgets-for-elementor) 
 
 
 === Separators and Dividers for Elementor ===
 
-1. [Unlimited Separator Divider Widget for Elementor (Free)](https://unlimited-elements.com/unlimited-separator-divider-widgets-for-elementor/) - 
+1. [Unlimited Separator Divider Widget for Elementor (Free)](https://unlimited-elements.com/unlimited-separator-divider-widgets-for-elementor/) 
 
-2. [Line Diamond Separator Widget for Elementor (Free)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+2. [Line Diamond Separator Widget for Elementor (Free)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-3. [Line Text Divider Widget for Elementor (Free)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+3. [Line Text Divider Widget for Elementor (Free)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-4. [Triangle Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+4. [Triangle Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-5. [Zigzag Wave Seperator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+5. [Zigzag Wave Seperator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-6. [Three Icons Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+6. [Three Icons Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-7. [Animated Wave Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+7. [Animated Wave Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-8. [Christmas Candy Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) - 
+8. [Christmas Candy Separator Widget for Elementor (Pro)](https://unlimited-elements.com/separator-and-dividers-widgets-for-elementor/) 
 
-9. [Christmas Lights Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-lights-widget-for-elementor/) - 
+9. [Christmas Lights Widget for Elementor (Pro)](https://unlimited-elements.com/christmas-lights-widget-for-elementor/) 
 
 
 === Hero Widgets for Elementor ===
 
-1. [Title Hero Widget for Elementor (Free)](https://unlimited-elements.com/title-hero-widget-for-elementor) - 
+1. [Title Hero Widget for Elementor (Free)](https://unlimited-elements.com/title-hero-widget-for-elementor) 
 
-2. [Box Hero Widget for Elementor (Free)](https://unlimited-elements.com/box-hero-widget-for-elementor/) - 
+2. [Box Hero Widget for Elementor (Free)](https://unlimited-elements.com/box-hero-widget-for-elementor/) 
 
-3. [Split Hero Widget for Elementor (Free)](https://unlimited-elements.com/split-hero-widget-for-elementor) - 
+3. [Split Hero Widget for Elementor (Free)](https://unlimited-elements.com/split-hero-widget-for-elementor) 
 
-4. [Transparent Split Hero Widget for Elementor (Free)](https://unlimited-elements.com/transparent-split-hero-widget-for-elementor) - 
+4. [Transparent Split Hero Widget for Elementor (Free)](https://unlimited-elements.com/transparent-split-hero-widget-for-elementor) 
 
-5. [Border Hero Widget for Elementor (Free)](https://unlimited-elements.com/border-hero-widget-for-elementor) - 
+5. [Border Hero Widget for Elementor (Free)](https://unlimited-elements.com/border-hero-widget-for-elementor) 
 
-6. [Video Hero Widget for Elementor (Pro)](https://unlimited-elements.com/video-hero-widget-for-elementor/) - 
+6. [Video Hero Widget for Elementor (Pro)](https://unlimited-elements.com/video-hero-widget-for-elementor/) 
 
-7. [Split Video Hero Widget for Elementor (Pro)](https://unlimited-elements.com/split-video-hero-widget-for-elementor) - 
+7. [Split Video Hero Widget for Elementor (Pro)](https://unlimited-elements.com/split-video-hero-widget-for-elementor) 
 
-8. [Diagonal Hero Widget for Elementor (Pro)](https://unlimited-elements.com/diagonal-hero-widget-for-elementor/) - 
+8. [Diagonal Hero Widget for Elementor (Pro)](https://unlimited-elements.com/diagonal-hero-widget-for-elementor/) 
 
-9. [Quote Hero Widget for Elementor (Pro)](https://unlimited-elements.com/quote-hero-widget-for-elementor) - 
+9. [Quote Hero Widget for Elementor (Pro)](https://unlimited-elements.com/quote-hero-widget-for-elementor) 
 
-10. [Persona Hero Widget for Elementor (Pro)](https://unlimited-elements.com/persona-hero-widget-for-elementor) - 
+10. [Persona Hero Widget for Elementor (Pro)](https://unlimited-elements.com/persona-hero-widget-for-elementor) 
 
-11. [Service Box Hero Widget for Elementor (Pro)](https://unlimited-elements.com/service-box-hero-widget-for-elementor) - 
+11. [Service Box Hero Widget for Elementor (Pro)](https://unlimited-elements.com/service-box-hero-widget-for-elementor) 
 
-12. [Solid Color Hero Widget for Elementor (Pro)](https://unlimited-elements.com/solid-color-hero-widget-for-elementor) - 
+12. [Solid Color Hero Widget for Elementor (Pro)](https://unlimited-elements.com/solid-color-hero-widget-for-elementor) 
 
 
 === Background Widgets for Elementor ===
 
-1. [Animated Gradient Background Widget for Elementor (Free)](https://unlimited-elements.com/animated-gradient-background-widget-for-elementor/) -  The Animated Gradient Background for Elementor allows you to design beautiful gradient backgrounds for your sections. Create unique effects by changing the gradient angle and applying a variety of color choices! This animate background effect can be used in your hero section or any other section on your Elementor website to your liking.
+1. [Animated Gradient Background Widget for Elementor (Free)](https://unlimited-elements.com/animated-gradient-background-widget-for-elementor/)  The Animated Gradient Background for Elementor allows you to design beautiful gradient backgrounds for your sections. Create unique effects by changing the gradient angle and applying a variety of color choices! This animate background effect can be used in your hero section or any other section on your Elementor website to your liking.
 
-2. [Bubble Float Widget for Elementor (Free)](https://unlimited-elements.com/bubble-float-background-for-elementor/) - 
+2. [Bubble Float Widget for Elementor (Free)](https://unlimited-elements.com/bubble-float-background-for-elementor/) 
 
-3. [Clouds Widget for Elementor (Free)](https://unlimited-elements.com/clouds-background-for-elementor/) - 
+3. [Clouds Widget for Elementor (Free)](https://unlimited-elements.com/clouds-background-for-elementor/) 
 
-4. [Snow Flakes Background Widget for Elementor (Free)](https://unlimited-elements.com/elementor-snow-flakes-background/) -  Add an animated falling snow effect to your website using the Snow Background widget. Adding a snow effect to your website can boost holiday sales and brand morale. Create a magnificent snowfall effect on your website using snow animation. Use the Snow Background widget to add impressive visual effects to your Elementor website and make your sections more appealing to your website visitors. Customize the speed of the snowflakes and opacity to match your website's look and feel.
+4. [Snow Flakes Background Widget for Elementor (Free)](https://unlimited-elements.com/elementor-snow-flakes-background/)  Add an animated falling snow effect to your website using the Snow Background widget. Adding a snow effect to your website can boost holiday sales and brand morale. Create a magnificent snowfall effect on your website using snow animation. Use the Snow Background widget to add impressive visual effects to your Elementor website and make your sections more appealing to your website visitors. Customize the speed of the snowflakes and opacity to match your website's look and feel.
 
-5. [Alternating Colors Widget for Elementor (Free)](https://unlimited-elements.com/alternating-colors-background-for-elementor/) - 
+5. [Alternating Colors Widget for Elementor (Free)](https://unlimited-elements.com/alternating-colors-background-for-elementor/) 
 
-6. [Wave Animation Widget for Elementor (Free)](https://unlimited-elements.com/waves-animation-background-for-elementor/) - 
+6. [Wave Animation Widget for Elementor (Free)](https://unlimited-elements.com/waves-animation-background-for-elementor/) 
 
-7. [Moving Stripes Widget for Elementor (Free)](https://unlimited-elements.com/moving-stripes-elementor-background/) - 
+7. [Moving Stripes Widget for Elementor (Free)](https://unlimited-elements.com/moving-stripes-elementor-background/) 
 
-8. [Retro Blocks Widget for Elementor (Free)](https://unlimited-elements.com/retro-blocks-background-for-elementor/) - 
+8. [Retro Blocks Widget for Elementor (Free)](https://unlimited-elements.com/retro-blocks-background-for-elementor/) 
 
-9. [Diamond Pattern Widget for Elementor (Free)](https://unlimited-elements.com/diamond-pattern-background-for-elementor/) - 
+9. [Diamond Pattern Widget for Elementor (Free)](https://unlimited-elements.com/diamond-pattern-background-for-elementor/) 
 
-10. [Masks & Patterns Background Widget for Elementor (Pro)](https://unlimited-elements.com/mask-and-pattern-background-widget-for-elementor/) -  Create a huge variety of new visual effects by combining masks and patterns with background images, videos, gradients, and slideshows. The Mask and Pattern Background widget is simple to use and doesn’t require any technical expertise. You can modify the widget to fit your needs using our straightforward settings. Each of the masks and patterns can be combined with other background elements like gradients, slideshow images, and, video to create countless unique combinations in just a few clicks.
+10. [Masks & Patterns Background Widget for Elementor (Pro)](https://unlimited-elements.com/mask-and-pattern-background-widget-for-elementor/)  Create a huge variety of new visual effects by combining masks and patterns with background images, videos, gradients, and slideshows. The Mask and Pattern Background widget is simple to use and doesn’t require any technical expertise. You can modify the widget to fit your needs using our straightforward settings. Each of the masks and patterns can be combined with other background elements like gradients, slideshow images, and, video to create countless unique combinations in just a few clicks.
 
-11. [Stars Background Widget for Elementor (Pro)](https://unlimited-elements.com/star-particles-background-for-elementor/) -  Add stunning Stars background effects to your Elementor pages in a matter of seconds, allowing you to make your section’s background pop in just a few clicks. The Stars Background widget is customizable with many options to create amazing interactive backgrounds that suits your Elementor page design the best. Customize the star movement, speed and direction.
+11. [Stars Background Widget for Elementor (Pro)](https://unlimited-elements.com/star-particles-background-for-elementor/)  Add stunning Stars background effects to your Elementor pages in a matter of seconds, allowing you to make your section’s background pop in just a few clicks. The Stars Background widget is customizable with many options to create amazing interactive backgrounds that suits your Elementor page design the best. Customize the star movement, speed and direction.
 
-12. [Animated Squares Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-animated-squares-background/) - 
+12. [Animated Squares Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-animated-squares-background/) 
 
-13. [Blob Animation Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-blob-animation-background/) - 
+13. [Blob Animation Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-blob-animation-background/) 
 
-14. [Sliding Diagonals Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-sliding-diagonals-background/) - 
+14. [Sliding Diagonals Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-sliding-diagonals-background/) 
 
-15. [Particles Background Widget for Elementor (Pro)](https://unlimited-elements.com/particles-background-widget-for-elementor/) -  Add stunning particles background effects to your Elementor pages in a matter of seconds, allowing you to make your section's background pop in a few clicks.
+15. [Particles Background Widget for Elementor (Pro)](https://unlimited-elements.com/particles-background-widget-for-elementor/)  Add stunning particles background effects to your Elementor pages in a matter of seconds, allowing you to make your section's background pop in a few clicks.
 
-16. [Confetti Background Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-confetti-background/) -  Add animated confetti falling in the background of your hero section or any other section on your website. The confetti background widget can be user for sections containing coupons, promotions, registration forms, email redirections, or maybe even order completions. This special background will spice up any section with an awesome festive look and feel. The confetti background widget is also great for any sale like black Friday sale, Christmas sale or any other seasonal sale you may promote on your Elementor website.
+16. [Confetti Background Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-confetti-background/)  Add animated confetti falling in the background of your hero section or any other section on your website. The confetti background widget can be user for sections containing coupons, promotions, registration forms, email redirections, or maybe even order completions. This special background will spice up any section with an awesome festive look and feel. The confetti background widget is also great for any sale like black Friday sale, Christmas sale or any other seasonal sale you may promote on your Elementor website.
 
-17. [Smoke Background Effect Widget for Elementor (Pro)](https://unlimited-elements.com/smoke-background-effect-widget-for-elementor/) -  The smoke Background Effect Widget for Elementor is a smoke animation effect that helps you bring life to your website. It provides an eye-catching liquid animation effect that draws attention and adds a unique touch to your site. WebGL-Fluid-Simulation.
+17. [Smoke Background Effect Widget for Elementor (Pro)](https://unlimited-elements.com/smoke-background-effect-widget-for-elementor/)  The smoke Background Effect Widget for Elementor is a smoke animation effect that helps you bring life to your website. It provides an eye-catching liquid animation effect that draws attention and adds a unique touch to your site. WebGL-Fluid-Simulation.
 
-18. [Snow Background Widget for Elementor (Pro)](https://unlimited-elements.com/snow-background-widget-for-elementor/) -  Add stunning Snow background effects to your Elementor pages in a matter of seconds, allowing you to make your section’s background pop in a few clicks. The Snow Background widget is customizable with many options to create a amazing snow background that suits your Elementor page the best. Create an amazing interactive Snow Background effect on your Elementor website.
+18. [Snow Background Widget for Elementor (Pro)](https://unlimited-elements.com/snow-background-widget-for-elementor/)  Add stunning Snow background effects to your Elementor pages in a matter of seconds, allowing you to make your section’s background pop in a few clicks. The Snow Background widget is customizable with many options to create a amazing snow background that suits your Elementor page the best. Create an amazing interactive Snow Background effect on your Elementor website.
 
-19. [Fireworks Background Widget for Elementor (Pro)](https://unlimited-elements.com/fireworks-background-widget-for-elementor/) -  The Fireworks background widget will help you create stunning sections with awesome styles on your Elementor website. Use the advanced customization options to edit the widget: Firework Color Range, Firework Emitter Range, Delay Between Fireworks, Firework Explosion Size, Trace Length, Firework Speed, Firework Sound,  and the Brightness Range.
+19. [Fireworks Background Widget for Elementor (Pro)](https://unlimited-elements.com/fireworks-background-widget-for-elementor/)  The Fireworks background widget will help you create stunning sections with awesome styles on your Elementor website. Use the advanced customization options to edit the widget: Firework Color Range, Firework Emitter Range, Delay Between Fireworks, Firework Explosion Size, Trace Length, Firework Speed, Firework Sound,  and the Brightness Range.
 
-20. [Bokeh Widget for Elementor (Pro)](https://unlimited-elements.com/bokeh-background-for-elementor/) - 
+20. [Bokeh Widget for Elementor (Pro)](https://unlimited-elements.com/bokeh-background-for-elementor/) 
 
-21. [Background Slider Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-section-backgrounds/) -  Multi source background slideshow for any Elementor section. Transition slides with multiple entrance and exit animations.
+21. [Background Slider Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-section-backgrounds/)  Multi source background slideshow for any Elementor section. Transition slides with multiple entrance and exit animations.
 
-22. [Huge Shapes Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-huge-shapes-background/) - 
+22. [Huge Shapes Widget for Elementor (Pro)](https://unlimited-elements.com/elementor-huge-shapes-background/) 
 
-23. [Random Background Widget for Elementor (Pro)](https://unlimited-elements.com/random-background-widget-for-elementor/) -  Set a random background image or color on every page load. Display random background images on your Elementor sections background from a chain of images you have added beforehand.
+23. [Random Background Widget for Elementor (Pro)](https://unlimited-elements.com/random-background-widget-for-elementor/)  Set a random background image or color on every page load. Display random background images on your Elementor sections background from a chain of images you have added beforehand.
 
-24. [Animated Ripples Widget for Elementor (Pro)](https://unlimited-elements.com/animated-ripples-elementor-background/) - 
+24. [Animated Ripples Widget for Elementor (Pro)](https://unlimited-elements.com/animated-ripples-elementor-background/) 
 
-25. [Parallax Background Widget for Elementor (Pro)](https://unlimited-elements.com/parallax-background-widget-for-elementor/) -  The Parallax Background widget for Elementor adds captivating depth and motion to your web design. With a simple and intuitive interface, it allows you to create stunning parallax scrolling effects effortlessly, enhancing the visual appeal and interactivity of your website.
+25. [Parallax Background Widget for Elementor (Pro)](https://unlimited-elements.com/parallax-background-widget-for-elementor/)  The Parallax Background widget for Elementor adds captivating depth and motion to your web design. With a simple and intuitive interface, it allows you to create stunning parallax scrolling effects effortlessly, enhancing the visual appeal and interactivity of your website.
 
-26. [Morph Background Slider Widget for Elementor (Pro)](https://unlimited-elements.com/morph-background-slider-widget-for-elementor/) -  Use advanced transitions like noise transition, displacement transition, blend transition, and color mix transition to create unique background designs on your Elementor website. Morphing Background Effects Slider with advanced awesome transitions. WebGL-based background image slider widget to create beautiful webpages, landing pages, and image slideshows for your Elementor sections.
+26. [Morph Background Slider Widget for Elementor (Pro)](https://unlimited-elements.com/morph-background-slider-widget-for-elementor/)  Use advanced transitions like noise transition, displacement transition, blend transition, and color mix transition to create unique background designs on your Elementor website. Morphing Background Effects Slider with advanced awesome transitions. WebGL-based background image slider widget to create beautiful webpages, landing pages, and image slideshows for your Elementor sections.
 
-27. [Shooting Lights Widget for Elementor (Pro)](https://unlimited-elements.com/shooting-lights-background-for-elementor/) - 
+27. [Shooting Lights Widget for Elementor (Pro)](https://unlimited-elements.com/shooting-lights-background-for-elementor/) 
 
 
 
@@ -835,7 +830,7 @@ Unlimited Elements empowers you to connect with popular integrations, streamlini
 
 <ul>
 <li>ACF</li>
-<li>Toolset</a></li>
+<li>Toolset</li>
 <li>PODS</li>
 <li>Woo</li>
 <li>Instagram</li>
@@ -844,10 +839,9 @@ Unlimited Elements empowers you to connect with popular integrations, streamlini
 <li>Google Reviews</li>
 <li>YouTube</li>
 <li>Vimeo</li>
-<li>Wistia</li
+<li>Wistia</li>
 <li>ExchangeRate API</li>
 <li>OpenWeather API</li>
-
 </ul>
 
 
@@ -876,6 +870,66 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+
+version 1.5.96: 2024-02-26
+
+Plugin Updates: 
+
+* Feature: added option for time_ago_short in timelines that will show shorter version of minutes and hours text
+* Feature: added defaults for weather widget
+* Fix: fixed hourly weather fields
+* Fix: fixed the import with images functionality
+* Fix: set default timeout to remote requests
+* Fix: fixed the image duplicate when importing templates
+
+Widgets Updates: 
+
+* Feature: Side Menu (Pro) - Implemented 'Menu Padding' option. This new functionality allows users to set padding for the menu, providing control over the spacing and layout within the widget.
+* Feature: Post Grid (Pro) - Introduced a new value for 'Meta Data Position' option called 'Before Title'. This new functionality allows users to position meta data before the title, providing additional flexibility in content layout.
+* Feature: Loop Carousel (Pro) - Implemented 'Stage Padding' option. This new functionality allows users to set stage padding, displaying a part of the previous and next carousel items for a more visually appealing and dynamic presentation.
+* Feature: Interactive Circle Infographic (Pro) - Implemented 'Selected Item Number' option. This new functionality allows users to select a specific item by default, enhancing user experience by highlighting a predetermined item upon initialization.
+* Feature: Unlimited Timeline (Free) - Introduced option to display the image on the opposite side of the content for enhanced layout flexibility and customization.
+* Feature: Thumbnail Slider (Pro) - Introduced 'Multi Source' option, enabling users to select gallery items from various sources for enhanced flexibility and content integration.
+* Feature: Timer Countdown Banner (Pro) - Added 'Direction' option to support RTL (Right-to-Left) layout websites.
+* Feature: Post Horizontal Timeline (Pro) - Introduced Background Color and Icon Color options for Navigation Arrows in disabled mode. This new functionality allows users to customize the appearance of navigation arrows when they are disabled, providing enhanced visual control.
+* Feature: Post Timeline (Pro) - Implemented 'Time Ago Type' option. This new functionality allows users to choose the type of time ago representation, providing flexibility in how time is displayed within the widget.
+* Feature: Post Grid (Pro) - Implemented 'Text Custom Field' option. This new functionality allows users to add a custom field under the main Posts Text, providing additional customization for displaying content.
+* Feature: Post Timeline (Pro) - Implemented 'Link Type' option for all link elements in the widget. This new functionality allows users to choose the type of link for various elements within the widget, enhancing control over linking behavior.
+* Feature: Remote Link (Pro) - Introduced active state for the link. This new functionality allows users to customize the appearance of the link when it is in an active state, providing enhanced visual feedback.
+* Feature: Dynamic Post Popup (Pro) - Implemented 'Hide Vertical Scrollbar in Popup' option. This new functionality allows users to hide the vertical scrollbar within the popup, providing a cleaner and more focused appearance.
+* Feature: Icon Carousel (Pro) - Introduced 'Autoplay Pause on Hover' option, allowing users to pause autoplay functionality when hovering over the carousel for improved control and interaction.
+* Feature: Dynamic Post Popup (Pro) - Introduced Entrance Animation functionality for the popup. This new feature allows users to apply entrance animations, enhancing the visual appeal and engagement when the popup appears.
+* Feature: Unlimited Timeline (Free) - Implemented 'Content Box Link' option. This new functionality allows users to link the entire content box, providing a convenient way to associate a link with the entire widget item.
+* Feature: Text Field (Free) - Added 'Read Only' option, allowing users to set the field as read-only for preventing user input while retaining visibility of the text.
+* Feature: Unlimited Charts (Pro) - Introduced 'Radar Range' option for Radar chart, allowing users to set the minimum range value for improved data visualization.
+* Feature: Testimonial Carousel (Pro) - Added 'Rating' field to the Source option. This new functionality allows users to incorporate a rating field as a source for the widget, expanding the available data sources for enhanced content display.
+* Feature: Multi Step Form (Pro) - Introduced 'Direction' option. This new functionality is useful for RTL (Right-to-Left) websites, allowing users to set the direction of the widget layout accordingly.
+* Feature: Unlimited Timeline (Free) - Introduced option for users to customize the text of each item's button, providing greater flexibility.
+* Feature: Post List (Free) - Implemented 'Space Between Categories' option. This new functionality allows users to set spacing between categories, providing control over the layout and visual presentation of category elements.
+* Feature: Memory Game (Pro) - Introduced 'Add Completion Time to Form Field' option, enabling users to automatically append the time taken to complete the memory game to a designated form field.
+* Feature: Post Timeline (Pro) - Implemented 'Add Link For The Whole Item' option. This new functionality allows users to add a link to the entire widget item, enhancing the interactive capabilities and providing a clickable area for the entire item.
+* Feature: Post Carousel (Pro) - Implemented 'Text Padding' and 'Title Padding' options. This new functionality allows users to set padding for text and title elements, providing enhanced control over spacing and layout within the widget.
+* Feature: Post Grid (Pro) - Introduced 'Date Modified' options. This new functionality allows users to display the date when a post was last modified, providing additional information and transparency in content presentation.
+* Feature: Unlimited Google Maps (Pro) - Introduced options to customize Maps Controls icons' color and background color. This new functionality allows users to personalize the appearance of map controls, enhancing visual customization.
+* Feature: Unlimited Google Maps (Pro) - Implemented 'Disable Map Interaction On Mobile' option. This new functionality allows users to disable map interaction specifically on mobile devices, providing control over the user experience on smaller screens.
+* Change: Content Tabs (Free) - Modified behavior of 'Start Collapsed' option when used with 'Set Hash'. If the URL has a hash, the first opened tab will be determined by the hash, providing a more dynamic and user-friendly experience.
+* Change: Dropdown Button (Pro) - Removed Text Decoration CSS property from dropdown items. This update enhances the visual presentation by eliminating unnecessary text decoration.
+* Change: Woo Mini Cart (Pro) - Added separate border options for 'View Cart' and 'Checkout' buttons, providing users with more customization flexibility for button styling.
+* Change: Swipe Carousel (Pro) - Modified 'Enable Link' option. Now, the entire item serves as a link, providing a more intuitive and consistent approach to linking within the widget.
+* Fix: Submit Button (Free) - Corrected default values in email 2 that were leading to validation errors.
+* Fix: Post Carousel Lite (Free) - Addressed issue where the carousel was not displaying on mobile devices.
+* Fix: Icon Tabs (Pro) - Resolved issue with the 'Start Collapsed' option. The fix ensures that the 'Start Collapsed' option now functions correctly, delivering the intended collapsed behavior upon initialization.
+* Fix: Post Grid (Pro) - Optimized widget item HTML code. This update enhances performance and efficiency by streamlining the HTML structure of widget items.
+* Fix: Unlimited Timeline (Free) - Optimized item HTML code. This update improves performance and efficiency by refining the HTML structure of individual items within the widget.
+* Fix: Unlimited Timeline (Free) - Optimized CSS code. This update improves performance and reduces the overall footprint of the stylesheet, enhancing efficiency and loading times.
+* Fix: Remote Link (Pro) - Resolved issue where the Text Shadow option was erroneously interpreted as Box Shadow. The fix ensures that the Text Shadow option now functions correctly, providing the intended text shadow effect.
+* Fix: Scroll Sequence (Pro) - Revised and improved descriptions of the widget fields for better clarity.
+* Fix: Post Magazine Grid (Pro) - Added 'raw' tag to category names to fix the display issue where the '&' symbol in category names was not displaying correctly.
+* Fix: Before After (Pro) - Improved widget interaction with Elementor's Popups. This update ensures seamless integration and optimal performance when using the widget within Elementor's Popup functionality.
+* Fix: Grid Gallery (Pro) - Resolved an issue where the widget was not extending to full width within Elementor Container.
+* Fix: Particle Image (Pro) - Added protection from lazy load. This update ensures compatibility and proper functionality, mitigating potential issues related to lazy loading on various platforms.
+
+
 version 1.5.95: 2024-02-12:
 
 * Feature: Ensure that the blog displayed on the "Home" page of the plugin is always up-to-date.
@@ -886,6 +940,68 @@ version 1.5.95: 2024-02-12:
 * Fix: Rectified email validation for Form Email2.
 * Fix: Resolved some issues with the price range filter.
 * Fix: fixed the problem where dynamic template styles disappeared after updating Elementor Pro.
+
+Widgets Updates: 
+
+* Feature: Image Zoom Content Box (Free) - Implemented 'Title Tag' option. This new functionality allows users to specify the HTML tag for titles within the widget, providing flexibility and control over the semantic structure of the content.
+* Feature: Post Accordion (Free) - Implemented 'Disable Link in Image' option. This new functionality allows users to disable the link associated with an image, providing more control over the interactive behavior of images within the widget.
+* Feature: Slider Gallery (Free) - Implemented 'Mute Video' option. This new functionality allows to play videos muted by default. Volume can be adjusted in video players on live page.
+* Feature: Unlimited Charts (Pro) - Implemented 'Item Bar Width' option. This new functionality allows users to customize the width of individual bars, providing greater control over the visual representation of items.
+* Feature: Remote Item Navigation (Pro) - Introduced 'Border Override Color' options for Regular and Active states. This new functionality allows users to customize border colors separately for both Regular and Active states, enhancing visual styling in the widget.
+* Feature: Post Grid (Pro) - Implemented 'Title Min Height' option. This new functionality allows users to set a minimum height for the title, offering more control over the visual presentation and consistency in the widget.
+* Feature: Checkbox Field (Pro) - Introduced 'Show Link' option. This new functionality enables users to show or hide links and customize their styling within the widget, offering more control over the interactive elements.
+* Feature: Counter (Free) - Implemented 'Add Link To Widget Container' option. This new functionality allows users to include a link, enhancing the interactive capabilities of the element by enabling navigation to another page or resource.
+* Feature: Icon Box Accordion (Pro) - Introduced 'Icon + Text' option for Graphic Element. This new value expands customization by allowing users to display both an icon and text within the Graphic Element for richer visual representation.
+* Feature: Before After (Pro) - Added support for the widget inside Elementor's Tabs widget. This enhancement ensures seamless integration and compatibility, allowing users to utilize the widget effectively within Elementor's Tabs.
+* Feature: Justified Image Carousel (Pro) - Implemented 'Hide Inactive Arrow' option. This new functionality allows users to hide inactive arrows, providing a cleaner and more focused appearance in the widget interface.
+* Feature: Layers (Pro) - Added shadow for icon type layers.
+* Feature: Icon Pointer Button (Pro) - Introduced 'Direction' option. This new functionality allows users to specify the direction for RTL (Right-to-Left) or LTR (Left-to-Right) websites, ensuring proper layout alignment based on language direction.
+* Feature: Loop Carousel (Pro) - Implemented 'Auto Height' option. This new functionality adjusts the height of the slider dynamically based on the height of the current slide, providing a more adaptive and seamless user experience.
+* Feature: Justified Image Carousel (Pro) - Option to fix the broken layout (resulting in a duplicate carousel) caused by delayed image loading, this solution verifies that the images are loaded before initializing the carousel.
+* Feature: Remote Tabs (Pro) - Introduced styling options for Border Radius, Border, and Shadow for the image of the active tab.
+* Feature: Layers (Pro) - Added background color, padding and radius for text fields.
+* Feature: WhatsApp Chat (Pro) - z-index option for Popup, allowing users to customize the stacking order of the Popup for better control over its visibility in relation to other elements.
+* Feature: WhatsApp Chat (Pro) - Introduced option to customize the Popup Title, along with styling options for enhanced visual control and personalization.
+* Feature: Swipe Carousel (Pro) - Introduced 'Additional Title' options. This new functionality expands customization by providing additional settings for titles, allowing users to further enhance the visual presentation of titles within the widget.
+* Feature: Content Grid (Pro) - Introduced 'Image Scale' option. This new functionality allows users to scale the images, providing enhanced control over the visual presentation within the widget.
+* Feature: Fullscreen Menu (Free) - Implemented feature - automatically opens menu item if it matches the current page URL.
+* Feature: Post Grid (Pro) - Added Option to show post tags, providing users with the ability to showcase tags associated with each post.
+* Feature: Post Magazine Grid (Pro) - Introduced 'Image Scale' and 'CSS Filters' options along with the hover transition duration for enhanced image customization.
+* Feature: Card Carousel (Free) - Implemented 'Image Position' option. This new functionality allows users to customize the position of image within the widget, providing enhanced control over the visual layout.
+* Feature: Layers (Pro) - Added mouse parallax effect, adds a captivating and interactive dimension to the user interface.
+* Feature: Swipe Carousel (Pro) - Introduced additional styling options. This new set of functionalities allows users to further customize and refine the visual appearance of the widget, providing enhanced styling possibilities.
+* Feature: Mega Menu (Pro) - Implemented 'Close Transition Speed' option. This new functionality enables users to set the speed of close animations for the dropdown, enhancing visual transitions and customization.
+* Feature: Unlimited Carousel (Pro) - Added 'Image Position' option, allowing users to customize the position of the image above or below the content for enhanced layout flexibility.
+* Feature: Layers (Pro) - Implemented motion effects—now elements can bounce up and down and move left to right for a livelier interface.
+* Feature: Unlimited Google Maps (Pro) - Implemented 'Center Info Window' option. This new functionality allows users to center the info window on the map, providing enhanced visibility and focus on the selected location.
+* Feature: Unlimited Google Maps (Pro) - Implemented 'Close After Outside Info Window Click' option. This new functionality allows users to close the info window after clicking outside of it on the map, enhancing user interaction and control.
+* Feature: Layers (Pro) - Implemented responsive settings for individual layers, allowing users to toggle each layer on or off based on the specific device requirements.
+* Feature: Image Accordion (Pro) - Added 'Title HTML Tag' option, providing users with better SEO control by allowing customization of HTML tags for widget titles.
+* Feature: Content Tabs (Free) - Introduced option to fire a resize event on tab click, ensuring proper functionality of other widgets inside tab content for a smoother and more seamless user experience.
+* Feature: Event List (Pro) - Implemented 'Remove Expired Event Item' option. This new functionality allows users to automatically remove event items that have expired, streamlining content management within the widget.
+* Feature: Post Grid (Pro) - Added typography option for post tags, allowing users to customize the font style, size, and other typographic attributes.
+* Feature: Event List (Pro) - Implemented 'Horizontal Align' option. This new functionality allows users to customize the horizontal alignment of the button, providing enhanced control over the layout within the widget.
+* Feature: vCard (Pro) - Introduced option to include social media links in downloadable VCF contact file, enhancing contact information with additional social network profiles for improved connectivity.
+* Change: Toggle Text Button (Free) - Upgraded textarea to full functionality editor, providing users with enhanced editing capabilities.
+* Change: vCard (Pro) - Updated vCard JavaScript library to the latest version, ensuring compatibility with current standards and latest feature availability.
+* Fix: Woo Product List (Free) - Introduced 'Layout Type' option. This new functionality allows users to set the layout as either column or row, providing flexibility in organizing and displaying content within the widget.
+* Fix: vCard (Pro) - Resolved issue where QR code was not scanning on some apps.
+* Fix: Hotspots (Pro) - Rebuilt JavaScript code for better interaction. Removed unnecessary code to optimize performance and streamline functionality.
+* Fix: Sideways Vertical Text (Pro) - Text layout shifting issue on Safari browser.
+* Fix: Content Tabs (Free) - Resolved issue with scrolling to the top of the page after tab click. The fix ensures that tab clicks no longer trigger unintended scrolling to the top, providing a smoother user experience.
+* Fix: Fullscreen Menu (Free) - Resolved issue with the vertical scrollbar appearing on hover.
+* Fix: Testimonial Carousel (Pro) - The issue where styling attributes (size and color) for SVG icons were not taking effect.
+* Fix: Content Tabs (Free) - Resolved issue in Content Tabs when Before After widget couldn't function inside tabs. The fix ensures proper functionality, allowing users to utilize the widget as intended.
+* Fix: Woo Product Grid (Pro) - Added image HTML attributes to product images.
+* Fix: Fullscreen Menu (Free) - Resolved issue where the size of social icons wasn't responding to the option value. The fix ensures that the specified option value now accurately reflects the size of social icons.
+* Fix: Counter (Free) - Removed unnecessary space in 'Before Text' and 'After Text' options. This update improves the clarity and presentation of the text by eliminating unnecessary spacing.
+* Fix: Content Tabs (Free) - Added support for Elementor Tabs widget. This enhancement ensures seamless integration and compatibility, allowing users to incorporate the widget effortlessly within Elementor Tabs.
+* Fix: Fullscreen Menu (Free) - Resolved an issue where incorrect icons were being displayed after selecting a menu item.
+* Fix: Woo Mini Cart (Pro) - Improved widget compatibility with optimization plugins like WP Rocket. This update ensures seamless integration, optimizing performance and enhancing the overall user experience when using these plugins.
+* Fix: Post Accordion (Free) - Updated post content loading method to resolve the issue where, on some sites, post content was not displaying correctly.
+* Fix: Dropdown Field (Pro) - Fixed an issue when Dropdown Field couldn't parse Field Name to Number Field widget.
+* Fix: Card Carousel (Free) - Resolved issue where Transition Speed wasn't working for non-default animations. The fix ensures that Transition Speed now functions correctly for all animations, providing consistent and reliable behavior.
+* Fix: Unlimited Google Maps (Pro) - Removed default 2px border with blue color from one of the map elements. This update improves the visual presentation by eliminating an unnecessary border.
 
 
 

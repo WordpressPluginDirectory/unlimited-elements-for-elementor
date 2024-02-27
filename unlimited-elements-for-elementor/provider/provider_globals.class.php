@@ -62,6 +62,8 @@ class GlobalsProviderUC{
 	public static $isUnderAjaxDynamicTemplate = false;
 	public static $isUnderAjax = false;
 	
+	public static $renderJSForHiddenContent = false;		//render encoded js - for hidden templates
+	
 	public static $arrFilterPostTypes = array(		//filter post types that will not show
 				"elementor_library", 
 				"unelements_library", 

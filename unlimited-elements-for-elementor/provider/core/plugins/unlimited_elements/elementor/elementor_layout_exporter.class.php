@@ -33,7 +33,6 @@ class UniteCreatorLayoutsExporterElementor extends UniteCreatorLayoutsExporter{
 	private $importedLayoutContent;
 	private $importSectionID = null;
 	
-	
 	/**
 	 * create layout in db
 	 */
@@ -199,6 +198,18 @@ class UniteCreatorLayoutsExporterElementor extends UniteCreatorLayoutsExporter{
 	}
 	
 	
+	function a________MODIFY_CONTENT_FOR_IMPORT______(){}
+	
+	/**
+	 * modify import content
+	 */
+	private function modifyContentToImport(){
+		
+		dmp("modify");
+		dmp($this->importedLayoutContent);
+		exit();
+	}
+	
 	function a________IMPORT_TEMPLATE_NEW_WAY______(){}
 	
 	/**
@@ -265,8 +276,11 @@ class UniteCreatorLayoutsExporterElementor extends UniteCreatorLayoutsExporter{
 		//get json file path
 		$info = pathinfo($importedFilepath);
 		$filename = $info["basename"];
-				
+		
 		$objLocal = new Elementor\TemplateLibrary\Source_Local();
+		
+		//flag that it's importing mode
+		GlobalsUnlimitedElements::$isImporting = true;
 		
 		$response = $objLocal->import_template( $filename, $importedFilepath );
 		
@@ -384,14 +398,17 @@ class UniteCreatorLayoutsExporterElementor extends UniteCreatorLayoutsExporter{
 		
 		$type = UniteFunctionsUC::getVal($this->importedLayoutContent, "type");
 		
-				
 		if($type == "wp-post")
 			$this->importedLayoutContent["type"] = "page";
 		
+		//$this->modifyContentToImport();
+					
 		$this->importElementorTemplateNew_rewriteJsonFile();
+		
 		
 		//import template
 		$templateID = $this->importElementorTemplateNew_importElementorTemplate();
+		
 		
 		return($templateID);
 	}
@@ -670,15 +687,20 @@ class UniteCreatorLayoutsExporterElementor extends UniteCreatorLayoutsExporter{
 	
 	
 	function a_______IMPORT_IMAGES______(){}
-		
+
 	
 	/**
 	 * import images
 	 */
 	protected function importElementorTemplateNew_importImages(){
-
+				
 		$this->importLayoutImages();
 		
+		/*
+		dmp($this->arrImportImages);
+		dmp($this->importedLayoutContent);
+		exit();
+		*/
 	}
 	
 	/**
@@ -716,15 +738,17 @@ class UniteCreatorLayoutsExporterElementor extends UniteCreatorLayoutsExporter{
 		
 		if(!empty($arrImageData)){
 			
-			$arrImage["url"] = UniteFunctionsUC::getVal($arrImageData, "urlfull");
+			//$arrImage["url"] = UniteFunctionsUC::getVal($arrImageData, "urlfull");
+			$arrImage["url"] = "";
 			$arrImage["id"] = UniteFunctionsUC::getVal($arrImageData, "imageid");
 			
+						
 			return($arrImage);
 		}
 		
 		
 		$arrImage["id"] = UniteFunctionsWPUC::getAttachmentIDFromImageUrl($arrImage["url"]);
-		
+				
 		return($arrImage);
 	}
 	

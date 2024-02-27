@@ -2808,7 +2808,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		if(self::SHOW_DEBUG_QUERY == true)
 			$debugType = "show_query";
 		
-		
 		if(empty($postIDs)){
 			
 			if($showDebugQuery == true){
@@ -2906,6 +2905,64 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	
 	
 	/**
+	 * get the ue templates data
+	 */
+	private function getPostListData_ueTemplates($value, $name, $data){
+		
+		$strTemplatesIDs = UniteFunctionsUC::getVal($value, $name."_uetemplates_ids");
+		
+		$showDebugQuery = UniteFunctionsUC::getVal($value, "{$name}_show_query_debug");
+		$showDebugQuery = UniteFunctionsUC::strToBool($showDebugQuery);
+		
+		$showQueryDebugByUrl = UniteFunctionsUC::getGetVar("ucquerydebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		$showQueryDebugByUrl = UniteFunctionsUC::strToBool($showQueryDebugByUrl);
+		
+		if($showQueryDebugByUrl == true && (UniteFunctionsWPUC::isCurrentUserHasPermissions() || GlobalsUC::$isLocal == true)){
+			$showDebugQuery = true;
+		}
+		
+		
+		if(empty($strTemplatesIDs)){
+			
+			if($showDebugQuery == true){
+				echo "<div class='uc-debug-query-wrapper'>";	//start debug wrapper
+				
+				dmp("UE Templates. No template id's found, no query");
+				
+				dmp($value);
+				
+				echo "</div>";
+			}
+			
+			return(array());
+		}
+		
+		$arrPostInIDs = explode(",", $strTemplatesIDs);
+		
+		$args = array();
+		$args["post_type"] = "ue_templates";
+		$args["post__in"] = $arrPostInIDs;
+		$args["orderby"] = "post__in";
+		$args["posts_per_page"] = 100;
+		
+		$arrPosts = get_posts($args);
+		
+		if($showDebugQuery == true){
+			echo "<div class='uc-debug-query-wrapper'>";	//start debug wrapper
+					
+			dmp("UE Templates. The Query Is:");
+			
+			dmp($args);
+			
+			dmp("Found Posts: ".count($arrPosts));
+			echo "</div>";
+		}
+		
+		return($arrPosts);
+		
+	}
+	
+	/**
 	 * get post list data
 	 */
 	public function getPostListData($value, $name, $processType, $param, $data){
@@ -2932,8 +2989,13 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		
 		
 		$arrPosts = array();
-			
+		
 		switch($source){
+			case "ue_templates":
+								
+				$arrPosts = $this->getPostListData_ueTemplates($value, $name, $data);
+				
+			break;
 			case "manual":
 				
 				$arrPosts = $this->getPostListData_manualSelection($value, $name, $data);

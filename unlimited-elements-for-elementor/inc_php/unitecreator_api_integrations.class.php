@@ -10,7 +10,7 @@
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 class UniteCreatorAPIIntegrations{
-
+	
 	const FORMAT_DATE = "d.m.Y";
 	const FORMAT_DATETIME = "d.m.Y H:i";
 	const FORMAT_MYSQL_DATETIME = "Y-m-d H:i:s";
@@ -886,7 +886,7 @@ class UniteCreatorAPIIntegrations{
 			"fields" => "reviews",
 			"reviews_sort" => "newest",
 		));
-
+		
 		foreach($place->getReviews() as $review){
 			$data[] = array(
 				"id" => $review->getId(),
@@ -985,11 +985,13 @@ class UniteCreatorAPIIntegrations{
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("Country Code", "unlimited-elements-for-elementor"),
 				"desc" => sprintf(__("Specify the two-letter <a href='%s' target='_blank'>country code</a>.", "unlimited-elements-for-elementor"), "https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes"),
+				"default"=>"GB"
 			),
 			array(
 				"id" => self::WEATHER_FORECAST_FIELD_CITY,
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("City Name", "unlimited-elements-for-elementor"),
+				"default" => "London"
 			),
 			array(
 				"id" => self::WEATHER_FORECAST_FIELD_UNITS,
@@ -1021,7 +1023,7 @@ class UniteCreatorAPIIntegrations{
 		
 			$arrItem = array(
 				"id" => $forecast->getId(),
-				"date" => $forecast->getDate(self::FORMAT_DATE),
+				"date" => $forecast->getDate(self::FORMAT_MYSQL_DATETIME),
 				"dow_full" => $forecast->getDate("l"),
 				"dow_short" => $forecast->getDate("D"),
 				"description" => $forecast->getDescription(),
@@ -1050,6 +1052,38 @@ class UniteCreatorAPIIntegrations{
 		
 		return($arrItem);
 	}
+	
+	
+	/**
+	 * get forecast item
+	 */
+	private function getWeatherForecastHourlyItem($forecast){
+		
+			$arrItem = array(
+				"id" => $forecast->getId(),
+				"date" => $forecast->getDate(self::FORMAT_MYSQL_DATETIME),
+				"date_hours" => $forecast->getDate("H").":00",
+				"dow_full" => $forecast->getDate("l"),
+				"dow_short" => $forecast->getDate("D"),
+				"description" => $forecast->getCurrentDescription(),
+				"icon_name" => $forecast->getIconName(),
+				"icon_url" => $forecast->getIconUrl(),
+				"temp" => $forecast->getCurrentTemperature(),
+				"feels_like" => $forecast->getCurrentFeelsLike(),
+				"wind_speed" => $forecast->getWindSpeed(),
+				"wind_degree" => $forecast->getWindDegrees(),
+				"wind_gust" => $forecast->getWindGust(),
+				"pressure" => $forecast->getPressure(),
+				"humidity" => $forecast->getHumidity(),
+				"cloudiness" => $forecast->getCloudiness(),
+				"rain" => $forecast->getRain(),
+				"snow" => $forecast->getSnow(),
+				"uvi" => $forecast->getUvi()
+			);
+					
+		return($arrItem);
+	}
+	
 	
 	/**
 	 * get weather current item
@@ -1107,9 +1141,11 @@ class UniteCreatorAPIIntegrations{
 		foreach($arrDaily as $index => $forecast)
 			$arrDaily[$index] = $this->getWeatherForecastItem($forecast);
 		
-		foreach($arrHourly as $index => $forecast)
-			$arrHourly[$index] = $this->getWeatherForecastItem($forecast);
-
+		foreach($arrHourly as $index => $forecast){
+						
+			$arrHourly[$index] = $this->getWeatherForecastHourlyItem($forecast);
+		}
+		
 		$current = $this->getWeatherForecastCurrentItem($current);
 		
 		$data = array();

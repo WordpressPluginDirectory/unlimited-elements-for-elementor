@@ -367,7 +367,8 @@ class UniteCreatorElementorWidget extends Widget_Base {
      * modify value before add by type
      */
     protected function modifyValueByTypeUC($type, $value){
-    	    	
+		
+    	
     	switch($type){
     		case "image_json":
     			
@@ -393,10 +394,13 @@ class UniteCreatorElementorWidget extends Widget_Base {
     			
     		break;
     		case UniteCreatorDialogParam::PARAM_IMAGE:
-    			
+    			    			
     			if(empty($value))
     				$value = GlobalsUC::$url_no_image_placeholder;
     			
+		    	if(GlobalsUnlimitedElements::$isImporting == true)
+    				$value = "";
+		    	
     			if(is_numeric($value))    				
     				$value = array("id"=>$value);
     			else
@@ -427,7 +431,6 @@ class UniteCreatorElementorWidget extends Widget_Base {
     protected function modifyArrValuesUC($arrTypes, $arrValues){
     	
     	$arrData = array();
-    	
     	    	
     	foreach($arrValues as $paramName=>$value){
     		
@@ -476,6 +479,8 @@ class UniteCreatorElementorWidget extends Widget_Base {
      */
     protected function modifyDefaultItemsDataUC($arrItemsData, $objAddon){
     	
+    	//don't put default data placeholders when widget imports
+    	    	
     	$arrItemsTypes = $objAddon->getParamsTypes(true);
     	
     	foreach($arrItemsData as $key=>$arrData){    		
@@ -668,9 +673,9 @@ class UniteCreatorElementorWidget extends Widget_Base {
          //---- set default data
          
          $arrItemsData = $this->objAddon->getArrItemsForConfig();
-         
-         $arrItemsData = $this->modifyDefaultItemsDataUC($arrItemsData, $this->objAddon);
 
+         $arrItemsData = $this->modifyDefaultItemsDataUC($arrItemsData, $this->objAddon);
+		
          if(empty($arrItemsData))
          	$arrItemsData = array();
          
@@ -1007,7 +1012,7 @@ class UniteCreatorElementorWidget extends Widget_Base {
     	//------- add special params ---------
     	
     	$value = $this->modifyValueByTypeUC($type, $value);
-    	
+    	    	
     	if(empty($controlType)){
     		dmp("empty control param type");
     		dmp($param);
@@ -3086,7 +3091,6 @@ class UniteCreatorElementorWidget extends Widget_Base {
 		       	  		        
 	        	$arrItemsData = $objAddon->getArrItemsForConfig();
 	        	
-	        	//dmp($arrItemsData);exit();
 	        	
 	        	if(!empty($arrItemsData)){
 	        		

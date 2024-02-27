@@ -164,6 +164,7 @@ function UniteCreatorAdmin_ObjectsList(){
 	 * init import layout dialog
 	 */
 	this.initImportLayoutDialog = function(){
+				
 		jQuery("#uc_button_import_layout").on("click",openImportLayoutDialog);
 		
 		jQuery("#uc_dialog_import_layouts_action").on("click",function(){

@@ -152,7 +152,7 @@ class UCEmptyTemplate{
 	 * render multiple template for templates widget output
 	 */
 	private function renderMultipleTemplates(){
-					
+		
 		$this->isMultiple = true;
 		
 		$arrTemplates = explode(",", $this->templateID);
@@ -162,17 +162,38 @@ class UCEmptyTemplate{
 		$content = "";
 		
 		foreach($arrTemplates as $index => $templateID){
-
+			
+			//render in hidden mode
+			
+			$isHidden = false;
+			
+			if($index > 0){
+				
+				GlobalsProviderUC::$renderJSForHiddenContent = true;
+				$isHidden = true;
+				
+			}
+						
 			$output = HelperProviderCoreUC_EL::getElementorTemplate($templateID, true);
+
+			//set hidden content
+			
+			$class = "";
+			if($isHidden == true){
+				
+				$class = " uc-template-hidden uc-not-inited";
+				
+				$output = "\n\n<template>\n$output\n</template>\n\n";
+			}
 			
 			if(empty($output))
 				$output = "template $templateID not found";
 			
-			$class = "";
-			if($index > 0)
-				$class = " uc-template-hidden";
 			
 			$content .= "<div id='uc_template_$templateID' class='uc-template-holder{$class}' data-id='$templateID'>$output</div>";
+			
+			GlobalsProviderUC::$renderJSForHiddenContent = false;
+			
 		}
 		
 		$this->renderHeaderPart();

@@ -543,13 +543,22 @@ class UniteCreatorTemplateEngineWork{
 	public function filterUCDate($dateStamp, $format = "", $formatDateFrom = "d/m/Y"){
 
 		//get the time ago string
-
+		
 		if($format === "time_ago"){
+			
 			$strTimeAgo = UniteFunctionsUC::getTimeAgoString($dateStamp);
 
 			return($strTimeAgo);
 		}
 
+		if($format === "time_ago_short"){
+			
+			$strTimeAgo = UniteFunctionsUC::getTimeAgoString($dateStamp, "short");
+			
+			return($strTimeAgo);
+		}
+		
+		
 		if(empty($format))
 			$format = get_option("date_format");
 
@@ -1325,7 +1334,7 @@ class UniteCreatorTemplateEngineWork{
 				return($urlBase);
 			break;
 			case "put_docready_start":
-
+				
 				$widgetID = UniteFunctionsUC::getVal($this->arrParams, "uc_id");
 
 				HelperHtmlUC::putDocReadyStartJS($widgetID);
@@ -1380,7 +1389,7 @@ class UniteCreatorTemplateEngineWork{
 					$this->checkPutSchemaItems($arg1);
 			break;
 			case "render":		//render twig template
-
+			
 				$html = $this->getRenderedHtml($arg1, GlobalsProviderUC::$isUnderItem);
 				echo $html;
 

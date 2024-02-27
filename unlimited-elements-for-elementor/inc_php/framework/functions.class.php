@@ -2190,12 +2190,49 @@ class UniteFunctionsUC{
 		return($ext);
 	}
 
+	
+	/**
+	 * write rolling log to file.
+	 * prepend content, cut max size from the end
+	 */
+	public static function writeRollingLogFile($pathLog, $arrLines, $maxSize = 30000){
+		
+		$strDate = self::timestamp2DateTime(null);
+		
+		$text = "";
+		$text .= "------------- $strDate -------------- \n\n";
+		
+		$delimiter = "\n\n";
+		
+		if(is_array($arrLines))
+			$lines = implode($delimiter, $arrLines);
+		else 
+			$lines = $arrLines;
+		
+		$text .= $lines;
+		
+		$text .= $delimiter;
+		
+		//prepend text
+		
+		$existingContent = file_get_contents($pathLog);
+
+		//cut from the end
+		
+		if(strlen($existingContent > $maxSize))
+			$existingContent = substr($existingContent, $maxSize);
+		
+		file_put_contents($pathLog, $text . $existingContent);		
+		
+	}
+	
+	
 	/**
 	 *
 	 * save some file to the filesystem with some text
 	 */
 	public static function writeFile($str, $filepath){
-
+		
 		if(is_array($str))
 			UniteFunctionsUC::throwError("write file should accept only string in file: ". $filepath);
 
@@ -2725,13 +2762,35 @@ class UniteFunctionsUC{
 	/**
 	 * get time ago since now
 	 */
-	public static function getTimeAgoString($time_stamp){
-
+	public static function getTimeAgoString($time_stamp, $textFormat="long"){
+		
 		$time_difference = strtotime('now') - $time_stamp;
-
+				
+		$textHours = __('hours',"unlimited-elements-for-elementor"); 
+		$textHour = __('hour',"unlimited-elements-for-elementor");
+		
+		$textMunites = __('minutes',"unlimited-elements-for-elementor");
+		$textMunite = __('minute',"unlimited-elements-for-elementor");
+		
+		$textYears = __('years',"unlimited-elements-for-elementor");
+		$textYear = __('year',"unlimited-elements-for-elementor");
+		
+		$textWeeks = __('weeks',"unlimited-elements-for-elementor");
+		$textWeek = __('week',"unlimited-elements-for-elementor");
+		
+		
+		if($textFormat == "short"){
+			
+			$textHours = __('h',"unlimited-elements-for-elementor"); 
+			$textHour = __('h',"unlimited-elements-for-elementor");
+			$textMunites = __('min',"unlimited-elements-for-elementor");
+			$textMunite = __('min',"unlimited-elements-for-elementor");
+		}
+		
+		
 		//year
 		if ($time_difference >= 60 * 60 * 24 * 365.242199)
-			return self::getTimeAgoStringUnit($time_stamp, 60 * 60 * 24 * 365.242199, __('years',"unlimited-elements-for-elementor"),__('year',"unlimited-elements-for-elementor"));
+			return self::getTimeAgoStringUnit($time_stamp, 60 * 60 * 24 * 365.242199, $textYears, $textYear);
 
 		//month
 		if ($time_difference >= 60 * 60 * 24 * 30.4368499)
@@ -2739,7 +2798,7 @@ class UniteFunctionsUC{
 
 		//week
 		if ($time_difference >= 60 * 60 * 24 * 7)
-			return self::getTimeAgoStringUnit($time_stamp, 60 * 60 * 24 * 7, __('weeks',"unlimited-elements-for-elementor"),__('week',"unlimited-elements-for-elementor"));
+			return self::getTimeAgoStringUnit($time_stamp, 60 * 60 * 24 * 7, $textWeeks, $textWeek);
 
 		//day
 		if ($time_difference >= 60 * 60 * 24)
@@ -2747,10 +2806,10 @@ class UniteFunctionsUC{
 
 		//hour
 		if($time_difference >= 60 * 60)
-			return self::getTimeAgoStringUnit($time_stamp, 60 * 60, __('hours',"unlimited-elements-for-elementor") ,__('hour',"unlimited-elements-for-elementor"));
-
+			return self::getTimeAgoStringUnit($time_stamp, 60 * 60, $textHours , $textHour);
+		
 		//minute
-		return self::getTimeAgoStringUnit($time_stamp, 60, __('minutes',"unlimited-elements-for-elementor"),__('minute',"unlimited-elements-for-elementor"));
+		return self::getTimeAgoStringUnit($time_stamp, 60, $textMunites, $textMunite);
 	}
 
 
@@ -2784,12 +2843,20 @@ class UniteFunctionsUC{
 		$strTime = date("H:i",$stamp);
 		return($strTime);
 	}
-
+	
+	
 	/**
 	 * convert timestamp to date and time string
 	 */
-	public static function timestamp2DateTime($stamp){
-		$strDateTime = date("d M Y, H:i",$stamp);
+	public static function timestamp2DateTime($stamp = null){
+		
+		$dateString = "d M Y, H:i";
+		
+		if(empty($stamp))
+			$strDateTime = date($dateString);
+		else
+			$strDateTime = date("d M Y, H:i",$stamp);
+		
 		return($strDateTime);
 	}
 

@@ -591,6 +591,9 @@ function UEDynamicFilters(){
 			throw new Error("layout not found");
 		
 		var layoutID = objLayout.data("elementor-id");
+			
+		if(!layoutID)
+			layoutID = objLayout.data("id");
 		
 		var output = {};
 		
@@ -1091,7 +1094,7 @@ function UEDynamicFilters(){
 		//run the ajax, prevent default
 		
 		objLoadMore.addClass(g_vars.CLASS_CLICKED);
-		
+				
 		refreshAjaxGrid(objGrid, g_vars.REFRESH_MODE_LOADMORE);
 		
 	}
@@ -1229,6 +1232,9 @@ function UEDynamicFilters(){
 			return(false);
 		}
 		
+		if(g_showDebug == true){
+			trace("refresh grid - on term click");
+		}
 		
 		//refresh grid		
 		refreshAjaxGrid(objGrid);
@@ -1340,7 +1346,7 @@ function UEDynamicFilters(){
 		var objFilter = jQuery(this);
 		
 		var filterType = objFilter.data("filtertype");
-				
+		
 		if(filterType != "general"){
 			
 			trace(objFilter);
@@ -1371,6 +1377,12 @@ function UEDynamicFilters(){
 			return(false);
 		}
 		
+		if(g_showDebug == true){
+			
+			trace("refresh grid - on general filter change");
+			trace(objFilter);
+			
+		}
 		
 		refreshAjaxGrid(objGrid);
 		
@@ -2678,7 +2690,6 @@ function UEDynamicFilters(){
 	 */
 	function getGridAjaxOptions(objFilters, objGrid, isFiltersInitMode, isLoadMoreMode, params){
 		
-		
 		if(!isLoadMoreMode)
 			var isLoadMoreMode = false;
 		
@@ -2696,7 +2707,6 @@ function UEDynamicFilters(){
 			trace(params);
 			
 		}
-				
 		
 		//filter only visible elements (by it's parents)
 		
@@ -2753,10 +2763,26 @@ function UEDynamicFilters(){
 		if(isFiltersInitMode == true && initModeType == "children")
 			initModeChildrens = true;
 			
-		
+		var arrFilterIDs = {};
 		
 		//get ajax options
 		jQuery.each(objFilters, function(index, objFilter){
+			
+			//protection against duplicate id's
+			var id = objFilter.attr("id");
+			
+			if(arrFilterIDs.hasOwnProperty(id) == true){
+				
+				trace("problematic filter: ");
+				trace(objFilter);
+				
+				trace("original filter found: ");
+				trace(arrFilterIDs[id]);
+				
+				throw new Error("Duplicate Filter ID found: " + id);
+			}
+				
+			arrFilterIDs[id] = objFilter;
 			
 			var isNoRefresh = objFilter.data("uc_norefresh");
 			var filterRole = objFilter.data("role");
@@ -2887,6 +2913,8 @@ function UEDynamicFilters(){
 				break;
 				case g_types.GENERAL:
 					
+					var generalType = objFilter.data("generaltype");
+					
 					var generalIsNoRefresh = objFilter.data("norefresh");
 					
 					if(generalIsNoRefresh === true)
@@ -2924,9 +2952,23 @@ function UEDynamicFilters(){
 						
 					}
 					
-					//handle price
-					price_from = getVal(filterData,"price_from");
-					price_to = getVal(filterData,"price_to");
+					if(g_showDebug == true){
+						
+						trace("Filter Data:");
+						trace(filterData);
+					}
+					
+					if(generalType == "price"){
+						
+						var priceFromArg = getVal(filterData,"price_from");
+						var priceToArg = getVal(filterData,"price_to");
+						
+						if(priceFromArg)
+							price_from = priceFromArg;
+						
+						if(priceToArg)
+							price_to = priceToArg;
+					}
 					
 					
 					//handle sort
@@ -2975,7 +3017,6 @@ function UEDynamicFilters(){
 				
 			}
 							
-			
 			//if hidden - no refresh
 			var isFilterHidden = objFilter.hasClass(g_vars.CLASS_HIDDEN);
 			if(isFilterHidden == true)
@@ -3077,12 +3118,24 @@ function UEDynamicFilters(){
 		if(urlAddition_filtersTest)
 			urlAjax = addUrlParam(urlAjax, urlAddition_filtersTest);
 		
-		if(price_from)
+		if(price_from){
 			urlAjax += "&ucpricefrom="+price_from;
+			
+			if(g_showDebug == true){
+				trace("add price from");
+				trace(urlAjax);
+			}
+		}
 		
-		if(price_to)
+		if(price_to){
 			urlAjax += "&ucpriceto="+price_to;
-		
+			
+			if(g_showDebug == true){
+				trace("add price to");
+				trace(urlAjax);
+			}
+		}
+			
 		if(page){
 			urlAjax += "&ucpage="+page;
 			
@@ -3141,6 +3194,7 @@ function UEDynamicFilters(){
 		//search
 		if(search){
 			search = encodeURIComponent(search);
+			
 			//search = escape(search);
 			urlAjax += "&ucs=" + search;
 			
@@ -3172,6 +3226,10 @@ function UEDynamicFilters(){
 		if(urlFilterString)
 			urlFilterString = urlFilterString.substring(1);
 		
+		if(g_showDebug == true){
+			
+			trace("url ajax: " + urlAjax);
+		}
 		
 		var output = {};
 		output["ajax_url"] = urlAjax;
@@ -3179,6 +3237,16 @@ function UEDynamicFilters(){
 		output["terms"] = arrTerms;
 		output["search"] = search;
 		output["filters_string"] = urlFilterString;
+		
+		if(g_showDebug == true){
+			
+			trace("output: ");
+			trace(output);
+			
+			trace("End getGridAjaxOptions function");
+		}
+		
+		
 		
 		return(output);
 	}
@@ -3711,6 +3779,12 @@ function UEDynamicFilters(){
 		objGrids.on(g_vars.ACTION_REFRESH_GRID,function(){
 			
 			var objGrid = jQuery(this);
+			
+			if(g_showDebug == true){
+				trace("Refresh grid - by event:" + g_vars.ACTION_REFRESH_GRID);
+				console.trace();
+			}
+			
 			refreshAjaxGrid(objGrid);
 		});
 		

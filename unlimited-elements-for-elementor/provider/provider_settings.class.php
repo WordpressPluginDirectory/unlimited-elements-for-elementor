@@ -1085,8 +1085,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 	 * add post list picker
 	 */
 	protected function addPostsListPicker($name,$value,$title,$extra){
-
-
+		
  		$simpleMode = UniteFunctionsUC::getVal($extra, "simple_mode");
 		$simpleMode = UniteFunctionsUC::strToBool($simpleMode);
 
@@ -1670,16 +1669,16 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		$arrConditionIncludeDynamic = $arrConditionIncludeBy;
 		$arrConditionIncludeDynamic[$name."_includeby"] = "ids_from_dynamic";
-
+		
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
 		$params["description"] = __("Enter post id's like 45,65,76, or select from dynamic tag","unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludeDynamic;
 		$params["label_block"] = true;
 		$params["add_dynamic"] = true;
-
+		
 		$this->addTextBox($name."_includeby_dynamic_field","",__("Include Posts by Dynamic Field","unlimited-elements-for-elementor"), $params);
-
+		
 
 		//----- include terms from dynamic field by ids -------
 
@@ -2163,7 +2162,11 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 
 		$this->addHr($name."_hr_after_order_dir", $params);
-
+		
+		//allow to modify settings by third party plugins 
+		
+		do_action("ue_modify_post_list_settings", $this, $name);
+		
 
 		//---- query id -----
 

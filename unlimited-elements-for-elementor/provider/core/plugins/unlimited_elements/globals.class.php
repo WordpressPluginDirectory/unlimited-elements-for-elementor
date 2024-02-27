@@ -38,6 +38,8 @@ class GlobalsUnlimitedElements{
 	public static $insideNotificationText = "Unlock Access To All PRO Widgets and Features.  <a href='https://unlimited-elements.com/pricing/' target='_blank'>Upgrade Now</a> ";
 	public static $insideNotificationUrl = "https://unlimited-elements.com/pricing/";
 
+	
+	
 	const PLUGIN_NAME = "unlimitedelements";
 	const VIEW_DASHBOARD = "dashboard";
 	const VIEW_ADDONS_ELEMENTOR = "addons_elementor";
@@ -85,8 +87,8 @@ class GlobalsUnlimitedElements{
 	public static $urlAccount;
 	public static $renderingDynamicData;
 	public static $currentRenderingWidget;
-
-
+	public static $isImporting = false;
+	
 	/**
 	 * init globals
 	 */

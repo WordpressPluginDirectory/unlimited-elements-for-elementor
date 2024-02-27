@@ -532,14 +532,16 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess("Product Deactivated, please refresh the page");
 				break;
 				case "check_catalog":
-
+					
 					$isForce = UniteFunctionsUC::getVal($data, "force");
 					$isForce = UniteFunctionsUC::strToBool($isForce);
 
 					$response = $webAPI->checkUpdateCatalog($isForce);
 
 					$operations->checkInstagramRenewToken();
-
+										
+					do_action("ue_on_check_catalog_ajax_action");
+										
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "install_catalog_addon":

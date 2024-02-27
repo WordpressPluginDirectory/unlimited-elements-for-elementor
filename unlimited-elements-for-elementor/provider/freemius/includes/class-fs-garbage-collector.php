@@ -62,8 +62,12 @@
             $products_to_clean = $this->get_products_to_clean();
 
             foreach( $products_to_clean as $product ) {
-                $slug = $product->slug;
+            	
+                $slug = @$product->slug;
 
+                if(empty($slug))
+                	continue;
+                
                 // Clear the product's data.
                 foreach( $options as $option_name => $option ) {
                     $updated = false;

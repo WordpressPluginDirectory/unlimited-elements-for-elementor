@@ -1271,7 +1271,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * put document ready start js
 		 */
 		public static function putDocReadyStartJS($widgetID){
-
+			
 			?>
 jQuery(document).ready(function(){
 function <?php echo $widgetID?>_start(){
@@ -1283,7 +1283,7 @@ function <?php echo $widgetID?>_start(){
 		 * put document ready end js
 		 */
 		public static function putDocReadyEndJS($widgetID){
-
+			
 			?>
 }if(jQuery("#<?php echo $widgetID?>").length) <?php echo $widgetID?>_start();
 	jQuery( document ).on( 'elementor/popup/show', (event, id, objPopup) => {

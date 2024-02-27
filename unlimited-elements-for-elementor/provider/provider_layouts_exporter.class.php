@@ -37,25 +37,25 @@ class UniteCreatorLayoutsExporter extends UniteCreatorLayoutsExporterWork{
 		//get name
 		$name_parts = pathinfo($filename);
 		$name = trim( substr( $filename, 0, -(1 + strlen($name_parts['extension'])) ) );
-		
-		$name .= "_image";
+				
+		$extension = UniteFunctionsUC::getVal($name_parts, "extension");
 		
 		//get full url
 		$urlFull = HelperUC::URLtoFull($url);
 				
 		//check for existing image id
 		$imageID = UniteFunctionsWPUC::getAttachmentIDFromImageUrl($urlFull);
-				
-		if(!empty($imageID)){
 		
+		if(!empty($imageID)){
+						
 			$urlExistingImage = UniteFunctionsWPUC::getUrlAttachmentImage($imageID);
+			
 			if($urlExistingImage == $urlFull)
 				return($imageID);
 		}
-						
 		
 		//get image title
-		$title = $name;
+		$title = "";
 		$excerpt = "";
 		
 		if ( 0 === strpos( $type, 'image/' ) && $image_meta = @wp_read_image_metadata( $filepath ) ) {
@@ -78,13 +78,17 @@ class UniteCreatorLayoutsExporter extends UniteCreatorLayoutsExporterWork{
 				'post_excerpt' => $excerpt,
 		);
 		
-		
+				
 		$id = wp_insert_attachment($attachment, $filepathDest);
 		if(is_wp_error($id))
 			return(null);
 		
 		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $filepathDest ) );
 		
+		$post = get_post($id);
+		
+		$meta = get_post_meta($post);
+				
 		return($id);
 	}
 	

@@ -530,6 +530,7 @@ class UniteCreatorWooIntegrate{
 		return($arrOutput);
 	}
 	
+	
 	/**
 	 * convert combined attributes array to text
 	 */

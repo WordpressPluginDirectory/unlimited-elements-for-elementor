@@ -1125,9 +1125,7 @@ class UniteCreatorElementorIntegrate{
 	private function putImportLayoutButton(){
 		
 		$nonce = UniteProviderFunctionsUC::getNonce();
-		
-		dmp("import layout!!!");
-		
+				
 		?>
 		<style>
 		

@@ -1,7 +1,18 @@
 
 
-version 1.5.95:
 
+version 1.5.96:
+
+* Feature: added option for time_ago_short in timelines that will show shorter version of minutes and hours text
+* Feature: added defaults for weather widget
+* Fix: fixed hourly weather fields
+* Fix: fixed the import with images functionality
+* Fix: set default timeout to remote requests
+* Fix: fixed the image duplicate when importing templates
+
+
+
+version 1.5.95:
 
 * Feature: Ensure that the blog displayed on the "Home" page of the plugin is always up-to-date.
 * Feature: Implemented support for tags in the widget catalog.
