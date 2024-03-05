@@ -636,8 +636,8 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 * prepare addon by data
 	 */
 	public function prepareAddonByData($addonData){
-		
-		
+
+
 		$addonName = UniteFunctionsUC::getVal($addonData, "name");
 		$addonType = UniteFunctionsUC::getVal($addonData, "addontype");
 
@@ -1185,12 +1185,12 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 */
 	public function initAddonByData($data){
 
-				
+
 		if(is_string($data)){
 			$data = json_decode($data);
 			$data = UniteFunctionsUC::convertStdClassToArray($data);
 		}
-		
+
 		$addonID = UniteFunctionsUC::getVal($data, "id");
 		$addonName = UniteFunctionsUC::getVal($data, "name");
 		$arrConfig = UniteFunctionsUC::getVal($data, "config");
@@ -1259,16 +1259,11 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		$addonID = UniteFunctionsUC::getVal($data, "id");
 
 		if(!empty($addonID)){
-			$config = UniteFunctionsUC::getVal($data, "settings_values");
-
-			$items = array();
-
-			if(isset($config["uc_items"])){
-				$items = UniteFunctionsUC::getVal($config, "uc_items");
-				unset($config["uc_items"]);
-			}
-
+			$config = UniteFunctionsUC::getVal($data, "settings_values", array());
+			$items = UniteFunctionsUC::getVal($config, "uc_items", array());
 			$fonts = "";
+
+			unset($config["uc_items"]);
 
 			$objAddon = new UniteCreatorAddon();
 			$objAddon->initByID($addonID);
@@ -1297,23 +1292,19 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 	/**
 	 * get test addon data
-	 *
-	 * @param $data
 	 */
 	public function getTestAddonData($data){
 
 		$objAddon = $this->initAddonByData($data);
+
 		$slotNum = UniteFunctionsUC::getVal($data, "slotnum");
-
 		$isCombine = UniteFunctionsUC::getVal($data, "combine");
-
 		$isCombine = UniteFunctionsUC::strToBool($isCombine);
 
 		$data = $objAddon->getTestData($slotNum);
 
-		if($isCombine == true){
+		if($isCombine === true){
 			$config = UniteFunctionsUC::getVal($data, "config", array());
-
 			$items = UniteFunctionsUC::getVal($data, "items");
 
 			if(!empty($items))
@@ -1321,10 +1312,10 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 			$output = array("settings_values" => $config);
 
-			return ($output);
+			return $output;
 		}
 
-		return ($data);
+		return $data;
 	}
 
 	/**

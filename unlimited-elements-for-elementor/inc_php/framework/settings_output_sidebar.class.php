@@ -127,7 +127,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 
 			?>
 			<select
-				class="unite-units-picker <?php echo count($units) < 2 ? 'unite-hidden' : ''; ?>"
+				class="unite-units-picker"
 				data-default="<?php esc_attr_e($defaultUnit); ?>"
 				data-initval="<?php esc_attr_e($initialUnit); ?>"
 			>
@@ -169,7 +169,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 			$labelBlock = UniteFunctionsUC::strToBool($labelBlock);
 
 			if($labelBlock === false)
-				$baseClass .= " uc-inline";
+				$baseClass .= " unite-inline-setting";
 
 			$responsiveId = UniteFunctionsUC::getVal($setting, "responsive_id");
 			$responsiveType = UniteFunctionsUC::getVal($setting, "responsive_type");

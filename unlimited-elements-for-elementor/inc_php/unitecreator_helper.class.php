@@ -1287,11 +1287,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(empty($version))
 			$version = "fa5";
-
+		
 		if($version == "fa4")
 			$url = GlobalsUC::$url_assets_libraries . "font-awsome/css/font-awesome.min.css";
 		else    //fa5
-			$url = GlobalsUC::$url_assets_libraries . "font-awesome5/css/fontawesome-all.min.css";
+			$url = GlobalsUC::$url_assets_libraries . "font-awesome6/fontawesome-all.min.css";
 
 		return ($url);
 	}

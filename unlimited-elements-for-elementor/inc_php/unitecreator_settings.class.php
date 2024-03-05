@@ -194,9 +194,6 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 	 */
 	public function addImage($name,$defaultValue = "",$text = "",$arrParams = array()){
 
-		if(empty($defaultValue))
-			$defaultValue = GlobalsUC::$url_no_image_placeholder;
-
 		parent::addImage($name, $defaultValue, $text, $arrParams);
 
 		//check the source param
@@ -269,7 +266,7 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 	/**
 	 * add template picker
 	 */
-	protected function addTemplatePicker($name,$value,$title,$extra){
+	protected function addTemplatePicker($name, $value, $title, $extra){
 
 		dmp("addTemplatePicker - function for override");
 		exit();
@@ -278,34 +275,29 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 	/**
 	 * add post list picker
 	 */
-	protected function addPostsListPicker($name,$value,$title,$extra){
+	protected function addPostsListPicker($name, $value, $title, $extra){
+
 		dmp("addPostsListPicker - function for override");
 		exit();
 	}
 
-
 	/**
 	 * add background settings
 	 */
-	protected function addBackgroundSettings($name,$value,$title,$param){
-
-
+	protected function addBackgroundSettings($name, $value, $title, $param, $extra){
 
 		dmp("addBackgroundSettings - function for override");
 		exit();
 	}
 
-
 	/**
 	 * add menu picker
 	 */
-	protected function addMenuPicker($name,$value,$title,$extra){
+	protected function addMenuPicker($name, $value, $title, $extra){
 
 		dmp("addMenuPicker - function for override");
 		exit();
 	}
-
-
 
 	/**
 	 * add instagram selector
@@ -1288,15 +1280,15 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			break;
 			case UniteCreatorDialogParam::PARAM_BORDER:
 				$types = array_flip(array(
-					"none" => "None",
-					"solid" => "Solid",
-					"dashed" => "Dashed",
-					"dotted" => "Dotted",
-					"double" => "Double",
-					"groove" => "Groove",
-					"ridge" => "Ridge",
-					"inset" => "Inset",
-					"outset" => "Outset",
+					"none" => __("None", "unlimited-elements-for-elementor"),
+					"solid" => __("Solid", "unlimited-elements-for-elementor"),
+					"dashed" => __("Dashed", "unlimited-elements-for-elementor"),
+					"dotted" => __("Dotted", "unlimited-elements-for-elementor"),
+					"double" => __("Double", "unlimited-elements-for-elementor"),
+					"groove" => __("Groove", "unlimited-elements-for-elementor"),
+					"ridge" => __("Ridge", "unlimited-elements-for-elementor"),
+					"inset" => __("Inset", "unlimited-elements-for-elementor"),
+					"outset" => __("Outset", "unlimited-elements-for-elementor"),
 				));
 
 				$selector = UniteFunctionsUC::getVal($param, "selector");
@@ -1329,18 +1321,18 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 					"mobile" => "_mobile",
 				);
 
-				foreach($responsive as $responsiveType => $responsiveSuffix){
+				foreach($responsive as $device => $suffix){
 					$addValue = array();
-					$addValue["top"] = UniteFunctionsUC::getVal($param, "width_{$responsiveType}_top");
-					$addValue["bottom"] = UniteFunctionsUC::getVal($param, "width_{$responsiveType}_bottom");
-					$addValue["left"] = UniteFunctionsUC::getVal($param, "width_{$responsiveType}_left");
-					$addValue["right"] = UniteFunctionsUC::getVal($param, "width_{$responsiveType}_right");
-					$addValue["unit"] = UniteFunctionsUC::getVal($param, "width_{$responsiveType}_unit");
-					$addValue["is_linked"] = UniteFunctionsUC::getVal($param, "width_{$responsiveType}_is_linked", true);
+					$addValue["top"] = UniteFunctionsUC::getVal($param, "width_{$device}_top");
+					$addValue["bottom"] = UniteFunctionsUC::getVal($param, "width_{$device}_bottom");
+					$addValue["left"] = UniteFunctionsUC::getVal($param, "width_{$device}_left");
+					$addValue["right"] = UniteFunctionsUC::getVal($param, "width_{$device}_right");
+					$addValue["unit"] = UniteFunctionsUC::getVal($param, "width_{$device}_unit");
+					$addValue["is_linked"] = UniteFunctionsUC::getVal($param, "width_{$device}_is_linked", true);
 
-					$widthParams["responsive_type"] = $responsiveType;
+					$widthParams["responsive_type"] = $device;
 
-					$this->addDimentionsSetting("{$name}_width{$responsiveSuffix}", $addValue, $widthTitle, $widthParams);
+					$this->addDimentionsSetting("{$name}_width{$suffix}", $addValue, $widthTitle, $widthParams);
 				}
 
 				$colorTitle = sprintf(__("%s Color", "unlimited-elements-for-elementor"), $title);
@@ -1374,18 +1366,18 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 					$responsive["mobile"] = "_mobile";
 				}
 
-				foreach($responsive as $responsiveType => $responsiveSuffix){
+			foreach($responsive as $device => $suffix){
 					$addValue = array();
-					$addValue["top"] = UniteFunctionsUC::getVal($param, "{$responsiveType}_top");
-					$addValue["bottom"] = UniteFunctionsUC::getVal($param, "{$responsiveType}_bottom");
-					$addValue["left"] = UniteFunctionsUC::getVal($param, "{$responsiveType}_left");
-					$addValue["right"] = UniteFunctionsUC::getVal($param, "{$responsiveType}_right");
-					$addValue["unit"] = UniteFunctionsUC::getVal($param, "{$responsiveType}_unit");
-					$addValue["is_linked"] = UniteFunctionsUC::getVal($param, "{$responsiveType}_is_linked", true);
+					$addValue["top"] = UniteFunctionsUC::getVal($param, "{$device}_top");
+					$addValue["bottom"] = UniteFunctionsUC::getVal($param, "{$device}_bottom");
+					$addValue["left"] = UniteFunctionsUC::getVal($param, "{$device}_left");
+					$addValue["right"] = UniteFunctionsUC::getVal($param, "{$device}_right");
+					$addValue["unit"] = UniteFunctionsUC::getVal($param, "{$device}_unit");
+					$addValue["is_linked"] = UniteFunctionsUC::getVal($param, "{$device}_is_linked", true);
 
-					$extra["responsive_type"] = $responsiveType;
+					$extra["responsive_type"] = $device;
 
-					$this->addDimentionsSetting($name . $responsiveSuffix, $addValue, $title, $extra);
+					$this->addDimentionsSetting($name . $suffix, $addValue, $title, $extra);
 				}
 			break;
 			case UniteCreatorDialogParam::PARAM_SLIDER:
@@ -1403,12 +1395,12 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 					$responsive["mobile"] = "_mobile";
 				}
 
-				foreach($responsive as $responsiveType => $responsiveSuffix){
-					$value = UniteFunctionsUC::getVal($param, "default_value{$responsiveSuffix}");
+				foreach($responsive as $device => $suffix){
+					$value = UniteFunctionsUC::getVal($param, "default_value{$suffix}");
 
-					$extra["responsive_type"] = $responsiveType;
+					$extra["responsive_type"] = $device;
 
-					$this->addRangeSlider($name . $responsiveSuffix, $value, $title, $extra);
+					$this->addRangeSlider($name . $suffix, $value, $title, $extra);
 				}
 			break;
 			case UniteCreatorDialogParam::PARAM_TYPOGRAPHY:
@@ -1424,15 +1416,21 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 				$this->addCssFiltersSetting($name, $value, $title, $extra);
 			break;
 			case UniteCreatorDialogParam::PARAM_BACKGROUND:
-				$this->addBackgroundSettings($name, $value, $title, $param);
+				$this->addBackgroundSettings($name, $value, $title, $param, $extra);
 			break;
 			case UniteCreatorDialogParam::PARAM_HOVER_ANIMATIONS:
-				$animations = HelperProviderCoreUC_EL::getHoverAnimationClasses(true);
-				$animations = array_flip($animations);
+				$animations = HelperProviderCoreUC_EL::getHoverAnimations();
+				$prefix = "unite-animation-";
+				$items = array("" => __("None", "unlimited-elements-for-elementor"));
+
+				foreach($animations as $key => $value){
+					$items[$prefix . $key] = $value;
+				}
 
 				$value = UniteFunctionsUC::getVal($param, "default_value");
+				$value = str_replace("elementor-animation-", $prefix, $value);
 
-				$this->addSelect($name, $animations, $title, $value, $extra);
+				$this->addSelect($name, array_flip($items), $title, $value, $extra);
 			break;
 			case UniteCreatorDialogParam::PARAM_SPECIAL:
 				$this->addSpecialParam($name, $param);

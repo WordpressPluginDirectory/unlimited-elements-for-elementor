@@ -432,7 +432,7 @@ class HelperProviderUC{
 		return(false);
 	}
 
-	
+
 
 	/**
 	 * on plugins loaded, load textdomains
@@ -552,7 +552,7 @@ class HelperProviderUC{
 	    if(!empty($arrStyles)){
 	        echo "\n<!--   Unlimited Elements Styles  --> \n";
 
-	        echo "<style type='text/css'>";
+	        echo "<style type='text/css' id='unlimited-elements-styles'>";
 
 	        foreach ($arrStyles as $style){
 	            echo UniteProviderFunctionsUC::escCombinedHtml($style)."\n";
@@ -944,18 +944,18 @@ class HelperProviderUC{
 	 * show last posts queries
 	 */
 	public static function showLastQueryPosts(){
-		
+
 		if(empty(GlobalsProviderUC::$lastPostQuery))
 			return(false);
-		
+
     	$arrLastPosts = GlobalsProviderUC::$lastPostQuery->posts;
-    	
+
     	if(empty($arrLastPosts))
     		return(false);
-    	
+
 	    HelperUC::$operations->putPostsCustomFieldsDebug($arrLastPosts);
-		
+
 	}
-	
-	
+
+
 }

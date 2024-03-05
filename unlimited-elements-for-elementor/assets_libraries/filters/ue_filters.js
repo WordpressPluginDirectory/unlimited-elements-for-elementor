@@ -37,11 +37,12 @@ function UEDynamicFilters(){
 		
 		EVENT_BEFORE_REFRESH: "uc_before_ajax_refresh",	   //on grid
 		EVENT_AJAX_REFRESHED: "uc_ajax_refreshed",	   //on grid
-		EVENT_AJAX_REFRESHED_BODY: "uc_ajax_refreshed_body",	   //on grid
+		EVENT_AJAX_REFRESHED_BODY: "uc_ajax_refreshed_body",	   //on body
 		EVENT_UPDATE_ACTIVE_FILTER_ITEMS: "update_active_filter_items",	   //on grid
 		EVENT_UNSELECT_FILTER: "uc_unselect_filter",   //on grid
 		EVENT_SILENT_FILTER_CHANGE: "uc_silent_filter_change",   //on grid
 		
+		EVENT_DOM_UPDATED: "uc_dom_updated",   //on body
 		
 		//events on filters
 		
@@ -65,8 +66,7 @@ function UEDynamicFilters(){
 	
 	var g_options = {
 		is_cache_enabled:true,
-		ajax_reload: false,
-		widget_name: null
+		urlkey_taxsap:"~"
 	};
 	
 	
@@ -255,10 +255,13 @@ function UEDynamicFilters(){
 	/**
 	 * get all grids
 	 */
-	function getAllGrids(){
+	function getAllGrids(type){
 		
-		var objGrids = jQuery("."+ g_vars.CLASS_GRID);
-						
+		if(type == "loaded_only")
+			var objGrids = jQuery("."+ g_vars.CLASS_GRID).not(".ucfilters--grid-inited");
+		else
+			var objGrids = jQuery("."+ g_vars.CLASS_GRID);
+		
 		return(objGrids);
 	}
 	
@@ -1642,7 +1645,7 @@ function UEDynamicFilters(){
 			
 			var strSlugs = buildTermsQuery_getStrSlugs(objSlugs);
 			
-			var strTax = taxonomy+"~"+strSlugs;
+			var strTax = taxonomy + g_options.urlkey_taxsap + strSlugs;
 			
 			if(query)
 				query += ";";
@@ -3324,14 +3327,20 @@ function UEDynamicFilters(){
 		g_urlBase = getVal(g_filtersData, "urlbase");
 		g_urlAjax = getVal(g_filtersData, "urlajax");
 		
+		//url keys
+				
+		var objUrlKeys = getVal(g_filtersData, "urlkeys");
+		var taxSap = getVal(objUrlKeys, "tax_sap");
+		if(taxSap)
+			g_options.urlkey_taxsap = taxSap;
+			
 		var isShowDebug = getVal(g_filtersData, "debug");
-		
+						
 		if(isShowDebug == true)
 			g_showDebug = true;
 
 		if(g_showDebug == true)
-			trace("Show Filters Debug");
-			
+			trace("Show Filters Debug");			
 		
 		if(!g_urlBase){
 			trace("ue filters error - base url not inited");
@@ -3567,8 +3576,24 @@ function UEDynamicFilters(){
 	 * init pagination filter
 	 */
 	function initFilters(){
-				
-		var objFilters = jQuery(".uc-grid-filter,.uc-filter-pagination");
+		
+		var objFilters = jQuery(".uc-grid-filter, .uc-filter-pagination").not(".ucfilters--filter-inited");
+		
+		//wait for load...
+		
+		var objFiltersLoading = objFilters.filter(".uc-waitforload");
+		
+		if(objFiltersLoading.length){
+			
+			if(g_showDebug == true){
+				trace(objFiltersLoading);
+				trace("Wait for Load!");
+			}
+			
+			setTimeout(initFilters, 500);
+			
+			return(false);
+		}
 		
 		if(g_showDebug == true){
 			
@@ -3618,9 +3643,10 @@ function UEDynamicFilters(){
 					arrGeneralTypes[generalType] = objFilter;
 				
 			}
-						
+			
+			objFilter.addClass("ucfilters--filter-inited");
+			
 		});
-		
 		
 		initFilterEventsByTypes(arrTypes, arrGeneralTypes, objFilters, objParent);
 		
@@ -3697,10 +3723,15 @@ function UEDynamicFilters(){
 	 */
 	function initGrids(){
 		
-		var objGrids = getAllGrids();
-		
+		var objGrids = getAllGrids("loaded_only");
+				
 		if(objGrids.length == 0)
 			return(false);
+		
+		if(g_showDebug == true){
+			trace("init grids");
+			trace(objGrids);
+		}
 		
 		jQuery.each(objGrids, function(index, grid){
 			
@@ -3752,25 +3783,22 @@ function UEDynamicFilters(){
 					objGrid.data("init_refresh_child_filters", true);
 			}
 			
+			objGrid.addClass("ucfilters--grid-inited");
+			
 		});
 		
 		
+		return(objGrids);
 	}
 	
-	
-	
 	/**
-	 * init events
+	 * init grids events
 	 */
-	function initEvents(){
-		
-		addEventListener('popstate', onPopState);
+	function initGridsEvents(objGrids){
 		
 		//init grids events
 		
-		var objGrids = jQuery("."+ g_vars.CLASS_GRID);
-		
-		if(objGrids.length == 0)
+		if(!objGrids || objGrids.length == 0)
 			return(false);
 		
 		
@@ -3827,6 +3855,16 @@ function UEDynamicFilters(){
 			objGrid.trigger(g_vars.ACTION_REFRESH_GRID);
 		});
 		
+	}
+	
+	/**
+	 * init events
+	 */
+	function initGeneralEvents(){
+		
+		addEventListener('popstate', onPopState);
+		
+		g_objBody.on(g_vars.EVENT_DOM_UPDATED, runInitFilters);
 		
 	}
 	
@@ -3851,7 +3889,7 @@ function UEDynamicFilters(){
 	 */
 	function validateGrids(){
 		
-		var objGrids = getAllGrids();
+		var objGrids = getAllGrids("loaded_only");
 		
 		jQuery.each(objGrids, function(index, grid){
 			
@@ -3859,6 +3897,26 @@ function UEDynamicFilters(){
 			
 			validateGrid(objGrids);
 		});
+	}
+	
+	
+	/**
+	 * run init filters
+	 */
+	function runInitFilters(){
+		
+		validateGrids();
+		
+		//init the single grid object
+		initGridObject();
+		
+		initFilters();
+		
+		//init all grids with several stuff like init filters, active modes and url's
+		var objGrids = initGrids();
+		
+		initGridsEvents(objGrids);
+		
 	}
 	
 	
@@ -3893,18 +3951,10 @@ function UEDynamicFilters(){
 		if(typeof UERemoteConnection == "function")
 			g_remote = window.ueRemoteConnection;
 		
-		validateGrids();
+		runInitFilters();
 		
-		//init the single grid object
-		initGridObject();
-		
-		initFilters();
-				
-		//init all grids with several stuff like init filters, active modes and url's
-		initGrids();
-		
-		initEvents();
-		
+		initGeneralEvents();
+
 	}
 	
 	

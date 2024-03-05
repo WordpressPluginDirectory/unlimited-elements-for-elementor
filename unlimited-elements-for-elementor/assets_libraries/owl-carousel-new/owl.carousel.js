@@ -1,5 +1,5 @@
 /**
-* Owl Carousel v2.3.8 - UE19
+* Owl Carousel v2.3.8 - UE20
 * Copyright 2013-2018 David Deutsch
 * Licensed under: SEE LICENSE IN https://github.com/OwlCarousel2/OwlCarousel2/blob/master/LICENSE
 */
@@ -848,7 +848,13 @@
 		  if(keyLazy && keyLazy != "")
 		  jQuery.removeData(objChildImg, keyLazy);
 		  
-	  }
+	    }
+
+      var objLazyAttr = objChild.find('[loading="lazy"]');
+
+      if(objLazyAttr && objLazyAttr.length != 0){
+        objLazyAttr.removeAttr("loading");
+      }
       
     });
   };
@@ -2972,7 +2978,7 @@
               
               this.handlers = {
                 'change.owl.carousel': $.proxy(function(e) {
-                  if (e.namespace && e.property.name == 'position') {
+                  if (e.namespace && e.property.name && e.property.name == 'position') {
                     this.previous = this.core.current();
                     this.next = e.property.value;
                   }

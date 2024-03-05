@@ -4,9 +4,6 @@ class UEOpenWeatherAPIClient{
 
 	const DATA_BASE_URL = "https://api.openweathermap.org/data/3.0";
 	const GEO_BASE_URL = "http://api.openweathermap.org/geo/1.0";
-	const TEST_URL = "https://api.openweathermap.org/data/2.5/weather";
-
-	const METHOD_GET = "GET";
 
 	private $apiKey;
 	private $cacheTime = 0; // in seconds
@@ -51,7 +48,7 @@ class UEOpenWeatherAPIClient{
 	}
 
 	/**
-	 * Get a daily forecast for the given location.
+	 * Get forecasts for the given location.
 	 *
 	 * @param string $country
 	 * @param string $city
@@ -68,33 +65,37 @@ class UEOpenWeatherAPIClient{
 			"lat" => $location["lat"],
 			"lon" => $location["lon"],
 			"units" => $units,
-			"exclude" => "",	//current,hourly,alerts
+			"exclude" => "minutely",
 			"lang" => get_locale(),
 		);
 
 		$response = $this->get(self::DATA_BASE_URL . "/onecall", $params);
-				
-		$daily = UniteFunctionsUC::getVal($response, "daily",array());
-		$hourly = UniteFunctionsUC::getVal($response, "hourly",array());
-		$current = UniteFunctionsUC::getVal($response, "current",array());
-		$alerts = UniteFunctionsUC::getVal($response, "alerts");
-		
-		$params = array("units" => $units);
-		$params["timezone"] = UniteFunctionsUC::getVal($response, "timezone");
-		$params["timezone_offset"] = UniteFunctionsUC::getVal($response, "timezone_offset");
-		$params["lat"] = UniteFunctionsUC::getVal($response, "lat");
-		$params["lon"] = UniteFunctionsUC::getVal($response, "lon");
-		
-		$daily = UEOpenWeatherAPIForecast::transformAll($daily, $params);
-		$hourly = UEOpenWeatherAPIForecast::transformAll($hourly, $params);
-		
-		$current = UEOpenWeatherAPIForecast::transform($current, $params);
-		
-		$forecast = array();
-		$forecast["current"] = $current;
-		$forecast["daily"] = $daily;
-		$forecast["hourly"] = $hourly;
-		$forecast["alerts"] = $alerts;
+
+		$params = array(
+			"latitude" => UniteFunctionsUC::getVal($response, "lat"),
+			"longitude" => UniteFunctionsUC::getVal($response, "lon"),
+			"timezone" => UniteFunctionsUC::getVal($response, "timezone"),
+			"timezone_offset" => UniteFunctionsUC::getVal($response, "timezone_offset"),
+			"units" => $units,
+		);
+
+		$current = UniteFunctionsUC::getVal($response, "current", array());
+		$current = UEOpenWeatherAPIForecastCurrent::transform($current, $params);
+
+		$hourly = UniteFunctionsUC::getVal($response, "hourly", array());
+		$hourly = UEOpenWeatherAPIForecastHourly::transformAll($hourly, $params);
+
+		$daily = UniteFunctionsUC::getVal($response, "daily", array());
+		$daily = UEOpenWeatherAPIForecastDaily::transformAll($daily, $params);
+
+		$alerts = UniteFunctionsUC::getVal($response, "alerts", array());
+
+		$forecast = array(
+			"current" => $current,
+			"hourly" => $hourly,
+			"daily" => $daily,
+			"alerts" => $alerts,
+		);
 
 		return $forecast;
 	}
@@ -105,7 +106,8 @@ class UEOpenWeatherAPIClient{
 	 * @param string $country
 	 * @param string $city
 	 *
-	 * @return false|mixed
+	 * @return array
+	 * @throws Exception
 	 */
 	private function findLocation($country, $city){
 
@@ -145,6 +147,7 @@ class UEOpenWeatherAPIClient{
 	 * @param array $params
 	 *
 	 * @return array
+	 * @throws Exception
 	 */
 	private function request($method, $url, $params = array()){
 

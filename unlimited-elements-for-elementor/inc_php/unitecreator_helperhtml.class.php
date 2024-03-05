@@ -47,23 +47,23 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get select options
 		 */
 		public static function getHTMLSelectOptions($arrAssoc){
-			
+
 			if(empty($arrAssoc))
 				return("");
-				
+
 			$options = "";
 			foreach($arrAssoc as $value=>$text){
-				
+
 				$value = esc_attr($value);
 				$text = esc_html($text);
-				
+
 				$options .= "<option value=\"{$value}\">{$text}</option>\n";
 			}
-			
-			
+
+
 			return($options);
 		}
-			
+
 		/**
 		 *
 		 * get select from array
@@ -949,10 +949,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			switch($type){
 				case UniteCreatorDialogParam::PARAM_BACKGROUND:
 					switch($subtype){
+						case "attachment":
+							return "background-attachment:{{VALUE}};";
 						case "color":
 							return "background-color:{{VALUE}};";
-						case "gradient":
-							return "background-image:linear-gradient({{COLOR1}},{{COLOR2}});";
 						case "image":
 							return "background-image:url('{{VALUE}}');";
 						case "position":
@@ -961,6 +961,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 							return "background-repeat:{{VALUE}};";
 						case "size":
 							return "background-size:{{VALUE}};";
+						case "linear-gradient":
+							return "background-image:linear-gradient({{ANGLE}},{{COLOR1}} {{STOP1}},{{COLOR2}} {{STOP2}});";
+						case "radial-gradient":
+							return "background-image:radial-gradient(at {{POSITION}},{{COLOR1}} {{STOP1}},{{COLOR2}} {{STOP2}});";
 						default:
 							UniteFunctionsUC::throwError("Param \"$type\" subtype \"$subtype\" is not implemented.");
 					}
@@ -1271,7 +1275,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * put document ready start js
 		 */
 		public static function putDocReadyStartJS($widgetID){
-			
+
 			?>
 jQuery(document).ready(function(){
 function <?php echo $widgetID?>_start(){
@@ -1283,7 +1287,7 @@ function <?php echo $widgetID?>_start(){
 		 * put document ready end js
 		 */
 		public static function putDocReadyEndJS($widgetID){
-			
+
 			?>
 }if(jQuery("#<?php echo $widgetID?>").length) <?php echo $widgetID?>_start();
 	jQuery( document ).on( 'elementor/popup/show', (event, id, objPopup) => {

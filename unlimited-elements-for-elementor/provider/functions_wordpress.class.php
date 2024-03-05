@@ -136,7 +136,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * process the transaction
 		 */
 		public static function processDBTransaction($callback){
-			
+
 			global $wpdb;
 
 			try{
@@ -418,17 +418,17 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			return($arrPostTypes);
 		}
-		
+
 		/**
 		 * check if has post type
 		 */
 		public static function hasPostType($type){
-			
+
 			$arrTypes = self::getPostTypesAssoc();
-			
+
 			if(isset($arrTypes[$type]))
 				return(true);
-			
+
 			return(false);
 		}
 
@@ -519,7 +519,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(empty($currentTermID))
 				$currentTermID = self::getCurrentTermID();
-			
+
 			$arrTermData = array();
 
 			if(empty($arrTerms))
@@ -617,7 +617,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get terms
 		 */
 		public static function getTerms($taxonomy, $orderBy = null, $orderDir = null, $hideEmpty = false, $arrExcludeSlugs = null, $addArgs = null){
-
+			
 			$currentTermID = self::getCurrentTermID();
 
 			$args = self::getTermsArgs($taxonomy, $orderBy, $orderDir, $hideEmpty, $addArgs);
@@ -627,12 +627,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$arrTermsObjects = get_terms($args);
 
 			if(is_wp_error($arrTermsObjects)){
-								
+
 				$errorMessage = "getTerms error: taxonomy: $taxonomy |". $arrTermsObjects->get_error_message();
 				UniteFunctionsUC::throwError($errorMessage);
 			}
-			
-			
+
+
 			if(!empty($arrExcludeSlugs)){
 				HelperUC::addDebug("Terms Before Filter:", $arrTermsObjects);
 				HelperUC::addDebug("Exclude by:", $arrExcludeSlugs);
@@ -640,8 +640,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(!empty($arrExcludeSlugs) && is_array($arrExcludeSlugs))
 				$arrTermsObjects = self::getTerms_filterBySlugs($arrTermsObjects, $arrExcludeSlugs);
-			
-							
+
+
 			$arrTerms = self::getTermsObjectsData($arrTermsObjects, $taxonomy, $currentTermID);
 
 			return($arrTerms);
@@ -687,36 +687,36 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get all post terms
 		 */
 		public static function getPostAllSingleTerms($postID){
-			
+
 			if(is_numeric($postID) == true)
 				$post = get_post($postID);
 			else
 				$post = $postID;
-			
+
 			$postType = $post->post_type;
-				
+
 			$arrTaxonomies = self::getPostTypeTaxomonies($postType);
-			
+
 			if(empty($arrTaxonomies))
 				return(array());
-			
+
 			$arrAllTerms = array();
-				
+
 			foreach($arrTaxonomies as $taxName => $taxTitle){
-				
+
 				$arrTerms = self::getPostSingleTerms($postID, $taxName);
-				
+
 				if(empty($arrTerms))
 					continue;
-				
+
 				$arrAllTerms += $arrTerms;
 			}
-				
-			
+
+
 			return($arrAllTerms);
 		}
-		
-		
+
+
 		/**
 		 * get post single taxonomy terms
 		 */
@@ -916,9 +916,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get assoc list of the taxonomies
 		 */
 		public static function getTaxonomiesAssoc(){
-			
+
 			$arr = get_taxonomies();
-			
+
 			unset($arr["post_tag"]);
 			unset($arr["nav_menu"]);
 			unset($arr["link_category"]);
@@ -931,9 +931,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get all tax assoc
 		 */
 		public static function getAllTaxonomiesAssoc(){
-			
+
 			$arr = get_taxonomies();
-			
+
 			return($arr);
 		}
 
@@ -947,7 +947,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				return(self::$arrTaxCache);
 
 			$arrTax = self::getTaxonomiesAssoc();
-			
+
 			$arrTaxNew = array();
 			foreach($arrTax as $key => $value){
 
@@ -1023,8 +1023,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		return($queries);
 	}
 
-	
-		
+
+
 	/**
 	 * set arguments tax query, merge with existing if avaliable
 	 */
@@ -1595,7 +1595,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			return($arrMeta);
 		}
-		
+
 		/**
 		 * get post custom field
 		 */
@@ -1603,11 +1603,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(empty($name))
 				return("");
-				
+
 			$isAcfActive = UniteCreatorAcfIntegrate::isAcfActive();
 
 			$value = "";
-			
+
 			if($isAcfActive == true){
 
 				$objAcf = self::getObjAcfIntegrate();
@@ -1617,15 +1617,15 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 					$value = get_term_meta($termID, $name, true);
 			}else
 				$value = get_term_meta($termID, $name, true);
-			 
+
 			if(is_array($value))
 				$value = json_encode($value);
-			
+
 			$value = trim($value);
 
 			return($value);
 		}
-		
+
 
 		/**
 		 * get post custom field
@@ -1831,7 +1831,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(empty($attachmentID))
 			return (null);
-		
+
 		$arrImage = self::getAttachmentData($attachmentID);
 
 		return ($arrImage);
@@ -2101,29 +2101,29 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		return ($arrPosts);
 	}
-	
+
 	/**
 	 * get posts that has certain taxonomy
 	 */
 	public static function getPostsByTaxonomy($postType, $taxonomy, $term_id){
-		
+	
 		$filters = array();
 		$filters["posttype"] = $postType;
 		$filters["category"] = $taxonomy."--{$term_id}";
 		$filters["limit"] = 100;
-		
+
 		$filters["orderby"] = "date";
 		$filters["orderdir"] = "desc";
-		
+
 		$args = UniteFunctionsWPUC::getPostsArgs($filters);
-		    
+
 		$posts = get_posts($args);
-		
+
 		return($posts);
-		
-		
+
+
 	}
-	
+
 	/**
 	 * get tax query from a gived category
 	 */
@@ -2159,7 +2159,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$field = "term_id";
 			if(is_numeric($catID) == false)
 				$field = "slug";
-			
+
 			//check for special chars
 
 			$lastChar = substr($catID, -1);
@@ -2190,39 +2190,39 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * group tax query by taxonomies
 	 */
 	public static function groupTaxQuery($arrQuery){
-		
+
 		if(empty($arrQuery))
 			return($arrQuery);
-			
+
 		$arrTermsByTax = array();
-		
+
 		foreach($arrQuery as $term){
-			
+
 			$taxonomy = UniteFunctionsUC::getVal($term, "taxonomy");
-			
+
 			$arrTerms = UniteFunctionsUC::getVal($arrTermsByTax, $taxonomy);
 			if(empty($arrTerms))
 				$arrTerms = array();
-			
+
 			$arrTerms[] = $term;
-			
+
 			$arrTermsByTax[$taxonomy] = $arrTerms;
-			
+
 		}
-		
+
 		if(count($arrTermsByTax) == 1)
 			return($arrQuery);
-			
+
 		//combine new query
 
 		$arrQueryNew = array();
-		
+
 		foreach($arrTermsByTax as $taxonomy => $arrGroup){
-			
+
 			$numTerms = count($arrGroup);
-			
+
 			//add single term or term group
-			
+
 			if($numTerms == 1)
 				$arrQueryNew[] = $arrGroup[0];
 			else{
@@ -2230,25 +2230,25 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				$arrQueryNew[] = $arrGroup;
 			}
 		}
-		
-		
+
+
 		return($arrQueryNew);
 	}
-	
-	
+
+
 	/**
 	 * get taxanomy query
 	 * $categoryRelation - null, OR, GROUP
 	 */
 	public static function getPosts_getTaxQuery($category, $categoryRelation = null, $isIncludeChildren = false, $excludeCategory = null, $isExcludeChildren = true){
 
-				
+
 		if(empty($category) && empty($excludeCategory))
 			return (null);
 
 		if($category == "all" && empty($excludeCategory))
 			return (null);
-		
+
 		//get the query
 		$arrQuery = array();
 		$arrQueryExclude = array();
@@ -2260,7 +2260,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(!empty($excludeCategory))
 			$arrQueryExclude = self::getPosts_getTaxQuery_getArrQuery($arrQueryExclude, $excludeCategory, $categoryRelation, $isExcludeChildren, true);
-		
+
 		//make nested - if both filled
 		if(!empty($arrQueryExclude) && !empty($arrQuery) && $numQueryItems > 1 && $categoryRelation === "OR"){
 			//check and add relation
@@ -2283,12 +2283,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(count($arrQuery) == 1)
 			return ($arrQuery);
-		
+
 		if($categoryRelation == "GROUP"){
 			$arrQuery = self::groupTaxQuery($arrQuery);
 			return($arrQuery);
 		}
-		
+
 		//check and add relation
 		if($categoryRelation === "OR" && $numQueryItems > 1){
 			$arrQuery = array($arrQuery);
@@ -2308,10 +2308,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(isset($arrOrderKeys[$orderBy])){
 			$args["orderby"] = $orderBy;
-			
+
 			return ($args);
 		}
-		
+
 		switch($orderBy){
 			case "price":
 				$args["orderby"] = "meta_value_num";
@@ -2333,14 +2333,14 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		$category = UniteFunctionsUC::getVal($filters, "category");
 		$categoryRelation = UniteFunctionsUC::getVal($filters, "category_relation");
 		$categoryIncludeChildren = UniteFunctionsUC::getVal($filters, "category_include_children");
-		
+
 		$excludeCategory = UniteFunctionsUC::getVal($filters, "exclude_category");
 
 		$categoryExcludeChildren = UniteFunctionsUC::getVal($filters, "category_exclude_children");
 		$categoryExcludeChildren = UniteFunctionsUC::strToBool($categoryExcludeChildren);
 
 		$arrTax = self::getPosts_getTaxQuery($category, $categoryRelation, $categoryIncludeChildren, $excludeCategory, $categoryExcludeChildren);
-		
+
 		if($isTaxonly === true){
 			if(!empty($arrTax)){
 				if(count($arrTax) > 1){
@@ -2420,7 +2420,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	public static function getPosts($filters){
 
 		$args = self::getPostsArgs($filters);
-		
+
 		$arrPosts = get_posts($args);
 
 		if(empty($arrPosts))
@@ -2891,26 +2891,26 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * if found - return array of all images
 	 */
 	public static function getPostFeaturedImage($post, $size = self::THUMB_MEDIUM_LARGE){
-		
-		if(is_numeric($post))		
+
+		if(is_numeric($post))
 			$postID = $post;
 		else
 			$postID = $post->ID;
-		
+
 		if(empty($post))
 			return(null);
-			
+
 		$attachmentID = self::getFeaturedImageID($post->ID);
-		
+
 		if(empty($attachmentID))
 			return(null);
-		
+
 		$urlImage = self::getUrlAttachmentImage($attachmentID, $size);
-		
+
 		return($urlImage);
 	}
-	
-	
+
+
 	/**
 	 * get attachmet id's from post
 	 */
@@ -2967,7 +2967,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	public static function getFeaturedImageID($postID){
 
 		$thumbID = get_post_thumbnail_id($postID);
-
+				
+		
 		return ($thumbID);
 	}
 
@@ -3116,7 +3117,6 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		global $_wp_additional_image_sizes;
 
 		$arrWPSizes = get_intermediate_image_sizes();
-
 		$arrSizes = array();
 
 		foreach($arrWPSizes as $size){
@@ -3124,20 +3124,22 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			$maxWidth = null;
 			$maxHeight = null;
-			$isCrop = false;
+			$crop = false;
 
 			//get max width from option or additional sizes array
 			$arrSize = UniteFunctionsUC::getVal($_wp_additional_image_sizes, $size);
+
 			if(!empty($arrSize)){
 				$maxWidth = UniteFunctionsUC::getVal($arrSize, "width");
 				$maxHeight = UniteFunctionsUC::getVal($arrSize, "height");
 				$crop = UniteFunctionsUC::getVal($arrSize, "crop");
+				$crop = UniteFunctionsUC::strToBool($crop);
 			}
 
 			if(empty($maxWidth)){
 				$maxWidth = intval(get_option("{$size}_size_w"));
 				$maxHeight = intval(get_option("{$size}_size_h"));
-				$crop = intval(get_option("{$size}_crop"));
+				$crop = boolval(get_option("{$size}_crop"));
 			}
 
 			if(empty($maxWidth)){
@@ -3146,8 +3148,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			}
 
 			//add the text addition
-			$addition = "";
-			if($crop == true)
+			if($crop === true)
 				$addition = "({$maxWidth}x{$maxHeight})";
 			else
 				$addition = "(max width $maxWidth)";
@@ -3157,12 +3158,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$arrSizes[$size] = $title;
 		}
 
-		$arrSizes["full"] = __("Full Size", "unlimited-elements-for-elementor");
+		$arrSizes["full"] = __("Full", "unlimited-elements-for-elementor");
 
 		//sort
 		$arrNew = array();
 
-		$topKeys = array("medium_large", "large", "medium", "thumbnail", "full");
+		$topKeys = array("full", "large", "medium_large", "medium", "thumbnail");
 
 		foreach($topKeys as $key){
 			if(!isset($arrSizes[$key]))
@@ -3437,7 +3438,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		$arrData["username"] = $username;
 
-		$name = UniteFunctionsUC::getVal($userData, "display_name");
+		$name = get_the_author_meta( "display_name", $userID);	//allow with translated name as well
+		
 		if(empty($name))
 			$name = $username;
 
@@ -3488,7 +3490,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * if user not found, return empty data
 	 */
 	public static function getUserDataById($userID, $getMeta = false, $getAvatar = false){
-
+		
 		if($userID == "loggedin_user")
 			$objUser = wp_get_current_user();
 		else{
@@ -3509,7 +3511,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 
 		$arrData = self::getUserData($objUser, $getMeta, $getAvatar);
-
+		
 		return ($arrData);
 	}
 
@@ -3568,9 +3570,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 
 		$args = array("role__not_in" => array("subscriber", "customer"));
-		
+
 		$arrUsers = get_users($args);
-		
+
 		$arrUsersShort = array();
 
 		$arrNames = array();
@@ -3693,24 +3695,24 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	}
 
 	private static function a_________________QUERY_VARS_____________(){}
-	
-	
+
+
 	/**
 	 * get current query vars
 	 */
 	public static function getCurrentQueryVars(){
-		
+
 		global $wp_query;
-		
+
 		if(empty($wp_query))
 			return(array());
-		
+
 		$currentQueryVars = $wp_query->query_vars;
-		
+
 		return($currentQueryVars);
 	}
-	
-	
+
+
 	/**
 	 * clean query args for debug
 	 */
@@ -3755,54 +3757,54 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		dmp("Current Query Is: ");
 		dmp($queryVars);
 	}
-	
+
 	/**
 	 * merge the query vars
 	 */
 	public static function mergeQueryVars($args1, $args2){
-		
+
 		//merge the arrays
 		$args = array();
-		
+
 		foreach($args1 as $key=>$value){
-			
+
 			if(is_array($value) == false)
 				continue;
-				
+
 			if(empty($value))
 				continue;
-			
+
 			$arrValue2 = UniteFunctionsUC::getVal($args2, $key);
-			
+
 			if(is_array($arrValue2) == false)
 				continue;
-				
+
 			if(empty($arrValue2))
 				continue;
-			
+
 			if($key == "tax_query"){
-				
+
 				$args1 = self::mergeArgsTaxQuery($args1, $arrValue2);
-				
+
 				unset($args2[$key]);
-								
+
 				continue;
 			}
-			
+
 			$value = array_merge($value, $arrValue2);
 
 			$args1[$key] = $value;
-			
+
 			unset($args2[$key]);
-			
+
 		}
-		
+
 		$args = array_merge($args1,$args2);
-		
-		
+
+
 		return($args);
 	}
-	
+
 	public static function a___________OTHER_FUNCTIONS__________(){
 	}
 
@@ -3810,25 +3812,25 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * print registered includes
 	 */
 	public static function printRegisteredIncludes($type = "js"){
-		
+
 		if($type == "css")
 			$objScripts = wp_styles();
 		else
 			$objScripts = wp_scripts();
-		
+
 		dmp("Registered scripts: ");
-			
+
 		foreach( $objScripts->queue as $scriptName ){
-			
+
 			$objScript = UniteFunctionsUC::getVal($objScripts->registered, $scriptName);
-			
+
 			$url = $objScript->src;
-			
+
 			dmp("$scriptName | $url");
 		}
-				
+
 	}
-	
+
 	/**
 	 * find and remove some include
 	 */
@@ -3847,28 +3849,28 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		$arrDeleted = array();
 
 		foreach( $objScripts->queue as $scriptName ){
-			
+
 			$objScript = UniteFunctionsUC::getVal($objScripts->registered, $scriptName);
 
 			if(empty($objScript))
 				continue;
-						
+
 			$url = $objScript->src;
-			
+
 			//find by handle
 			$isFound = false;
-				
+
 			if($scriptName == $filename)
 				$isFound = true;
 			else{
-			
+
 				//find by url
-	
+
 				$url = strtolower($url);
-				
+
 				$isFound = strpos($url, $filename);
 			}
-			
+
 			if($isFound === false)
 				continue;
 
@@ -3878,10 +3880,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				wp_deregister_script( $scriptName );
 			else
 				wp_deregister_style( $scriptName );
-				
+
 		}
-		
-		
+
+
 		return($arrDeleted);
 	}
 
@@ -4160,13 +4162,13 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		global $wp_filter;
 		if(isset($wp_filter[$tag]) == false)
 			return (array());
-	
+
 		$objFilter = $wp_filter[$tag];
-		
+
 		$arrCallbacks = $objFilter->callbacks;
 		if(empty($arrCallbacks))
 			return (array());
-		
+
 		return ($arrCallbacks);
 	}
 
@@ -4174,17 +4176,17 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * get action functions of some tag
 	 */
 	public static function getActionFunctionsKeys($tag){
-		
+
 		$arrCallbacks = self::getFilterCallbacks($tag);
-		
+
 		if(empty($arrCallbacks))
 			return(array());
-		
+
 		$arrFunctions = array();
-		
+
 		foreach($arrCallbacks as $priority => $callbacks){
 			$arrKeys = array_keys($callbacks);
-			
+
 			foreach($arrKeys as $key){
 				$arrFunctions[$key] = true;
 			}
@@ -4197,17 +4199,17 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * show action functions
 	 */
 	public static function showActionFunctionsKeys($tag){
-		
+
 		$arrActions = self::getActionFunctionsKeys($tag);
-		
+
 		if(empty($arrActions))
 			return(false);
-			
+
 		dmp($arrActions);
-		
+
 	}
-	
-	
+
+
 	/**
 	 * clear filters from functions
 	 */
@@ -4291,8 +4293,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * get permalist with check of https
 	 */
 	public static function getPermalink($post){
-		
+
 		$url = get_permalink($post);
+		
 		if(GlobalsUC::$is_ssl == true)
 			$url = UniteFunctionsUC::urlToSsl($url);
 

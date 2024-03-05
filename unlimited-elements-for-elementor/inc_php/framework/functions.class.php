@@ -472,17 +472,19 @@ class UniteFunctionsUC{
 	/**
 	 * encode json for html data like data-key="json"
 	 */
-	public static function jsonEncodeForHtmlData($arr, $dataKey=""){
+	public static function jsonEncodeForHtmlData($value, $key = ""){
 
-		$strJson = "";
-		if(!empty($arr)){
-			$strJson = json_encode($arr);
-			$strJson = htmlspecialchars($strJson);
+		$data = "";
+
+		if(empty($value) === false){
+			$data = json_encode($value);
+			$data = htmlspecialchars($data, ENT_QUOTES);
 		}
-		if(!empty($dataKey))
-			$strJson = " data-{$dataKey}=\"{$strJson}\"";
 
-		return($strJson);
+		if(empty($key) === false)
+			$data = " data-$key=\"$data\"";
+
+		return $data;
 	}
 
 
@@ -2190,7 +2192,6 @@ class UniteFunctionsUC{
 		return($ext);
 	}
 
-	
 	/**
 	 * write rolling log to file.
 	 * prepend content, cut max size from the end
@@ -2232,7 +2233,7 @@ class UniteFunctionsUC{
 	 * save some file to the filesystem with some text
 	 */
 	public static function writeFile($str, $filepath){
-		
+
 		if(is_array($str))
 			UniteFunctionsUC::throwError("write file should accept only string in file: ". $filepath);
 
@@ -2874,7 +2875,17 @@ class UniteFunctionsUC{
 
 
 	public static function z___________OTHERS__________(){}
-
+	
+	/**
+	 * check if max debug available
+	 * ?maxdebug=true
+	 */
+	public static function isMaxDebug(){
+		
+		$maxdebug = self::getGetVar("maxdebug","",self::SANITIZE_TEXT_FIELD);
+		
+		return($maxdebug == "true");
+	}
 
 	/**
 	 * load xml file, get simplexml object back.

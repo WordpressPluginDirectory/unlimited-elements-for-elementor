@@ -496,111 +496,11 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 		}
 	}
 
-	private function a_______IMAGE_AND_MP3______(){
-	}
+
+	private function a_______MP3______(){}
 
 	/**
-	 *
-	 * draw imaeg input:
-	 *
-	 * @param $setting
-	 */
-	protected function drawImageAddonInput($setting){
-
-		$previewStyle = "";
-
-		$value = UniteFunctionsUC::getVal($setting, "value");
-
-		$urlBase = UniteFunctionsUC::getVal($setting, "url_base");
-		$isError = false;
-
-		if(empty($urlBase)){
-			$isError = true;
-			$value = "";
-			$setting["value"] = "";
-		}
-
-		$urlImage = "";
-
-		if(!empty($value)){
-			$urlFull = $urlBase . $value;
-
-			$urlImage = $urlFull;
-
-			$previewStyle = "";
-
-			$urlThumb = $value;		//maybe change
-
-			$urlThumbFull = HelperUC::URLtoFull($urlThumb);
-			if(!empty($previewStyle))
-				$previewStyle .= ";";
-
-			$previewStyle .= "background-image:url('{$urlThumbFull}');";
-		}
-
-		if(!empty($previewStyle))
-			$previewStyle = "style=\"{$previewStyle}\"";
-
-		$class = $this->getInputClassAttr($setting, "", "unite-setting-image-input unite-input-image");
-
-		$addHtml = $this->getDefaultAddHtml($setting);
-
-		//add source param
-		$source = UniteFunctionsUC::getVal($setting, "source");
-		if(!empty($source))
-			$addHtml .= " data-source='{$source}'";
-
-		//set error related
-		$addClass = "";
-
-		$errorStyle = "style='display:none'";
-		if($isError == true){    //set disabled
-			$errorStyle = "";
-			$addClass .= " unite-disabled";
-			$previewStyle = "";
-		}
-
-		if(!empty($urlImage)){
-			$addClass = "unite-image-exists";
-		}
-
-		$textPlaceholder = esc_html__("Image Url");
-
-		?>
-		<div class="unite-setting-image <?php echo esc_attr($addClass) ?>">
-
-			<div class='unite-setting-image-preview' <?php echo UniteProviderFunctionsUC::escAddParam($previewStyle) ?>>
-
-				<div class="unite-no-image">
-					<i class="fa fa-plus-circle"></i>
-					<br>
-					<?php esc_html_e("Select Image", "unlimited-elements-for-elementor") ?>
-				</div>
-
-				<div class="unite-image-actions">
-					<span class="unite-button-clear"><?php esc_html_e("Clear", "unlimited-elements-for-elementor") ?></span>
-					<span class="unite-button-choose"><?php esc_html_e("Change", "unlimited-elements-for-elementor") ?></span>
-				</div>
-
-			</div>
-
-			<input type="text"
-				id="<?php echo esc_attr($setting["id"]) ?>"
-				name="<?php echo esc_attr($setting["name"]) ?>" <?php echo UniteProviderFunctionsUC::escAddParam($class) ?>
-				value="<?php echo esc_attr($urlImage) ?>"
-				placeholder="<?php echo esc_attr($textPlaceholder) ?>" <?php echo UniteProviderFunctionsUC::escAddParam($addHtml) ?> />
-
-			<div class='unite-setting-image-error' <?php echo UniteProviderFunctionsUC::escAddParam($errorStyle) ?>><?php esc_html_e("Please select assets path", "unlimited-elements-for-elementor") ?></div>
-
-		</div>
-		<?php
-	}
-
-	/**
-	 *
-	 * draw imaeg input:
-	 *
-	 * @param $setting
+	 * draw mp3 input
 	 */
 	protected function drawMp3AddonInput($setting){
 
@@ -644,22 +544,26 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 				value="<?php echo esc_attr($value) ?>" <?php echo UniteProviderFunctionsUC::escAddParam($addHtml) ?> />
 			<a href="javascript:void(0)"
 				class="unite-button-secondary unite-button-choose <?php echo esc_attr($buttonAddClass) ?>"><?php esc_html_e("Choose", "unlimited-elements-for-elementor") ?></a>
-			<div class='unite-setting-mp3-error' <?php echo UniteProviderFunctionsUC::escAddParam($errorStyle) ?>><?php esc_html_e("Please select assets path", "unlimited-elements-for-elementor") ?></div>
+			<div class='unite-setting-mp3-error unite-setting-error' <?php echo UniteProviderFunctionsUC::escAddParam($errorStyle) ?>><?php esc_html_e("Please select assets path", "unlimited-elements-for-elementor") ?></div>
 		</div>
 		<?php
 	}
 
 	/**
-	 * override setting
+	 * draw image input
 	 */
 	protected function drawImageInput($setting){
 
-		//add source param
 		$source = UniteFunctionsUC::getVal($setting, "source");
-		if($source == "addon")
-			$this->drawImageAddonInput($setting);
-		else
-			parent::drawImageInput($setting);
+
+		if($source === "addon"){
+			$urlBase = UniteFunctionsUC::getVal($setting, "url_base");
+
+			if(empty($urlBase) === true)
+				$setting["error"] = __("Please select assets path.", "unlimited-elements-for-elementor");
+		}
+
+		parent::drawImageInput($setting);
 	}
 
 	/**
@@ -783,15 +687,15 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 			?>
 
 			<div
-				class="unite-dimentions-link uc-tip <?php echo $isLinked === true ? "ue-active" : ""; ?>"
+				class="unite-dimentions-link unite-setting-button uc-tip <?php echo $isLinked === true ? "unite-active" : ""; ?>"
 				data-key="<?php esc_attr_e($fieldName); ?>"
 				data-title-link="<?php esc_attr_e(__("Link Values", "unlimited-elements-for-elementor")); ?>"
 				data-title-unlink="<?php esc_attr_e(__("Unlink Values", "unlimited-elements-for-elementor")); ?>"
 			>
-				<svg class="unite-dimentions-icon-link" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+				<svg class="unite-dimentions-icon-link unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 					<path d="m3.5 8.5 5-5M5 3l1.672-1.672a2.829 2.829 0 0 1 4 4L9 7M3 5 1.328 6.672a2.829 2.829 0 0 0 4 4L7 9" />
 				</svg>
-				<svg class="unite-dimentions-icon-unlink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+				<svg class="unite-dimentions-icon-unlink unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 					<path d="m5.5 2.5 1.172-1.172a2.829 2.829 0 0 1 4 4L9.5 6.5M2.5 5.5 1.328 6.672a2.829 2.829 0 0 0 4 4L6.5 9.5M3.5 8.5l1-1M7.5 4.5l1-1M.5.5l11 11" />
 				</svg>
 			</div>

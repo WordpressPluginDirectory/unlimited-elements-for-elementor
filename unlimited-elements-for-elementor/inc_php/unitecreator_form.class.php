@@ -1006,7 +1006,7 @@ class UniteCreatorForm{
 	private function sendWebhook($webhookFields){
 
 		$response = UEHttp::make()->post($webhookFields["url"], $webhookFields["body"]);
-		
+
 		if($response->status() !== 200)
 			UniteFunctionsUC::throwError("Unable to send webhook to {$webhookFields["url"]}.");
 	}

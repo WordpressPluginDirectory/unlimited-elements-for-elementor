@@ -163,6 +163,8 @@ class UCEmptyTemplate{
 		
 		foreach($arrTemplates as $index => $templateID){
 			
+			$urlTemplate = UniteFunctionsWPUC::getPermalink($templateID);
+			
 			//render in hidden mode
 			
 			$isHidden = false;
@@ -189,8 +191,9 @@ class UCEmptyTemplate{
 			if(empty($output))
 				$output = "template $templateID not found";
 			
+			$urlTemplate = esc_attr($urlTemplate);
 			
-			$content .= "<div id='uc_template_$templateID' class='uc-template-holder{$class}' data-id='$templateID'>$output</div>";
+			$content .= "<div id='uc_template_$templateID' class='uc-template-holder{$class}' data-id='$templateID' data-link='$urlTemplate'>$output</div>";
 			
 			GlobalsProviderUC::$renderJSForHiddenContent = false;
 			

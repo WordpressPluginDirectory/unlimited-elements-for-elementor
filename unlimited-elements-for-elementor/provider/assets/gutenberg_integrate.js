@@ -1,24 +1,34 @@
 (function (wp) {
 	var wbe = wp.blockEditor;
 	var wc = wp.components;
+	var wd = wp.data;
 	var we = wp.element;
 	var el = we.createElement;
 
 	var edit = function (props) {
 		var blockProps = wbe.useBlockProps();
-		var settingsLoadedState = we.useState(false);
+		var settingsVisibleState = we.useState(false);
 		var settingsContentState = we.useState(null);
 		var widgetContentState = we.useState(null);
-		var ucSettingsState = we.useState(new UniteSettingsUC());
-		var ucHelperState = we.useState(new UniteCreatorHelper());
+		var widgetReloadsState = we.useState(0);
 
-		var attributes = props.attributes;
+		var widgetRequestRef = we.useRef(null);
+		var ucSettingsRef = we.useRef(new UniteSettingsUC());
+		var ucHelperRef = we.useRef(new UniteCreatorHelper());
 
-		var settingsId = "elementor-widget-" + blockProps.id;
+		var isEditorSidebarOpened = wd.useSelect(function (select) {
+			return select("core/edit-post").isEditorSidebarOpened();
+		});
+
+		var widgetId = "unite-gutenberg-widget-" + blockProps.id;
+		var widgetLoaderId = widgetId + "-loader";
+
+		var settingsId = "unite-gutenberg-settings-" + blockProps.id;
+		var settingsTempId = settingsId + "-temp";
 		var settingsErrorId = settingsId + "-error";
 
-		var settingsLoaded = settingsLoadedState[0];
-		var setSettingsLoaded = settingsLoadedState[1];
+		var settingsVisible = settingsVisibleState[0];
+		var setSettingsVisible = settingsVisibleState[1];
 
 		var settingsContent = settingsContentState[0];
 		var setSettingsContent = settingsContentState[1];
@@ -26,15 +36,89 @@
 		var widgetContent = widgetContentState[0];
 		var setWidgetContent = widgetContentState[1];
 
-		var ucSettings = ucSettingsState[0];
-		var ucHelper = ucHelperState[0];
+		var widgetReloads = widgetReloadsState[0];
+		var setWidgetReloads = widgetReloadsState[1];
+
+		var ucSettings = ucSettingsRef.current;
+		var ucHelper = ucHelperRef.current;
+
+		var getSettings = function () {
+			return props.attributes.data ? JSON.parse(props.attributes.data) : null;
+		};
+
+		var saveSettings = function () {
+			props.setAttributes({ data: JSON.stringify(ucSettings.getSettingsValues()) });
+		};
+
+		var saveSettingsAndReloadWidget = function () {
+			saveSettings();
+
+			setWidgetReloads(function (count) {
+				return count + 1;
+			});
+		};
+
+		var getSettingsElement = function () {
+			if (!settingsContent)
+				return;
+
+			var settingsElement = jQuery("#" + settingsId);
+			var settingsTempElement = jQuery("#" + settingsTempId);
+
+			settingsTempElement.remove();
+
+			if (settingsElement.length)
+				return settingsElement;
+
+			settingsTempElement = jQuery("<div id='" + settingsTempId + "' />")
+				.hide()
+				.html(settingsContent)
+				.appendTo("body");
+
+			return settingsTempElement;
+		};
+
+		var initSettings = function () {
+			ucSettings.destroy();
+
+			var settingsElement = getSettingsElement();
+
+			if (!settingsElement)
+				return;
+
+			ucSettings.init(settingsElement);
+
+			ucSettings.setEventOnChange(function () {
+				saveSettingsAndReloadWidget();
+			});
+
+			ucSettings.setEventOnSelectorsChange(function () {
+				saveSettings();
+
+				var css = ucSettings.getSelectorsCss();
+				var includes = ucSettings.getSelectorsIncludes();
+
+				jQuery("#" + widgetId).find("[name=uc_selectors_css]").text(css);
+
+				if (includes)
+					ucHelper.putIncludes(window, includes);
+			});
+
+			// restore current settings, otherwise apply current
+			var values = getSettings();
+
+			if (values !== null)
+				ucSettings.setValues(values);
+			else
+				saveSettingsAndReloadWidget();
+		};
 
 		var loadSettingsContent = function () {
 			g_ucAdmin.setErrorMessageID(settingsErrorId);
 
-			return g_ucAdmin.ajaxRequest("get_addon_settings_html", {
-				id: attributes._id,
-				config: attributes.data ? JSON.parse(attributes.data) : null,
+			g_ucAdmin.ajaxRequest("get_addon_settings_html", {
+				id: props.attributes._id,
+				config: getSettings(),
 			}, function (response) {
 				var html = g_ucAdmin.getVal(response, "html");
 
@@ -44,6 +128,7 @@
 
 		var loadWidgetContent = function () {
 			if (!widgetContent) {
+				// load existing widgets from the page
 				for (var index in g_gutenbergParsedBlocks) {
 					var block = g_gutenbergParsedBlocks[index];
 
@@ -57,9 +142,16 @@
 				}
 			}
 
-			return g_ucAdmin.ajaxRequest("get_addon_output_data", {
-				id: attributes._id,
-				settings: attributes.data ? JSON.parse(attributes.data) : null,
+			var loaderElement = jQuery("#" + widgetLoaderId);
+
+			loaderElement.show();
+
+			if (widgetRequestRef.current !== null)
+				widgetRequestRef.current.abort();
+
+			widgetRequestRef.current = g_ucAdmin.ajaxRequest("get_addon_output_data", {
+				id: props.attributes._id,
+				settings: getSettings(),
 				selectors: true,
 			}, function (response) {
 				var html = g_ucAdmin.getVal(response, "html");
@@ -68,62 +160,61 @@
 				ucHelper.putIncludes(window, includes, function () {
 					setWidgetContent(html);
 				});
+			}).always(function () {
+				loaderElement.hide();
 			});
 		};
 
-		var saveSettings = function () {
-			props.setAttributes({ data: JSON.stringify(ucSettings.getSettingsValues()) });
-		};
+		we.useEffect(function () {
+			// load the settings on the block mount
+			loadSettingsContent();
+
+			// remove loaded styles from the page
+			jQuery("#unlimited-elements-styles").remove();
+
+			return function () {
+				// destroy the settings on the block unmount
+				ucSettings.destroy();
+			};
+		}, []);
 
 		we.useEffect(function () {
-			if (props.isSelected === false) {
-				setSettingsLoaded(false);
-				setSettingsContent(null);
+			setSettingsVisible(props.isSelected && isEditorSidebarOpened);
+		}, [props.isSelected, isEditorSidebarOpened]);
 
+		we.useEffect(function () {
+			if (!settingsVisible)
 				return;
-			}
 
-			if (settingsLoaded === false) {
-				loadSettingsContent();
-				setSettingsLoaded(true);
-			}
-		}, [props.isSelected]);
-
-		we.useEffect(function () {
-			loadWidgetContent();
-		}, [attributes.data]);
+			initSettings();
+		}, [settingsVisible]);
 
 		we.useEffect(function () {
 			if (!settingsContent)
 				return;
 
-			var $root = jQuery("#" + settingsId);
-
-			// check if the block is still selected
-			if (!$root.length)
-				return;
-
-			ucSettings.init($root);
-			ucSettings.setEventOnChange(saveSettings);
-			ucSettings.setEventOnSelectorsChange(saveSettings);
+			initSettings();
 		}, [settingsContent]);
 
-		var settingsElement = el(
-			wbe.InspectorControls, {}, el(
-				"div", { className: "block-editor-block-card" }, el(
-					"div", { className: "block-editor-block-card__content" }, settingsContent
-						? el("div", { id: settingsId, dangerouslySetInnerHTML: { __html: settingsContent } })
-						: el(wc.Spinner),
-					el("div", { className: "uc-gi-settings-error", id: settingsErrorId }),
-				),
-			),
+		we.useEffect(function () {
+			loadWidgetContent();
+		}, [widgetReloads]);
+
+		var settings = el(
+			wbe.InspectorControls, {},
+			el("div", { className: "unite-gutenberg-settings-error", id: settingsErrorId }),
+			settingsContent && el("div", { id: settingsId, dangerouslySetInnerHTML: { __html: settingsContent } }),
+			!settingsContent && el("div", { className: "unite-gutenberg-settings-spinner" }, el(wc.Spinner)),
 		);
 
-		var widgetElement = widgetContent
-			? el(wc.Disabled, { dangerouslySetInnerHTML: { __html: widgetContent } })
-			: el("div", { className: "uc-gi-widget-placeholder" }, el(wc.Spinner));
+		var widget = el(
+			"div", { className: "unite-gutenberg-widget-wrapper" },
+			widgetContent && el("div", { id: widgetId, dangerouslySetInnerHTML: { __html: widgetContent } }),
+			widgetContent && el("div", { className: "unite-gutenberg-widget-loader", id: widgetLoaderId }, el(wc.Spinner)),
+			!widgetContent && el("div", { className: "unite-gutenberg-widget-placeholder" }, el(wc.Spinner)),
+		);
 
-		return el("div", blockProps, settingsElement, widgetElement);
+		return el("div", blockProps, settings, widget);
 	};
 
 	for (var name in g_gutenbergBlocks) {

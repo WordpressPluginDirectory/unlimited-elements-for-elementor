@@ -2,7 +2,7 @@
 /**
  * @package Unlimited Elements
  * @author unlimited-elements.com
- * @copyright (C) 2021 Unlimited Elements, All Rights Reserved. 
+ * @copyright (C) 2021 Unlimited Elements, All Rights Reserved.
  * @license GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
  * */
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
@@ -57,7 +57,7 @@ GlobalsUC::$arrClientSideText = array(
 		"addon_container_settings"=>esc_html__("Addon Container Settings","unlimited-elements-for-elementor"),
 		"delete_addon"=>esc_html__("Delete Addon","unlimited-elements-for-elementor"),
 		"duplicate_addon"=>esc_html__("Duplicate Addon","unlimited-elements-for-elementor"),
-		"updating_categories_order"=>esc_html__("Updating Categories Order...","unlimited-elements-for-elementor"),		
+		"updating_categories_order"=>esc_html__("Updating Categories Order...","unlimited-elements-for-elementor"),
 		"set_addon"=>esc_html__("Set Addon","unlimited-elements-for-elementor"),
 		"add_addon_to_column"=>esc_html__("Add Addon To Column","unlimited-elements-for-elementor"),
 		"removing_addons"=>esc_html__("Removing...","unlimited-elements-for-elementor"),
@@ -99,7 +99,7 @@ GlobalsUC::$arrClientSideText = array(
 		"uc_imagebase"=>esc_html__("Image Fields","unlimited-elements-for-elementor"),
 		"uc_menu"=>esc_html__("Menu","unlimited-elements-for-elementor"),
 		"uc_hr"=>esc_html__("HR Line","unlimited-elements-for-elementor"),
-		
+
 		"uc_slider"=>esc_html__("Slider","unlimited-elements-for-elementor"),
 		"uc_background"=>esc_html__("Backgound","unlimited-elements-for-elementor"),
 		"uc_border"=>esc_html__("Border","unlimited-elements-for-elementor"),
@@ -110,8 +110,10 @@ GlobalsUC::$arrClientSideText = array(
 		"uc_border_dimentions"=>esc_html__("Border Radius","unlimited-elements-for-elementor"),
 		"uc_css_filters"=>esc_html__("Css Filters","unlimited-elements-for-elementor"),
 		"uc_hover_animations"=>esc_html__("Hover Animations","unlimited-elements-for-elementor"),
-		
+
+		"choose_icon"=>esc_html__("Choose Icon","unlimited-elements-for-elementor"),
 		"choose_image"=>esc_html__("Choose Image","unlimited-elements-for-elementor"),
+		"choose_images"=>esc_html__("Choose Images","unlimited-elements-for-elementor"),
 		"choose_audio"=>esc_html__("Choose Audio","unlimited-elements-for-elementor"),
 		"edit_file"=>esc_html__("Edit File","unlimited-elements-for-elementor"),
 		"save"=>esc_html__("Save","unlimited-elements-for-elementor"),
@@ -125,7 +127,7 @@ GlobalsUC::$arrClientSideText = array(
 		"never_include"=>esc_html__("Never Include","unlimited-elements-for-elementor"),
 		"not_selected"=>esc_html__("Not Selected","unlimited-elements-for-elementor"),
 		"choose_addon"=>esc_html__("Choose Addon","unlimited-elements-for-elementor"),
-		
+
 		"delete_row"=>esc_html__("Delete Row","unlimited-elements-for-elementor"),
 		"duplicate_row"=>esc_html__("Duplicate Row","unlimited-elements-for-elementor"),
 		"copy_row"=>esc_html__("Copy Row","unlimited-elements-for-elementor"),

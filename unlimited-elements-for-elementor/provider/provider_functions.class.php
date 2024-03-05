@@ -262,7 +262,7 @@ class UniteProviderFunctionsUC{
 		$version = UNLIMITED_ELEMENTS_VERSION;
 		if(GlobalsUC::$inDev == true)	//add script
 			$version = time();
-		
+
 		wp_register_style($handle, $url, $deps, $version);
 		wp_enqueue_style($handle);
 
@@ -307,7 +307,7 @@ class UniteProviderFunctionsUC{
 	 * print custom style
 	 */
 	public static function printCustomStyle($style, $hardCoded = false){
-		
+
 		if($hardCoded == false)
 			self::$arrStyles[] = $style;
 		else
@@ -440,24 +440,20 @@ class UniteProviderFunctionsUC{
 	/**
 	 * get image url from image id
 	 */
-	public static function getImageUrlFromImageID($imageID){
+	public static function getImageUrlFromImageID($imageID, $size = UniteFunctionsWPUC::THUMB_FULL){
 
-		$urlImage = UniteFunctionsWPUC::getUrlAttachmentImage($imageID);
+		$urlImage = UniteFunctionsWPUC::getUrlAttachmentImage($imageID, $size);
 
-		return($urlImage);
+		return $urlImage;
 	}
-
 
 	/**
 	 * get image url from image id
 	 */
-	public static function getThumbUrlFromImageID($imageID, $size = null){
+	public static function getThumbUrlFromImageID($imageID, $size = UniteFunctionsWPUC::THUMB_MEDIUM){
 
-		if(empty($imageID))
-			return("");
-
-		if($size == null)
-			$size = UniteFunctionsWPUC::THUMB_MEDIUM;
+		if(empty($imageID) === true)
+			return "";
 
 		switch($size){
 			case GlobalsUC::THUMB_SIZE_NORMAL:
@@ -470,7 +466,7 @@ class UniteProviderFunctionsUC{
 
 		$urlThumb = UniteFunctionsWPUC::getUrlAttachmentImage($imageID, $size);
 
-		return($urlThumb);
+		return $urlThumb;
 	}
 
 	/**

@@ -738,7 +738,7 @@ class UCOperations extends UniteElementsBaseUC{
 			$request = UEHttp::make();
 			$request->debug($debug);
 			$request->cacheTime(180); // 3 minutes
-			
+
 			$response = $request->get($url);
 			$data = $response->body();
 

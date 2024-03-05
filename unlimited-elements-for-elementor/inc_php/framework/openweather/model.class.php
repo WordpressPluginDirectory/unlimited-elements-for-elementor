@@ -25,7 +25,7 @@ abstract class UEOpenWeatherAPIModel{
 	 * @param array $items
 	 * @param array $parameters
 	 *
-	 * @return array
+	 * @return static[]
 	 */
 	public static function transformAll($items, $parameters = array()){
 

@@ -26,7 +26,7 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	public function getDescription(){
 
 		$description = $this->getAttribute("summary");
-		
+
 		return $description;
 	}
 
@@ -36,33 +36,32 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * @return string
 	 */
 	public function getIconName(){
-		
+
 		$iconName = $this->getWeatherArrayAttribute("icon");
-		
+
 		return $iconName;
 	}
-	
+
 	/**
 	 * get current description
 	 */
 	public function getCurrentDescription(){
-		
+
 		$description = $this->getWeatherArrayAttribute("description");
-		
+
 		return $description;
 	}
-	
+
 	/**
 	 * get current description
 	 */
 	public function getCurrentState(){
-		
+
 		$state = $this->getWeatherArrayAttribute("main");
-		
+
 		return $state;
 	}
-	
-	
+
 	/**
 	 * Get the icon URL.
 	 *
@@ -225,29 +224,26 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 		return $temperature;
 	}
 
-	
-	
 	/**
 	 * get current temperature
 	 */
 	public function getCurrentTemperature(){
-		
+
 		$temperature = $this->getAttributeTemperature("temp");
-		
-		return($temperature);
+
+		return ($temperature);
 	}
 
 	/**
 	 * get current feels like
 	 */
 	public function getCurrentFeelsLike(){
-		
+
 		$temperature = $this->getAttributeTemperature("feels_like");
-		
-		return($temperature);
+
+		return ($temperature);
 	}
-	
-	
+
 	/**
 	 * Get the morning "feels like" temperature.
 	 *
@@ -342,81 +338,79 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * @return string
 	 */
 	public function getDate($format){
-		
+
 		$time = $this->getTime();
-		$date = $this->formatTime($time,$format); 
+		$date = $this->formatTime($time, $format);
 
 		return $date;
 	}
-	
+
 	/**
 	 * get sunrise
 	 */
 	public function getSunrise(){
-		
+
 		$sunrise = $this->getAttribute("sunrise");
-		
-		$sunrise = $this->formatTime($sunrise,"H:i");
-				
-		return($sunrise);
+
+		$sunrise = $this->formatTime($sunrise, "H:i");
+
+		return ($sunrise);
 	}
-	
+
 	/**
 	 * get sunrise
 	 */
 	public function getSunset(){
-		
+
 		$sunset = $this->getAttribute("sunset");
 
-		$sunset = $this->formatTime($sunset,"H:i");
-		
-		return($sunset);
+		$sunset = $this->formatTime($sunset, "H:i");
+
+		return ($sunset);
 	}
 
-	
 	/**
 	 * format hours for sunset
 	 */
 	private function formatTime($timestemp, $format){
-		
+
 		$timezone = $this->getParameter("timezone");
-		
+
 		$date = new DateTime();
 		$objTimezone = new DateTimeZone($timezone);
-		
+
 		$date->setTimestamp($timestemp);
-		
+
 		$date->setTimezone($objTimezone);
-		
+
 		$hours = $date->format($format);
-		
-		return($hours);
+
+		return ($hours);
 	}
-	
+
 	/**
 	 * Get the current description.
 	 *
 	 * @return string
 	 */
 	private function getWeatherArrayAttribute($key){
-		
+
 		$weather = $this->getAttribute("weather");
 		$weather = UniteFunctionsUC::getVal($weather, 0, array()); // the first weather condition is primary
 		$value = UniteFunctionsUC::getVal($weather, $key);
-		
+
 		return $value;
 	}
-	
-	
+
 	/**
 	 * get temperature from numeric attribute
 	 */
 	private function getAttributeTemperature($key){
-		
+
 		$temperature = $this->getAttribute($key);
 		$temperature = $this->formatTemperature($temperature);
-		
-		return($temperature);
+
+		return ($temperature);
 	}
 
 	/**
@@ -428,11 +422,9 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * @return string
 	 */
 	private function getTemperature($key, $fallback = null){
-		
+
 		$temperature = $this->getAttribute("temp");
-		
 		$temperature = UniteFunctionsUC::getVal($temperature, $key, $fallback);
-		
 		$temperature = $this->formatTemperature($temperature);
 
 		return $temperature;
@@ -499,13 +491,13 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * @return string
 	 */
 	private function formatPrecipitation($value){
-		
+
 		if(is_array($value))
 			$value = UniteFunctionsUC::getArrFirstValue($value);
-		
+
 		if(is_array($value))
 			$value = 0;
-					
+
 		return sprintf(__("%s mm", "unlimited-elements-for-elementor"), $value);
 	}
 
@@ -534,23 +526,20 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * @return string
 	 */
 	private function formatTemperature($value){
-		
+
 		if(is_numeric($value))
 			$value = round($value);
-				
+
 		return sprintf(__("%s°", "unlimited-elements-for-elementor"), $value);
-		
-		/*
-		switch($this->getUnits()){
-			case self::UNITS_METRIC:
-				return sprintf(__("%s°C", "unlimited-elements-for-elementor"), $value);
-			case self::UNITS_IMPERIAL:
-				return sprintf(__("%s°F", "unlimited-elements-for-elementor"), $value);
-			default:
-				return sprintf(__("%sK", "unlimited-elements-for-elementor"), $value);
-		}
-		*/
-		
+
+		//switch($this->getUnits()){
+		//	case self::UNITS_METRIC:
+		//		return sprintf(__("%s°C", "unlimited-elements-for-elementor"), $value);
+		//	case self::UNITS_IMPERIAL:
+		//		return sprintf(__("%s°F", "unlimited-elements-for-elementor"), $value);
+		//	default:
+		//		return sprintf(__("%sK", "unlimited-elements-for-elementor"), $value);
+		//}
 	}
 
 }

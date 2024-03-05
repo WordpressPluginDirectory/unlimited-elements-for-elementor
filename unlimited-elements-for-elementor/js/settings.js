@@ -1,4 +1,3 @@
-
 "use strict";
 
 function UniteSettingsUC(){
@@ -283,8 +282,6 @@ function UniteSettingsUC(){
 			case "text":
 				if(objInput.hasClass("unite-color-picker"))
 					type = "color";
-				else if (objInput.hasClass("unite-setting-image-input"))
-					type = "image";
 				else if (objInput.hasClass("unite-setting-mp3-input"))
 					type = "mp3";
 				else if (objInput.hasClass("unite-postpicker-input"))
@@ -360,15 +357,11 @@ function UniteSettingsUC(){
 						value = objEditor.getContent();
 				}
 			break;
-			case "image":
-				var imageID = objInput.data("imageid");
-				if(imageID && jQuery.isNumeric(imageID))
-					value = imageID;
 			case "mp3":
 				var source = objInput.data("source");
 
 				//convert to relative url if not addon
-				if(source != "addon" && jQuery.isNumeric(value) == false)
+				if(source !== "addon" && jQuery.isNumeric(value) === false)
 					value = g_ucAdmin.urlToRelative(value);
 			break;
 			case "post":
@@ -388,6 +381,9 @@ function UniteSettingsUC(){
 			break;
 			case "dimentions":
 				value = getDimentionsValue(objInput);
+			break;
+			case "image":
+				value = getImageInputValue(objInput);
 			break;
 			case "range":
 				value = getRangeSliderValue(objInput);
@@ -437,64 +433,46 @@ function UniteSettingsUC(){
 	/**
 	 * get settings values object by the parent
 	 */
-	this.getSettingsValues = function(controlsOnly, isChangedOnly){
-
+	this.getSettingsValues = function (controlsOnly, isChangedOnly) {
 		validateInited();
 
-		var obj = new Object();
+		var objValues = {};
+		var objInputs;
 
-		var name,value,type,flagUpdate,inputID;
+		if (controlsOnly === true)
+			objInputs = getObjInputs(controlsOnly);
+		else
+			objInputs = getObjInputs().not(".unite-setting-transparent");
 
-		if(controlsOnly == true)
-			var objInputs = getObjInputs(controlsOnly);
-		else{
-			var objInputs = getObjInputs().not(".unite-setting-transparent");
-		}
+		jQuery.each(objInputs, function () {
+			var objInput = jQuery(this);
+			var name = getInputName(objInput);
+			var type = getInputType(objInput);
+			var value = getSettingInputValue(objInput);
 
-		jQuery.each(objInputs, function(index, input){
+			if (value === g_vars.NOT_UPDATE_OPTION)
+				return;
 
-			var objInput = jQuery(input);
-
-			name = getInputName(objInput);
-			type = getInputType(objInput);
-			value = getSettingInputValue(objInput);
-
-			if(value == g_vars.NOT_UPDATE_OPTION)
-				return(true);
-
-			//remain only changed values from default values
-			if(isChangedOnly === true){
+			// remain only changed values from default values
+			if (isChangedOnly === true) {
 				var defaultValue = getInputDefaultValue(objInput);
 
-				if(defaultValue === value)
-					return(true);
+				if (defaultValue === value)
+					return;
 			}
 
-
-			inputID = objInput.prop("id");
-
-			//set additional vars
-
-			switch(type){
-				case "select":
-					var selectedText = objInput.children("option:selected").html();
-				break;
+			// set additional vars
+			switch (type) {
 				case "checkbox":
 					value = objInput.prop("checked");
 				break;
-				case "image":
-					if(value && jQuery.isNumeric(value)){
-						obj[name+"_url"] = objInput.data("url");
-					}
-				break;
 			}
 
-			obj[name] = value;
+			objValues[name] = value;
 		});
 
-		return(obj);
+		return objValues;
 	};
-
 
 	/**
 	 * get default value
@@ -544,10 +522,9 @@ function UniteSettingsUC(){
 	 * clear input
 	 */
 	function clearInput(objInput, dataname, checkboxDataName){
-
 		var name = getInputName(objInput);
 		var type = getInputType(objInput);
-		var inputID = objInput.prop("id");
+		var id = objInput.prop("id");
 		var defaultValue;
 
 		if(!dataname)
@@ -593,22 +570,22 @@ function UniteSettingsUC(){
 			case "dimentions":
 				defaultValue = objInput.data(dataname);
 
-				clearDimentionsValue(objInput, defaultValue);
+				setDimentionsValue(objInput, defaultValue);
 			break;
 			case "range":
 				defaultValue = objInput.data(dataname);
 
-				clearRangeSliderValue(objInput, defaultValue);
+				setRangeSliderValue(objInput, defaultValue);
 			break;
 			case "switcher":
 				defaultValue = objInput.data(dataname);
 
-				clearSwitcherValue(objInput, defaultValue);
+				setSwitcherValue(objInput, defaultValue);
 			break;
 			case "tabs":
 				defaultValue = objInput.data(dataname);
 
-				clearTabsValue(objInput, defaultValue);
+				setTabsValue(objInput, defaultValue);
 			break;
 			case "typography":
 			case "textshadow":
@@ -616,7 +593,12 @@ function UniteSettingsUC(){
 			case "css_filters":
 				defaultValue = objInput.data(dataname);
 
-				clearSubSettingsValue(objInput, defaultValue);
+				setSubSettingsValue(objInput, defaultValue);
+			break;
+			case "image":
+				defaultValue = objInput.data(dataname);
+
+				setImageInputValue(objInput, defaultValue);
 			break;
 			case "color":
 
@@ -648,7 +630,7 @@ function UniteSettingsUC(){
 				if(typeof tinyMCE == "undefined")	//skip the init, if no editor yet
 					break;
 
-				var objEditor = tinyMCE.EditorManager.get(inputID);
+				var objEditor = tinyMCE.EditorManager.get(id);
 
 				if(objEditor){
 					objEditor.setContent(defaultValue);
@@ -658,7 +640,6 @@ function UniteSettingsUC(){
 
 			break;
 			case "addon":
-			case "image":
 			case "mp3":
 				defaultValue = objInput.data(dataname);
 				objInput.val(defaultValue);
@@ -667,7 +648,7 @@ function UniteSettingsUC(){
 			case "link":
 				defaultValue = objInput.data(dataname);
 
-				clearLinkInputValue(objInput, defaultValue);
+				setLinkInputValue(objInput, defaultValue);
 			break;
 			case "post":
 				defaultValue = objInput.data(dataname);
@@ -741,11 +722,10 @@ function UniteSettingsUC(){
 	/**
 	 * set input value
 	 */
-	function setInputValue(objInput, value, value2){
-
+	function setInputValue(objInput, value, objValues){
+		var name = getInputName(objInput);
 		var type = getInputType(objInput);
-		var inputID = objInput.prop("id");
-		var name = objInput.prop("name");
+		var id = objInput.prop("id");
 
 		switch(type){
 			case "select":
@@ -797,7 +777,7 @@ function UniteSettingsUC(){
 				if(typeof tinyMCE == "undefined"){	//set textarea content
 					objInput.val(value);
 				}else{
-					var objEditor = tinyMCE.EditorManager.get(inputID);
+					var objEditor = tinyMCE.EditorManager.get(id);
 					if(objEditor){
 						objEditor.setContent(value);
 					}else{
@@ -805,11 +785,6 @@ function UniteSettingsUC(){
 					}
 				}
 			break;
-			case "image":
-				if(value2){
-					objInput.data("imageid",value2);	//set image id
-				}
-				objInput.data("url", value);
 			case "mp3":
 				objInput.val(value);
 				objInput.trigger("change");
@@ -834,6 +809,23 @@ function UniteSettingsUC(){
 			break;
 			case "icon":
 				setIconInputValue(objInput, value);
+			break;
+			case "image":
+				if (jQuery.isPlainObject(value) === false) {
+					if (jQuery.isNumeric(value) === true) {
+						value = {
+							id: value,
+							url: g_ucAdmin.getVal(objValues, name + "_url"),
+						};
+					} else {
+						value = {
+							id: g_ucAdmin.getVal(objValues, name + "_imageid"),
+							url: value,
+						};
+					}
+				}
+
+				setImageInputValue(objInput, value);
 			break;
 			case "link":
 				setLinkInputValue(objInput, value);
@@ -882,20 +874,18 @@ function UniteSettingsUC(){
 	/**
 	 * clear settings
 	 */
-	this.clearSettings = function(dataname, checkboxDataName){
-
+	this.clearSettings = function (dataname, checkboxDataName) {
 		validateInited();
 
 		var objInputs = getObjInputs();
 
-		jQuery.each(objInputs, function(index, input){
+		jQuery.each(objInputs, function (index, input) {
 			var objInput = jQuery(input);
 
 			clearInput(objInput, dataname, checkboxDataName);
 		});
 
 		applyControls(objInputs);
-
 	};
 
 
@@ -956,9 +946,10 @@ function UniteSettingsUC(){
 	/**
 	 * set values, clear first
 	 */
-	this.setValues = function(objValues, noClear){
-
+	this.setValues = function (objValues, noClear) {
 		validateInited();
+
+		t.disableTriggerChange();
 
 		if (noClear !== true)
 			t.clearSettings();
@@ -967,51 +958,30 @@ function UniteSettingsUC(){
 		if (typeof objValues !== "object")
 			return;
 
-		t.disableTriggerChange();
-
 		var objInputs = getObjInputs();
 
-		jQuery.each(objInputs, function(index, input){
-			var objInput = jQuery(input);
+		jQuery.each(objInputs, function () {
+			var objInput = jQuery(this);
 			var name = getInputName(objInput);
 
-			if(!name)
+			if (!name)
 				return;
 
 			var type = getInputType(objInput);
 
-			if(type !== "radio")
+			if (type !== "radio")
 				clearInput(objInput);
 
-			if(objValues.hasOwnProperty(name)){
+			if (objValues.hasOwnProperty(name)) {
 				var value = objValues[name];
-				var value2 = null;
 
-				switch(type){
-					case "image":
-						if(jQuery.isNumeric(value)){
-							var url = g_ucAdmin.getVal(objValues, name+"_url");
-							if(url){
-								value2 = value;
-								value = url;
-							}
-						}else{
-							var imageID = g_ucAdmin.getVal(objValues, name+"_imageid");
-							if(imageID)
-								value2 = imageID;
-						}
-					break;
-				}
-
-				setInputValue(objInput, value, value2);
+				setInputValue(objInput, value, objValues);
 			}
-
 		});
 
 		applyControls(objInputs);
 
 		t.enableTriggerChange();
-
 	};
 
 	/**
@@ -1093,14 +1063,11 @@ function UniteSettingsUC(){
 	}
 
 	/**
-	 * destroy range slider
+	 * destroy range sliders
 	 */
-	function destroyRangeSlider(objWrapper) {
-		var objSlider = objWrapper.find(".unite-setting-range-slider");
-		var objInput = objWrapper.find(".unite-setting-range-input");
-
-		objSlider.slider("destroy");
-		objInput.off("input");
+	function destroyRangeSliders() {
+		g_objWrapper.find(".unite-setting-range-slider").slider("destroy");
+		g_objWrapper.find(".unite-setting-range-input").off("input");
 	}
 
 	/**
@@ -1124,13 +1091,6 @@ function UniteSettingsUC(){
 			.trigger("input");
 
 		setUnitsPickerValue(objWrapper, value["unit"]);
-	}
-
-	/**
-	 * clear range slider value
-	 */
-	function clearRangeSliderValue(objWrapper, defaultValue) {
-		setRangeSliderValue(objWrapper, defaultValue);
 	}
 
 
@@ -1366,33 +1326,46 @@ function UniteSettingsUC(){
 
 	}
 
-
 	/**
 	 * init color picker
 	 */
-	function initColorPicker(){
-
+	function initColorPicker() {
 		g_temp.colorPickerType = g_ucAdmin.getGeneralSetting("color_picker_type");
 
-		switch(g_temp.colorPickerType){
+		switch (g_temp.colorPickerType) {
 			case "farbtastic":
 				initColorPicker_farbtastic();
 			break;
 			case "spectrum":
+				//
 			break;
 			default:
 				throw new Error("Wrong color picker type: " + g_temp.colorPickerType);
-			break;
 		}
+	}
 
+	/**
+	 * destroy color pickers
+	 */
+	function destroyColorPickers() {
+		g_temp.colorPickerType = g_ucAdmin.getGeneralSetting("color_picker_type");
 
+		switch (g_temp.colorPickerType) {
+			case "farbtastic":
+				//
+			break;
+			case "spectrum":
+				g_objWrapper.find(".unite-color-picker").spectrum("destroy");
 
-
-	};
+				jQuery(".sp-container").remove();
+			break;
+			default:
+				throw new Error("Wrong color picker type: " + g_temp.colorPickerType);
+		}
+	}
 
 
 	function _______MP3_SETTING_____(){}
-
 
 	/**
 	 * update image url base
@@ -1457,188 +1430,41 @@ function UniteSettingsUC(){
 
 	function _______IMAGE_SETTING_____(){}
 
-
-	/**
-	 * set image preview
-	 */
-	function setImagePreview(){
-
-		var objInput = jQuery(this);
-
-		if(objInput.length == 0)
-			throw new Error("wrong image input given");
-
-		var source = objInput.data("source");
-
-		var url = objInput.val();
-
-		if(source == "addon"){
-
-			if(url == ""){
-				objInput.data("urlfull","");
-			}
-
-			var urlFull = objInput.data("urlfull");
-
-			urlFull = g_ucAdmin.urlToFull(url);
-			objInput.data("urlfull", urlFull);
-
-			url = g_ucAdmin.urlToFull(urlFull);
-
-		}else{
-			url = g_ucAdmin.urlToFull(url);
-		}
-
-		var objPreview = objInput.siblings(".unite-setting-image-preview");
-		var objWrapper = objInput.parents(".unite-setting-image");
-
-		url = jQuery.trim(url);
-
-		if(url == ""){
-
-			objWrapper.removeClass("unite-image-exists");
-			objPreview.css("background-image","");
-			objInput.data("imageid","");
-			objInput.data("url","");
-
-		}else{
-			objInput.data("url",url);
-
-			objWrapper.addClass("unite-image-exists");
-			objPreview.css("background-image","url('"+url+"')");
-		}
-
-		return(true);
-	}
-
-
-	/**
-	 * on change image click - change the image
-	 */
-	function onChooseImageClick(event){
-
-		//event.preventDefault();
-
-		var objButton = jQuery(this);
-
-		var objWrapper = objButton.parents(".unite-setting-image");
-
-		var objInput = objWrapper.find(".unite-setting-image-input");
-		var source = objInput.data("source");
-
-		g_ucAdmin.openAddImageDialog(g_uctext.choose_image,function(urlImage, imageID){
-
-			if(source == "addon"){		//in that case the url is an object
-				var inputValue = urlImage.url_assets_relative;
-				var fullUrl = urlImage.full_url;
-				objInput.data("urlfull", fullUrl);
-
-				setInputValue(objInput, inputValue);
-			}else
-				setInputValue(objInput, urlImage, imageID);
-
-			objInput.trigger("change");
-
-		},false, source);
-
-		return(false);
-	}
-
-
-	/**
-	 * on clear image click
-	 */
-	function onClearImageClick(event){
-
-		event.preventDefault();
-
-		var objButton = jQuery(this);
-		var objWrapper = objButton.parents(".unite-setting-image");
-
-		var objInput = objWrapper.find("input.unite-setting-image-input");
-
-		objInput.val("");
-		objInput.data("urlfull","");
-		objInput.data("imageid","");
-		objInput.data("url","");
-
-		objInput.trigger("change");
-
-		return(false);
-	}
-
-
 	/**
 	 * update image url base
 	 */
-	this.updateImageFieldState = function(objInput, isEnable){
+	this.updateImageFieldState = function (objWrapper, urlBase) {
+		var objError = objWrapper.find(".unite-setting-image-error");
+		var objUrl = objWrapper.find(".unite-setting-image-url");
+		var enabled = !!urlBase;
 
-		var objError = objInput.siblings(".unite-setting-image-error");
-		var objPreview = objInput.siblings(".unite-setting-image-preview");
-		var objWrapper = objInput.parents(".unite-setting-image");
-
-		objInput.trigger("change");
-
-		if(isEnable == false){				//set disabled mode
-
-			if(objError.length)
-				objError.show();
-
-			g_ucAdmin.disableInput(objInput);
-			objWrapper.addClass("unite-disabled");
-
-		}else{						//activate image input
-			if(objError.length)
-				objError.hide();
-
-			g_ucAdmin.enableInput(objInput);
-			objWrapper.removeClass("unite-disabled");
-
-			objPreview.show();
-
-			var backgroundImage = objPreview.css("background-image");
-
-			if(backgroundImage && backgroundImage != "none")
-				objWrapper.addClass("unite-image-exists");
-			else
-				objWrapper.removeClass("unite-image-exists");
-
-		}
-
-
-	}
-
+		objWrapper.toggleClass("unite-disabled", enabled === false);
+		objUrl.prop("disabled", enabled === false).trigger("input");
+		objError.toggle(enabled === false);
+	};
 
 	/**
-	 * on update assets path
-	 * update all image addon inputs url base
+	 * on update assets path (update url base for all image addon inputs)
 	 */
-	function onUpdateAssetsPath(event, urlBase){
-
+	function onUpdateAssetsPath(event, urlBase) {
 		validateInited();
 
 		var objInputs = getObjInputs();
 
-		objInputs.each(function(index, input){
-
-			var objInput = jQuery(input);
+		jQuery.each(objInputs, function () {
+			var objInput = jQuery(this);
 			var type = getInputType(objInput);
-			if(type != "image" || type != "mp3")
-				return(true);
+
+			if (type !== "image" || type !== "mp3")
+				return;
 
 			var source = objInput.data("source");
 
-			if(source == "addon"){
-				var isEnable = true;
-				if(!urlBase)
-					isEnable = false;
-
-				t.updateImageFieldState(objInput, isEnable);
-			}
-
+			if (source === "addon")
+				t.updateImageFieldState(objInput, urlBase);
 		});
-
 	}
+
 
 	function _______GALLERY_____(){}
 
@@ -1797,7 +1623,7 @@ function UniteSettingsUC(){
 		if(isItemsAdded == true)
 		return(false);
 
-		g_ucAdmin.openAddImageDialog("Choose Images",function(urlImage){
+		g_ucAdmin.openAddImageDialog(g_uctext.choose_images,function(urlImage){
 
 			//add new images
 			setGalleryValues(objInput, urlImage);
@@ -2337,7 +2163,7 @@ function UniteSettingsUC(){
 		});
 
 		objPickerButtonUpload.on("click", function () {
-			g_ucAdmin.openAddImageDialog("Choose Icon", function (imageUrl, imageId) {
+			g_ucAdmin.openAddImageDialog(g_uctext.choose_icon, function (imageUrl, imageId) {
 				var fileName = imageUrl.split("/").pop();
 				var fileExtension = fileName.split(".").pop();
 
@@ -2388,13 +2214,13 @@ function UniteSettingsUC(){
 			funcChange(event, objPickerInput);
 
 			// deactivate buttons
-			objPickerButton.removeClass("ue-active");
+			objPickerButton.removeClass("unite-active");
 
 			// check for uploaded icon
 			var isUpload = value.indexOf(".svg") > -1;
 
 			if (isUpload === true){
-				objPickerButtonUpload.addClass("ue-active");
+				objPickerButtonUpload.addClass("unite-active");
 				objPickerUploadedIcon.attr("src", value);
 
 				return;
@@ -2409,7 +2235,7 @@ function UniteSettingsUC(){
 			var iconHash = icon + "_" + iconsType;
 
 			if (g_iconsHash[iconHash]) {
-				objPickerButtonLibrary.addClass("ue-active");
+				objPickerButtonLibrary.addClass("unite-active");
 
 				var objType = iconPicker_getObjIconsType(iconsType);
 				var iconHtml = iconPicker_getIconHtmlFromTemplate(objType.template, icon);
@@ -2420,7 +2246,7 @@ function UniteSettingsUC(){
 			}
 
 			// fallback to the "none"
-			objPickerButtonNone.addClass("ue-active");
+			objPickerButtonNone.addClass("unite-active");
 		});
 
 		objPickerInput.trigger("input");
@@ -2732,6 +2558,134 @@ function UniteSettingsUC(){
 	}
 
 
+	function __________IMAGE_CHOOSER__________(){}
+
+	/**
+	 * init image chooser
+	 */
+	t.initImageChooser = function (objWrapper, funcChange) {
+		var objPreview = objWrapper.find(".unite-setting-image-preview");
+		var objChooseButton = objWrapper.find(".unite-setting-image-choose");
+		var objClearButton = objWrapper.find(".unite-setting-image-clear");
+		var objUrl = objWrapper.find(".unite-setting-image-url");
+		var objSize = objWrapper.find(".unite-setting-image-size");
+
+		// make compatible with widget params dialog
+		if (typeof funcChange !== "function") {
+			funcChange = function () {
+				objUrl.trigger("input");
+			};
+		}
+
+		objUrl.on("input", function (event) {
+			var url = objUrl.val();
+
+			if (url === "")
+				objPreview.removeAttr("style");
+			else
+				objPreview.css("background-image", "url('" + url + "')");
+
+			// reset image id if the input has been changed manually
+			if (event.originalEvent)
+				objWrapper.data("image-id", null);
+
+			var imageId = objWrapper.data("image-id");
+
+			objUrl.closest(".unite-setting-image-section").toggleClass("unite-hidden", !!imageId);
+			objSize.closest(".unite-setting-image-section").toggleClass("unite-hidden", !imageId);
+		});
+
+		objSize.on("change", function () {
+			objSize.prop("disabled", true);
+
+			const data = getImageInputValue(objWrapper);
+
+			g_ucAdmin.ajaxRequest("get_image_url", data, function (response) {
+				data.url = response.url;
+
+				setImageInputValue(objWrapper, data);
+
+				funcChange(null, objWrapper);
+			}).always(function () {
+				objSize.prop("disabled", false);
+			});
+		});
+
+		objChooseButton.on("click", function (event) {
+			event.stopPropagation();
+
+			var source = objWrapper.data("source");
+
+			g_ucAdmin.openAddImageDialog(g_uctext.choose_image, function (imageUrl, imageId) {
+				if (source === "addon")
+					setImageInputValue(objWrapper, imageUrl.url_assets_relative);
+				else
+					setImageInputValue(objWrapper, { id: imageId, url: imageUrl });
+
+				funcChange(null, objWrapper);
+			}, false, source);
+		});
+
+		objClearButton.on("click", function (event) {
+			event.stopPropagation();
+
+			setImageInputValue(objWrapper, "");
+
+			funcChange(null, objWrapper);
+		});
+
+		objPreview.on("click", function () {
+			objChooseButton.trigger("click");
+		});
+	}
+
+	/**
+	 * destroy image chooser
+	 */
+	function destroyImageChoosers() {
+		g_objWrapper.find(".unite-setting-image-preview").off("click");
+		g_objWrapper.find(".unite-setting-image-choose").off("click");
+		g_objWrapper.find(".unite-setting-image-clear").off("click");
+		g_objWrapper.find(".unite-setting-image-url").off("input");
+		g_objWrapper.find(".unite-setting-image-size").off("change");
+	}
+
+	/**
+	 * get image input value
+	 */
+	function getImageInputValue(objWrapper) {
+		var id = objWrapper.data("image-id");
+		var url = objWrapper.find(".unite-setting-image-url").val();
+		var size = objWrapper.find(".unite-setting-image-size").val();
+
+		url = g_ucAdmin.urlToRelative(url);
+
+		var data = {
+			id: id,
+			url: url,
+			size: size,
+		};
+
+		return data;
+	}
+
+	/**
+	 * set image input value
+	 */
+	function setImageInputValue(objWrapper, value) {
+		if (typeof value === "string")
+			value = { url: value };
+
+		value.id = value.id || null;
+		value.url = g_ucAdmin.urlToFull(value.url);
+		value.size = value.size || "full";
+
+		objWrapper.data("image-id", value.id);
+		objWrapper.find(".unite-setting-image-url").val(value.url).trigger("input");
+		objWrapper.find(".unite-setting-image-size").val(value.size);
+	}
+
+
 	function __________TABS__________(){}
 
 	/**
@@ -2755,7 +2709,7 @@ function UniteSettingsUC(){
 	 * destroy tabs
 	 */
 	function destroyTabs() {
-		objWrapper.find(".unite-setting-tabs-item-input").off("change");
+		g_objWrapper.find(".unite-setting-tabs-item-input").off("change");
 	}
 
 	/**
@@ -2771,13 +2725,6 @@ function UniteSettingsUC(){
 		objWrapper.find(".unite-setting-tabs-item-input:checked").trigger("change");
 	}
 
-	/**
-	 * clear tabs value
-	 */
-	function clearTabsValue(objWrapper, defaultValue) {
-		setTabsValue(objWrapper, defaultValue);
-	}
-
 
 	function _______DIMENTIONS_____(){}
 
@@ -2789,7 +2736,7 @@ function UniteSettingsUC(){
 		var objLink = objWrapper.find(".unite-dimentions-link");
 
 		objInputs.on("input", function (event) {
-			if (objLink.hasClass("ue-active") === true) {
+			if (objLink.hasClass("unite-active") === true) {
 				var objInput = jQuery(this);
 				var value = objInput.val();
 
@@ -2800,9 +2747,9 @@ function UniteSettingsUC(){
 		});
 
 		objLink.on("click", function (event) {
-			objLink.toggleClass("ue-active");
+			objLink.toggleClass("unite-active");
 
-			if (objLink.hasClass("ue-active") === true) {
+			if (objLink.hasClass("unite-active") === true) {
 				var value = objInputs.first().val();
 
 				objInputs.val(value);
@@ -2824,7 +2771,7 @@ function UniteSettingsUC(){
 	 * init dimentions - update link title
 	 */
 	function initDimentions_updateLinkTitle(objLink) {
-		var title = objLink.hasClass("ue-active") === true
+		var title = objLink.hasClass("unite-active") === true
 			? objLink.data("title-unlink")
 			: objLink.data("title-link");
 
@@ -2855,7 +2802,7 @@ function UniteSettingsUC(){
 
 		objWrapper.find(".unite-dimentions-link").each(function () {
 			var objLink = jQuery(this);
-			var value = objLink.hasClass("ue-active") === true;
+			var value = objLink.hasClass("unite-active") === true;
 			var key = objLink.data("key");
 
 			data[key] = value;
@@ -2881,19 +2828,12 @@ function UniteSettingsUC(){
 			var objLink = jQuery(this);
 			var key = objLink.data("key");
 
-			objLink.toggleClass("ue-active", value[key] === true);
+			objLink.toggleClass("unite-active", value[key] === true);
 
 			initDimentions_updateLinkTitle(objLink);
 		});
 
 		setUnitsPickerValue(objWrapper, value["unit"]);
-	}
-
-	/**
-	 * clear dimentions value
-	 */
-	function clearDimentionsValue(objWrapper, defaultValue) {
-		setDimentionsValue(objWrapper, defaultValue);
 	}
 
 	/**
@@ -3040,35 +2980,56 @@ function UniteSettingsUC(){
 	/**
 	 * init link
 	 */
-	function initLink(objInput){
+	function initLink(objInput, funcChange) {
+		var objWrapper = objInput.closest(".unite-setting-link-wrapper");
+		var objToggle = objWrapper.find(".unite-setting-link-toggle");
+		var objOptions = objWrapper.find(".unite-setting-link-options");
+		var objExternal = objWrapper.find(".unite-setting-link-external");
+		var objNofollow = objWrapper.find(".unite-setting-link-nofollow");
+		var objAttributes = objWrapper.find(".unite-setting-link-attributes");
 
-		var objRoot = objInput.closest(".unite-setting-link-wrapper");
-		var objToggle = objRoot.find(".unite-setting-link-toggle");
-		var objOptions = objRoot.find(".unite-setting-link-options");
-
-		objToggle.on("click", function(event){
-			event.preventDefault();
-
+		objToggle.on("click", function () {
 			objOptions.stop().slideToggle(g_vars.animationDuration);
 		});
+
+		objExternal.on("change", function () {
+			funcChange(null, objInput);
+		});
+
+		objNofollow.on("change", function () {
+			funcChange(null, objInput);
+		});
+
+		objAttributes.on("input", function () {
+			funcChange(null, objInput);
+		});
+	}
+
+	/**
+	 * destroy links
+	 */
+	function destroyLinks() {
+		g_objWrapper.find(".unite-setting-link-toggle").off("click");
+		g_objWrapper.find(".unite-setting-link-external").off("change");
+		g_objWrapper.find(".unite-setting-link-nofollow").off("change");
+		g_objWrapper.find(".unite-setting-link-attributes").off("input");
 	}
 
 	/**
 	 * get link value
 	 */
-	function getLinkInputValue(objInput){
-
-		var objRoot = objInput.closest(".unite-setting-link-wrapper");
-		var url = objRoot.find(".unite-setting-link").val();
-		var external = objRoot.find(".unite-setting-link-external").prop("checked") ? "on" : "";
-		var nofollow = objRoot.find(".unite-setting-link-nofollow").prop("checked") ? "on" : "";
-		var attributes = objRoot.find(".unite-setting-link-attributes").val();
+	function getLinkInputValue(objInput) {
+		var objWrapper = objInput.closest(".unite-setting-link-wrapper");
+		var url = objWrapper.find(".unite-setting-link").val();
+		var external = objWrapper.find(".unite-setting-link-external").prop("checked") ? "on" : "";
+		var nofollow = objWrapper.find(".unite-setting-link-nofollow").prop("checked") ? "on" : "";
+		var attributes = objWrapper.find(".unite-setting-link-attributes").val();
 
 		var value = {
 			url: url,
 			is_external: external,
 			nofollow: nofollow,
-			custom_attributes: attributes
+			custom_attributes: attributes,
 		};
 
 		return value;
@@ -3077,26 +3038,16 @@ function UniteSettingsUC(){
 	/**
 	 * set link value
 	 */
-	function setLinkInputValue(objInput, value){
-
-		var objRoot = objInput.closest(".unite-setting-link-wrapper");
+	function setLinkInputValue(objInput, value) {
+		var objWrapper = objInput.closest(".unite-setting-link-wrapper");
 
 		if (typeof value === "string")
 			value = { url: value };
 
-		objRoot.find(".unite-setting-link").val(value.url);
-		objRoot.find(".unite-setting-link-external").prop("checked", value.is_external === "on");
-		objRoot.find(".unite-setting-link-nofollow").prop("checked", value.nofollow === "on");
-		objRoot.find(".unite-setting-link-attributes").val(value.custom_attributes);
-
-	}
-
-	/**
-	 * clear link value
-	 */
-	function clearLinkInputValue(objInput, defaultValue){
-
-		setLinkInputValue(objInput, { url: defaultValue });
+		objWrapper.find(".unite-setting-link").val(value.url);
+		objWrapper.find(".unite-setting-link-external").prop("checked", value.is_external === "on");
+		objWrapper.find(".unite-setting-link-nofollow").prop("checked", value.nofollow === "on");
+		objWrapper.find(".unite-setting-link-attributes").val(value.custom_attributes);
 	}
 
 
@@ -3226,7 +3177,7 @@ function UniteSettingsUC(){
 		var objEditButton = objWrapper.find(".unite-sub-settings-edit");
 
 		objResetButton.on("click", function () {
-			clearSubSettingsValue(objWrapper);
+			setSubSettingsValue(objWrapper);
 		});
 
 		objEditButton.on("click", function (event) {
@@ -3337,9 +3288,7 @@ function UniteSettingsUC(){
 
 		var objSettings = getSubSettingsDialog(objWrapper).data("settings");
 
-		objSettings.disableTriggerChange();
 		objSettings.setValues(value);
-		objSettings.enableTriggerChange();
 	}
 
 	/**
@@ -3371,13 +3320,6 @@ function UniteSettingsUC(){
 		t.onSettingChange(null, objWrapper);
 
 		objWrapper.find(".unite-sub-settings-reset").toggleClass("unite-hidden", jQuery.isEmptyObject(value));
-	}
-
-	/**
-	 * clear sub settings value
-	 */
-	function clearSubSettingsValue(objWrapper, defaultValue) {
-		setSubSettingsValue(objWrapper, defaultValue || {});
 	}
 
 	/**
@@ -3664,9 +3606,6 @@ function UniteSettingsUC(){
 		if (useDefault === true)
 			values = objWrapper.data("itemvalues");
 
-		if (!values)
-			return;
-
 		if (jQuery.isArray(values) === false)
 			return;
 
@@ -3696,8 +3635,8 @@ function UniteSettingsUC(){
 		var checkedValue = objWrapper.data("checkedvalue");
 		var uncheckedValue = objWrapper.data("uncheckedvalue");
 
-		checkedValue = g_ucAdmin.boolToStr(checkedValue);
-		uncheckedValue = g_ucAdmin.boolToStr(uncheckedValue);
+		checkedValue = g_ucAdmin.strToBool(checkedValue);
+		uncheckedValue = g_ucAdmin.strToBool(uncheckedValue);
 
 		return objWrapper.hasClass("uc-checked") ? checkedValue : uncheckedValue;
 	}
@@ -3708,18 +3647,10 @@ function UniteSettingsUC(){
 	function setSwitcherValue(objWrapper, value) {
 		var checkedValue = objWrapper.data("checkedvalue");
 
-		checkedValue = g_ucAdmin.boolToStr(checkedValue);
-		value = g_ucAdmin.boolToStr(value);
+		checkedValue = g_ucAdmin.strToBool(checkedValue);
+		value = g_ucAdmin.strToBool(value);
 
 		objWrapper.data("value", value).toggleClass("uc-checked", value === checkedValue);
-	}
-
-
-	/**
-	 * clear switcher value
-	 */
-	function clearSwitcherValue(objSwitcher, defaultValue) {
-		setSwitcherValue(objSwitcher, defaultValue);
 	}
 
 
@@ -4118,6 +4049,11 @@ function UniteSettingsUC(){
 
 		jQuery.each(objInputs, function () {
 			var objInput = jQuery(this);
+
+			// skip hidden setting
+			if (objInput.closest(".unite-setting-hidden").length > 0)
+				return;
+
 			var inputCss = getInputSelectorCss(objInput);
 
 			if (inputCss)
@@ -4248,6 +4184,12 @@ function UniteSettingsUC(){
 		var size;
 
 		switch (type) {
+			case "image":
+				value = g_ucAdmin.urlToFull(value.url);
+
+				if (!value)
+					return;
+			break;
 			case "range":
 				size = value.size;
 				unit = value.unit;
@@ -4483,24 +4425,6 @@ function UniteSettingsUC(){
 
 
 	/**
-	 * init image chooser
-	 */
-	this.initImageChooser = function(objImageSettings){
-
-		if(objImageSettings.length == 0)
-			return(false);
-
-		objImageSettings.find(".unite-setting-image-preview").on("click",onChooseImageClick);
-		objImageSettings.find(".unite-button-choose").on("click",onChooseImageClick);
-		objImageSettings.find(".unite-button-clear").on("click",onClearImageClick);
-
-		var objInput = objImageSettings.find("input");
-
-		objInput.change(setImagePreview);
-	};
-
-
-	/**
 	 * init mp3 chooser
 	 */
 	this.initMp3Chooser = function(objMp3Setting){
@@ -4552,6 +4476,12 @@ function UniteSettingsUC(){
 			case "icon":
 				initIconPicker(objInput, funcChange);
 			break;
+			case "image":
+				t.initImageChooser(objInput, funcChange);
+			break;
+			case "link":
+				initLink(objInput, funcChange);
+			break;
 			case "dimentions":
 				initDimentions(objInput, funcChange);
 			break;
@@ -4588,9 +4518,6 @@ function UniteSettingsUC(){
 			case "gallery":
 				initGallery(objInput);
 			break;
-			case "link":
-				initAddFieldsEvents(objInput);
-			break;
 			default:
 				//custom setting
 				var objCustomType = getCustomSettingType(type);
@@ -4624,65 +4551,29 @@ function UniteSettingsUC(){
 
 	}
 
-
 	/**
 	 * init settings events
 	 */
-	function initSettingsEvents(){
+	function initSettingsEvents() {
+		initControls();
 
 		var objInputs = getObjInputs();
 
-		jQuery.each(objInputs, function(index, input){
-			var objInput = jQuery(input);
-
-			initInputEvents(objInput);
+		jQuery.each(objInputs, function () {
+			initInputEvents(jQuery(this));
 		});
-
-		//init image input events
-		var objImageSettings = g_objParent.find(".unite-setting-image");
-		t.initImageChooser(objImageSettings);
 
 		//init mp3 input events
 		var objMp3Settings = g_objParent.find(".unite-setting-mp3");
 		t.initMp3Chooser(objMp3Settings);
-
-		//init link events
-		var objLinkSettings = g_objParent.find(".unite-setting-link");
-		initLink(objLinkSettings);
-
-		initControls();
 	}
-
-
-	/**
-	 * init setting additional fields events, trigger event of the base field
-	 * on additional fields change
-	 */
-	function initAddFieldsEvents(objBaseInput){
-
-		var objWrapper = objBaseInput.closest(".unite-setting-input");
-		var objAddInputs = objWrapper.find("input").not(objBaseInput);
-
-		jQuery.each(objAddInputs, function(index, addinput){
-			var objAddInput = jQuery(addinput);
-
-			initInputEvents(objAddInput, function(event, objInput, isInstant){
-				t.onSettingChange(event, objBaseInput, isInstant);
-			});
-		});
-
-	}
-
 
 	/**
 	 * init global events - not repeating
 	 */
 	function initGlobalEvents(){
-
 		g_ucAdmin.onEvent("update_assets_path", onUpdateAssetsPath);
-
 	}
-
 
 	/**
 	 * init options
@@ -4763,81 +4654,69 @@ function UniteSettingsUC(){
 	/**
 	 * destroy settings object
 	 */
-	this.destroy = function(){
+	this.destroy = function () {
+		if (t.isInited() === false)
+			return;
 
 		g_ucAdmin.offEvent("update_assets_path");
 
 		var objInputs = g_objParent.find("input,textarea,select").not("input[type='radio']");
-
 		objInputs.off("change");
 
 		var objInputsClick = g_objParent.find("input[type='radio'],.unite-setting-switcher");
 		objInputsClick.off("click");
-
-		var objImageSettings = g_objParent.find(".unite-setting-image");
-
-		//destroy image events:
-		if(objImageSettings.length){
-
-			objImageSettings.find(".unite-button-choose").off("click");
-			objImageSettings.find(".unite-button-clear").off("click");
-			objImageSettings.find("input").off("change");
-		}
 
 		//destroy control events
 		g_objParent.find("select, input").off("change");
 
 		//destroy loaded events
 		g_objParent.off(t.events.CHANGE);
+		g_objParent.off(t.events.SELECTORS_CHANGE);
 
 		//destroy tabs events
-		if(g_objSapTabs)
+		if (g_objSapTabs)
 			g_objSapTabs.children("a").off("click");
 
 		//destroy accordion events
-		if(g_objWrapper)
+		if (g_objWrapper)
 			g_objWrapper.find(".unite-postbox .unite-postbox-title").off("click");
 
 		g_objProvider.destroyEditors(t);
 
-		//null parent object so it won't pass the validation
-		if(g_objParent.length){
-			g_objParent.html("");
-		}
-
 		//destroy items manager
-		if(g_temp.objItemsManager){
+		if (g_temp.objItemsManager) {
 			g_temp.objItemsManager.destroy();
 			g_temp.objItemsManager = null;
 			g_objParent.find(".uc-setting-items-panel-button").off("click");
 		}
 
-
-		if(g_temp.isRepeaterExists)
+		if (g_temp.isRepeaterExists)
 			destroyRepeaters();
 
 		destroyTabs();
 		destroyDimentions();
+		destroyColorPickers();
 		destroyIconPickers();
-		destroyRangeSlider();
+		destroyImageChoosers();
+		destroyLinks();
+		destroyRangeSliders();
 		destroySubSettings();
 
 		//destroy custom setting types
 		var objCustomTypes = getCustomSettingType();
-		if(objCustomTypes){
-			jQuery.each(objCustomTypes, function(index, objType){
 
-				if(objType.funcDestroy && g_objParent && g_objParent.length)
+		if (objCustomTypes) {
+			jQuery.each(objCustomTypes, function (index, objType) {
+				if (objType.funcDestroy && g_objParent && g_objParent.length)
 					objType.funcDestroy(g_objParent);
-
 			});
 		}
 
 		//destroy addon picker
 		g_objParent.find(".unite-addonpicker-button").off("click");
-
 		g_objParent.find(".unite-button-primary, .unite-button-secondary").off("click");
 
+		//null parent object so it won't pass the validation
 		g_objParent = null;
 	};
 
@@ -4916,10 +4795,15 @@ function UniteSettingsUC(){
 		g_ucAdmin.storeGlobalData(g_temp.customSettingsKey, objCustomSettings);
 	};
 
-
+	/**
+	 * determine if the settings are initialized
+	 */
+	this.isInited = function () {
+		return g_objParent !== null;
+	};
 
 	/**
-	 * init the settings function, set the tootips on sidebars.
+	 * init the settings
 	 */
 	this.init = function(objParent, options){
 

@@ -641,7 +641,11 @@ class UniteCreatorDialogParamWork{
 
 		switch($type){
 			case "image":
-				$objSettings->addImage($name, "", $text, array("source"=>"addon"));
+				$objSettings->addImage($name, "", $text, array(
+					"source" => "addon",
+					"url_name" => $name,
+					"size_name" => $name . "_size",
+				));
 			break;
 			case "mp3":
 				$objSettings->addMp3($name, "", $text, array("source"=>"addon"));

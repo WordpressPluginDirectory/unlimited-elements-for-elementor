@@ -309,27 +309,6 @@ class UniteCreatorFiltersProcess{
 		return($request);
 	}
 	
-	/**
-	 * parse base query
-	 */
-	private function parseBaseFilters($strBase){
-		
-		if(empty($strBase))
-			return(null);
-		
-		$arrFilter = explode("~", $strBase);
-		
-		if(count($arrFilter) != 2)
-			return(null);
-
-		$term = $arrFilter[0];
-		$value = $arrFilter[1];
-			
-		$arrBase = array();
-		$arrBase[$term] = $value;
-		
-		return($arrBase);
-	}
 	
 
 	/**
@@ -424,7 +403,11 @@ class UniteCreatorFiltersProcess{
 	 * parse filters string
 	 */
 	private function parseStrTerms($strFilters){
+
+		$arrUrlKeys = $this->getUrlPartsKeys();
 		
+		$taxSapSign = UniteFunctionsUC::getVal($arrUrlKeys, "tax_sap","~");
+				
 		$strFilters = trim($strFilters);
 		
 		$arrFilters = explode(";", $strFilters);
@@ -434,7 +417,7 @@ class UniteCreatorFiltersProcess{
 		
 		foreach($arrFilters as $strFilter){
 			
-			$arrFilter = explode("~", $strFilter);
+			$arrFilter = explode($taxSapSign, $strFilter);
 			
 			if(count($arrFilter) != 2)
 				continue;
@@ -1448,7 +1431,10 @@ class UniteCreatorFiltersProcess{
 		//run the post query
 		$arrHtmlWidget = $this->getContentWidgetHtml($arrContent, $elementID);
 		
-		self::$numTotalPosts = GlobalsProviderUC::$lastPostQuery->found_posts;
+		if(empty(GlobalsProviderUC::$lastPostQuery))
+			self::$numTotalPosts = 0;
+		else
+			self::$numTotalPosts = GlobalsProviderUC::$lastPostQuery->found_posts;
 		
 		//find the term id's for test (find or not in the current posts query)
 		if(!empty($testTermIDs)){
@@ -1869,6 +1855,17 @@ class UniteCreatorFiltersProcess{
 		return($data);
 	}
 
+	/**
+	 * default sign is "~"
+	 * 
+	 */
+	private function getUrlPartsKeys(){
+		
+		$arrParts = array();
+		$arrParts["tax_sap"] = apply_filters("ue_filters_url_key__taxonomy_sap","~");
+		
+		return($arrParts);
+	}
 	
 	/**
 	 * get filters attributes
@@ -1877,7 +1874,6 @@ class UniteCreatorFiltersProcess{
 	private function getFiltersJSData(){
 		
 		$urlBase = UniteFunctionsUC::getBaseUrl(GlobalsUC::$current_page_url, true);		//strip pagination
-		
 		
 		//include some common url filters
 		$orderby = UniteFunctionsUC::getGetVar("orderby","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
@@ -1908,16 +1904,19 @@ class UniteCreatorFiltersProcess{
 		$isDebug = UniteFunctionsUC::getGetVar("ucfiltersdebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		$isDebug = UniteFunctionsUC::strToBool($isDebug);
 		
+		//get url parts
+		$arrUrlKeys = $this->getUrlPartsKeys();
+				
 		//get current filters
 		
 		$arrData = array();
 		$arrData["urlbase"] = $urlBase;
 		$arrData["urlajax"] = GlobalsUC::$url_ajax_full;
+		$arrData["urlkeys"] = $arrUrlKeys;
 		
 		if($isDebug == true)
 			$arrData["debug"] = true;
-		
-		
+				
 		return($arrData);
 	}
 	

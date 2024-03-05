@@ -45,14 +45,14 @@ class UniteCreatorLayoutsExporter extends UniteCreatorLayoutsExporterWork{
 				
 		//check for existing image id
 		$imageID = UniteFunctionsWPUC::getAttachmentIDFromImageUrl($urlFull);
-		
+				
 		if(!empty($imageID)){
-						
+		
 			$urlExistingImage = UniteFunctionsWPUC::getUrlAttachmentImage($imageID);
-			
 			if($urlExistingImage == $urlFull)
 				return($imageID);
 		}
+						
 		
 		//get image title
 		$title = "";
@@ -78,17 +78,13 @@ class UniteCreatorLayoutsExporter extends UniteCreatorLayoutsExporterWork{
 				'post_excerpt' => $excerpt,
 		);
 		
-				
+		
 		$id = wp_insert_attachment($attachment, $filepathDest);
 		if(is_wp_error($id))
 			return(null);
 		
 		wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $filepathDest ) );
 		
-		$post = get_post($id);
-		
-		$meta = get_post_meta($post);
-				
 		return($id);
 	}
 	

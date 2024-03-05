@@ -13,8 +13,8 @@
 	<item name="font-awsome" title="Font Awesome">
 		<css>
 			<include handle="font-awesome" local="font-awsome/css/font-awesome.min.css" condition="fa4"></include>
-			<include handle="font-awesome" local="font-awesome5/css/fontawesome-all.min.css" condition="fa5"></include>
-			<include handle="font-awesome-4-shim" local="font-awesome5/css/fontawesome-v4-shims.css" condition="fa5"></include>
+			<include handle="font-awesome" local="font-awesome6/fontawesome-all.min.css" condition="fa5"></include>
+			<include handle="font-awesome-4-shim" local="font-awesome6/fontawesome-v4-shims.min.css" condition="fa5"></include>
 		</css>
 	</item>
 	<item name="owl-carousel" title="Owl Carousel">

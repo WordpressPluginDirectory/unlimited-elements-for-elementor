@@ -159,7 +159,7 @@ class UniteCreatorGutenbergIntegrate{
 		$handle = 'uc_gutenberg_integrate';
 		$styleUrl = GlobalsUC::$url_provider . 'assets/gutenberg_integrate.css';
 		$scriptUrl = GlobalsUC::$url_provider . 'assets/gutenberg_integrate.js';
-		$scriptDeps = array('jquery', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-element');
+		$scriptDeps = array('jquery', 'wp-block-editor', 'wp-blocks', 'wp-components', 'wp-data', 'wp-element');
 
 		HelperUC::addStyleAbsoluteUrl($styleUrl, $handle);
 		HelperUC::addScriptAbsoluteUrl($scriptUrl, $handle, false, $scriptDeps);
@@ -189,7 +189,6 @@ class UniteCreatorGutenbergIntegrate{
 				self::$blocks[$name] = array(
 					'name' => $name,
 					'title' => $addon->getTitle(),
-					'description' => $addon->getDescription(),
 					'category' => GlobalsUnlimitedElements::PLUGIN_NAME,
 					'render_callback' => array($this, 'renderBlock'),
 					'attributes' => array(
@@ -201,6 +200,11 @@ class UniteCreatorGutenbergIntegrate{
 							'type' => 'string',
 							'default' => '',
 						),
+					),
+					'supports' => array(
+						'customClassName' => false,
+						'html' => false,
+						'reusable' => false,
 					),
 				);
 			}

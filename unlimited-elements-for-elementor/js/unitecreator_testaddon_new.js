@@ -1,48 +1,71 @@
 "use strict";
 
-function UniteCreatorTestAddonNew(){
+function UniteCreatorTestAddonNew() {
+	var g_slot = 1;
+	var g_addonPreview = new UniteAddonPreviewAdmin();
 
-	var g_settings, g_objPreview, g_addonID, g_requestPreview;
-
-	var g_helper = new UniteCreatorHelper();
-
-	var t = this;
-
-	if(!g_ucAdmin)
+	if (!g_ucAdmin)
 		var g_ucAdmin = new UniteAdminUC();
 
+	/**
+	 * init the view
+	 */
+	this.init = function () {
+		g_addonPreview.init();
+
+		initEvents();
+	};
 
 	/**
-	 * on check settings values click
+	 * init events
 	 */
-	function onCheckClick() {
+	function initEvents() {
+		jQuery("#uc_testaddon_button_save").on("click", onSaveDataClick);
+		jQuery("#uc_testaddon_button_restore").on("click", onRestoreDataClick);
+		jQuery("#uc_testaddon_button_delete").on("click", onDeleteDataClick);
+		jQuery("#uc_testaddon_button_clear").on("click", onClearClick);
+		jQuery("#uc_testaddon_button_check").on("click", onCheckClick);
+	}
 
-		var values = g_settings.getSettingsValues();
-		var selectorsCss = g_settings.getSelectorsCss();
+	/**
+	 * on save data event
+	 */
+	function onSaveDataClick() {
+		var values = g_addonPreview.getSettings().getSettingsValues();
 
-		trace("Settings Values Are:");
+		var data = {
+			id: g_addonPreview.getAddonId(),
+			settings_values: values,
+		};
+
+		trace("saving settings:");
 		trace(values);
 
-		if (selectorsCss) {
-			trace("Selectors Css:");
-			trace(selectorsCss);
-		}
+		g_ucAdmin.setAjaxLoadingButtonID("uc_testaddon_button_save");
+
+		g_ucAdmin.ajaxRequest("save_test_addon", data, function () {
+			jQuery("#uc_testaddon_button_restore").show();
+			jQuery("#uc_testaddon_button_delete").show();
+		});
 	}
 
 	/**
-	 * on clear settings click
+	 * on restore data event
 	 */
-	function onClearClick(){
-		trace("clear settings");
+	function onRestoreDataClick() {
+		g_ucAdmin.setAjaxLoadingButtonID("uc_testaddon_button_restore");
 
-		g_settings.clearSettings();
+		g_addonPreview.restoreSlot(g_slot);
 	}
 
 	/**
-	 * delete slot data
+	 * on delete data event
 	 */
 	function onDeleteDataClick() {
-		var data = { "id": g_addonID, "slotnum": 1 };
+		var data = {
+			id: g_addonPreview.getAddonId(),
+			slotnum: g_slot,
+		};
 
 		g_ucAdmin.setAjaxLoadingButtonID("uc_testaddon_button_delete");
 
@@ -53,236 +76,28 @@ function UniteCreatorTestAddonNew(){
 	}
 
 	/**
-	 * on save data event
+	 * on clear event
 	 */
-	function onSaveDataClick() {
-		var objData = {};
-		var values = g_settings.getSettingsValues();
+	function onClearClick() {
+		trace("clear settings");
 
-		objData["id"] = g_addonID;
-		objData["settings_values"] = values;
+		g_addonPreview.getSettings().clearSettings();
+	}
 
-		trace("Saving Settings...");
+	/**
+	 * on check event
+	 */
+	function onCheckClick() {
+		var settings = g_addonPreview.getSettings();
+		var values = settings.getSettingsValues();
+		var selectorsCss = settings.getSelectorsCss();
+
+		trace("settings values:");
 		trace(values);
 
-		g_ucAdmin.setAjaxLoadingButtonID("uc_testaddon_button_save");
-
-		g_ucAdmin.ajaxRequest("save_test_addon", objData, function () {
-			jQuery("#uc_testaddon_button_restore").show();
-			jQuery("#uc_testaddon_button_delete").show();
-		});
+		if (selectorsCss) {
+			trace("selectors css:");
+			trace(selectorsCss);
+		}
 	}
-
-	/**
-	 * restore data from saved slot
-	 */
-	function onRestoreDataClick() {
-		var data = { "id": g_addonID, "slotnum": 1, "combine": true };
-
-		trace("Restoring Settings...");
-
-		g_ucAdmin.setAjaxLoadingButtonID("uc_testaddon_button_restore");
-
-		g_ucAdmin.ajaxRequest("get_test_addon_data", data, function (response) {
-			var objValues = g_ucAdmin.getVal(response, "settings_values");
-
-			trace(objValues);
-
-			if (!objValues) {
-				trace("no settings found");
-				return (false);
-			}
-
-			g_settings.setValues(objValues);
-
-			setTimeout(function () {
-				refreshPreview();
-			}, 500);
-		});
-	}
-
-	/**
-	 * output preview
-	 */
-	function outputWidgetPreview(response){
-
-		var html = g_ucAdmin.getVal(response, "html");
-		var arrIncludes = g_ucAdmin.getVal(response, "includes");
-
-		g_helper.putIncludes(window, arrIncludes, function(){
-
-			g_objPreview.html(html);
-
-		});
-
-	}
-
-
-	/**
-	 * refresh preview
-	 */
-	function refreshPreview(){
-
-		var objValues = g_settings.getSettingsValues();
-
-		var data = {
-			id:g_addonID,
-			settings: objValues,
-			selectors:true
-		};
-
-		g_ucAdmin.setAjaxLoaderID("uc_preview_loader");
-
-		g_objPreview.addClass("uc-preview-loading");
-
-		if(g_requestPreview)
-			g_requestPreview.abort();
-
-		g_requestPreview = g_ucAdmin.ajaxRequest("get_addon_output_data", data, function(response){
-
-			g_objPreview.removeClass("uc-preview-loading");
-
-			outputWidgetPreview(response);
-
-		});
-
-	}
-
-	/**
-	 * update settings selectors
-	 */
-	function updateSelectors(){
-
-		var css = g_settings.getSelectorsCss();
-
-		var objStyle = jQuery("[name=uc_selectors_css]");
-
-		if(objStyle.length == 0)
-			throw new Error("No style element found, it should be in the styles");
-
-		objStyle.text(css);
-
-	}
-
-	/**
-	 * update selectors includes (like google font)
-	 */
-	function updateSelectorsIncludes() {
-		var includes = g_settings.getSelectorsIncludes();
-
-		if (includes)
-			g_helper.putIncludes(window, includes);
-	}
-
-	/**
-	 * update selectors and includes on settings change
-	 */
-	function updateOnChange() {
-		updateSelectorsIncludes();
-		updateSelectors();
-	}
-
-	/**
-	 * init the settings by it's html
-	 */
-	function initSettingsByHtml(htmlSettings){
-
-		var objSettingsWrapper = jQuery("#uc_settings_wrapper");
-
-		objSettingsWrapper.html(htmlSettings);
-
-		g_settings = new UniteSettingsUC();
-
-		g_settings.init(objSettingsWrapper);
-
-		g_settings.setEventOnChange(refreshPreview);
-
-		g_settings.setEventOnSelectorsChange(updateOnChange);
-
-	}
-
-
-	/**
-	 * load the settings from ajax
-	 */
-	function loadSettings(){
-
-		var data = {};
-		data["id"] = g_addonID;
-
-		g_ucAdmin.setAjaxLoaderID("uc_settings_loader");
-
-		g_ucAdmin.ajaxRequest("get_addon_settings_html", data, function(response){
-
-			initSettingsByHtml(response.html);
-
-			refreshPreview();
-
-			//testSettings();
-		});
-
-
-	}
-
-
-	function testSettings(){
-
-		setTimeout(function(){
-
-			//get values test
-
-			var values = g_settings.getSettingsValues();
-
-			trace(values);
-
-			//set values test
-
-			setTimeout(function(){
-				values.text1 = "other text";
-				values.multiple_select = ["option1"];
-
-				g_settings.setValues(values);
-
-				setTimeout(function(){
-					g_settings.clearSettings();
-				},500);
-
-			},500);
-
-
-		},1000);
-
-		trace("test settings!");
-
-	}
-
-	/**
-	 * init events
-	 */
-	function initEvents() {
-		jQuery("#uc_testaddon_button_save").on("click", onSaveDataClick);
-		jQuery("#uc_testaddon_button_restore").on("click", onRestoreDataClick);
-		jQuery("#uc_testaddon_button_clear").on("click", onClearClick);
-		jQuery("#uc_testaddon_button_check").on("click", onCheckClick);
-		jQuery("#uc_testaddon_button_delete").on("click", onDeleteDataClick);
-	}
-
-
-	/**
-	 * init the testaddon class
-	 */
-	this.init = function(){
-
-		var objWrapper = jQuery("#uc_preview_addon_wrapper");
-		g_addonID = objWrapper.data("addonid");
-
-		g_objPreview = jQuery("#uc_preview_wrapper");
-
-		initEvents();
-
-		loadSettings();
-
-
-	}
-
 }

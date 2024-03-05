@@ -856,9 +856,6 @@ Unlimited Elements empowers you to connect with popular integrations, streamlini
 
 
 
-
-
-
 == Installation ==
 
 Note : This plugin works with Elementor. Make sure you have [Elementor](https://wordpress.org/plugins/elementor/) installed.
@@ -869,6 +866,29 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 
 == Changelog ==
+
+version 1.5.98: 2024-03-05
+
+* Fix Some small gutenberg related bug fix
+
+version 1.5.97: 2024-03-04
+
+Plugin Updates: 
+
+* Fix: allow showing authors name translated
+* Change: updated font awesome version to 6
+* Fix: done some link attribute security fix
+
+Widgets Updates: 
+
+* Feature: Accordion Menu (Pro) - Implemented 'Active State Color' options for Sub Menu items. This new functionality allows users to customize the color of sub-menu items when they are in the active state, providing enhanced visual feedback.
+* Feature: Content Slider (Pro) - Made 'Slide Margin' option available for Full Slider Type and Offset Slider Type. This update expands the usability of the margin customization, allowing users to set margins between slides in both Full Slider and Offset Slider configurations.
+* Feature: Icon Tabs (Pro) - Made 'Start Collapsed' option responsive. This update ensures that the 'Start Collapsed' behavior adjusts responsively, providing a consistent and user-friendly experience across various devices and screen sizes.
+* Feature: Post Accordion (Free) - Introduced 'Expand All Accordion' functionality, enabling users to expand all accordion items with a single click for improved content accessibility.
+* Feature: Fullscreen Menu (Free) - Introduced option to customize the thickness of the animated hamburger icon bars, providing users with greater control over the visual appearance of the icon.
+* Change: Coverflow Carousel (Pro) - Updated 'Button Link' option: if empty, no link will be applied. This modification ensures that if the 'Button Link' option is left empty, no link will be associated with the button within the widget.
+* Fix: Product Carousel (Pro) - Optimized widget HTML code. This update enhances performance and efficiency by streamlining the HTML structure of the widget.
+* Fix: Content Tabs (Free) - Improved widget interaction within an Elementor's popup. This update ensures a more seamless and optimized experience when utilizing the widget within a popup setting.
 
 
 version 1.5.96: 2024-02-26

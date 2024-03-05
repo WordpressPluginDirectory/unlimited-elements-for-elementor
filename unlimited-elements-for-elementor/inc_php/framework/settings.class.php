@@ -633,6 +633,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		//-----------------------------------------------------------------------------------------------
 		//add button control
 		public function addButton($name, $value, $text, $arrParams = array()){
+
+			$arrParams["label_block"] = true;
+
 			$this->add($name,$value,$text,self::TYPE_BUTTON,$arrParams);
 		}
 
@@ -696,8 +699,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		/**
 		 * add image chooser setting
 		 */
-		public function addImage($name,$defaultValue = "",$text = "",$arrParams = array()){
-			$this->add($name,$defaultValue,$text,self::TYPE_IMAGE,$arrParams);
+		public function addImage($name, $defaultValue = "", $text = "", $arrParams = array()){
+
+			$arrParams["label_block"] = true;
+
+			$this->add($name, $defaultValue, $text, self::TYPE_IMAGE, $arrParams);
 		}
 
 		/**
@@ -777,14 +783,13 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * @param string $selector
 		 * @param string $selectorValue
 		 * @param array $selectorReplace
+		 * @param array $params
 		 */
-		public function addGroupSelector($name, $selector, $selectorValue, $selectorReplace){
+		public function addGroupSelector($name, $selector, $selectorValue, $selectorReplace, $params = array()){
 
-			$params = array(
-				"selector" => $selector,
-				"selector_value" => $selectorValue,
-				"selector_replace" => $selectorReplace,
-			);
+			$params["selector"] = $selector;
+			$params["selector_value"] = $selectorValue;
+			$params["selector_replace"] = $selectorReplace;
 
 			$this->add($name, null, self::PARAM_NOTEXT, self::TYPE_GROUP_SELECTOR, $params);
 		}

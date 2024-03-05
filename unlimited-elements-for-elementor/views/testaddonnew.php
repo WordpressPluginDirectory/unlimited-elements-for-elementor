@@ -32,12 +32,12 @@ class UniteCreatorTestAddonNewView{
 		$addonTitle = $addon->getTitle();
 		$isTestData1 = $addon->isTestDataExists(1);
 
-		$addonEditUrl = HelperUC::getViewUrl_EditAddon($addonID);
+		$addonEditUrl = HelperUC::getViewUrl_EditAddon($addon->getId());
 		$addonsListUrl = HelperUC::getViewUrl(GlobalsUnlimitedElements::VIEW_ADDONS_ELEMENTOR);
 
 		?>
 
-		<h1>Preview Widget - <?php esc_html_e($addonTitle); ?></h1>
+		<h1><?php esc_html_e("Widget Preview", "unlimited-elements-for-elementor"); ?> - <?php esc_html_e($addonTitle); ?></h1>
 
 		<div class="uc-preview-addon-actions">
 			<div class="uc-preview-addon-actions-primary">
@@ -89,25 +89,7 @@ class UniteCreatorTestAddonNewView{
 			</div>
 		</div>
 
-		<div id="uc_preview_addon_wrapper" class="uc-preview-addon-wrapper" data-addonid="<?php esc_attr_e($addonID); ?>">
-
-			<?php UniteProviderFunctionsUC::putInitHelperHtmlEditor(); ?>
-
-			<div class="uc-preview-addon-left">
-				<div id="uc_settings_loader" class="uc-settings-loader">
-					<?php esc_html_e("Loading settings...", "unlimited-elements-for-elementor"); ?>
-				</div>
-				<div id="uc_settings_wrapper" class="uc-settings-wrapper"></div>
-			</div>
-
-			<div class="uc-preview-addon-right">
-				<div id="uc_preview_loader" class="uc-preview-loader">
-					<?php esc_html_e("Loading preview...", "unlimited-elements-for-elementor"); ?>
-				</div>
-				<div id="uc_preview_wrapper" class="uc-preview-wrapper"></div>
-			</div>
-
-		</div>
+		<?php require HelperUC::getPathTemplate("addon_preview"); ?>
 
 		<script>
 			jQuery(document).ready(function () {

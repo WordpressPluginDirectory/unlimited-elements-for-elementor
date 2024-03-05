@@ -27,7 +27,7 @@ class UniteFontManagerUC{
 		
 		$filename = "fontawesome-all.css";
 		
-		$pathCssFile = GlobalsUC::$pathLibrary."font-awesome5/css/{$filename}";
+		$pathCssFile = GlobalsUC::$pathLibrary."font-awesome6/{$filename}";
 		
 		UniteFunctionsUC::validateFilepath($pathCssFile,"css file");
 		$content = file_get_contents($pathCssFile);
@@ -79,8 +79,7 @@ class UniteFontManagerUC{
 		}
 		
 		if(empty($pathCssFile))
-			$pathCssFile = GlobalsUC::$pathLibrary."font-awesome5/css/{$filename}";
-		
+			$pathCssFile = GlobalsUC::$pathLibrary."font-awesome6/{$filename}";
 			
 		UniteFunctionsUC::validateFilepath($pathCssFile,"css file");
 		$content = file_get_contents($pathCssFile);

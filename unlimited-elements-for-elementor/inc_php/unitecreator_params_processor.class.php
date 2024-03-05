@@ -365,7 +365,7 @@ class UniteCreatorParamsProcessorWork{
 
 					if(isset($arrGoogleFonts[$styleValue])){
 						$urlGoogleFont = HelperHtmlUC::getGoogleFontUrl($arrGoogleFonts[$styleValue]);
-						
+
 						if(!empty($this->addon)){
 							//$urlGoogleFont .= "&amp;fromaddon=".$this->addon->getName();
 							$this->addon->addCssInclude($urlGoogleFont);
@@ -957,69 +957,66 @@ class UniteCreatorParamsProcessorWork{
 
 	/**
 	 * process image param value, add to data
-	 * @param  $param
 	 */
 	protected function getProcessedParamsValue_image($data, $value, $param){
 
+		$name = UniteFunctionsUC::getVal($param, "name");
 		$mediaType = UniteFunctionsUC::getVal($param, "media_type");
 
-		$name = $param["name"];
-
-		if($mediaType == "json"){
-
+		if($mediaType === "json"){
 			$data[$name] = $this->getProcessedParamsValue_imageJson($data, $value, $param);
 
-			return($data);
+			return $data;
 		}
 
-		//try to get image id from array
-		if(is_array($value)){
+		$imageId = null;
+		$imageUrl = null;
+		$imageSize = "full";
 
-			if(isset($value["id"]))
-				$value = $value["id"];
-
-			if(isset($value["url"]))
-				$value = $value["url"];
-
-			if(empty($value))
-				return($data);
-		}
-
-
-		$urlImage = $value;		//in case that the value is image id
-		if(is_numeric($value)){
-			$urlImage = UniteProviderFunctionsUC::getImageUrlFromImageID($value);
-			$data[$name] = $urlImage;
+		if(is_array($value) === true){
+			$imageId = UniteFunctionsUC::getVal($value, "id");
+			$imageUrl = UniteFunctionsUC::getVal($value, "url");
+			$imageSize = UniteFunctionsUC::getVal($value, "size", "full");
 		}else{
-
-			$value = HelperUC::URLtoFull($value);
-			$data[$name] = $value;
+			if(is_numeric($value) === true)
+				$imageId = $value;
+			else
+				$imageUrl = $value;
 		}
 
+		if(empty($imageId) === true && empty($imageUrl) === true)
+			return $data;
 
+		if(empty($imageId) === false)
+			$imageUrl = UniteProviderFunctionsUC::getImageUrlFromImageID($imageId, $imageSize);
+		else
+			$imageUrl = HelperUC::URLtoFull($imageUrl);
+
+		$data[$name] = $imageUrl;
 
 		$sizeFilters = UniteFunctionsUC::getVal($param, "size_filters");
-		$isNoAttributes = UniteFunctionsUC::getVal($param, "no_attributes");
-		$isNoImageData = UniteFunctionsUC::getVal($param, "no_image_data");
+		$data = $this->addOtherImageThumbs($data, $name, $imageId, $sizeFilters);
 
-		$data = $this->addOtherImageThumbs($data, $name, $value, $sizeFilters);
+		$isNoImageData = UniteFunctionsUC::getVal($param, "no_image_data");
+		$isNoImageData = UniteFunctionsUC::strToBool($isNoImageData);
 
 		if($isNoImageData !== true)
-			$data = $this->addOtherImageData($data, $name, $value);
+			$data = $this->addOtherImageData($data, $name, $imageId);
+
+		$isNoAttributes = UniteFunctionsUC::getVal($param, "no_attributes");
+		$isNoAttributes = UniteFunctionsUC::strToBool($isNoAttributes);
 
 		if($isNoAttributes !== true)
 			$data = $this->addImageAttributes($data, $name, $param);
 
-		$keyThumb = $name."_thumb";
+		$keyThumb = $name . "_thumb";
 		$urlThumb = UniteFunctionsUC::getVal($data, $keyThumb);
 
-		if(empty($urlThumb))
-			$data[$keyThumb] = $urlImage;
+		if(empty($urlThumb) === true)
+			$data[$keyThumb] = $imageUrl;
 
-
-		return($data);
+		return $data;
 	}
-
 
 
 	private function z___________ICON_____________(){}
@@ -1535,88 +1532,92 @@ class UniteCreatorParamsProcessorWork{
 		return($html);
 	}
 
-	/**
-	 * modify link attributes
-	 */
-	private function getLinkData_modifyAttributes($attributes){
-
-		if(empty($attributes))
-			return("");
-
-		$arr = explode(",", $attributes);
-
-		if(empty($arr))
-			return($attributes);
-
-		$html = "";
-
-		foreach($arr as $attribute){
-
-			$arrAttr = explode("|", $attribute);
-
-			$key = isset($arrAttr[0]) ? $arrAttr[0] : "";
-			$value = isset($arrAttr[1]) ? $arrAttr[1] : "";
-
-			$key = trim($key);
-			$value = trim($value);
-
-			$key = str_replace('"', '', $key);
-			$value = str_replace('"', '', $value);
-
-			$html .= " $key=\"$value\"";
-		}
-
-		return($html);
-	}
-
 
 	/**
 	  * get link param data
 	 */
 	private function getLinkData($data, $value, $name, $param, $processType){
 
-		if(is_string($value) == true){
-
-			$data[$name] = $value;
-
-			$value = array("url"=>$value);
-		}
+		if(is_string($value) === true)
+			$value = array("url" => $value);
 
 		$url = UniteFunctionsUC::getVal($value, "url");
+		$url = esc_url($url);
+
 		$isExternal = UniteFunctionsUC::getVal($value, "is_external");
 		$noFollow = UniteFunctionsUC::getVal($value, "nofollow");
-		$customAttributes = UniteFunctionsUC::getVal($value, "custom_attributes");
 
-		$customAttributes = $this->getLinkData_modifyAttributes($customAttributes);
+		$customAttributes = UniteFunctionsUC::getVal($value, "custom_attributes");
+		$customAttributes = $this->getLinkData_prepareAttributes($customAttributes);
 
 		$urlFull = $url;
 		$scheme = parse_url($url, PHP_URL_SCHEME);
 
-		if(empty($scheme)){
+		if(empty($scheme) === true){
 			$urlFull = "https://{$url}";
 			$urlNoPrefix = $url;
 		}else{
-			$urlNoPrefix = str_replace($scheme."://", "", $url);
+			$urlNoPrefix = str_replace($scheme . "://", "", $url);
 		}
 
-
 		$addHtml = "";
-		if($isExternal == "on")
+
+		if($isExternal === "on")
 			$addHtml .= " target='_blank'";
 
-		if($noFollow == "on")
+		if($noFollow === "on")
 			$addHtml .= " rel='nofollow'";
 
-		if(!empty($customAttributes))
+		if(empty($customAttributes) === false)
 			$addHtml .= $customAttributes;
 
-
 		$data[$name] = $url;
-		$data[$name."_html_attributes"] = $addHtml;
-		$data[$name."_full"] = $urlFull;
-		$data[$name."_noprefix"] = $urlNoPrefix;
+		$data[$name . "_html_attributes"] = $addHtml;
+		$data[$name . "_full"] = $urlFull;
+		$data[$name . "_noprefix"] = $urlNoPrefix;
 
-		return($data);
+		return $data;
+	}
+
+	/**
+	 * get link param data - prepare attributes
+	 */
+	private function getLinkData_prepareAttributes($attributes){
+
+		if(empty($attributes) === true)
+			return $attributes;
+
+		$pairs = explode(",", $attributes);
+
+		if(empty($pairs) === true)
+			return $attributes;
+
+		$html = "";
+
+		foreach($pairs as $pair){
+			$pair = explode("|", $pair, 2);
+
+			$key = isset($pair[0]) === true ? trim($pair[0]) : "";
+			$value = isset($pair[1]) === true ? trim($pair[1]) : "";
+
+			$key = mb_strtolower($key);
+
+			// skip empty key
+			if(empty($key) === true)
+				continue;
+
+			// skip key with forbidden characters
+			if(preg_match("/[^\da-z_-]+/", $key) === 1)
+				continue;
+
+			// skip href attribute and javascript events
+			if($key === "href" || strpos($key, "on") === 0)
+				continue;
+
+			$html .= " $key=\"" . esc_attr($value) . "\"";
+		}
+
+		return $html;
 	}
 
 
@@ -1693,9 +1694,9 @@ class UniteCreatorParamsProcessorWork{
 		$isDebug = false;
 
 		//not given or wrong type - return current date
-		
+
 		$formatFullDate = "d-M-Y, H:i";
-		
+
 		if(empty($value) || is_array($value)){
 
 			//$stamp = time();
@@ -1853,14 +1854,10 @@ class UniteCreatorParamsProcessorWork{
 		switch($type){
 			case UniteCreatorDialogParam::PARAM_DROPDOWN:
 			case UniteCreatorDialogParam::PARAM_NUMBER:
-
 				$data = $this->getProcessedParamsValue_responsive($data, $param);
-
 			break;
 			case UniteCreatorDialogParam::PARAM_RADIOBOOLEAN:
-
 				$data = $this->getProcessedParamsValue_radioBoolean($data, $param, $value);
-
 			break;
 			case UniteCreatorDialogParam::PARAM_IMAGE:
 				$data = $this->getProcessedParamsValue_image($data, $value, $param);
@@ -1890,9 +1887,7 @@ class UniteCreatorParamsProcessorWork{
 				$this->outputHoverAnimationsStyles($value, $name, $param, $processType);
 			break;
 			case UniteCreatorDialogParam::PARAM_SPECIAL:
-
 				$data = $this->getSpecialParamsData($data, $value, $name, $param, $processType);
-
 			break;
 		}
 
@@ -1902,29 +1897,21 @@ class UniteCreatorParamsProcessorWork{
 
 		switch($type){
 			case UniteCreatorDialogParam::PARAM_LINK:
-
 				$data = $this->getLinkData($data, $value, $name, $param, $processType);
-
 			break;
 			case UniteCreatorDialogParam::PARAM_INSTAGRAM:
-
 				$data[$name] = $this->getInstagramData($value, $name, $param);
-
 			break;
 			case UniteCreatorDialogParam::PARAM_MAP:
 				$data[$name] = $this->getGoogleMapOutput($value, $name, $param);
 			break;
 			case UniteCreatorDialogParam::PARAM_SHAPE:
-
 				$data = $this->getProcessedParamsValue_shapeOutput($data, $value, $param);
 			break;
 			case UniteCreatorDialogParam::PARAM_ADDONPICKER:
-
 				$data = $this->getProcessedParamsValue_addonPickerOutput($data, $value, $param);
-
 			break;
 		}
-
 
 		return($data);
 	}
@@ -1950,10 +1937,8 @@ class UniteCreatorParamsProcessorWork{
 
 	/**
 	 * get processed params
-	 * @param $objParams
 	 */
 	public function getProcessedParamsValues($arrParams, $processType, $filterType = null){
-
 
 		self::validateProcessType($processType);
 
@@ -1961,12 +1946,11 @@ class UniteCreatorParamsProcessorWork{
 
 		//sort by param type - special first
 		if(!empty($arrParams))
-			usort($arrParams, array($this,"sortParamsBeforeProcess"));
+			usort($arrParams, array($this, "sortParamsBeforeProcess"));
 
 		$data = array();
 
 		foreach($arrParams as $param){
-
 			$type = UniteFunctionsUC::getVal($param, "type");
 
 			if(!empty($filterType)){
@@ -1989,7 +1973,7 @@ class UniteCreatorParamsProcessorWork{
 			if(isset($data[$name]))
 				continue;
 
-			if($type != "imagebase_fields")
+			if($type !== "imagebase_fields")
 				$data[$name] = $value;
 
 			$data = $this->getProcessedParamData($data, $value, $param, $processType);
@@ -1997,7 +1981,7 @@ class UniteCreatorParamsProcessorWork{
 
 		$data = $this->modifyDataBySpecialAddonBehaviour($data);
 
-		return($data);
+		return $data;
 	}
 
 	/**
@@ -2196,7 +2180,6 @@ class UniteCreatorParamsProcessorWork{
 
 		$numItems = count($arrItems);
 
-
 		foreach($arrItems as $index => $arrItemValues){
 
 			$elementorID = UniteFunctionsUC::getVal($arrItemValues, "_id");
@@ -2206,8 +2189,6 @@ class UniteCreatorParamsProcessorWork{
 				$elementorID = UniteFunctionsUC::getRandomString(5);
 
 			$arrParamsNew = $this->addon->setParamsValuesItems($arrItemValues, $arrItemParams);
-
-
 			$item = $this->getProcessedParamsValues($arrParamsNew, $processType, $filterType);
 
 			if($this->isOutputProcessType($processType) == true){
@@ -2242,7 +2223,6 @@ class UniteCreatorParamsProcessorWork{
 				break;
 			}
 
-
 			//add item variables
 			$arrVarsData = $this->getItemsVariablesProcessed($item, $index, $numItems);
 			$item = array_merge($item, $arrVarsData);
@@ -2256,7 +2236,6 @@ class UniteCreatorParamsProcessorWork{
 			else
 				$arrItemsNew[] = $item;
 		}
-
 
 		//dmp("get processed data output"); dmp($arrItemsNew); exit();
 

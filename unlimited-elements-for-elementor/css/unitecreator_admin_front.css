@@ -546,20 +546,6 @@ body.uc-blank-preview{
 	font-size: 13px;
 }
 
-
-.uc-grid-panel .unite-setting-image .unite-setting-image-preview{
-	background-color:#5F5F5F;
-    border:1px solid #272727;
-}
-
-.uc-grid-panel .unite-setting-image .unite-no-image{
-  color:#8D8D8D;
-}
-
-.uc-grid-panel .unite-setting-image .unite-setting-image-preview:hover .unite-no-image{
-  color:#ffffff;
-}
-
 .uc-grid-panel .unite-button-secondary{
 	border: 1px solid #272727 !important;
 	color: #c4c4c4 !important;

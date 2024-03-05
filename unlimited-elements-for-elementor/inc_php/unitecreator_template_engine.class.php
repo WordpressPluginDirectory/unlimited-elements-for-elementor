@@ -543,9 +543,8 @@ class UniteCreatorTemplateEngineWork{
 	public function filterUCDate($dateStamp, $format = "", $formatDateFrom = "d/m/Y"){
 
 		//get the time ago string
-		
+
 		if($format === "time_ago"){
-			
 			$strTimeAgo = UniteFunctionsUC::getTimeAgoString($dateStamp);
 
 			return($strTimeAgo);
@@ -840,7 +839,7 @@ class UniteCreatorTemplateEngineWork{
 	 * get post author
 	 */
 	public function getPostAuthor($authorID, $getMeta = false, $getAvatar = false){
-
+		
 		$arrUserData = UniteFunctionsWPUC::getUserDataById($authorID, $getMeta, $getAvatar);
 
 		return($arrUserData);
@@ -1334,7 +1333,7 @@ class UniteCreatorTemplateEngineWork{
 				return($urlBase);
 			break;
 			case "put_docready_start":
-				
+
 				$widgetID = UniteFunctionsUC::getVal($this->arrParams, "uc_id");
 
 				HelperHtmlUC::putDocReadyStartJS($widgetID);
@@ -1389,7 +1388,7 @@ class UniteCreatorTemplateEngineWork{
 					$this->checkPutSchemaItems($arg1);
 			break;
 			case "render":		//render twig template
-			
+
 				$html = $this->getRenderedHtml($arg1, GlobalsProviderUC::$isUnderItem);
 				echo $html;
 
@@ -1492,6 +1491,13 @@ class UniteCreatorTemplateEngineWork{
 
 					dmp("<span style='color:red;'>Form settings validation failed:<br />- $formErrors</span>");
 				}
+			break;
+			case "get_variable":
+				
+				$getVarValue = UniteFunctionsUC::getGetVar($arg1,"",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+				
+				return($getVarValue);
+			break;
 			break;
 			default:
 
