@@ -97,7 +97,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		const ENABLE_CATALOG_SHORTPIXEL = true;
 		const SHORTPIXEL_PREFIX = "https://cdn.shortpixel.ai/spai/q_glossy+w_323+to_auto+ret_img/";
-
+		
 		public static $permisison_add = false;
 		public static $blankWindowMode = false;
 

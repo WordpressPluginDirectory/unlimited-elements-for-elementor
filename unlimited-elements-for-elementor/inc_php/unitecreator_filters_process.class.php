@@ -1275,6 +1275,7 @@ class UniteCreatorFiltersProcess{
 			}
 			
 			//if case of grid
+						
 			
 			$arrOutput = array();
 			$arrOutput["html_items"] = $html;
@@ -1519,7 +1520,18 @@ class UniteCreatorFiltersProcess{
 			
 			if(!empty($htmlGridItems2))
 				$outputData["html_items2"] = $htmlGridItems2;
+
+			if(UniteFunctionsUC::isMaxDebug()){
+				
+				dmp("max debug!")."\n\n";
+				echo($htmlGridItems);
+				exit();
+				
+			}
+				
+				
 		}
+		
 		
 		if(!empty($addWidgetsHTML))
 			$outputData["html_widgets"] = $addWidgetsHTML;

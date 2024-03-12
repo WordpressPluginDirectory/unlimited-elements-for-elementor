@@ -1683,7 +1683,7 @@ class UniteCreatorAddonView{
 		$options["url_preview"] = $this->objAddon->getUrlPreview();
 
 		$arrThumbSizes = $this->getThumbSizes();
-
+				
 		$options["thumb_sizes"] = $arrThumbSizes;
 
 		$arrImageAddFields = $this->getImageAddFields();

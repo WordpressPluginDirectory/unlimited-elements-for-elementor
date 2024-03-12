@@ -228,7 +228,7 @@ class UCEmptyTemplate{
 				UniteFunctionsUC::throwError("template id not found");
 			
 			$this->templateID = $renderTemplateID;
-				
+			
 			if($isMultiple == true)
 				$this->renderMultipleTemplates();
 			else{

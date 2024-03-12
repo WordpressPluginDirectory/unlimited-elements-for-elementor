@@ -1543,7 +1543,7 @@ class UniteCreatorParamsProcessorWork{
 
 		$url = UniteFunctionsUC::getVal($value, "url");
 		$url = esc_url($url);
-
+	
 		$isExternal = UniteFunctionsUC::getVal($value, "is_external");
 		$noFollow = UniteFunctionsUC::getVal($value, "nofollow");
 
@@ -1552,7 +1552,7 @@ class UniteCreatorParamsProcessorWork{
 
 		$urlFull = $url;
 		$scheme = parse_url($url, PHP_URL_SCHEME);
-
+		
 		if(empty($scheme) === true){
 			$urlFull = "https://{$url}";
 			$urlNoPrefix = $url;

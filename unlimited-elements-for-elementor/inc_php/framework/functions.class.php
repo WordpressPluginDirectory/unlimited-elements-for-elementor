@@ -2884,7 +2884,9 @@ class UniteFunctionsUC{
 		
 		$maxdebug = self::getGetVar("maxdebug","",self::SANITIZE_TEXT_FIELD);
 		
-		return($maxdebug == "true");
+		$maxdebug = self::strToBool($maxdebug);
+		
+		return($maxdebug == true);
 	}
 
 	/**
@@ -3202,15 +3204,19 @@ class UniteFunctionsUC{
 	 * convert string to boolean
 	 */
 	public static function strToBool($str){
+		
 		if(is_bool($str))
 			return($str);
-
+		
 		if(empty($str))
 			return(false);
 
 		if(is_numeric($str))
 			return($str != 0);
-
+		
+		if(is_string($str) == false)
+			return(false);
+		
 		$str = strtolower($str);
 		if($str == "true")
 			return(true);

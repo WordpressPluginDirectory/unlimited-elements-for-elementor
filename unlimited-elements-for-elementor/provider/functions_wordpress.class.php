@@ -3120,22 +3120,24 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		$arrSizes = array();
 
 		foreach($arrWPSizes as $size){
+			
 			$title = UniteFunctionsUC::convertHandleToTitle($size);
-
+			
 			$maxWidth = null;
 			$maxHeight = null;
 			$crop = false;
-
+			
 			//get max width from option or additional sizes array
 			$arrSize = UniteFunctionsUC::getVal($_wp_additional_image_sizes, $size);
-
+			
 			if(!empty($arrSize)){
 				$maxWidth = UniteFunctionsUC::getVal($arrSize, "width");
 				$maxHeight = UniteFunctionsUC::getVal($arrSize, "height");
+				
 				$crop = UniteFunctionsUC::getVal($arrSize, "crop");
 				$crop = UniteFunctionsUC::strToBool($crop);
 			}
-
+			
 			if(empty($maxWidth)){
 				$maxWidth = intval(get_option("{$size}_size_w"));
 				$maxHeight = intval(get_option("{$size}_size_h"));
@@ -3174,7 +3176,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 
 		$arrNew = array_merge($arrNew, $arrSizes);
-
+		
 		self::$arrThumbSizesCache = $arrNew;
 
 		return ($arrNew);

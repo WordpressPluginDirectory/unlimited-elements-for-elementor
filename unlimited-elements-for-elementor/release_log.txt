@@ -1,8 +1,15 @@
 
 
+version 1.5.99:
+
+* Fix - updated multisource image fields
+* Fix - fixed some small php bug with strtobool function
+
+
 version 1.5.98:
 
 * Fix Some small gutenberg related bug fix
+
 
 version 1.5.97:
 

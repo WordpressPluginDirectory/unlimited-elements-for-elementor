@@ -867,6 +867,13 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+
+version 1.5.99: 2024-03-11
+
+* Fix - updated multisource image fields
+* Fix - fixed some small php bug with strtobool function
+
+
 version 1.5.98: 2024-03-05
 
 * Fix Some small gutenberg related bug fix

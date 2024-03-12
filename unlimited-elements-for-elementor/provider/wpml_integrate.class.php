@@ -253,8 +253,8 @@ class UniteCreatorWpmlIntegrate{
 				self::$arrWidgetItemsData[$addonName] = $arrItemsFields;
 				
 				$className = "UE_WPML_INTEGRATION__".$addonName;
-				
-				if($isWPMLExists == true){
+				 
+				if($isWPMLExists == true && class_exists($className) == false){
 					$code = "class {$className} extends UNITE_CREATOR_WPML_Translation_Module{}";
 					eval($code);
 				}
