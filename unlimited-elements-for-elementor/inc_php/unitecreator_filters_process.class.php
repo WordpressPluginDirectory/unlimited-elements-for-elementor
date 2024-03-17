@@ -2454,6 +2454,10 @@ class UniteCreatorFiltersProcess{
 		$addClassItem = "";
 		$isFirstLoad = true;		//not in ajax, or with init after (also first load)
 		
+		$connectGroup = UniteFunctionsUC::getVal($data, "connect_group");
+		
+		if($connectGroup == "auto")
+			$connectGroup = null;
 		
 		$isInsideEditor = GlobalsProviderUC::$isInsideEditor;
 		
@@ -2483,6 +2487,10 @@ class UniteCreatorFiltersProcess{
 			
 		}
 		
+		if(!empty($connectGroup))
+			$attributes .= " data-connectgroup=\"$connectGroup\"";
+		
+			
 		if($isInsideEditor == true)
 			$isFirstLoad = true;
 		

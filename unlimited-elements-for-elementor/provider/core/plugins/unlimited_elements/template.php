@@ -147,6 +147,103 @@ class UCEmptyTemplate{
 		
 }
 
+	/**
+	 * check and output debug
+	 */
+	private function checkOutputDebug(){
+		
+		$isDebug = UniteFunctionsUC::getGetVar("framedebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		
+		$isDebug = UniteFunctionsUC::strToBool($isDebug);
+		
+		if($isDebug == false)
+			return(false);
+
+		?>
+		
+		<style>
+		
+			.uc-debug-holder{
+				display:flex;
+				justify-content:center;
+				padding:10px;
+			}
+			
+			.uc-debug-holder button{
+				margin-left:20px;
+			}
+			
+		</style>
+		
+		<div class="uc-debug-holder">
+			
+			<button id="debug_button_prev">Prev</button>
+			
+			<button id="debug_button_next">Next</button>
+			
+		</div>
+		
+		
+		<script>
+
+			jQuery(document).ready(function(){
+
+				function trace(str){
+					console.log(str);
+				}
+
+				
+				//set some item active
+				function setActive(dir){
+
+					var objActiveTemplate = jQuery(".uc-template-holder:visible");
+
+					var objNextTemplate = objActiveTemplate.next();
+
+					objActiveTemplate.hide().addClass("uc-template-hidden");
+
+					objNextTemplate.show().removeClass("uc-template-hidden");
+
+					
+					//clone the template tag
+					
+					var nextTemplateElement = objNextTemplate.children("template");
+
+					if(nextTemplateElement.length){
+						
+						objNextTemplate.removeClass("uc-not-inited");
+			            
+				        var clonedContent = nextTemplateElement[0].content.cloneNode(true);
+				        objNextTemplate.append(clonedContent);
+				      	
+				        nextTemplateElement.remove();
+
+				        jQuery("body").trigger("uc_dom_updated");
+					}
+					
+				}
+
+				jQuery("#debug_button_next").on("click",function(){
+
+					setActive("next");
+						
+				});
+
+				jQuery("#debug_button_prev").on("click",function(){
+
+					setActive("prev");
+						
+				});
+				
+				
+			});
+		
+		</script>
+		
+		<?php 
+				
+	}
+	
 	
 	/**
 	 * render multiple template for templates widget output
@@ -200,6 +297,10 @@ class UCEmptyTemplate{
 		}
 		
 		$this->renderHeaderPart();
+		
+		//check debug
+		
+		$this->checkOutputDebug();
 		
 		//$this->renderRegularBody();
 		

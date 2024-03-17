@@ -1175,7 +1175,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			<?php endif?>
 
 			<?php echo $arg1?>.trigger("uc-object-ready");
-			jQuery("body").trigger("uc-remote-parent-init", <?php echo $strOptions?>);
+			jQuery(document).trigger("uc-remote-parent-init", <?php echo $strOptions?>);
 			<?php
 
 		}

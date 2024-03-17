@@ -798,7 +798,9 @@ class UniteCreatorElementorIntegrate{
 			
 			?>
 			<div class="unlimited-elements-background-overlay<?php echo $addClass?>" data-forid="<?php echo $elementID?>" <?php echo $addData?> style="display:none">
+				<template>
 				<?php echo $html?>
+				</template>
 			</div>
 			<?php 
 		}
@@ -810,7 +812,7 @@ class UniteCreatorElementorIntegrate{
 				
 				function ucBackgroundOverlayPutStart(){
 					
-					var objBG = jQuery(".unlimited-elements-background-overlay");
+					var objBG = jQuery(".unlimited-elements-background-overlay").not(".uc-bg-attached");
 					
 					if(objBG.length == 0)
 						return(false);
@@ -851,6 +853,17 @@ class UniteCreatorElementorIntegrate{
 						else
 							objBgElement.detach().prependTo(objTarget).show();
 
+						
+						var objTemplate = objBgElement.children("template");
+
+						if(objTemplate.length){
+						
+					        var clonedContent = objTemplate[0].content.cloneNode(true);
+					        objBgElement.append(clonedContent);
+							
+							objTemplate.remove();
+						}
+												
 						objBgElement.trigger("bg_attached");
 						objBgElement.addClass("uc-bg-attached");
 						
@@ -859,12 +872,8 @@ class UniteCreatorElementorIntegrate{
 
 				ucBackgroundOverlayPutStart();
 				
-				jQuery( document ).on( 'elementor/popup/show', () => { 
-					
-					if(jQuery(".unlimited-elements-background-overlay").not(".uc-bg-attached").length) 
-						ucBackgroundOverlayPutStart();
-					
-				});
+				jQuery( document ).on( 'elementor/popup/show', ucBackgroundOverlayPutStart);
+				jQuery( "body" ).on( 'uc_dom_updated', ucBackgroundOverlayPutStart);
 				
 			});
 

@@ -868,6 +868,25 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 == Changelog ==
 
 
+version 1.5.100: 2024-03-17
+
+Plugin Changes:
+
+* Feature: added option to connect the filters to some specific grid group
+* Fix: fixed js run for background output not always happend
+* Fix: filters was shown only related to grid taxonomies after changing to "all" 
+* Fix: returned some tiles gallery images that was missing
+
+Widgets Changes:
+
+* Feature: List (Free) - Implemented 'Open Link in New Tab' option. This new functionality allows users to specify whether links should open in a new tab, providing flexibility in link behavior.
+* Feature: Compact Gallery (Free) - Implemented 'Hide Thumbnail Panel Under Width' option. This new functionality allows users to hide the thumbnail panel when the viewport width is below a specified threshold, optimizing the display for smaller screens.
+* Feature: Select Dropdown Filter (Pro) - Implemented 'Connect To Grids Group' option. This new functionality allows users to connect the filter widget to a particular grid widget.
+* Feature: Checkboxes Filter (Pro) - Implemented 'Connect To Grids Group' option. This new functionality allows users to connect the filter widget to a particular grid widget.
+* Feature: Tabs Filter (Pro) - Implemented 'Connect To Grids Group' option. This new functionality allows users to connect the filter widget to a particular grid widget.
+* Feature: Scroll Sequence (Pro) - Added 'Image Horizontal Shift' option, allowing users to adjust the horizontal position of the image for enhanced customization and layout control.
+
+
 version 1.5.99: 2024-03-11
 
 * Fix - updated multisource image fields

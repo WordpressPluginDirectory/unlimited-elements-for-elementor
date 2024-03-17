@@ -452,7 +452,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		}
 
 		$arrPostIDs = get_post_meta($postID, $metaName, true);
-
+		
 		if(is_array($arrPostIDs) == false){
 			$arrPostIDs = explode(",", $arrPostIDs);
 		}
@@ -2090,7 +2090,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 				case "ids_from_meta":
 
 					$arrIDsPostMeta = $this->getPostListData_getIDsFromPostMeta($value, $name, $showDebugQuery);
-
+					
 				break;
 				case "ids_from_dynamic":
 

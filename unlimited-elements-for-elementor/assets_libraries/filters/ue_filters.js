@@ -300,9 +300,6 @@ function UEDynamicFilters(){
 	/**
 	 * get closest grid to some object
 	 */
-	/**
-	 * get closest grid to some object
-	 */
 	function getClosestGrid(objSource){
 		
 		//in case there is only one grid - return it
@@ -327,10 +324,30 @@ function UEDynamicFilters(){
 		if(objGrids.length == 1)
 			return(objGrids);
 		
-	    var objGrid = getGridFromParentContainers(objSource);
-	    
-	    if(objGrid && objGrid.length == 1)
-	        return(objGrid);
+		//narrow by group
+		var group = objSource.data("connectgroup");
+		
+		if(group){
+			var objGridsGroup = objGrids.filter("[data-filtergroup="+group+"]");
+			
+			if(objGridsGroup.length > 0){
+				
+				if(objGridsGroup.length == 1)
+					return(objGridsGroup);
+				
+				objGrids = objGridsGroup;
+			}
+			
+		}else{	
+			
+			//get from same container - if group not set
+			
+		    var objGrid = getGridFromParentContainers(objSource);
+		    
+		    if(objGrid && objGrid.length == 1)
+		        return(objGrid);
+		}
+		
 		
 		//get closest by offset
 		
@@ -355,7 +372,6 @@ function UEDynamicFilters(){
 	 * add filter object to grid
 	 */
 	function bindFilterToGrid(objGrid, objFilter){
-		
 		
 		var arrFilters = objGrid.data("filters");
 		var objTypes = objGrid.data("filter_types");
@@ -3078,7 +3094,10 @@ function UEDynamicFilters(){
 			}
 		}
 		
-		if(strTaxIDs){
+		
+		//test terms - only if there are terms in query
+		
+		if(strTaxIDs && arrTerms.length){
 			if(urlAddition_filtersTest)
 				urlAddition_filtersTest += "&";
 			
@@ -3360,7 +3379,7 @@ function UEDynamicFilters(){
 	 * init filter and bing to grid
 	 */
 	function initFilter(objFilter, type){
-		
+				
 		var objGrid = getClosestGrid(objFilter);
 		
 		var error = "Filter Parent not found! Please put the posts element on the page, and turn on 'Enable Post Filtering' option on it";

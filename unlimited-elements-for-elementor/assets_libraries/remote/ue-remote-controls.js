@@ -2495,7 +2495,7 @@ function UERemoteWidgets(){
 	this.onParentInit = function(objParent, optionsAPI){
 		
 		try{
-			
+						
 			g_objParent = objParent;
 			
 			if(!g_objParent)
@@ -2655,10 +2655,9 @@ function UERemoteConnection(){
 
 //body init
 
-jQuery("body").on("uc-remote-parent-init",function(event, objParent, optionsAPI){
-	
+jQuery(document).on("uc-remote-parent-init",function(event, objParent, optionsAPI){
+		
 	var objRemote = new UERemoteWidgets();
-	
 	objRemote.onParentInit(objParent, optionsAPI);
 	
 });

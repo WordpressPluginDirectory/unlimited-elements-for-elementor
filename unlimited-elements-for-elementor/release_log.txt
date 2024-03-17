@@ -1,5 +1,13 @@
 
 
+version 1.5.100:
+
+* Fix: fixed js run for background output not always happend
+* Feature: added option to connect the filters to some specific grid group
+* Fix: filters was shown only related to grid taxonomies after changing to "all" 
+* Fix: returned some tiles gallery images that was missing
+
+
 version 1.5.99:
 
 * Fix - updated multisource image fields
