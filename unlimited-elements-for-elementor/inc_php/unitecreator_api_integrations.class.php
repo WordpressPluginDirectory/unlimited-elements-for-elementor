@@ -25,22 +25,22 @@ class UniteCreatorAPIIntegrations{
 	const SETTINGS_OPEN_WEATHER_API_KEY = "openweather_api_key";
 	const SETTINGS_EXCHANGE_RATE_API_KEY = "exchangerate_api_key";
 
-	const CURRENCY_EXCHANGE_FIELD_EMPTY_API_KEY = "currency_exchange:empty_api_key";
-	const CURRENCY_EXCHANGE_FIELD_CURRENCY = "currency_exchange:currency";
-	const CURRENCY_EXCHANGE_FIELD_PRECISION = "currency_exchange:precision";
-	const CURRENCY_EXCHANGE_FIELD_INCLUDE_CURRENCIES = "currency_exchange:include_currencies";
-	const CURRENCY_EXCHANGE_FIELD_CACHE_TIME = "currency_exchange:cache_time";
+	const CURRENCY_EXCHANGE_FIELD_EMPTY_API_KEY = "currency_exchange_empty_api_key";
+	const CURRENCY_EXCHANGE_FIELD_CURRENCY = "currency_exchange_currency";
+	const CURRENCY_EXCHANGE_FIELD_PRECISION = "currency_exchange_precision";
+	const CURRENCY_EXCHANGE_FIELD_INCLUDE_CURRENCIES = "currency_exchange_include_currencies";
+	const CURRENCY_EXCHANGE_FIELD_CACHE_TIME = "currency_exchange_cache_time";
 	const CURRENCY_EXCHANGE_MIN_PRECISION = 2;
 	const CURRENCY_EXCHANGE_MAX_PRECISION = 6;
 	const CURRENCY_EXCHANGE_DEFAULT_PRECISION = 2;
 	const CURRENCY_EXCHANGE_DEFAULT_CACHE_TIME = 60;
 
-	const GOOGLE_EVENTS_FIELD_EMPTY_CREDENTIALS = "google_events:empty_credentials";
-	const GOOGLE_EVENTS_FIELD_CALENDAR_ID = "google_events:calendar_id";
-	const GOOGLE_EVENTS_FIELD_RANGE = "google_events:range";
-	const GOOGLE_EVENTS_FIELD_ORDER = "google_events:order";
-	const GOOGLE_EVENTS_FIELD_LIMIT = "google_events:limit";
-	const GOOGLE_EVENTS_FIELD_CACHE_TIME = "google_events:cache_time";
+	const GOOGLE_EVENTS_FIELD_EMPTY_CREDENTIALS = "google_events_empty_credentials";
+	const GOOGLE_EVENTS_FIELD_CALENDAR_ID = "google_events_calendar_id";
+	const GOOGLE_EVENTS_FIELD_RANGE = "google_events_range";
+	const GOOGLE_EVENTS_FIELD_ORDER = "google_events_order";
+	const GOOGLE_EVENTS_FIELD_LIMIT = "google_events_limit";
+	const GOOGLE_EVENTS_FIELD_CACHE_TIME = "google_events_cache_time";
 	const GOOGLE_EVENTS_DEFAULT_LIMIT = 250;
 	const GOOGLE_EVENTS_DEFAULT_CACHE_TIME = 10;
 	const GOOGLE_EVENTS_RANGE_UPCOMING = "upcoming";
@@ -51,15 +51,15 @@ class UniteCreatorAPIIntegrations{
 	const GOOGLE_EVENTS_ORDER_DATE_ASC = "date:asc";
 	const GOOGLE_EVENTS_ORDER_DATE_DESC = "date:desc";
 
-	const GOOGLE_REVIEWS_FIELD_EMPTY_API_KEY = "google_reviews:empty_api_key";
-	const GOOGLE_REVIEWS_FIELD_PLACE_ID = "google_reviews:place_id";
-	const GOOGLE_REVIEWS_FIELD_CACHE_TIME = "google_reviews:cache_time";
+	const GOOGLE_REVIEWS_FIELD_EMPTY_API_KEY = "google_reviews_empty_api_key";
+	const GOOGLE_REVIEWS_FIELD_PLACE_ID = "google_reviews_place_id";
+	const GOOGLE_REVIEWS_FIELD_CACHE_TIME = "google_reviews_cache_time";
 	const GOOGLE_REVIEWS_DEFAULT_CACHE_TIME = 10;
 
-	const GOOGLE_SHEETS_FIELD_EMPTY_CREDENTIALS = "google_sheets:empty_credentials";
-	const GOOGLE_SHEETS_FIELD_ID = "google_sheets:id";
-	const GOOGLE_SHEETS_FIELD_SHEET_ID = "google_sheets:sheet_id";
-	const GOOGLE_SHEETS_FIELD_CACHE_TIME = "google_sheets:cache_time";
+	const GOOGLE_SHEETS_FIELD_EMPTY_CREDENTIALS = "google_sheets_empty_credentials";
+	const GOOGLE_SHEETS_FIELD_ID = "google_sheets_id";
+	const GOOGLE_SHEETS_FIELD_SHEET_ID = "google_sheets_sheet_id";
+	const GOOGLE_SHEETS_FIELD_CACHE_TIME = "google_sheets_cache_time";
 	const GOOGLE_SHEETS_DEFAULT_CACHE_TIME = 10;
 
 	const WEATHER_FORECAST_FIELD_EMPTY_API_KEY = "weather_forecast_empty_api_key";
@@ -71,11 +71,11 @@ class UniteCreatorAPIIntegrations{
 	const WEATHER_FORECAST_UNITS_METRIC = "metric";
 	const WEATHER_FORECAST_UNITS_IMPERIAL = "imperial";
 
-	const YOUTUBE_PLAYLIST_FIELD_EMPTY_CREDENTIALS = "youtube_playlist:empty_credentials";
-	const YOUTUBE_PLAYLIST_FIELD_ID = "youtube_playlist:id";
-	const YOUTUBE_PLAYLIST_FIELD_ORDER = "youtube_playlist:order";
-	const YOUTUBE_PLAYLIST_FIELD_LIMIT = "youtube_playlist:limit";
-	const YOUTUBE_PLAYLIST_FIELD_CACHE_TIME = "youtube_playlist:cache_time";
+	const YOUTUBE_PLAYLIST_FIELD_EMPTY_CREDENTIALS = "youtube_playlist_empty_credentials";
+	const YOUTUBE_PLAYLIST_FIELD_ID = "youtube_playlist_id";
+	const YOUTUBE_PLAYLIST_FIELD_ORDER = "youtube_playlist_order";
+	const YOUTUBE_PLAYLIST_FIELD_LIMIT = "youtube_playlist_limit";
+	const YOUTUBE_PLAYLIST_FIELD_CACHE_TIME = "youtube_playlist_cache_time";
 	const YOUTUBE_PLAYLIST_DEFAULT_LIMIT = 5;
 	const YOUTUBE_PLAYLIST_DEFAULT_CACHE_TIME = 10;
 	const YOUTUBE_PLAYLIST_ORDER_DEFAULT = "default";
@@ -154,7 +154,7 @@ class UniteCreatorAPIIntegrations{
 		$params[self::SETTINGS_OPEN_WEATHER_API_KEY] = HelperProviderCoreUC_EL::getGeneralSetting(self::SETTINGS_OPEN_WEATHER_API_KEY);
 		$params[self::SETTINGS_EXCHANGE_RATE_API_KEY] = HelperProviderCoreUC_EL::getGeneralSetting(self::SETTINGS_EXCHANGE_RATE_API_KEY);
 
-		$this->params = $params;
+		$this->params = $this->remapLegacyParams($params);
 
 		// get data
 		$data = array();
@@ -343,6 +343,52 @@ class UniteCreatorAPIIntegrations{
 	}
 
 	/**
+	 * remap legacy params
+	 */
+	private function remapLegacyParams($params){
+
+		// TODO: Remove in the next major version
+		$keysMap = array(
+			"currency_exchange:currency" => self::CURRENCY_EXCHANGE_FIELD_CURRENCY,
+			"currency_exchange:precision" => self::CURRENCY_EXCHANGE_FIELD_PRECISION,
+			"currency_exchange:include_currencies" => self::CURRENCY_EXCHANGE_FIELD_INCLUDE_CURRENCIES,
+			"currency_exchange:cache_time" => self::CURRENCY_EXCHANGE_FIELD_CACHE_TIME,
+
+			"google_events:calendar_id" => self::GOOGLE_EVENTS_FIELD_CALENDAR_ID,
+			"google_events:range" => self::GOOGLE_EVENTS_FIELD_RANGE,
+			"google_events:order" => self::GOOGLE_EVENTS_FIELD_ORDER,
+			"google_events:limit" => self::GOOGLE_EVENTS_FIELD_LIMIT,
+			"google_events:cache_time" => self::GOOGLE_EVENTS_FIELD_CACHE_TIME,
+
+			"google_reviews:place_id" => self::GOOGLE_REVIEWS_FIELD_PLACE_ID,
+			"google_reviews:cache_time" => self::GOOGLE_REVIEWS_FIELD_CACHE_TIME,
+
+			"google_sheets:id" => self::GOOGLE_SHEETS_FIELD_ID,
+			"google_sheets:sheet_id" => self::GOOGLE_SHEETS_FIELD_SHEET_ID,
+			"google_sheets:cache_time" => self::GOOGLE_SHEETS_FIELD_CACHE_TIME,
+
+			"weather_forecast:country" => self::WEATHER_FORECAST_FIELD_COUNTRY,
+			"weather_forecast:city" => self::WEATHER_FORECAST_FIELD_CITY,
+			"weather_forecast:units" => self::WEATHER_FORECAST_FIELD_UNITS,
+			"weather_forecast:cache_time" => self::WEATHER_FORECAST_FIELD_CACHE_TIME,
+
+			"youtube_playlist:id" => self::YOUTUBE_PLAYLIST_FIELD_ID,
+			"youtube_playlist:order" => self::YOUTUBE_PLAYLIST_FIELD_ORDER,
+			"youtube_playlist:limit" => self::YOUTUBE_PLAYLIST_FIELD_LIMIT,
+			"youtube_playlist:cache_time" => self::YOUTUBE_PLAYLIST_FIELD_CACHE_TIME,
+		);
+
+		foreach($keysMap as $legacyKey => $key){
+			$value = UniteFunctionsUC::getVal($params, $key);
+			$legacyValue = UniteFunctionsUC::getVal($params, $legacyKey);
+
+			$params[$key] = $value === '' ? $legacyValue : $value;
+		}
+
+		return $params;
+	}
+
+	/**
 	 * get the param value
 	 */
 	private function getParam($key, $fallback = null){
@@ -359,15 +405,13 @@ class UniteCreatorAPIIntegrations{
 
 		$value = $this->getParam($key);
 
-		if(!empty($value))
+		if(empty($value) === false)
 			return $value;
 
-		if(!empty($label))
-			$error = "$label is required.";
-		else
-			$error = "$key is required.";
+		if(empty($label) === true)
+			$label = $key;
 
-		UniteFunctionsUC::throwError($error);
+		UniteFunctionsUC::throwError(sprintf(__("%s is required.", "unlimited-elements-for-elementor"), $label));
 	}
 
 	/**
@@ -429,7 +473,7 @@ class UniteCreatorAPIIntegrations{
 		$key = UEGoogleAPIHelper::getApiKey();
 
 		if(empty($key) === true)
-			UniteFunctionsUC::throwError("Google API key is missing.");
+			UniteFunctionsUC::throwError(__("Google API key is missing.", "unlimited-elements-for-elementor"));
 	}
 
 	/**
@@ -440,7 +484,7 @@ class UniteCreatorAPIIntegrations{
 		$hasCredentials = $this->hasGoogleCredentials();
 
 		if($hasCredentials === false)
-			UniteFunctionsUC::throwError("Google credentials are missing.");
+			UniteFunctionsUC::throwError(__("Google credentials are missing.", "unlimited-elements-for-elementor"));
 	}
 
 	/**
@@ -979,13 +1023,13 @@ class UniteCreatorAPIIntegrations{
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("Country Code", "unlimited-elements-for-elementor"),
 				"desc" => sprintf(__("Specify the two-letter <a href='%s' target='_blank'>country code</a>.", "unlimited-elements-for-elementor"), "https://en.wikipedia.org/wiki/ISO_3166-2#Current_codes"),
-				"default"=>"GB"
+				"default" => "GB",
 			),
 			array(
 				"id" => self::WEATHER_FORECAST_FIELD_CITY,
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("City Name", "unlimited-elements-for-elementor"),
-				"default" => "London"
+				"default" => "London",
 			),
 			array(
 				"id" => self::WEATHER_FORECAST_FIELD_UNITS,
@@ -1041,7 +1085,7 @@ class UniteCreatorAPIIntegrations{
 	 * get weather forecasts basic item
 	 */
 	private function getWeatherForecastBasicItem($forecast){
-	
+
 		$item = array(
 			"id" => $forecast->getId(),
 			"date" => $forecast->getDate(self::FORMAT_MYSQL_DATETIME),
@@ -1095,7 +1139,7 @@ class UniteCreatorAPIIntegrations{
 	 * get weather forecast current item
 	 */
 	private function getWeatherForecastCurrentItem($forecast){
-		
+
 		$item = array_merge(
 			$this->getWeatherForecastBasicItem($forecast),
 			$this->getWeatherForecastSunTimeItem($forecast),
@@ -1111,17 +1155,16 @@ class UniteCreatorAPIIntegrations{
 	private function getWeatherForecastHourlyItems($forecasts){
 
 		$items = array();
-		
+
 		foreach($forecasts as $forecast){
-			
-			$arrHours = array(
-				"date_hours"=>$forecast->getDate("H").":00"
+			$extra = array(
+				"date_hours" => $forecast->getDate("H:00"),
 			);
-			
+
 			$items[] = array_merge(
 				$this->getWeatherForecastBasicItem($forecast),
 				$this->getWeatherForecastInlineTemperatureItem($forecast),
-				$arrHours
+				$extra
 			);
 		}
 

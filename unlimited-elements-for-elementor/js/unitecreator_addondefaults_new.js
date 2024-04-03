@@ -27,7 +27,7 @@ function UniteCreatorAddonDefaultsAdmin() {
 	 * on save data event
 	 */
 	function onSaveDataClick() {
-		var values = g_addonPreview.getSettings().getSettingsValues();
+		var values = g_addonPreview.getSettingsValues();
 
 		var data = {
 			id: g_addonPreview.getAddonId(),

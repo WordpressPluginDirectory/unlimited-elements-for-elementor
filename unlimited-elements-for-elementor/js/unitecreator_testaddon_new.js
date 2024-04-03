@@ -31,7 +31,7 @@ function UniteCreatorTestAddonNew() {
 	 * on save data event
 	 */
 	function onSaveDataClick() {
-		var values = g_addonPreview.getSettings().getSettingsValues();
+		var values = g_addonPreview.getSettingsValues();
 
 		var data = {
 			id: g_addonPreview.getAddonId(),
@@ -81,16 +81,15 @@ function UniteCreatorTestAddonNew() {
 	function onClearClick() {
 		trace("clear settings");
 
-		g_addonPreview.getSettings().clearSettings();
+		g_addonPreview.clearSettings();
 	}
 
 	/**
 	 * on check event
 	 */
 	function onCheckClick() {
-		var settings = g_addonPreview.getSettings();
-		var values = settings.getSettingsValues();
-		var selectorsCss = settings.getSelectorsCss();
+		var values = g_addonPreview.getSettingsValues();
+		var selectorsCss = g_addonPreview.getSelectorsCss();
 
 		trace("settings values:");
 		trace(values);

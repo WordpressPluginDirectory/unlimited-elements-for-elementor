@@ -1520,15 +1520,6 @@ class UniteCreatorFiltersProcess{
 			
 			if(!empty($htmlGridItems2))
 				$outputData["html_items2"] = $htmlGridItems2;
-
-			if(UniteFunctionsUC::isMaxDebug()){
-				
-				dmp("max debug!")."\n\n";
-				echo($htmlGridItems);
-				exit();
-				
-			}
-				
 				
 		}
 		

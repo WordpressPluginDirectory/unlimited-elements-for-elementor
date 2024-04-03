@@ -31,10 +31,10 @@ $addonsListUrl = HelperUC::getViewUrl(GlobalsUnlimitedElements::VIEW_ADDONS_ELEM
 			</button>
 		</div>
 		<div class="uc-preview-addon-actions-secondary">
-			<a class="unite-button-secondary" href="<?php esc_attr_e($addonEditUrl); ?>">
+			<a class="unite-button-secondary" href="<?php echo esc_url($addonEditUrl); ?>">
 				<?php esc_html_e("Edit Widget", "unlimited-elements-for-elementor"); ?>
 			</a>
-			<a class="unite-button-secondary" href="<?php esc_attr_e($addonsListUrl); ?>">
+			<a class="unite-button-secondary" href="<?php echo esc_url($addonsListUrl); ?>">
 				<?php esc_html_e("Back to Widgets", "unlimited-elements-for-elementor"); ?>
 			</a>
 		</div>

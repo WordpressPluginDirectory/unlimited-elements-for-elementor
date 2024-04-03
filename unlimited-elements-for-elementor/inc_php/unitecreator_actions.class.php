@@ -63,7 +63,7 @@ class UniteCreatorActions{
 	public function onAjaxAction(){
 
 		if(GlobalsUC::$inDev == true || GlobalsUC::$debugAjaxErrors == true){
-
+			
 			ini_set("display_errors", "on");
 			error_reporting(E_ALL);
 		}
@@ -115,7 +115,7 @@ class UniteCreatorActions{
 					HelperProviderUC::verifyAdminPermission();
 
 					$response = $categories->removeFromData($data);
-
+	
 					HelperUC::ajaxResponseSuccess(esc_html__("The category deleted successfully", "unlimited-elements-for-elementor"), $response);
 				break;
 				case "update_category":
@@ -441,9 +441,6 @@ class UniteCreatorActions{
 
 				break;
 				case "get_image_url":
-				
-					HelperProviderUC::verifyAdminPermission();
-				
 					$id = UniteFunctionsUC::getVal($data, "id");
 					$size = UniteFunctionsUC::getVal($data, "size", "full");
 					$url = UniteProviderFunctionsUC::getImageUrlFromImageID($id, $size);
@@ -549,9 +546,9 @@ class UniteCreatorActions{
 					$response = $webAPI->checkUpdateCatalog($isForce);
 
 					$operations->checkInstagramRenewToken();
-										
+
 					do_action("ue_on_check_catalog_ajax_action");
-										
+
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "install_catalog_addon":

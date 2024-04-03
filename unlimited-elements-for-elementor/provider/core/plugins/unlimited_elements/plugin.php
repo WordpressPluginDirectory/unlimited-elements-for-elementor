@@ -81,11 +81,9 @@ class UnlimitedElementsPluginUC extends UniteCreatorPluginBase{
 		require_once $this->pathPlugin . 'globals.class.php';
 		require_once $this->pathPlugin . 'addontype_elementor.class.php';
 		require_once $this->pathPlugin . 'addontype_elementor_template.class.php';
-		require_once $this->pathPlugin . 'addontype_cpt.class.php';
 		require_once $this->pathPlugin . 'helper_provider_core.class.php';
 		require_once $this->pathPlugin . 'elementor/elementor_integrate.class.php';
 		require_once $this->pathPlugin . 'elementor/pagination.class.php';
-		require_once $this->pathPlugin . "elementor/elementor_dynamic_visibility.class.php";
 		require_once $this->pathPlugin . "elementor/elementor_controls.class.php";
 		
 		if(is_admin()){
@@ -148,10 +146,6 @@ class UnlimitedElementsPluginUC extends UniteCreatorPluginBase{
 		$objAddonTypeElementor = new UniteCreatorAddonType_Elementor();
 		$this->registerAddonType(GlobalsUnlimitedElements::ADDONSTYPE_ELEMENTOR, $objAddonTypeElementor);
 				
-		$objAddonTypeCustomPostTypes = new UniteCreatorAddonType_CustomPostType();
-		$this->registerAddonType(GlobalsUnlimitedElements::ADDONSTYPE_CUSTOM_POSTTYPES, $objAddonTypeCustomPostTypes);
-		
-		
 	}
 	
 	

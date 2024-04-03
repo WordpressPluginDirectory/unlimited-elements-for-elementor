@@ -1,6 +1,6 @@
 "use strict";
 
-//version: 1.11
+//version: 1.12
 
 function UnlimitedElementsForm(){
   
@@ -730,8 +730,8 @@ function UnlimitedElementsForm(){
     var isNamesEqual = arrNames.indexOf(inputName) != -1;
     
     if(isNamesEqual == true){
-      
-      var errorHtml = "<div class="+classError+">Unlimited Field Error: can't set condition. Condition Item Name equals Field Name: [ " + inputName + " ]. Please use different names.</div>";
+      var conditionStyles = 'color:red;font-size:12px;padding:5px;border:1px solid #CE5F5F;border-radius:5px;width:100%';
+      var errorHtml = "<div class="+classError+" style='"+conditionStyles+"'>Unlimited Field Error: can't set condition. Condition Item Name equals Field Name: [ " + inputName + " ]. Please use different names.</div>";
       
       jQuery(errorHtml).insertBefore(objField.parent());
       
@@ -824,6 +824,19 @@ function UnlimitedElementsForm(){
     }
     
   }
+
+  /**
+   * create condition visual for Editor
+   */
+  function setConditionVisualInEditor(obj, operator, fieldName, condition, fieldValue){
+    var conditionClass = "ue-form-condition";
+    var conditionStyles = 'color:#000;font-size:12px;padding:5px;border:1px solid grey;background-color:lightgrey;border-radius:5px;width:100%;margin-top:5px';
+    var conditionHtml = `<div class="${conditionClass}" data-condition="['${operator}', '${fieldName}', '${condition}', '${fieldValue}']" style="${conditionStyles}">Visibility Condition: "${operator} ${fieldName} ${condition} ${fieldValue}"</div>`;
+    var objCondition = obj.find(`[data-condition="['${operator}', '${fieldName}', '${condition}', '${fieldValue}']"]`);
+
+    if(!objCondition || !objCondition.length)
+    obj.append(conditionHtml);
+  }
   
   /*
   * process the visibility array
@@ -855,6 +868,7 @@ function UnlimitedElementsForm(){
       var id = conditionArray._id;
       
       var objField = jQuery(ueInputFieldSelector+'[name="'+fieldName+'"]');
+      var isInEditor = objField.data("editor");
       
       var objFieldValue = parseInt(objField.val());
       
@@ -877,17 +891,21 @@ function UnlimitedElementsForm(){
       var objInputField = objFieldWidget.find(ueInputFieldSelector);
       
       equalConditionInputNameError(objInputField, arrNames, classError);
+   
+      if(isInEditor == "yes")
+      setConditionVisualInEditor(objFieldWidget, operator, fieldName, condition, fieldValue);
       
     }
     
     var isInEditor = objField.data("editor");
-    
+   
     if(eval(totalVisibilityCondition) == true){
       
       showField(objFieldWidget, classHidden);
       
-      if(isInEditor == "yes")
-      setVisibilityInEditor(objFieldWidget, classError, classHidden);
+      if(isInEditor == "yes"){
+        // setVisibilityInEditor(objFieldWidget, classError, classHidden);
+      }
       
     }
     
@@ -895,8 +913,9 @@ function UnlimitedElementsForm(){
       
       hideField(objFieldWidget, classHidden);
       
-      if(isInEditor == "yes")
-      setVisibilityInEditor(objFieldWidget, classError, classHidden);
+      if(isInEditor == "yes"){        
+        // setVisibilityInEditor(objFieldWidget, classError, classHidden);
+      }
       
     }
     

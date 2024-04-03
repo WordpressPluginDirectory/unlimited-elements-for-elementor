@@ -394,7 +394,7 @@ class UniteCreatorManagerAddonsWork extends UniteCreatorManager{
 		$urlIcon = $objAddon->getUrlIcon();
 
 		//get preview html
-		$urlPreview = $objAddon->getUrlPreview();
+		$urlPreview = $objAddon->getPreviewImageUrl();
 
 		$itemID = $objAddon->getID();
 
@@ -404,7 +404,7 @@ class UniteCreatorManagerAddonsWork extends UniteCreatorManager{
 
 		$fontIcon = $objAddon->getFontIcon();
 
-		$svgIcon = $objAddon->getUrlSvgIconForEditor();
+		$svgIcon = $objAddon->getPreviewIconUrl();
 
 		$linkDemo = $objAddon->getOption("link_preview");
 

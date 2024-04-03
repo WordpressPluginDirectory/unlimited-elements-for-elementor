@@ -1947,10 +1947,10 @@ class UniteCreatorDialogParamWork{
 			self::PARAM_ICON,
 			self::PARAM_ICON_LIBRARY,
 			self::PARAM_MARGINS,
-			self::PARAM_PADDING
+			self::PARAM_PADDING,
+			self::PARAM_DATETIME
 		);
-
-
+		
 		$this->arrParamsItems = UniteFunctionsUC::arrayToAssoc($this->arrParamsItems);
 	}
 

@@ -3819,37 +3819,72 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$objScripts = wp_styles();
 		else
 			$objScripts = wp_scripts();
-
-		dmp("Registered scripts: ");
-
+		
+		if($type == "js")
+			dmp("Registered scripts: ");
+		else
+			dmp("Registered styles: ");
+		
 		foreach( $objScripts->queue as $scriptName ){
 
 			$objScript = UniteFunctionsUC::getVal($objScripts->registered, $scriptName);
 
 			$url = $objScript->src;
-
-			dmp("$scriptName | $url");
+			
+			$deps = $objScript->deps;
+			$strDeps = "";
+			
+			if(is_array($deps))
+				$strDeps = implode(",", $deps);
+					
+			dmp("$scriptName | $url | $strDeps");
 		}
 
 	}
 
 	/**
+	 * include some dependency in some script
+	 */
+	public static function removeIncludeScriptDep($depName){
+		
+		global $wp_scripts;
+		
+		foreach($wp_scripts->registered as $name=>$script){
+			
+			if(empty($script->deps))
+				continue;
+
+			if(is_array($script->deps) == false)
+				continue;
+			
+			foreach($script->deps as $key => $dep){
+				
+				if($dep == $depName){
+					unset($wp_scripts->registered[$name]->deps[$key]);					
+				}
+									
+			}
+			
+		}
+		
+		
+	}
+	
+	/**
 	 * find and remove some include
 	 */
 	public static function findAndRemoveInclude($filename, $isJS = true){
-
 
 		if($isJS == false)
 			$objScripts = wp_styles();
 		else
 			$objScripts = wp_scripts();
 
-
 		if(empty($objScripts))
 			return(false);
 
 		$arrDeleted = array();
-
+		
 		foreach( $objScripts->queue as $scriptName ){
 
 			$objScript = UniteFunctionsUC::getVal($objScripts->registered, $scriptName);
@@ -3882,7 +3917,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				wp_deregister_script( $scriptName );
 			else
 				wp_deregister_style( $scriptName );
-
+			
 		}
 
 

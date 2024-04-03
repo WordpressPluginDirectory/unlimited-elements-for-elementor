@@ -42,12 +42,12 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	private $arrStoredData = array();
 	private $operationType = null, $specialType;
 	private $arrOriginalValues = array();
-	
+
 	private static $arrCacheRecords = array();
 	private static $arrCacheCats = null;
 	private static $arrCacheCatsFull = null;
 	private static $defaultOptions = null;
-	
+
 	/**
 	 *
 	 * constructor
@@ -449,7 +449,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get special items type accordign the params
 	 */
 	protected function getItemsSpecialType(){
-		
+
 		foreach($this->params as $param){
 			$type = UniteFunctionsUC::getVal($param, "type");
 
@@ -665,15 +665,15 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 	protected function a_________GETTERS_________(){
 	}
-	
+
 	/**
 	 * get values that was set before
 	 */
 	public function getOriginalValues(){
-		
+
 		return($this->arrOriginalValues);
 	}
-	
+
 	/**
 	 * get the update hash if available
 	 */
@@ -844,7 +844,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get svg url preview
 	 */
 	private function getUrlPreview_svg(){
-
+	
 		$svgContent = $this->getHtml();
 		$svgContent = trim($svgContent);
 		if(empty($svgContent))
@@ -855,6 +855,34 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		return ($urlPreview);
 	}
 
+	/**
+	 * get svg icon
+	 */
+	public function getUrlSvgIconForEditor(){
+
+		$this->validateInited();
+
+		$pathAssets = $this->getPathAssetsFull();
+
+		if(empty($pathAssets))
+			return (null);
+
+		$filepathIcon = $pathAssets . self::FILENAME_ICON_SVG;
+
+		if(file_exists($filepathIcon) == false)
+			return (null);
+
+		$urlAssets = $this->getUrlAssets();
+
+		if(empty($urlAssets))
+			return (null);
+
+		$urlIcon = $urlAssets . self::FILENAME_ICON_SVG;
+
+		return ($urlIcon);
+	}
+	
+	
 	/**
 	 * get default preview url
 	 */
@@ -876,9 +904,9 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	}
 
 	/**
-	 * get preview url
+	 * get preview image url
 	 */
-	public function getUrlPreview($returnFilepath = false, $getDefault = true){
+	public function getPreviewImageUrl($returnFilepath = false, $getDefault = true){
 
 		$this->validateInited();
 
@@ -921,30 +949,58 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	}
 
 	/**
-	 * get svg icon
+	 * get preview icon url
 	 */
-	public function getUrlSvgIconForEditor(){
+	public function getPreviewIconUrl(){
+
+		$iconPath = $this->getPreviewIconPath();
+
+		if(empty($iconPath) === true)
+			return null;
+
+		$assetsUrl = $this->getUrlAssets();
+
+		if(empty($assetsUrl))
+			return null;
+
+		$iconUrl = $assetsUrl . self::FILENAME_ICON_SVG;
+
+		return $iconUrl;
+	}
+
+	/**
+	 * get preview icon contents
+	 */
+	public function getPreviewIconContents(){
+
+		$iconPath = $this->getPreviewIconPath();
+
+		if(empty($iconPath) === true)
+			return null;
+
+		$iconContents = file_get_contents($iconPath);
+
+		return $iconContents;
+	}
+
+	/**
+	 * get preview icon path
+	 */
+	private function getPreviewIconPath(){
 
 		$this->validateInited();
 
-		$pathAssets = $this->getPathAssetsFull();
+		$assetsPath = $this->getPathAssetsFull();
 
-		if(empty($pathAssets))
-			return (null);
+		if(empty($assetsPath) === true)
+			return null;
 
-		$filepathIcon = $pathAssets . self::FILENAME_ICON_SVG;
+		$iconPath = $assetsPath . self::FILENAME_ICON_SVG;
 
-		if(file_exists($filepathIcon) == false)
-			return (null);
+		if(file_exists($iconPath) === false)
+			return null;
 
-		$urlAssets = $this->getUrlAssets();
-
-		if(empty($urlAssets))
-			return (null);
-
-		$urlIcon = $urlAssets . self::FILENAME_ICON_SVG;
-
-		return ($urlIcon);
+		return $iconPath;
 	}
 
 	/**
@@ -1256,7 +1312,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		$objAddonType = $this->getObjAddonType();
 
 		$arr["is_svg"] = $objAddonType->isSVG;
-		$arr["preview"] = $this->getUrlPreview();
+		$arr["preview"] = $this->getPreviewImageUrl();
 		$arr["icon"] = $this->getUrlIcon();
 
 		return ($arr);
@@ -1466,7 +1522,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	public function getParamByType($type){
 
 		$arrParams = $this->params;
-				
+
 		foreach($arrParams as $param){
 			$paramType = UniteFunctionsUC::getVal($param, "type");
 			if($paramType == $type)
@@ -1612,7 +1668,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * check if param type exists
 	 */
 	public function isParamTypeExists($type){
-		
+
 		$param = $this->getParamByType($type);
 
 		if(empty($param))
@@ -1653,49 +1709,49 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get data by key
 	 */
 	public function getStoredData($key){
-		
+
 		$data = UniteFunctionsUC::getVal($this->arrStoredData, $key);
 
 		return ($data);
 	}
-	
+
 	/**
 	 * has listing param with property
 	 * not_remote / multisource / remote_parent
 	 */
 	private function hasListingProperty($property){
-		
+
 		$arrParams = $this->getParams(UniteCreatorDialogParam::PARAM_LISTING);
-		
+
 		if(empty($arrParams))
 			return(false);
-		
+
 		foreach($arrParams as $param){
-			
+
 			$type = UniteFunctionsUC::getVal($param, "type");
-			
+
 			if($type != UniteCreatorDialogParam::PARAM_LISTING)
 				continue;
-			
+
 			$userFor = UniteFunctionsUC::getVal($param, "use_for");
-			
+
 			switch($property){
 				case "not_remote":
 					if($userFor != "remote")
 						return(true);
 				break;
 				case "multisource":
-					
+
 					if($userFor == "items")
 						return(true);
 				break;
 				case "remote_parent":
-					
+
 					if($userFor != "remote")
 						return(false);
-					
+
 					$remoteType = UniteFunctionsUC::getVal($param, "remote_type");
-					
+
 					if($remoteType == "parent")
 						return(true);
 				break;
@@ -1703,75 +1759,75 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 					UniteFunctionsUC::throwError("wrong property: ". $property);
 				break;
 			}
-			
+
 		}
-		
+
 		return(false);
 	}
-	
+
 	/**
 	 * check if the addon has sequence animation special param
 	 */
 	public function hasSequenceAnimation(){
-		
+
 		$arrParams = $this->getParams(UniteCreatorDialogParam::PARAM_SPECIAL);
-		
+
 		if(empty($arrParams))
 			return(false);
-		
+
 		foreach($arrParams as $param){
-			
+
 			$type = UniteFunctionsUC::getVal($param, "attribute_type");
-			
+
 			if($type == "entrance_animation")
 				return(true);
 		}
-		
+
 		return(false);
 	}
-	
-	
+
+
 	/**
 	 * check if this addon supports ajax
 	 */
 	public function isAjaxEnabled(){
-		
+
 		$postList = $this->getParamByType(UniteCreatorDialogParam::PARAM_POSTS_LIST);
 
 		//listing types: template / gallery / items allow posts and ajax
-		
+
 		$hasListingNotRemote = $this->hasListingProperty("not_remote");
-		
+
 		if($hasListingNotRemote == true)
 			return(true);
-		
+
 		//post list that use ajax
-		
+
 		$postList = $this->getParamByType(UniteCreatorDialogParam::PARAM_POSTS_LIST);
-		
+
 		if(empty($postList))
 			return(false);
-			
+
 		$isAjaxEnabled = UniteFunctionsUC::getVal($postList, "enable_ajax");
 		$isAjaxEnabled = UniteFunctionsUC::strToBool($isAjaxEnabled);
-		
-		
+
+
 		return($isAjaxEnabled);
 	}
-	
+
 
 	/**
 	 * return if the addon has multisource
 	 */
 	public function hasRemoteParent(){
-		
+
 		$hasRemote = $this->hasListingProperty("remote_parent");
-		
+
 		return($hasRemote);
 	}
-	
-	
-	
+
+
+
 	private function a_______GET__INCLUDES_____(){
 	}
 
@@ -1885,7 +1941,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 	private function a______GET_HTML______(){}
 
-	
+
 	/**
 	 * get addon config html
 	 * for vc make another function - get config only
@@ -1894,17 +1950,21 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	public function getHtmlConfig($putMode = false, $isOutputSidebar = false, $options = array()){
 
 		$this->validateInited();
-
+		
+		//save the active addon for inside use
+		
+		GlobalsProviderUC::$activeAddonForSettings = $this;
+		
 		$this->arrHtmlConfigOptions = $options;
-
+		
 		$arrParams = $this->objProcessor->processParamsForOutput($this->params);
-
+		
 		//add config
 		$objSettings = new UniteCreatorSettings();
 
 		$source = UniteFunctionsUC::getVal($this->arrHtmlConfigOptions, "source");
 		$objSettings->setCurrentAddon($this);
-		
+
 		if($source == "addon"){
 			$objSettings->addGlobalParam("source", "addon", UniteSettingsUC::TYPE_IMAGE);
 		}
@@ -1927,7 +1987,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 					}
 				}
 			}
-			
+
 			$objSettings->initByCreatorParams($arrParams, $this->paramsCats);
 		}
 
@@ -1963,9 +2023,11 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 			$objSettings->addFontPanel($arrFontParamNames, $arrFontsData, null, $fontsPanelOptions);
 		}
-		
+
+		$objSettings->addAdvancedSection();
+
 		$numSettings = $objSettings->getNumSettings();
-		
+
 		if($numSettings == 0){
 			$textEmpty = esc_html__("no settings for this widget", "unlimited-elements-for-elementor");
 
@@ -1973,7 +2035,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		}
 
 		//output
-		
+
 		if($isOutputSidebar == false){
 			$objOutput = new UniteSettingsOutputWideUC();
 			$objOutput->setShowSaps(true);
@@ -2038,7 +2100,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * put config html
 	 */
 	public function putHtmlConfig($isOutputSidebar = false, $params = array()){
-
+		
 		$this->getHtmlConfig(true, $isOutputSidebar, $params);
 	}
 
@@ -2189,15 +2251,15 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get main params processed
 	 */
 	public function getProcessedMainParamsValues($processType = null){
-		
+
 		$this->validateInited();
-		
+
 		if(empty($processType))
 			$processType = UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT;
-		
+
 		$arrParams = $this->objProcessor->getProcessedMainParamsValues($processType);
 
-		return ($arrParams);
+		return $arrParams;
 	}
 
 	/**
@@ -2315,75 +2377,75 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * retur nthe value anyway
 	 */
 	private function getArrayParamValues($value, $param, $name, $arrValues){
-		
+
 		$outputValues = array();
-		
+
 		foreach($arrValues as $key=>$outputValue){
-			
+
 			if(strpos($key,"{$name}_") !== 0)
 				continue;
-			
+
 			$outputKey = substr($key, strlen($name)+1);
-			
+
 			$outputValues[$outputKey] = $outputValue;
 		}
 
-		
+
 		if(empty($outputValues))
 			return($value);
-		
-			
+
+
 		return($outputValues);
 	}
-	
-	
+
+
 	/**
 	 * set params values work
 	 * type: main,items
 	 */
 	private function setParamsValuesWork($arrValues, $arrParams, $type){
-				
+
 		$this->validateInited();
-		
+
 		if(empty($arrValues))
 			$arrValues = array();
 
 		if(!is_array($arrValues))
 			UniteFunctionsUC::throwError("The values shoud be array");
-		
-			
+
+
 		foreach($arrParams as $key => $param){
 			$name = UniteFunctionsUC::getVal($param, "name");
 
 			if(empty($name))
 				continue;
-			
+
 			$defaultValue = UniteFunctionsUC::getVal($param, "default_value");
-			
+
 			$type = UniteFunctionsUC::getVal($param, "type");
-			
+
 			$value = UniteFunctionsUC::getVal($arrValues, $name, $defaultValue);
-						
+
 			//multiple values - like post list
-			
+
 			$value = $this->objProcessor->getSpecialParamValue($type, $name, $value, $arrValues);
-			
+
 			//check for array type
 			if(isset($param["default_value"]) == false && empty($value)){
-				
+
 				$value = $this->getArrayParamValues($value, $param, $name, $arrValues);
 			}
-			
+
 			$param["value"] = $value;
 
 			$param = $this->setResponsiveParamValues($param, $name, $arrValues);
-			
+
 			$param = $this->objProcessor->setExtraParamsValues($type, $param, $name, $arrValues);
-			
+
 			//set responsive values
 			$arrParams[$key] = $param;
 		}
-				
+
 		return ($arrParams);
 	}
 
@@ -2418,12 +2480,12 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * set params values
 	 */
 	public function setParamsValues($arrValues){
-		
+
 		if(empty($arrValues))
 			$arrValues = array();
 
 		$this->arrOriginalValues = $arrValues;
-		
+
 		$this->params = $this->setParamsValuesWork($arrValues, $this->params, "main");
 	}
 

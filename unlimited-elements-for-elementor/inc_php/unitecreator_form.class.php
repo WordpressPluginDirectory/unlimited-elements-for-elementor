@@ -200,23 +200,33 @@ class UniteCreatorForm{
 
 		$formData = UniteFunctionsUC::getPostGetVariable("formData", null, UniteFunctionsUC::SANITIZE_NOTHING);
 		$formFiles = UniteFunctionsUC::getFilesVariable("formFiles");
-		$formID = UniteFunctionsUC::getPostGetVariable("formId", null, UniteFunctionsUC::SANITIZE_KEY);
-		$layoutID = UniteFunctionsUC::getPostGetVariable("postId", null, UniteFunctionsUC::SANITIZE_ID);
+		$formId = UniteFunctionsUC::getPostGetVariable("formId", null, UniteFunctionsUC::SANITIZE_KEY);
+		$postId = UniteFunctionsUC::getPostGetVariable("postId", null, UniteFunctionsUC::SANITIZE_ID);
+		$templateId = UniteFunctionsUC::getPostGetVariable("templateId", null, UniteFunctionsUC::SANITIZE_ID);
 
-		UniteFunctionsUC::validateNotEmpty($formID, "form id");
-		UniteFunctionsUC::validateNumeric($layoutID, "post id");
+		UniteFunctionsUC::validateNotEmpty($formId, "form id");
+		UniteFunctionsUC::validateNumeric($postId, "post id");
 
-		if(empty($formData))
+		if(empty($formData) === true)
 			UniteFunctionsUC::throwError("No form data found.");
 
-		$arrContent = HelperProviderCoreUC_EL::getElementorContentByPostID($layoutID);
+		$postContent = HelperProviderCoreUC_EL::getElementorContentByPostID($postId);
 
-		if(empty($arrContent))
-			UniteFunctionsUC::throwError("Elementor content not found.");
+		if(empty($postContent))
+			UniteFunctionsUC::throwError("Form elementor content not found.");
 
-		$addonForm = HelperProviderCoreUC_EL::getAddonWithDataFromContent($arrContent, $formID);
+		$templateContent = null;
+
+		if (empty($templateId) === false) {
+			$templateContent = HelperProviderCoreUC_EL::getElementorContentByPostID($templateId);
+
+			if(empty($templateContent) === true)
+				UniteFunctionsUC::throwError("Template elementor content not found.");
+		}
+
+		$addonForm = HelperProviderCoreUC_EL::getAddonWithDataFromContent($postContent, $formId);
 		$formSettings = $addonForm->getProcessedMainParamsValues();
-		$formFields = $this->getFieldsData($arrContent, $formData, $formFiles);
+		$formFields = $this->getFieldsData($templateContent ?: $postContent, $formData, $formFiles);
 
 		$this->doSubmitActions($formSettings, $formFields);
 	}

@@ -768,14 +768,14 @@ class UniteFunctionsUC{
 		foreach($arrData as $key=>$value){
 
 			$key = htmlspecialchars($key);
-
-			if(is_string($value) == true)
-				$value = htmlspecialchars($value);
-
+		
+			//if(is_string($value) == true)
+				//$value = htmlspecialchars($value);
+			
 			$key = " $key";
 
 			$arrDataNew[$key] = $value;
-
+			
 			//convert single array
 			if($convertSingleArray == true && is_array($value) && count($value) == 1 && isset($value[0]))
 				$arrDataNew[$key] = $value[0];
@@ -2792,7 +2792,7 @@ class UniteFunctionsUC{
 		//year
 		if ($time_difference >= 60 * 60 * 24 * 365.242199)
 			return self::getTimeAgoStringUnit($time_stamp, 60 * 60 * 24 * 365.242199, $textYears, $textYear);
-
+		
 		//month
 		if ($time_difference >= 60 * 60 * 24 * 30.4368499)
 			return self::getTimeAgoStringUnit($time_stamp, 60 * 60 * 24 * 30.4368499,__('months',"unlimited-elements-for-elementor"),__('month',"unlimited-elements-for-elementor"));
@@ -2831,8 +2831,9 @@ class UniteFunctionsUC{
 			$output = $time_units . " ".$strUnitSingle." ". __("ago","unlimited-elements-for-elementor");
 		else
 			$output = $time_units . " ".$strUnit." ". __("ago","unlimited-elements-for-elementor");
-
-
+		
+		$output = apply_filters("ue_modify_time_ago_string", $output);
+		
 		return($output);
 	}
 

@@ -13,7 +13,7 @@ class UEHttpRequest{
 	const METHOD_POST = "POST";
 
 	const REQUEST_TIMEOUT = 120;
-	
+
 	private $debug = false;
 	private $cacheTime = 0;
 	private $bodyFormat;
@@ -172,7 +172,7 @@ class UEHttpRequest{
 	 * @throws UEHttpException
 	 */
 	public function post($url, $body = array()){
-		
+
 		return $this->withBody($body)->request(self::METHOD_POST, $url);
 	}
 
@@ -209,8 +209,8 @@ class UEHttpRequest{
 				"method" => $method,
 				"headers" => $headers,
 				"body" => $body,
+				"timeout" => self::REQUEST_TIMEOUT,
 				"sslverify" => false,
-				"timeout"=>self::REQUEST_TIMEOUT
 			));
 
 			if(is_wp_error($wpResponse) === true)

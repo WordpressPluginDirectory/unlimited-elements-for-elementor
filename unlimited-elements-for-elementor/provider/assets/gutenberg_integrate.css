@@ -19,6 +19,11 @@
 	position: relative;
 }
 
+.unite-gutenberg-widget-content {
+	position: relative;
+	z-index: 1;
+}
+
 .unite-gutenberg-widget-loader {
 	display: none;
 	background: rgba(var(--ue-color-light-rgb), 0.6);
@@ -28,6 +33,7 @@
 	right: 0;
 	bottom: 0;
 	left: 0;
+	z-index: 2;
 }
 
 .unite-gutenberg-widget-loader > svg {

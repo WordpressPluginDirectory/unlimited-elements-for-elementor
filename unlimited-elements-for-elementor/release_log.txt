@@ -1,5 +1,20 @@
 
 
+version 1.5.101:
+
+* Feature - added "date time" attribute to items attributes list
+* Fix - fixed filters mode init mode
+* Fix - fixed various filters related bugs
+* Feature - made some integration for "relevanssi" plugin
+* Fix - fixed ucpage parameter fetch for pagination in archive page
+* Fix - fixed gallery from meta field item source texts 
+* Feature - added woo rating stars to multisource fields
+* Feature - added visual text that showing the form fields conditions
+* Fix - fixed some number field processing
+* Fix - fixed multisep form with template submit
+
+
+
 version 1.5.100:
 
 * Fix: fixed js run for background output not always happend

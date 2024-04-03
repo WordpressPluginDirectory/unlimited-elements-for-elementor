@@ -12,7 +12,7 @@ class UniteProviderFunctionsUC{
 	public static $tablePostMeta = null;
 	public static $counterScripts = 0;
 
-
+	
 	/**
 	 * init base variables of the globals
 	 */

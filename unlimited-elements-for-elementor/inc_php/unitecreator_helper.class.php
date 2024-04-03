@@ -112,9 +112,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(!empty(self::$arrFontPanelData))
 				return(self::$arrFontPanelData);
-			
+
 			self::$arrFontPanelData = require GlobalsUC::$pathSettings."font_panel_data.php";
-			
+
 			return(self::$arrFontPanelData);
 		}
 
@@ -1287,7 +1287,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(empty($version))
 			$version = "fa5";
-		
+
 		if($version == "fa4")
 			$url = GlobalsUC::$url_assets_libraries . "font-awsome/css/font-awesome.min.css";
 		else    //fa5
@@ -1300,23 +1300,31 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	}
 
 	/**
+	 * include ue animation styles
+	 */
+	public static function includeUEAnimationStyles(){
+
+		self::addStyleAbsoluteUrl(GlobalsUC::$url_assets_libraries . "animations/ue_animations.css", "ue_animations");
+	}
+
+	/**
 	 * put smooth scroll include
 	 */
 	public static function putSmoothScrollIncludes($putJSInit = false){
 
 		$urlSmoothScroll = GlobalsUC::$url_assets_libraries . "smooth-scroll/smooth-scroll.min.js";
-		HelperUC::addScriptAbsoluteUrl($urlSmoothScroll, "smooth-scroll");
+		self::addScriptAbsoluteUrl($urlSmoothScroll, "smooth-scroll");
 
 		if($putJSInit == false)
 			return (false);
 
 		$script = "
-				window.addEventListener('load', function(){
-					var g_ucSmoothScroll = new SmoothScroll('a[href*=\"#\"]',{speed:1000});
-				});
-			";
+			window.addEventListener('load', function(){
+				var g_ucSmoothScroll = new SmoothScroll('a[href*=\"#\"]',{speed:1000});
+			});
+		";
 
-		HelperUC::putCustomScript($script);
+		self::putCustomScript($script);
 	}
 
 	/**
@@ -1658,7 +1666,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	}
 
 	/**
-	 * check if edit mode
+	 * check if elementor edit mode
 	 */
 	public static function isElementorEditMode(){
 
@@ -1675,6 +1683,30 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			return (true);
 
 		return (false);
+	}
+
+	/**
+	 * check if gutenberg edit mode
+	 */
+	private static function isGutenbergEditMode(){
+
+		if(function_exists("get_current_screen") === false)
+			return false;
+
+		$screen = get_current_screen();
+
+		if($screen === null)
+			return false;
+
+		return $screen->is_block_editor();
+	}
+
+	/**
+	 * check if edit mode
+	 */
+	public static function isEditMode(){
+
+		return self::isElementorEditMode() || self::isGutenbergEditMode();
 	}
 
 
@@ -1778,17 +1810,17 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				HelperHtmlUC::outputExceptionBox($e, HelperUC::getText("addon_library") . " Error");
 		}
 	}
-	
+
 	/**
 	 * some test function for auto completion. keep empty
 	 */
 	public static function testFunc(){
-		
-				
-		
-		
+
+
+
+
 	}
-	
+
 }
 
 //init the operations

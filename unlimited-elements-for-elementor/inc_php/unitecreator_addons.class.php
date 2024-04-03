@@ -29,7 +29,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 				break;
 			}
 
-			$urlPreview = $addon->getUrlPreview();
+			$urlPreview = $addon->getPreviewImageUrl();
 
 			if(empty($urlPreview))
 				continue;
@@ -554,6 +554,10 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	public function getAddonSettingsHTMLFromData($data){
 
 		$objAddon = $this->initAddonByData($data);
+
+		//remember the addon for use inside the settings classes (used for multisource)
+		GlobalsProviderUC::$activeAddonForSettings = $objAddon;
+
 		$html = $objAddon->getHtmlConfig(false, true);
 
 		return ($html);

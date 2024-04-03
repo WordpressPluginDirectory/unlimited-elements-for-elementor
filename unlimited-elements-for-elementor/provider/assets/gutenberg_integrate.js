@@ -5,14 +5,31 @@
 	var we = wp.element;
 	var el = we.createElement;
 
+	// trigger block focus in case widget prevents clicks (carousels etc.)
+	jQuery(document).on("click", ".unite-gutenberg-widget-wrapper", function () {
+		jQuery(this).closest("[tabindex]").focus();
+	});
+
+	// prevent link clicks inside widgets
+	jQuery(document).on("click", ".unite-gutenberg-widget-wrapper a", function (event) {
+		event.preventDefault();
+	});
+
 	var edit = function (props) {
+		var previewUrl = props.attributes._preview;
+
+		if (previewUrl)
+			return el("img", { src: previewUrl, style: { width: "100%", height: "auto" } });
+
 		var blockProps = wbe.useBlockProps();
+		var widgetContentState = we.useState(null);
 		var settingsVisibleState = we.useState(false);
 		var settingsContentState = we.useState(null);
-		var widgetContentState = we.useState(null);
-		var widgetReloadsState = we.useState(0);
 
+		var widgetRef = we.useRef(null);
+		var widgetLoaderRef = we.useRef(null);
 		var widgetRequestRef = we.useRef(null);
+		var keepWidgetContentRef = we.useRef(false);
 		var ucSettingsRef = we.useRef(new UniteSettingsUC());
 		var ucHelperRef = we.useRef(new UniteCreatorHelper());
 
@@ -20,9 +37,11 @@
 			return select("core/edit-post").isEditorSidebarOpened();
 		});
 
-		var widgetId = "unite-gutenberg-widget-" + blockProps.id;
-		var widgetLoaderId = widgetId + "-loader";
+		var previewDeviceType = wd.useSelect(function (select) {
+			return select("core/edit-post").__experimentalGetPreviewDeviceType();
+		});
 
+		var widgetId = "unite-gutenberg-widget-" + blockProps.id;
 		var settingsId = "unite-gutenberg-settings-" + blockProps.id;
 		var settingsTempId = settingsId + "-temp";
 		var settingsErrorId = settingsId + "-error";
@@ -36,11 +55,56 @@
 		var widgetContent = widgetContentState[0];
 		var setWidgetContent = widgetContentState[1];
 
-		var widgetReloads = widgetReloadsState[0];
-		var setWidgetReloads = widgetReloadsState[1];
-
 		var ucSettings = ucSettingsRef.current;
 		var ucHelper = ucHelperRef.current;
+
+		var initSettings = function () {
+			ucSettings.destroy();
+
+			var settingsElement = getSettingsElement();
+
+			if (!settingsElement)
+				return;
+
+			ucSettings.init(settingsElement);
+			ucSettings.setSelectorWrapperID(widgetId);
+			ucSettings.setResponsiveType(previewDeviceType.toLowerCase());
+
+			ucSettings.setEventOnChange(function () {
+				saveSettings();
+			});
+
+			ucSettings.setEventOnSelectorsChange(function () {
+				keepWidgetContentRef.current = true;
+
+				saveSettings();
+
+				var css = ucSettings.getSelectorsCss();
+				var includes = ucSettings.getSelectorsIncludes();
+
+				jQuery(widgetRef.current).find("[name=uc_selectors_css]").text(css);
+
+				if (includes) {
+					var windowElement = getPreviewWindowElement();
+
+					ucHelper.putIncludes(windowElement, includes);
+				}
+			});
+
+			ucSettings.setEventOnResponsiveTypeChange(function (event, type) {
+				var deviceType = type.charAt(0).toUpperCase() + type.substring(1);
+
+				wd.dispatch("core/edit-post").__experimentalSetPreviewDeviceType(deviceType);
+			});
+
+			// restore current settings, otherwise apply current
+			var values = getSettings();
+
+			if (values !== null)
+				ucSettings.setValues(values);
+			else
+				saveSettings();
+		};
 
 		var getSettings = function () {
 			return props.attributes.data ? JSON.parse(props.attributes.data) : null;
@@ -48,14 +112,6 @@
 
 		var saveSettings = function () {
 			props.setAttributes({ data: JSON.stringify(ucSettings.getSettingsValues()) });
-		};
-
-		var saveSettingsAndReloadWidget = function () {
-			saveSettings();
-
-			setWidgetReloads(function (count) {
-				return count + 1;
-			});
 		};
 
 		var getSettingsElement = function () {
@@ -78,39 +134,8 @@
 			return settingsTempElement;
 		};
 
-		var initSettings = function () {
-			ucSettings.destroy();
-
-			var settingsElement = getSettingsElement();
-
-			if (!settingsElement)
-				return;
-
-			ucSettings.init(settingsElement);
-
-			ucSettings.setEventOnChange(function () {
-				saveSettingsAndReloadWidget();
-			});
-
-			ucSettings.setEventOnSelectorsChange(function () {
-				saveSettings();
-
-				var css = ucSettings.getSelectorsCss();
-				var includes = ucSettings.getSelectorsIncludes();
-
-				jQuery("#" + widgetId).find("[name=uc_selectors_css]").text(css);
-
-				if (includes)
-					ucHelper.putIncludes(window, includes);
-			});
-
-			// restore current settings, otherwise apply current
-			var values = getSettings();
-
-			if (values !== null)
-				ucSettings.setValues(values);
-			else
-				saveSettingsAndReloadWidget();
+		var getPreviewWindowElement = function () {
+			return window.frames["editor-canvas"] || window;
 		};
 
 		var loadSettingsContent = function () {
@@ -142,12 +167,12 @@
 				}
 			}
 
-			var loaderElement = jQuery("#" + widgetLoaderId);
-
-			loaderElement.show();
-
 			if (widgetRequestRef.current !== null)
 				widgetRequestRef.current.abort();
+
+			var loaderElement = jQuery(widgetLoaderRef.current);
+
+			loaderElement.show();
 
 			widgetRequestRef.current = g_ucAdmin.ajaxRequest("get_addon_output_data", {
 				id: props.attributes._id,
@@ -156,8 +181,9 @@
 			}, function (response) {
 				var html = g_ucAdmin.getVal(response, "html");
 				var includes = g_ucAdmin.getVal(response, "includes");
+				var windowElement = getPreviewWindowElement();
 
-				ucHelper.putIncludes(window, includes, function () {
+				ucHelper.putIncludes(windowElement, includes, function () {
 					setWidgetContent(html);
 				});
 			}).always(function () {
@@ -183,6 +209,11 @@
 		}, [props.isSelected, isEditorSidebarOpened]);
 
 		we.useEffect(function () {
+			if (ucSettings.isInited())
+				ucSettings.setResponsiveType(previewDeviceType.toLowerCase());
+		}, [previewDeviceType]);
+
+		we.useEffect(function () {
 			if (!settingsVisible)
 				return;
 
@@ -197,8 +228,20 @@
 		}, [settingsContent]);
 
 		we.useEffect(function () {
-			loadWidgetContent();
-		}, [widgetReloads]);
+			if (!widgetContent)
+				return;
+
+			// insert the widget html manually for the inline script to work
+			jQuery(widgetRef.current).html(widgetContent);
+		}, [widgetContent]);
+
+		we.useEffect(function () {
+			if (keepWidgetContentRef.current) {
+				keepWidgetContentRef.current = false;
+			} else {
+				loadWidgetContent();
+			}
+		}, [props.attributes.data]);
 
 		var settings = el(
 			wbe.InspectorControls, {},
@@ -209,8 +252,8 @@
 
 		var widget = el(
 			"div", { className: "unite-gutenberg-widget-wrapper" },
-			widgetContent && el("div", { id: widgetId, dangerouslySetInnerHTML: { __html: widgetContent } }),
-			widgetContent && el("div", { className: "unite-gutenberg-widget-loader", id: widgetLoaderId }, el(wc.Spinner)),
+			widgetContent && el("div", { className: "unite-gutenberg-widget-content", id: widgetId, ref: widgetRef }),
+			widgetContent && el("div", { className: "unite-gutenberg-widget-loader", ref: widgetLoaderRef }, el(wc.Spinner)),
 			!widgetContent && el("div", { className: "unite-gutenberg-widget-placeholder" }, el(wc.Spinner)),
 		);
 
@@ -220,6 +263,10 @@
 	for (var name in g_gutenbergBlocks) {
 		var block = g_gutenbergBlocks[name];
 		var args = jQuery.extend(block, { edit: edit });
+
+		// convert the svg icon to element
+		if (args.icon && args.icon.indexOf("<svg ") === 0)
+			args.icon = el("span", { dangerouslySetInnerHTML: { __html: args.icon } });
 
 		wp.blocks.registerBlockType(name, args);
 	}

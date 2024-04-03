@@ -288,41 +288,6 @@ class UCOperations extends UniteElementsBaseUC{
 	}
 
 	/**
-	 * return thumb url from image url, return full url of the thumb
-	 * if some error occured, return empty string
-	 */
-	public function getThumbURLFromImageUrl($urlImage, $imageID = null, $thumbSize = null){
-
-		try{
-			$imageID = trim($imageID);
-			if(is_numeric($urlImage))
-				$imageID = $urlImage;
-
-			//try to get image id by url if empty
-			//if(empty($imageID))
-			//$imageID = UniteProviderFunctionsUC::getImageIDFromUrl($urlImage);
-
-			if(!empty($imageID)){
-				$urlThumb = UniteProviderFunctionsUC::getThumbUrlFromImageID($imageID, $thumbSize);
-			}else{
-				$urlThumb = $urlImage;
-				//$urlThumb = $this->createThumbs($urlImage, $thumbSize);
-			}
-
-			if(empty($urlThumb))
-				return ("");
-
-			$urlThumb = HelperUC::URLtoFull($urlThumb);
-
-			return ($urlThumb);
-		}catch(Exception $e){
-			return ("");
-		}
-
-		return ("");
-	}
-
-	/**
 	 * get title param array
 	 */
 	private function getParamTitle(){
@@ -704,7 +669,7 @@ class UCOperations extends UniteElementsBaseUC{
 	 * get url contents from file or url with cache
 	 */
 	public function getUrlContents($url, $debug = false){
-	
+
 		if($debug === true)
 			dmp("get contents from url: $url");
 

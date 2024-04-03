@@ -1020,11 +1020,22 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 
 		/**
+		 * get google font base url
+		 */
+		public static function getGoogleFontBaseUrl(){
+
+			return "https://fonts.googleapis.com/css";
+		}
+
+		/**
 		 * get google font url
 		 */
 		public static function getGoogleFontUrl($family){
 
-			return "https://fonts.googleapis.com/css?display=swap&family=" . $family;
+			$variations = array("100", "100i", "200", "200i", "300", "300i", "400", "400i", "500", "500i", "600", "600i", "700", "700i", "800", "800i", "900", "900i");
+			$variations = implode(",", $variations);
+
+			return self::getGoogleFontBaseUrl() . "?display=swap&family=" . urlencode($family) . ":" . $variations;
 		}
 
 		/**

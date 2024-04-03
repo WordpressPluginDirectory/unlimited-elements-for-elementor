@@ -15,7 +15,7 @@ class GlobalsUnlimitedElements{
 
 	public static $enableForms = true;
 
-	public static $enableGutenbergSupport = false;
+	public static $enableGutenbergSupport = true;
 
 	public static $showAdminNotices = false;
 	public static $debugAdminNotices = false;
@@ -78,6 +78,7 @@ class GlobalsUnlimitedElements{
 
 	const LINK_HELP_POSTSLIST = "https://unlimited-elements.helpscoutdocs.com/article/69-post-list-query-usage";
 
+	const PREFIX_ANIMATION_CLASS = "ue-animation-";
 	const PREFIX_TEMPLATE_PERMALINK = "unlimited-";
 
 	public static $enableCPT = false;

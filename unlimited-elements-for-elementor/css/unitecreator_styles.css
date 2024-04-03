@@ -2017,19 +2017,19 @@ ul.uc-list-pages-thumbs li a i {
 }
 
 .uc-preview-addon-wrapper {
+	--sidebar-width: 300px;
 	display: flex;
 	background: var(--ue-color-light);
 	margin-top: 16px;
 }
 
 .uc-preview-addon-left {
-	flex-shrink: 0;
-	width: 300px;
+	width: var(--sidebar-width);
 	border-right: 1px solid var(--ue-color-gray-lighter);
 }
 
 .uc-preview-addon-right {
-	flex-grow: 1;
+	width: calc(100% - var(--sidebar-width));
 	position: relative;
 }
 

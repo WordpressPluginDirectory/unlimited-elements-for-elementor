@@ -321,6 +321,44 @@ class HelperProviderUC{
 		return($arrAdditions);
 	}
 
+	/**
+	 * get image sizes param from post list param
+	 */
+	public static function getImageSizesParamFromPostListParam($paramImage){
+		
+    	$type = UniteFunctionsUC::getVal($paramImage, "type");
+    	$title = UniteFunctionsUC::getVal($paramImage, "title");
+    	$name = UniteFunctionsUC::getVal($paramImage, "name");
+
+    	$copyKeys = array("enable_condition","condition_attribute","condition_operator","condition_value");
+
+    	$arrSizes = UniteFunctionsWPUC::getArrThumbSizes();
+
+    	$arrSizes = array_flip($arrSizes);
+
+    	$param = array();
+    	$param["type"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
+
+    	if($type == UniteCreatorDialogParam::PARAM_POSTS_LIST){
+	    	$param["title"] = $title .= " ".__("Image Size","unlimited-elements-for-elementor");
+    		$param["name"] = $name .= "_imagesize";
+    	}
+    	else{
+	    	$param["title"] = $title .= " ".__("Size","unlimited-elements-for-elementor");
+    		$param["name"] = $name .= "_size";
+    	}
+
+    	$param["options"] = $arrSizes;
+    	$param["default_value"] = "medium_large";
+
+    	//duplicate all keys
+    	foreach($copyKeys as $key)
+    		$param[$key] = UniteFunctionsUC::getVal($paramImage, $key);
+		
+		return($param);
+	}
+	
+	
     /**
      * get white label settings
      */
@@ -438,10 +476,13 @@ class HelperProviderUC{
 	 * on plugins loaded, load textdomains
 	 */
 	public static function onPluginsLoaded(){
-
+		
 		load_plugin_textdomain("unlimited-elements-for-elementor", false, GlobalsUC::$pathWPLanguages);
-
+		
+		GlobalsUC::initAfterPluginsLoaded();
+		
 		UniteCreatorWooIntegrate::initActions();
+		
 	}
 
 	/**
@@ -499,15 +540,15 @@ class HelperProviderUC{
 
 		if($disableDeprecated == true)
 			UniteFunctionsUC::disableDeprecatedWarnings();
-
-		add_action("plugins_loaded", array("HelperProviderUC", "onPluginsLoaded"));
-
+		
 		$showPHPError = HelperProviderCoreUC_EL::getGeneralSetting("show_php_error");
 		$showPHPError = UniteFunctionsUC::strToBool($showPHPError);
-
+		
 		if($showPHPError == true)
 			add_filter("wp_php_error_message", array("HelperProviderUC", "onPHPErrorMessage"), 100, 2);
-
+		
+		add_action("plugins_loaded", array("HelperProviderUC", "onPluginsLoaded"));
+		
 		//add_action("wp_loaded", array("HelperProviderUC", "onWPLoaded"));
 	}
 

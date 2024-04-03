@@ -69,7 +69,7 @@ class UCAdminNoticeBuilder extends UCAdminNoticeBuilderAbstract{
 	 */
 	public function withLinkAction($text, $url, $variant = self::ACTION_VARIANT_PRIMARY, $target = ''){
 
-		$action = '<a class="button button-' . $variant . '" href="' . esc_attr($url) . '" target="' . esc_attr($target) . '">' . $text . '</a>';
+		$action = '<a class="button button-' . $variant . '" href="' . esc_url($url) . '" target="' . esc_attr($target) . '">' . $text . '</a>';
 
 		return $this->addAction($action);
 	}

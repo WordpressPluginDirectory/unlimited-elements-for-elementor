@@ -209,27 +209,28 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 	 */
 	protected function drawSettingRow_getRowHiddenClass($setting){
 
-		//set hidden
-		$isHidden = isset($setting["hidden"]);
+		$type = UniteFunctionsUC::getVal($setting, "type");
+		$isHidden = UniteFunctionsUC::getVal($setting, "hidden");
+		$isHidden = UniteFunctionsUC::strToBool($isHidden);
 
-		if($isHidden == true && $setting["hidden"] === "false")
-			$isHidden = false;
-
-		//operate saps
-		if($this->showSaps == true && $this->sapsType == self::SAPS_TYPE_INLINE){
-
+		if($this->showSaps === true && $this->sapsType === self::SAPS_TYPE_INLINE){
 			$sap = UniteFunctionsUC::getVal($setting, "sap");
 			$sap = (int)$sap;
 
-			if($sap != $this->activeSap)
+			if($sap !== $this->activeSap)
 				$isHidden = true;
 		}
 
 		$class = "";
-		if($isHidden == true)
-			$class = "unite-setting-hidden";
 
-		return($class);
+		if($isHidden === true){
+			if($type === UniteSettingsUC::TYPE_HIDDEN)
+				$class = "unite-hidden"; // just hide
+			else
+				$class = "unite-setting-hidden"; // exclude from values/selectors
+		}
+
+		return $class;
 	}
 
 
@@ -500,8 +501,6 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 	 */
 	protected function drawImageInput($setting){
 
-		$setting = $this->modifyImageSetting($setting);
-
 		$id = UniteFunctionsUC::getVal($setting, "id");
 		$name = UniteFunctionsUC::getVal($setting, "name");
 		$value = UniteFunctionsUC::getVal($setting, "value");
@@ -509,46 +508,28 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$source = UniteFunctionsUC::getVal($setting, "source");
 		$error = UniteFunctionsUC::getVal($setting, "error");
 
-		$imageId = null;
-		$urlImage = $value;
-		$urlThumb = $value;
-
-		if(empty($value) === false && is_numeric($value) === true){
-			$imageId = $value;
-			$urlImage = UniteProviderFunctionsUC::getImageUrlFromImageID($imageId);
-			$urlThumb = UniteProviderFunctionsUC::getThumbUrlFromImageID($imageId);
-
-			$urlImage = HelperUC::URLtoFull($urlImage);
-			$urlThumb = HelperUC::URLtoFull($urlThumb);
-
-			$setting["value"] = $urlImage; // for initval
+		if(is_array($value) === false){
+			$value = array(
+				"id" => is_numeric($value) === true ? $value : null,
+				"url" => is_numeric($value) === false ? $value : null,
+			);
 		}
 
-		// try to create thumb image
-		if(empty($urlThumb) === true && empty($urlImage) === false){
-			try{
-				$operations = new UCOperations();
-				$urlThumb = $operations->getThumbURLFromImageUrl($value);
-				$urlThumb = HelperUC::URLtoFull($urlThumb);
-			}catch(Exception $e){
-				$urlThumb = $urlImage;
-			}
-		}
+		$imageId = UniteFunctionsUC::getVal($value, "id");
+		$imageUrl = UniteFunctionsUC::getVal($value, "url");
+		$imageSize = UniteFunctionsUC::getVal($value, "size", "full");
 
-		// get preview url
-		$urlPreview = "";
+		if(empty($imageId) === false)
+			$imageUrl = UniteProviderFunctionsUC::getImageUrlFromImageID($imageId, $imageSize);
+		else
+			$imageUrl = HelperUC::URLtoFull($imageUrl);
 
-		if(empty($urlThumb) === false)
-			$urlPreview = $urlThumb;
-
-		// get preview style
-		if(empty($urlPreview) === true && empty($urlImage) === false)
-			$urlPreview = $urlImage;
+		$setting["value"] = $value; // for initval
 
 		$previewStyle = "";
 
-		if(empty($urlPreview) === false)
-			$previewStyle .= "background-image:url('$urlPreview');";
+		if(empty($imageUrl) === false)
+			$previewStyle .= "background-image:url('$imageUrl');";
 
 		if(empty($previewStyle) === false)
 			$previewStyle = "style=\"$previewStyle\"";
@@ -563,12 +544,12 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 
 		$urlName = UniteFunctionsUC::getVal($setting, "url_name");
 		$urlTitle = sprintf(__("%s URL", "unlimited-elements-for-elementor"), $title);
-
-		$sizeName = UniteFunctionsUC::getVal($setting, "size_name");
-		$sizeTitle = sprintf(__("%s Size", "unlimited-elements-for-elementor"), $title);
+		$urlValue = $imageUrl;
 
 		$sizes = UniteFunctionsWPUC::getArrThumbSizes();
-		$sizeValue = "full";
+		$sizeName = UniteFunctionsUC::getVal($setting, "size_name");
+		$sizeTitle = sprintf(__("%s Size", "unlimited-elements-for-elementor"), $title);
+		$sizeValue = $imageSize;
 
 		?>
 		<div
@@ -613,7 +594,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 							class="unite-setting-image-url"
 							type="text"
 							name="<?php esc_attr_e($urlName); ?>"
-							value="<?php esc_attr_e($urlImage); ?>"
+							value="<?php esc_attr_e($urlValue); ?>"
 							placeholder="<?php esc_attr_e("Image URL", "unlimited-elements-for-elementor"); ?>"
 						/>
 					</div>
@@ -768,7 +749,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 				$objAddon = new UniteCreatorAddon();
 				$objAddon->initByMixed($value, $addonType);
 
-				$urlPreview = $objAddon->getUrlPreview();
+				$urlPreview = $objAddon->getPreviewImageUrl();
 				if($urlPreview)
 					$styleButton = "background-image:url('{$urlPreview}')";
 
@@ -1447,7 +1428,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$name = $setting["name"];
 		$id = $setting["id"];
 		$value = $setting["value"];
-		$href = "javascript:void(0)";
+		$href = "#";
 		$gotoView = UniteFunctionsUC::getVal($setting, "gotoview");
 
 		if(!empty($gotoView))
@@ -1466,7 +1447,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 			$addHtml = " target='blank'";
 
 		?>
-		<a id="<?php echo esc_attr($id)?>" href="<?php echo esc_attr($href)?>" name="<?php echo esc_attr($name)?>" <?php echo $addHtml?> class="unite-button-secondary"><?php echo esc_html($value)?></a>
+		<a id="<?php echo esc_attr($id)?>" href="<?php echo esc_url($href)?>" name="<?php echo esc_attr($name)?>" <?php echo $addHtml?> class="unite-button-secondary"><?php echo esc_html($value)?></a>
 		<?php
 
 	}

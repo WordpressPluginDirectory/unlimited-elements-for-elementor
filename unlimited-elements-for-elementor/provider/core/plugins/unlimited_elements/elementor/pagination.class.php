@@ -350,6 +350,20 @@ class UniteCreatorElementorPagination{
 		return($options);
 	}
 	
+	/**
+	 * get ucpage from get options
+	 */
+	private function getUCPageFromGET(){
+			
+		$ucpage = UniteFunctionsUC::getGetVar("ucpage","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		$ucpage = (int)$ucpage;
+			
+		if(empty($ucpage))
+			return(null);
+			
+		return($ucpage);
+	}
+	
 	
 	/**
 	 * get current page
@@ -363,8 +377,7 @@ class UniteCreatorElementorPagination{
 		
 		if($isFrontAjax == true){
 			
-			$ucpage = UniteFunctionsUC::getGetVar("ucpage","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-			$ucpage = (int)$ucpage;
+			$ucpage = $this->getUCPageFromGET();
 			
 			if(!empty($ucpage))
 				return($ucpage);
@@ -563,6 +576,7 @@ class UniteCreatorElementorPagination{
 		if($hasMore == true)
 			$output["next_offset"] = $nextOffset;
 		
+			
 		return($output);
 	}
 	
@@ -598,10 +612,8 @@ class UniteCreatorElementorPagination{
 		
 		if(self::SHOW_DEBUG == true)
 			$isDebug = true;
-		 
-		$isQueryDebug = HelperUC::hasPermissionsFromQuery("ucpaginationdebug");
 		
-		if($isQueryDebug == true)
+		if(GlobalsUC::$showQueryDebugByUrl == true)
 			$isDebug = true;
 		
 		$forceFormat = UniteFunctionsUC::getVal($args, "force_format");
@@ -662,7 +674,6 @@ class UniteCreatorElementorPagination{
 		if($isAjax == true)
 			$isArchivePage = false;
 		
-		
 		//fix the archive
 		
 		if($isArchivePage == true && !empty(GlobalsProviderUC::$lastPostQuery_paginationType) && GlobalsProviderUC::$lastPostQuery_paginationType != GlobalsProviderUC::QUERY_TYPE_CURRENT){
@@ -691,6 +702,12 @@ class UniteCreatorElementorPagination{
 		if($isArchivePage == true){
 			
 			$options = $this->getArchivePageOptions($options);
+			
+			$ucpage = $this->getUCPageFromGET();
+			
+			if(!empty($ucpage))
+				$options["current"] = $ucpage;
+			
 			$pagination = get_the_posts_pagination($options);
 			
 			//put debug
@@ -740,6 +757,7 @@ class UniteCreatorElementorPagination{
 													
 			$pagination = paginate_links($options);	
 		}
+		
 		
 		if($isDebug == true){
 			

@@ -14,7 +14,7 @@ function UniteProviderAdminUC(){
 	var g_parent;
 
 	var g_temp = {
-			keyUrlAssets: "[url_assets]/"
+		keyUrlAssets: "[url_assets]/",
 	};
 
 	/**
@@ -627,18 +627,18 @@ function UniteProviderAdminUC(){
 	/**
 	 * get first editor options
 	 */
-	function initEditor_tinyMCE_GetOptions(objEditorsOptions){
-
-		if(jQuery.isEmptyObject(objEditorsOptions))
+	function initEditor_tinyMCE_GetOptions(objEditorsOptions) {
+		if (jQuery.isEmptyObject(objEditorsOptions))
 			return {};
 
-		for(key in objEditorsOptions){
+		for (var key in objEditorsOptions) {
 			var options = objEditorsOptions[key];
-			if(options !== null)
-				return(options);
+
+			if (options !== null)
+				return options;
 		}
 
-		throw new Error("editors options not found");
+		return {};
 	}
 
 	/**
@@ -654,72 +654,65 @@ function UniteProviderAdminUC(){
 	/**
 	 * init tinymce editor
 	 */
-	function initEditor_tinyMCE(inputID, objSettings){
-
+	function initEditor_tinyMCE(inputID, objSettings) {
 		//init editor
 		var options = initEditor_tinyMCE_GetOptions(window.tinyMCEPreInit.mceInit);
 
-		options = jQuery.extend({}, options,{
-            resize: "vertical",
-            height: 200,
-            id: inputID,
-            selector: "#"+inputID
+		options = jQuery.extend({}, options, {
+			resize: "vertical",
+			height: 200,
+			id: inputID,
+			selector: "#" + inputID,
 		});
 
-		options.setup = function(editor){
-
-			editor.on('Change', function(event) {
+		options.setup = function (editor) {
+			editor.on("Change", function () {
 				onEditorChange(editor, objSettings);
 			});
 
-			editor.on('keyup', function(event) {
+			editor.on("keyup", function () {
 				onEditorChange(editor, objSettings);
 			});
-
 		};
 
-
 		window.tinyMCEPreInit.mceInit[inputID] = options;
+
 		tinyMCE.init(options);
 
 		//init quicktags
 		var optionsQT = initEditor_tinyMCE_GetOptions(window.tinyMCEPreInit.qtInit);
 
-		optionsQT = jQuery.extend({},optionsQT,{
-            id: inputID
+		optionsQT = jQuery.extend({}, optionsQT, {
+			id: inputID,
 		});
 
-
 		window.tinyMCEPreInit.qtInit[inputID] = optionsQT;
+
 		quicktags(optionsQT);
 		QTags._buttonsInit();
 
 		window.wpActiveEditor = inputID;
-
-
 	}
 
 
 	/**
 	 * init editors - run function after timeout
 	 */
-	function initEditors_afterTimeout(objSettings, arrEditorNames, isForce){
-
-		if(typeof window.tinyMCEPreInit == "undefined" && arrEditorNames.length){
-			throw new Error("Init "+arrEditorNames[0]+" editor error. no other editors found on page");
-		}
+	function initEditors_afterTimeout(objSettings, arrEditorNames, isForce) {
+		if (typeof window.tinyMCEPreInit === "undefined" && arrEditorNames.length)
+			throw new Error("Init " + arrEditorNames[0] + " editor error. no other editors found on page");
 
 		var idPrefix = objSettings.getIDPrefix();
 
-		jQuery(arrEditorNames).each(function(index, name){
+		jQuery(arrEditorNames).each(function (index, name) {
 			var inputID = idPrefix + name;
-			inputID = inputID.replace("#","");
+			inputID = inputID.replace("#", "");
 
-			if(isForce === true || window.tinyMCEPreInit.mceInit.hasOwnProperty(inputID) == false || window.tinyMCEPreInit.mceInit[inputID] == null)
+			if (isForce === true
+				|| window.tinyMCEPreInit.mceInit.hasOwnProperty(inputID) === false
+				|| window.tinyMCEPreInit.mceInit[inputID] === null)
 				initEditor_tinyMCE(inputID, objSettings);
-
 		});
-
 	}
 
 	function _______POST_TAXONOMY_____(){}
@@ -879,60 +872,51 @@ function UniteProviderAdminUC(){
 
 	function _______END_POST_LISTS_____(){}
 
-
 	/**
 	 * init editors, if the editors not inited, init them
 	 */
-	this.initEditors = function(objSettings, isForce){
+	this.initEditors = function (objSettings, isForce) {
+		var arrEditorNames = objSettings.getFieldNamesByType("editor_tinymce");
 
-		var arrEditorNames = objSettings.getFieldNamesByType("editor_tinymce")
-		if(arrEditorNames.length == 0)
-			return(false);
+		if (arrEditorNames.length === 0)
+			return;
 
-		setTimeout(function(){
-
+		// init on the next tick to pick the input value
+		setTimeout(function () {
 			initEditors_afterTimeout(objSettings, arrEditorNames, isForce);
-
-		}, 50);
+		});
 	}
-
 
 	/**
 	 * destroy editors
 	 */
-	this.destroyEditors = function(objSettings){
+	this.destroyEditors = function (objSettings) {
+		var arrEditorNames = objSettings.getFieldNamesByType("editor_tinymce");
 
-
-		var arrEditorNames = objSettings.getFieldNamesByType("editor_tinymce")
-		if(arrEditorNames.length == 0)
-			return(false);
+		if (arrEditorNames.length === 0)
+			return;
 
 		var idPrefix = objSettings.getIDPrefix();
 
-		jQuery.each(arrEditorNames, function(index, name){
-			var editorID = idPrefix+name;
-			editorID = editorID.replace("#","");
+		jQuery.each(arrEditorNames, function (index, name) {
+			var editorID = idPrefix + name;
+			editorID = editorID.replace("#", "");
 
 			var objEditor = tinyMCE.EditorManager.get(editorID);
 
-			if(objEditor){
-				try{
-
-					if(tinymce.majorVersion === "4")
+			if (objEditor) {
+				try {
+					if (tinymce.majorVersion === "4")
 						window.tinyMCE.execCommand("mceRemoveEditor", !0, editorID);
 					else
 						window.tinyMCE.execCommand("mceRemoveControl", !0, editorID);
-
-				}catch(e){
+				} catch (e) {
+					//
 				}
 
 				window.tinyMCEPreInit.mceInit[editorID] = null;
 				window.tinyMCEPreInit.qtInit[editorID] = null;
 			}
-
 		});
-
 	}
-
-
 }

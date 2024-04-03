@@ -64,7 +64,7 @@ class UCAdminNoticeBannerBuilder extends UCAdminNoticeBuilderAbstract{
 		));
 
 		$html = '<div class="' . esc_attr($class) . '">';
-		$html .= '<a class="uc-notice-link" href="' . esc_attr($this->linkUrl) . '" target="' . esc_attr($this->linkTarget) . '" >';
+		$html .= '<a class="uc-notice-link" href="' . esc_url($this->linkUrl) . '" target="' . esc_attr($this->linkTarget) . '" >';
 		$html .= $this->getImageHtml();
 		$html .= '</a>';
 		$html .= $this->getDebugHtml();

@@ -61,12 +61,16 @@ class UEOpenWeatherAPIClient{
 
 		$location = $this->findLocation($country, $city);
 
+		$locale = get_locale();
+		$locale = explode("_", $locale);
+		$locale = reset($locale);
+
 		$params = array(
 			"lat" => $location["lat"],
 			"lon" => $location["lon"],
 			"units" => $units,
 			"exclude" => "minutely",
-			"lang" => get_locale(),
+			"lang" => $locale,
 		);
 
 		$response = $this->get(self::DATA_BASE_URL . "/onecall", $params);

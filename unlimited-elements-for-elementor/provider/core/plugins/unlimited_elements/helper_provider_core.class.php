@@ -101,9 +101,9 @@ class HelperProviderCoreUC_EL{
 	 * process param value by type
 	 */
 	public static function processParamValueByType($value, $type, $param){
-
+			
     		switch($type){
-
+				
     			case UniteCreatorDialogParam::PARAM_RADIOBOOLEAN:
 
     				$trueValue = UniteFunctionsUC::getVal($param, "true_value");

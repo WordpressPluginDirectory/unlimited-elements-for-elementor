@@ -154,7 +154,7 @@ class UCFormsDebugLogView extends WP_List_Table{
 
 		?>
 		<div style="margin-top: 20px;">
-			<a class="button" href="<?php echo esc_attr($url); ?>">
+			<a class="button" href="<?php echo esc_url($url); ?>">
 				<?php echo esc_html__("Back to Settings", "unlimited-elements-for-elementor"); ?>
 			</a>
 		</div>

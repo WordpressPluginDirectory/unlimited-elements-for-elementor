@@ -349,6 +349,35 @@ class UniteCreatorPluginIntegrations{
 		$objJetCW->wishlist_integration->add_wishlist_button_default();
 		
 	}
+
+	/**
+	 * check integrate with relevancy
+	 * add "relevancy" if search found and relevancy plugin exists
+	 */
+	public static function checkPostQueryRelevancy($args){
+		
+		if(function_exists("relevanssi_init") == false)
+			return($args);
+		
+		$search = UniteFunctionsUC::getVal($args, "s");
+		
+		if(empty($search))
+			return($args);
+		
+		$args["relevanssi"] = true;
+		
+		return($args);
+	}
+	
+	/**
+	 * modify post query integrations
+	 */
+	public static function modifyPostQueryIntegrations($args){
+		
+		$args = self::checkPostQueryRelevancy($args);
+		
+		return($args);
+	}
 	
 	
 }

@@ -680,10 +680,13 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 
 		/**
-		 * add text box
+		 * add editor
 		 */
-		public function addEditor($name,$defaultValue = "",$text = "",$arrParams = array()){
-			$this->add($name,$defaultValue,$text,self::TYPE_EDITOR,$arrParams);
+		public function addEditor($name, $defaultValue = "", $text = "", $arrParams = array()){
+
+			$arrParams["label_block"] = true;
+
+			$this->add($name, $defaultValue, $text, self::TYPE_EDITOR, $arrParams);
 		}
 
 		/**
@@ -767,6 +770,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * add repeater
 		 */
 		public function addRepeater($name, $settingsItems, $arrValues, $text, $arrParams = array()){
+
+			// add input to store generated identifier (used by selectors)
+			$settingsItems->addHiddenInput("_generated_id", null, self::PARAM_NOTEXT);
 
 			$arrParams["settings_items"] = $settingsItems;
 			$arrParams["items_values"] = $arrValues;
@@ -955,14 +961,46 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			return($setting);
 		}
 
+		/**
+		 * add setting original type
+		 */
+		private function addSettingOriginalType($setting){
+
+			$originalType = UniteFunctionsUC::getVal($setting, "origtype");
+
+			if(empty($originalType) === false)
+				return $setting;
+
+			$typesMap = array(
+				self::TYPE_HIDDEN => UniteCreatorDialogParam::PARAM_HIDDEN,
+				self::TYPE_HR => UniteCreatorDialogParam::PARAM_HR,
+				self::TYPE_RANGE => UniteCreatorDialogParam::PARAM_SLIDER,
+				self::TYPE_REPEATER => UniteCreatorDialogParam::PARAM_REPEATER,
+				self::TYPE_SELECT => UniteCreatorDialogParam::PARAM_DROPDOWN,
+				self::TYPE_STATIC_TEXT => UniteCreatorDialogParam::PARAM_STATIC_TEXT,
+				self::TYPE_SWITCHER => UniteCreatorDialogParam::PARAM_RADIOBOOLEAN,
+				self::TYPE_TEXT => UniteCreatorDialogParam::PARAM_TEXTFIELD,
+			);
+
+			$type = UniteFunctionsUC::getVal($setting, "type");
+
+			$setting["origtype"] = UniteFunctionsUC::getVal($typesMap, $type);
+
+			return $setting;
+		}
+
 
 		/**
 		 * add setting, may be in different type, of values
 		 */
-		protected function add($name,$defaultValue = "",$text = "",$type = self::TYPE_TEXT,$arrParams = array()){
+		protected function add($name, $defaultValue = "", $text = "", $type = self::TYPE_TEXT, $arrParams = array()){
+					
+			//validate name:
+			if(empty($name))
+				throw new Exception("Every setting should have a name!");
 
-			//validation:
-			if(empty($name)) throw new Exception("Every setting should have a name!");
+			if(isset($this->arrIndex[$name]))
+				throw new Exception("Duplicate setting name:" . $name);
 
 			switch($type){
 				case self::TYPE_RADIO:
@@ -975,11 +1013,6 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 						throw new Exception("The checkbox value should be boolean");
 				break;
 			}
-
-			//validate name:
-			if(isset($this->arrIndex[$name]))
-				throw new Exception("Duplicate setting name:".$name);
-
 
 			//set defaults:
 			if($text == "")
@@ -995,12 +1028,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$setting["value"] = $defaultValue;
 			$setting["default_value"] = $defaultValue;
 
-			$setting = array_merge($setting,$arrParams);
+			$setting = array_merge($setting, $arrParams);
 
 			//set datatype
 			if(!isset($setting["datatype"])){
 				$datatype = self::DATATYPE_STRING;
-				switch ($type){
+				switch($type){
 					case self::TYPE_TEXTAREA:
 						$datatype = self::DATATYPE_FREE;
 					break;
@@ -1013,14 +1046,13 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			}
 
 			//add global params
+			$setting = $this->addSettingOriginalType($setting);
 			$setting = $this->addSettingGlobalParams($setting);
-
 
 			$modifyType = UniteFunctionsUC::getVal($setting, "modifytype");
 			if(!empty($modifyType)){
 				$setting = $this->modifyBeforeAdd($setting, $modifyType);
 			}
-
 
 			$this->addSettingByArray($setting);
 		}

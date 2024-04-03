@@ -61,7 +61,6 @@ class UniteCreatorAdmin extends UniteBaseAdminClassUC{
 		HelperUC::addScript("jquery.tipsy","tipsy-js");
 
 		//font awsome - from admin always load the 5
-		
 		$urlFontAwesomeCSS = HelperUC::getUrlFontAwesome();
 		HelperUC::addStyleAbsoluteUrl($urlFontAwesomeCSS, "font-awesome");
 
@@ -375,17 +374,19 @@ class UniteCreatorAdmin extends UniteBaseAdminClassUC{
 		HelperUC::addScript("select2.full.min", "select2_js", "js/select2");
 		HelperUC::addStyle("select2", "select2_css", "js/select2");
 
+		HelperUC::includeUEAnimationStyles();
+
 		HelperUC::addStyle("unitecreator_browser", "unitecreator_browser_css");
 		HelperUC::addScript("unitecreator_helper", "unitecreator_helper");
 		HelperUC::addScript("unitecreator_addon_preview_admin", "unitecreator_addon_preview_admin");
 
 		$fontData = HelperUC::getFontPanelData();
 		$googleFonts = UniteFunctionsUC::getVal($fontData, "arrGoogleFonts");
-		$googleFontsUrl = HelperHtmlUC::getGoogleFontUrl("");
+		$googleFontsBaseUrl = HelperHtmlUC::getGoogleFontBaseUrl();
 
 		wp_localize_script("unitecreator_addon_preview_admin", "g_ucGoogleFonts", array(
 			"fonts" => $googleFonts,
-			"url" => $googleFontsUrl,
+			"base_url" => $googleFontsBaseUrl,
 		));
 	}
 

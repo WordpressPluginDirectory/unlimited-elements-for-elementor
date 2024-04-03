@@ -93,7 +93,7 @@ class UniteCreatorTemplateEngineWork{
 				$originalQueriedObjectID = $wp_query->queried_object_id;
 				self::$originalQueriedObjectID = $originalQueriedObjectID;
 
-				$originalPost = $GLOBALS['post'];
+				$originalPost = UniteFunctionsUC::getVal($GLOBALS, 'post', null);
 				self::$originalPost = $originalPost;
 
 				$wp_query->queried_object = $post;
@@ -551,13 +551,13 @@ class UniteCreatorTemplateEngineWork{
 		}
 
 		if($format === "time_ago_short"){
-			
+
 			$strTimeAgo = UniteFunctionsUC::getTimeAgoString($dateStamp, "short");
-			
+
 			return($strTimeAgo);
 		}
-		
-		
+
+
 		if(empty($format))
 			$format = get_option("date_format");
 
@@ -839,7 +839,7 @@ class UniteCreatorTemplateEngineWork{
 	 * get post author
 	 */
 	public function getPostAuthor($authorID, $getMeta = false, $getAvatar = false){
-		
+
 		$arrUserData = UniteFunctionsWPUC::getUserDataById($authorID, $getMeta, $getAvatar);
 
 		return($arrUserData);
@@ -963,7 +963,7 @@ class UniteCreatorTemplateEngineWork{
 
 		if(function_exists("wc_price") == false)
 			return($price);
-		
+
 		$newPrice = wc_price($price);
 
 		//new - exclude if the product or variation id is not given
@@ -986,9 +986,9 @@ class UniteCreatorTemplateEngineWork{
 			return($newPrice);
 
 		try{
-						
+
 			$newPrice = apply_filters("woocommerce_get_price_html",$newPrice, $product);
-						
+
 		}catch(Exception $e){
 		}
 
@@ -1675,7 +1675,7 @@ class UniteCreatorTemplateEngineWork{
 	 * init twig
 	 */
 	private function initTwig(){
-		
+
 		if(empty($this->arrTemplates))
 			UniteFunctionsUC::throwError("No templates found");
 
@@ -1683,33 +1683,33 @@ class UniteCreatorTemplateEngineWork{
 			UniteFunctionsUC::throwError("Twig template engine not loaded. Please check if it collides with some other plugin that also loading twig engine.");
 
 		$loader = new Twig\Loader\ArrayLoader($this->arrTemplates);
-		
+
 		$arrOptions = array();
 		$arrOptions["debug"] = true;
-		
-		
+
+
 		if(class_exists("Twig\\Environment") == false){
-			
+
 			$version = "";
-						
+
 			if(class_exists("Twig_Environment")){
-				
+
 				$version = Twig_Environment::VERSION;
-				
+
 				/*
 				$twigForTest = new Twig_Environment();
 				dmp($twigForTest);
 				*/
 			}
-			
+
 			$text = "You have some other plugin that loaded another version of twig. It's uncompatable with unlimited elements unfortunatelly.";
 
 			if(!empty($version))
 				$text .= " Loaded Twig Version: $version. Need 3.0";
-			
+
 			UniteFunctionsUC::throwError($text);
 		}
-		
+
 		$this->twig = new Twig\Environment($loader, $arrOptions);
 		$this->twig->addExtension(new Twig\Extension\DebugExtension());
 
@@ -1830,7 +1830,7 @@ class UniteCreatorTemplateEngineWork{
 		$this->validateInited();
 		if(array_key_exists($name, $this->arrTemplates) == false)
 			UniteFunctionsUC::throwError("Template with name: $name not exists");
-		
+
 		if(empty($this->twig))
 			$this->initTwig();
 

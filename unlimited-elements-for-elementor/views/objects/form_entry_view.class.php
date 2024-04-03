@@ -213,7 +213,7 @@ class UCFormEntryView{
 
 		?>
 		<div>
-			<a class="button" href="<?php echo esc_attr($url); ?>">
+			<a class="button" href="<?php echo esc_url($url); ?>">
 				<?php echo esc_html__("Back to Form Entries", "unlimited-elements-for-elementor"); ?>
 			</a>
 		</div>

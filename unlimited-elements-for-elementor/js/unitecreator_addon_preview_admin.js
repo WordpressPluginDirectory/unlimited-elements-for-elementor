@@ -39,10 +39,26 @@ function UniteAddonPreviewAdmin() {
 	};
 
 	/**
-	 * get settings
+	 * get settings values
 	 */
-	this.getSettings = function () {
-		return g_settings;
+	this.getSettingsValues = function () {
+		return g_settings.getSettingsValues();
+	};
+
+	/**
+	 * clear settings
+	 */
+	this.clearSettings = function () {
+		g_settings.clearSettings();
+
+		refreshPreview();
+	};
+
+	/**
+	 * get selectors css
+	 */
+	this.getSelectorsCss = function () {
+		return g_settings.getSelectorsCss();
 	};
 
 	/**
@@ -78,6 +94,8 @@ function UniteAddonPreviewAdmin() {
 	function boot() {
 		g_addonID = jQuery("#uc_preview_addon_wrapper").data("addonid");
 		g_objPreview = jQuery("#uc_preview_wrapper");
+
+		g_settings.setSelectorWrapperID("uc_preview_wrapper");
 	}
 
 	/**
@@ -101,6 +119,7 @@ function UniteAddonPreviewAdmin() {
 	 */
 	function initSettingsByHtml(html) {
 		var objSettingsWrapper = jQuery("#uc_settings_wrapper");
+
 		objSettingsWrapper.html(html);
 
 		g_settings.init(objSettingsWrapper);
@@ -136,18 +155,6 @@ function UniteAddonPreviewAdmin() {
 	}
 
 	/**
-	 * render preview
-	 */
-	function renderPreview(data) {
-		var html = g_ucAdmin.getVal(data, "html");
-		var includes = g_ucAdmin.getVal(data, "includes");
-
-		g_helper.putIncludes(window, includes, function () {
-			g_objPreview.html(html);
-		});
-	}
-
-	/**
 	 * refresh preview
 	 */
 	function refreshPreview() {
@@ -160,15 +167,23 @@ function UniteAddonPreviewAdmin() {
 		};
 
 		g_ucAdmin.setAjaxLoaderID("uc_preview_loader");
-		g_objPreview.addClass("uc-preview-loading");
 
 		if (g_requestPreview)
 			g_requestPreview.abort();
 
 		g_requestPreview = g_ucAdmin.ajaxRequest("get_addon_output_data", data, function (response) {
-			g_objPreview.removeClass("uc-preview-loading");
+			var html = g_ucAdmin.getVal(response, "html");
+			var includes = g_ucAdmin.getVal(response, "includes");
 
-			renderPreview(response);
+			g_helper.putIncludes(window, includes, function () {
+				g_objPreview.html(html);
+			});
+		}).done(function (response) {
+			var success = g_ucAdmin.getVal(response, "success");
+			var message = g_ucAdmin.getVal(response, "message");
+
+			if (success === false)
+				g_objPreview.html("<span style='color:red'><b>Error:</b> " + message + "</span>");
 		});
 	}
 }

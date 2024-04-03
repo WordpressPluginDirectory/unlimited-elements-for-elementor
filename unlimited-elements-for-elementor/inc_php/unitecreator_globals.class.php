@@ -97,7 +97,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		const ENABLE_CATALOG_SHORTPIXEL = true;
 		const SHORTPIXEL_PREFIX = "https://cdn.shortpixel.ai/spai/q_glossy+w_323+to_auto+ret_img/";
-		
+
 		public static $permisison_add = false;
 		public static $blankWindowMode = false;
 
@@ -187,8 +187,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static $isAdminRTL = false;
 		public static $enableInsideWidgetFreeVersionNotifiaction = true;
 		public static $colorPickerType = "spectrum";
-		
+		public static $showQueryDebugByUrl = false;
 
+		
 		/**
 		 * init globals
 		 */
@@ -200,7 +201,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(defined("UC_DEBUG_AJAX_ERRORS") && UC_DEBUG_AJAX_ERRORS === true)
 				self::$debugAjaxErrors = true;
-			
+							
 			UniteProviderFunctionsUC::initGlobalsBase();
 
 			self::$current_protocol = "http://";
@@ -308,16 +309,27 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				GlobalsUC::$SHOW_TRACE_FRONT = true;
 				GlobalsUC::$SHOW_TRACE = true;
 			}
+						
+		}
+		
+		/**
+		 * init after plugins loaded
+		 */
+		public static function initAfterPluginsLoaded(){
 			
 			//show errors by url
-			
 			$showAjaxErrors = HelperUC::hasPermissionsFromQuery("showajaxerrors");
 			
 			if($showAjaxErrors == true)	
 				self::$debugAjaxErrors = true;
 			
+			//show debug query
+			
+			$showQueryDebugByUrl = HelperUC::hasPermissionsFromQuery("ucquerydebug");
+			if($showQueryDebugByUrl == true)
+				self::$showQueryDebugByUrl = true;
+			
 		}
-
 
 		/**
 		 * init globals after admin init

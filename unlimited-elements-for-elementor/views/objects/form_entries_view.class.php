@@ -380,7 +380,7 @@ class UCFormEntriesView extends WP_List_Table{
 	 */
 	protected function column_page($item){
 
-		return '<a href="' . esc_attr($item["post_url"]) . '" target="_blank">' . esc_html($item["post_title"]) . '</a>';
+		return '<a href="' . esc_url($item["post_url"]) . '" target="_blank">' . esc_html($item["post_title"]) . '</a>';
 	}
 
 	/**

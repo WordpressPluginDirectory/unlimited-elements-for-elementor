@@ -153,7 +153,6 @@ class UCEmptyTemplate{
 	private function checkOutputDebug(){
 		
 		$isDebug = UniteFunctionsUC::getGetVar("framedebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-		
 		$isDebug = UniteFunctionsUC::strToBool($isDebug);
 		
 		if($isDebug == false)
@@ -173,9 +172,17 @@ class UCEmptyTemplate{
 				margin-left:20px;
 			}
 			
+			.uc-template-index{
+				position:absolute;
+				top:10px;
+				left:10px;
+			}
+			
 		</style>
 		
 		<div class="uc-debug-holder">
+			
+			<div id="debug_index" class="uc-template-index"></div>
 			
 			<button id="debug_button_prev">Prev</button>
 			
@@ -185,21 +192,47 @@ class UCEmptyTemplate{
 		
 		
 		<script>
+		
+			function trace(str){
+				console.log(str);
+			}
 
 			jQuery(document).ready(function(){
 
-				function trace(str){
-					console.log(str);
-				}
+				function setTemplateIndex(){
 
+					var total = jQuery(".uc-template-holder").length;
+
+					var active = jQuery(".uc-template-holder").not(".uc-template-hidden").index();
+
+					active++;
+					
+					var text = active + " / " + total;
+					
+					jQuery("#debug_index").html(text);
+					
+				}
+				
 				
 				//set some item active
 				function setActive(dir){
+					
+					var objActiveTemplate = jQuery(".uc-template-holder").not(".uc-template-hidden");
+					
+					if(objActiveTemplate.length != 1){
+						
+						trace(objActiveTemplate);
+						throw new Error("Wrong active template");
+					}
 
-					var objActiveTemplate = jQuery(".uc-template-holder:visible");
+					if(dir == "prev")					
+						var objNextTemplate = objActiveTemplate.prev();
+					else
+						var objNextTemplate = objActiveTemplate.next();
 
-					var objNextTemplate = objActiveTemplate.next();
-
+					if(objNextTemplate.length == 0)
+						return(false);
+					
 					objActiveTemplate.hide().addClass("uc-template-hidden");
 
 					objNextTemplate.show().removeClass("uc-template-hidden");
@@ -212,15 +245,29 @@ class UCEmptyTemplate{
 					if(nextTemplateElement.length){
 						
 						objNextTemplate.removeClass("uc-not-inited");
-			            
+
+			            if(objNextTemplate.length > 1){
+				            
+				            trace(objNextTemplate);
+				            throw new Error("wrong next template");
+				            
+				        }
+
+			        	    
 				        var clonedContent = nextTemplateElement[0].content.cloneNode(true);
 				        objNextTemplate.append(clonedContent);
 				      	
 				        nextTemplateElement.remove();
-
-				        jQuery("body").trigger("uc_dom_updated");
+				        
+						setTimeout(function(){
+					        
+							jQuery("body").trigger("uc_dom_updated");
+							
+						}, 300);
+						
 					}
-					
+
+					setTemplateIndex();
 				}
 
 				jQuery("#debug_button_next").on("click",function(){
@@ -234,14 +281,16 @@ class UCEmptyTemplate{
 					setActive("prev");
 						
 				});
-				
+
+				setTemplateIndex();
 				
 			});
 		
 		</script>
 		
 		<?php 
-				
+		
+		return(true);
 	}
 	
 	
@@ -296,15 +345,25 @@ class UCEmptyTemplate{
 			
 		}
 		
+		//don't know why, but it's not working. need to remove this dependency
+		
+		UniteFunctionsWPUC::removeIncludeScriptDep("elementor-frontend");
+
 		$this->renderHeaderPart();
 		
 		//check debug
 		
-		$this->checkOutputDebug();
+		$isDebug = $this->checkOutputDebug();
 		
 		//$this->renderRegularBody();
+		if($isDebug == true)
+			echo "<div class='uc-debug-templates-wrapper'>";
 		
 		echo $content;
+		
+		if($isDebug == true)
+			echo "</div>";
+		
 		
 		$this->renderFooter();
 		

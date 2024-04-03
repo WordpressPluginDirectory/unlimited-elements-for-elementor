@@ -58,7 +58,7 @@ $version = UNLIMITED_ELEMENTS_VERSION;
 
 	<!-- Main content start -->
 	<div class="ue-content-main ue-left">
-		
+
 		<div class="ue-social-content-wrapper">
 			<!-- Youtube -->
 			<div class="ue-content-card ue-yt">
@@ -113,7 +113,7 @@ $version = UNLIMITED_ELEMENTS_VERSION;
 						<?php echo esc_html__("3 important videos to get you started with Unlimited Elements.", "unlimited-elements-for-elementor"); ?>
 					</div>
 				</div>
-				<a class="ue-content-btn ue-flex-center ue-tmore-btn-1" target="_blank" href="<?php echo $urlVideoTutorials?>">
+				<a class="ue-content-btn ue-flex-center ue-tmore-btn-1" target="_blank" href="<?php echo $urlVideoTutorials; ?>">
 					<?php echo esc_html__("View More", "unlimited-elements-for-elementor"); ?>
 				</a>
 			</div>
@@ -244,9 +244,9 @@ $version = UNLIMITED_ELEMENTS_VERSION;
 					</a>
 				</div>
 			<?php endif; ?>
-			
+
 			<?php if(!empty($blogItems)):?>
-			
+
 			<div class="ue-content-card ue-blog-section">
 				<div class="ue-content-icon ue-flex-center">
 					<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
@@ -257,7 +257,7 @@ $version = UNLIMITED_ELEMENTS_VERSION;
 					<?php echo esc_html__("Our Blog", "unlimited-elements-for-elementor"); ?>
 				</div>
 				<div class="ue-post-wrapper">
-				
+
 					<?php foreach($blogItems as $item): ?>
 						<a class="ue-post" href="<?php echo $item["link"]; ?>" target="_blank">
 							<img class="ue-post-img" src="<?php echo $item["image"]; ?>?ver=<?php echo $version?>" alt="<?php echo esc_attr($item["title"]); ?>" />
@@ -270,7 +270,7 @@ $version = UNLIMITED_ELEMENTS_VERSION;
 				</a>
 			</div>
 			<?php endif?>
-			
+
 			<div class="ue-content-card ue-doubly-section">
 				<div class="ue-content-icon ue-flex-center">
 					<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">

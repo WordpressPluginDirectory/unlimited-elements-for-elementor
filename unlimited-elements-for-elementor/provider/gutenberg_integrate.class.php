@@ -132,15 +132,25 @@ class UniteCreatorGutenbergIntegrate{
 		$addonsManager = new UniteCreatorAddons();
 		$addonData = $addonsManager->getAddonOutputData($data);
 
+		$conflictingStyles = array('font-awesome');
+		$conflictingScripts = array();
+
 		foreach($addonData['includes'] as $include){
+			$handle = UniteFunctionsUC::getVal($include, 'handle');
 			$type = UniteFunctionsUC::getVal($include, 'type');
 			$url = UniteFunctionsUC::getVal($include, 'url');
-			$handle = UniteFunctionsUC::getVal($include, 'handle');
 
-			if($type === 'css')
+			if($type === 'css'){
+				if(in_array($handle, $conflictingStyles) === true)
+					wp_deregister_style($handle);
+
 				HelperUC::addStyleAbsoluteUrl($url, $handle);
-			else
+			}else{
+				if(in_array($handle, $conflictingScripts) === true)
+					wp_deregister_script($handle);
+
 				HelperUC::addScriptAbsoluteUrl($url, $handle);
+			}
 		}
 
 		return $addonData['html'];
@@ -189,6 +199,7 @@ class UniteCreatorGutenbergIntegrate{
 				self::$blocks[$name] = array(
 					'name' => $name,
 					'title' => $addon->getTitle(),
+					'icon' => $addon->getPreviewIconContents(),
 					'category' => GlobalsUnlimitedElements::PLUGIN_NAME,
 					'render_callback' => array($this, 'renderBlock'),
 					'attributes' => array(
@@ -196,9 +207,18 @@ class UniteCreatorGutenbergIntegrate{
 							'type' => 'string',
 							'default' => $addon->getID(),
 						),
+						'_preview' => array(
+							'type' => 'string',
+							'default' => '',
+						),
 						'data' => array(
 							'type' => 'string',
 							'default' => '',
+						),
+					),
+					'example' => array(
+						'attributes' => array(
+							'_preview' => $addon->getPreviewImageUrl(),
 						),
 					),
 					'supports' => array(
@@ -206,6 +226,8 @@ class UniteCreatorGutenbergIntegrate{
 						'html' => false,
 						'reusable' => false,
 					),
+					'editor_style_handles' => array('uc_gutenberg_integrate'),
+					'script_handles' => array('jquery'),
 				);
 			}
 		}
