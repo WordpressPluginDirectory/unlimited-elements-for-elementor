@@ -1,5 +1,5 @@
 === Unlimited Elements For Elementor (Free Widgets, Addons, Templates) ===
-Contributors: unitecms, valiano, iritmega, amitkeren
+Contributors: unitecms, valiano, iritmega, amitkeren, axmusic
 Donate link: http://unlimited-elements.com/
 Tags: elementor, elements, addons, elementor addons, elementor widget, page builder, builder, visual editor, wordpress page builder, elementor
 Requires at least: 3.5

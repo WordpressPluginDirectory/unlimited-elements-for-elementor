@@ -15,7 +15,7 @@ class GlobalsUnlimitedElements{
 
 	public static $enableForms = true;
 
-	public static $enableGutenbergSupport = true;
+	public static $enableGutenbergSupport = false;
 
 	public static $showAdminNotices = false;
 	public static $debugAdminNotices = false;
