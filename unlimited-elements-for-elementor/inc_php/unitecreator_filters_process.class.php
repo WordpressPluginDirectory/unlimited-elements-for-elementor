@@ -887,7 +887,7 @@ class UniteCreatorFiltersProcess{
 		
 		$isUnderAjax = $this->isUnderAjax();
 		
-		if($isUnderAjax == false && $isFilterable == false)
+		if($isUnderAjax == false || $isFilterable == false)
 			return($args);
 		
 		$arrFilters = $this->getRequestFilters();
@@ -994,13 +994,13 @@ class UniteCreatorFiltersProcess{
 		
 		//supress all filters
 		if(self::$isUnderAjaxSearch == true){
-
+			
 			$args["suppress_filters"] = true;
 			
 			//delete all filters in case of ajax search
 			
-			global $wp_filter;
-			$wp_filter = array();
+			UniteCreatorAjaxSeach::supressThirdPartyFilters();
+			
 		}
 		
 		//Woo Prices
@@ -1166,7 +1166,7 @@ class UniteCreatorFiltersProcess{
 		$arrSettingsValues = UniteFunctionsUC::getVal($arrElement, "settings");
 		
 		$widgetName = str_replace("ucaddon_", "", $widgetType);
-				
+		
 		$addon = new UniteCreatorAddon();
 		$addon->initByAlias($widgetName, GlobalsUC::ADDON_TYPE_ELEMENTOR);
 
@@ -1181,6 +1181,13 @@ class UniteCreatorFiltersProcess{
 		
 		$addon->setParamsValues($arrSettingsValues);
 		
+		
+		//init the ajax search object to modify the post search list, if available
+		if(GlobalsProviderUC::$isUnderAjaxSearch){
+			
+			$objAjaxSearch = new UniteCreatorAjaxSeach();
+			$objAjaxSearch->initCustomAjaxSeach($addon);
+		}
 		
 		//------ get the html output
 				
@@ -1616,7 +1623,6 @@ class UniteCreatorFiltersProcess{
 		
 		define("UE_AJAX_SEARCH_ACTIVE", true);
 		
-		
 		$layoutID = UniteFunctionsUC::getPostGetVariable("layoutid","",UniteFunctionsUC::SANITIZE_KEY);
 		$elementID = UniteFunctionsUC::getPostGetVariable("elid","",UniteFunctionsUC::SANITIZE_KEY);
 		
@@ -1630,11 +1636,9 @@ class UniteCreatorFiltersProcess{
 		
 		//for outside filters - check that under ajax
 				
-		
 		$arrHtmlWidget = $this->getContentWidgetHtml($arrContent, $elementID);
 		
 		GlobalsProviderUC::$isUnderAjaxSearch = false;
-		
 		
 		$htmlGridItems = UniteFunctionsUC::getVal($arrHtmlWidget, "html");
 		$htmlGridItems2 = UniteFunctionsUC::getVal($arrHtmlWidget, "html2");
@@ -1832,10 +1836,7 @@ class UniteCreatorFiltersProcess{
 		$data["uc_filtering_attributes"] = $strAttributes;
 		$data["uc_filtering_addclass"] = $addClass;
 		
-		
 		return($data);
-		
-		
 	}
 	
 	/**
@@ -1875,7 +1876,7 @@ class UniteCreatorFiltersProcess{
 	 * get the base url
 	 */
 	private function getFiltersJSData(){
-		
+				
 		$urlBase = UniteFunctionsUC::getBaseUrl(GlobalsUC::$current_page_url, true);		//strip pagination
 		
 		//include some common url filters
@@ -1913,6 +1914,7 @@ class UniteCreatorFiltersProcess{
 		//get current filters
 		
 		$arrData = array();
+		$arrData["platform"] = GlobalsProviderUC::$renderPlatform;
 		$arrData["urlbase"] = $urlBase;
 		$arrData["urlajax"] = GlobalsUC::$url_ajax_full;
 		$arrData["urlkeys"] = $arrUrlKeys;

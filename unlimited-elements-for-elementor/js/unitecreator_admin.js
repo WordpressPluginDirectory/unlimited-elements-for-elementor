@@ -527,7 +527,7 @@ function UniteCreatorAdmin(){
 		var objValues = g_settingsItem.getSettingsValues();
 		var enableItems = objValues.enable_items;
 		enableItems = g_ucAdmin.strToBool(enableItems);
-
+		
 		return(enableItems);
 	}
 

@@ -1,6 +1,6 @@
 "use strict";
 
-//version: 1.12
+//version: 1.13
 
 function UnlimitedElementsForm(){
   
@@ -48,7 +48,7 @@ function UnlimitedElementsForm(){
   function getFormulaNames(expr, objError){ 
     
     var regex = /\[(.*?)\]/g;
-    
+	  
     var matches = expr.match(regex);   
     
     var names;    
@@ -441,7 +441,7 @@ function UnlimitedElementsForm(){
     
     var parentIdAttribute = objParent.attr("id");
     var objFormula = objParent.find("[data-formula]");
-    
+
     var dataXField = objFormula.data("field-name-x");
     var dataYField = objFormula.data("field-name-y");
     
@@ -496,12 +496,17 @@ function UnlimitedElementsForm(){
     
     for(let i=0;i<names.length;i++){
       
-      var objInpput = getParentInput(names[i]);      
+      var objInpput = getParentInput(names[i]); 
+      var parentAttr = objInpput.attr(parentAttrName);     
       
       g_parents.push(parentIdAttribute);
       
       g_parents = removeDuplicatesFromArray(g_parents);
-      
+  
+      //for lookup tables (if already exist parent copy its name)
+      if(parentAttr !== undefined)
+      g_parents.push(parentAttr);
+
       objInpput.attr(parentAttrName, g_parents);      
       
     }  
@@ -556,8 +561,8 @@ function UnlimitedElementsForm(){
     
     if(!yValue){
       
-      var errorText = 'Unlimited Elements Form Error: no x-value found.';
-      var consoleErrorText = 'Unlimited Elements Form Error: no x-value found.';
+      var errorText = 'Unlimited Elements Form Error: no y-value found.';
+      var consoleErrorText = 'Unlimited Elements Form Error: no y-value found.';
       
       showCustomError(objError, errorText, consoleErrorText);
       

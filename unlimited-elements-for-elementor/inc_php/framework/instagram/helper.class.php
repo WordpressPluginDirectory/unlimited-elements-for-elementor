@@ -346,7 +346,10 @@ class HelperInstaUC{
 	 * convert number to textual representation
 	 */
 	public static function convertNumberToText($num){
-
+		
+		if(empty($num))
+			$num = 0;
+		
 		$x = round($num);
 
 		$x_number_format = number_format($x);

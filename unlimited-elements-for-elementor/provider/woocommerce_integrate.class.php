@@ -1381,9 +1381,13 @@ $htmlItem = "
 			$arrTotals = WC()->cart->get_totals();
 			
 			$subtotal = UniteFunctionsUC::getVal($arrTotals, "subtotal");
+			$subtotalTax = UniteFunctionsUC::getVal($arrTotals, "subtotal_tax");
+			
+			$subtotalWithTax = $subtotal + $subtotalTax;
+			
 		}
 		
-		$subtotalHTML = wc_price($subtotal);
+		$subtotalHTML = wc_price($subtotalWithTax);
 		
 		$strNum = "";
 		

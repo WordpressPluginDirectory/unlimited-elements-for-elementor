@@ -409,7 +409,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 					type="text"
 					name="<?php esc_attr_e($name); ?>"
 					value="<?php esc_attr_e($urlValue); ?>"
-					placeholder="<?php esc_attr_e("Link URL", "unlimited-elements-for-elementor"); ?>"
+					placeholder="<?php esc_attr_e("Search or enter URL", "unlimited-elements-for-elementor"); ?>"
 					data-settingtype="link"
 					<?php echo UniteProviderFunctionsUC::escAddParam($class); ?>
 					<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
@@ -424,6 +424,12 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 						<circle cx="6" cy="6" r="1.5" />
 					</svg>
 				</button>
+				<div class="unite-setting-link-autocomplete">
+					<div class="unite-setting-link-autocomplete-loader">
+						<?php esc_html_e("Loading...", "unlimited-elements-for-elementor"); ?>
+					</div>
+					<div class="unite-setting-link-autocomplete-items"></div>
+				</div>
 			</div>
 
 			<div class="unite-setting-link-options unite-settings-exclude">
@@ -562,7 +568,9 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 
 			<div class="unite-setting-image-preview" <?php echo UniteProviderFunctionsUC::escAddParam($previewStyle); ?>>
 				<div class="unite-setting-image-placeholder">
-					<i class="fa fa-plus"></i>
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+						<path d="M4.281 10.313V0h1.75v10.313h-1.75ZM0 6.03v-1.75h10.313v1.75H0Z" />
+					</svg>
 				</div>
 				<div class="unite-setting-image-actions">
 					<button class="unite-setting-image-choose unite-setting-button" type="button">
@@ -875,30 +883,60 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 
 
 	/**
-	 * draw galler setting
+	 * draw gallery setting
 	 */
 	protected function drawGallerySetting($setting){
 
-		$value = UniteFunctionsUC::getVal($setting, "value");
+		$id = UniteFunctionsUC::getVal($setting, "id");
+		$name = UniteFunctionsUC::getVal($setting, "name");
+
+		$addHtml = $this->getDefaultAddHtml($setting);
 
 		?>
-				<div id="<?php echo esc_attr($setting["id"])?>" data-settingtype="gallery" class="unite-settings-gallery unite-setting-input-object" data-name="<?php echo esc_attr($setting["name"])?>" >
-						<div class="unite-setting-gallery-wrapper">
-							<div class="unite-setting-gallery-status">
-								<span class="unite-setting-gallery-status-title"></span>
-								<span class="unite-setting-gallery-status-clear-icon" title="Delete All Images"><i class="fa fa-trash"></i></span>
-							</div>
-							<div class="unite-setting-gallery-content">
-								<div class="unite-setting-gallery-thumbnails"></div>
-								<div class="unite-setting-gallery-edit">
-									<span class="unite-setting-gallery-edit-icon" title="Add Images"><i class="fa fa-plus"></i></span>
-								</div>
-							</div>
-						</div>
+		<div
+			id="<?php esc_attr_e($id); ?>"
+			class="unite-setting-gallery unite-setting-input-object"
+			data-settingtype="gallery"
+			data-name="<?php esc_attr_e($name); ?>"
+			<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
+		>
+			<div
+				class="unite-setting-gallery-header"
+				data-text-none="<?php esc_attr_e("No images selected", "unlimited-elements-for-elementor"); ?>"
+				data-text-one="<?php esc_attr_e("%d image selected", "unlimited-elements-for-elementor"); ?>"
+				data-text-default="<?php esc_attr_e("%d images selected", "unlimited-elements-for-elementor"); ?>"
+			>
+				<?php esc_html_e("No images selected", "unlimited-elements-for-elementor"); ?>
+			</div>
+			<div class="unite-setting-gallery-content">
+				<div class="unite-setting-gallery-empty">
+					<button class="unite-button-primary unite-setting-gallery-add">
+						<?php esc_html_e("Add Images", "unlimited-elements-for-elementor"); ?>
+					</button>
 				</div>
-
+				<div class="unite-setting-gallery-items">
+					<div class="unite-setting-gallery-item">
+						<div class="unite-setting-gallery-image unite-setting-gallery-add">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 10 10">
+								<path d="M4.281 10.313V0h1.75v10.313h-1.75ZM0 6.03v-1.75h10.313v1.75H0Z" />
+							</svg>
+						</div>
+					</div>
+				</div>
+				<div class="unite-setting-gallery-actions">
+					<button
+						class="unite-setting-gallery-action unite-setting-gallery-clear"
+						data-text="<?php esc_attr_e("Are you sure you want to clear the gallery?", "unlimited-elements-for-elementor"); ?>"
+					>
+						<?php esc_html_e("Clear Gallery", "unlimited-elements-for-elementor"); ?>
+					</button>
+					<button class="unite-setting-gallery-action unite-setting-gallery-edit">
+						<?php esc_html_e("Edit Gallery", "unlimited-elements-for-elementor"); ?>
+					</button>
+				</div>
+			</div>
+		</div>
 		<?php
-
 	}
 
 
@@ -1216,14 +1254,20 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 
 		$addHtml = $this->getDefaultAddHtml($setting);
 
+		$wrapperClass = "";
+
+		if(empty($units) === false)
+			$wrapperClass .= " with-units";
+
 		?>
 		<div
 			id="<?php esc_attr_e($id); ?>"
-			class="unite-setting-range unite-setting-input-object unite-settings-exclude"
+			class="unite-setting-range unite-setting-input-object unite-settings-exclude <?php esc_attr_e($wrapperClass); ?>"
 			data-settingtype="range"
 			data-name="<?php esc_attr_e($name); ?>"
 			<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
 		>
+
 			<div
 				class="unite-setting-range-slider"
 				data-value="<?php esc_attr_e($value); ?>"
@@ -1231,11 +1275,19 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 				data-max="<?php esc_attr_e($max); ?>"
 				data-step="<?php esc_attr_e($step); ?>"
 			></div>
+
 			<input
 				class="unite-setting-range-input"
 				type="number"
 				value="<?php esc_attr_e($value); ?>"
 			/>
+
+			<?php if(empty($units) === false): ?>
+				<div class="unite-setting-range-units">
+					<?php $this->drawUnitsPicker($units, $unit); ?>
+				</div>
+			<?php endif; ?>
+
 		</div>
 		<?php
 	}
@@ -1330,95 +1382,135 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 	 */
 	private function a______REGULAR_INPUTS______(){}
 
-
 	/**
-	 * draw text input
-	 * @param $setting
+	 * draw units picker
 	 */
-	protected function drawTextInput($setting) {
+	protected function drawUnitsPicker($units, $selectedUnit = null){
 
-		$disabled = "";
-		$style="";
-		$readonly = "";
-
-		if(isset($setting["style"]))
-			$style = "style='".$setting["style"]."'";
-
-		if(isset($setting["disabled"]))
-			$disabled = 'disabled="disabled"';
-
-		if(isset($setting["readonly"]))
-			$readonly = "readonly='readonly'";
-
-		$defaultClass = self::INPUT_CLASS_NORMAL;
-
-		$typeNumber = UniteFunctionsUC::getVal($setting, "type_number");
-		$typeNumber = UniteFunctionsUC::strToBool($typeNumber);
-
-		$unit = UniteFunctionsUC::getVal($setting, "unit");
-		if(!empty($unit)){
-			$defaultClass = self::INPUT_CLASS_NUMBER;
-			if($unit == "px")
-				$typeNumber = true;
-		}
-
-
-		$class = $this->getInputClassAttr($setting, $defaultClass);
-
-		$addHtml = $this->getDefaultAddHtml($setting);
-
-		$placeholder = UniteFunctionsUC::getVal($setting, "placeholder", null);
-
-		if($placeholder !== null){
-			$placeholder = htmlspecialchars($placeholder);
-			$addHtml .= " placeholder=\"$placeholder\"";
-		}
-
-		$value = $setting["value"];
-
-		if(is_array($value))
-			$value = json_encode($value);
-
-		$value = htmlspecialchars($value);
-
-		$typePass = UniteFunctionsUC::getVal($setting, "ispassword");
-		$typePass = UniteFunctionsUC::strToBool($typePass);
-
-		//set input type
-
-		$inputType = "text";
-		if($typeNumber == true){
-			$inputType = "number";
-			$step = UniteFunctionsUC::getVal($setting, "step");
-			if(!empty($step) && is_numeric($step))
-				$addHtml .= " step=\"{$step}\"";
-		}
-
-		if($typePass === true){
-			$inputType = "password";
-		}
+		$defaultUnit = reset($units);
+		$selectedUnit = $selectedUnit ?: $defaultUnit;
 
 		?>
-			<input type="<?php echo esc_attr($inputType)?>" <?php echo UniteProviderFunctionsUC::escAddParam($class)?> <?php echo UniteProviderFunctionsUC::escAddParam($style)?> <?php echo UniteProviderFunctionsUC::escAddParam($disabled)?><?php echo UniteProviderFunctionsUC::escAddParam($readonly)?> id="<?php echo esc_attr($setting["id"])?>" name="<?php echo esc_attr($setting["name"])?>" value="<?php echo esc_attr($value)?>" <?php echo UniteProviderFunctionsUC::escAddParam($addHtml)?> />
+		<select
+			class="unite-units-picker"
+			<?php echo count($units) === 1 ? "disabled" : ""; ?>
+		>
+			<?php foreach($units as $unit): ?>
+				<option
+					value="<?php esc_attr_e($unit); ?>"
+					data-content="<?php esc_attr_e('<div class="unite-units-picker-item">' . $unit . '</div>'); ?>"
+					<?php echo $unit === $selectedUnit ? "selected" : ""; ?>
+				>
+					<?php esc_html_e($unit); ?>
+				</option>
+			<?php endforeach; ?>
+		</select>
 		<?php
 	}
 
+	/**
+	 * draw text input
+	 */
+	protected function drawTextInput($setting){
+
+		$id = UniteFunctionsUC::getVal($setting, "id");
+		$name = UniteFunctionsUC::getVal($setting, "name");
+		$value = UniteFunctionsUC::getVal($setting, "value");
+		$placeholder = UniteFunctionsUC::getVal($setting, "placeholder");
+		$style = UniteFunctionsUC::getVal($setting, "style");
+		$disabled = UniteFunctionsUC::getVal($setting, "disabled");
+		$readonly = UniteFunctionsUC::getVal($setting, "readonly");
+		$unit = UniteFunctionsUC::getVal($setting, "unit");
+		$step = UniteFunctionsUC::getVal($setting, "step");
+		$typeNumber = UniteFunctionsUC::getVal($setting, "type_number");
+		$typeNumber = UniteFunctionsUC::strToBool($typeNumber);
+		$typePassword = UniteFunctionsUC::getVal($setting, "ispassword");
+		$typePassword = UniteFunctionsUC::strToBool($typePassword);
+
+		if(is_array($value) === true)
+			$value = json_encode($value);
+
+		if(empty($style) === false)
+			$style = "style='" . esc_attr($style) . "'";
+
+		$addHtml = $this->getDefaultAddHtml($setting);
+
+		if(empty($placeholder) === false)
+			$addHtml .= " placeholder=\"" . esc_attr($placeholder) . "\"";
+
+		if(empty($disabled) === false)
+			$addHtml .= " disabled";
+
+		if(empty($readonly) === false)
+			$addHtml .= " readonly";
+
+		$wrapperClass = "";
+		$defaultClass = self::INPUT_CLASS_NORMAL;
+
+		if(empty($unit) === false){
+			$wrapperClass .= " with-units";
+			$defaultClass = self::INPUT_CLASS_NUMBER;
+			$typeNumber = true;
+		}
+
+		if($typeNumber === true
+			&& empty($step) === false
+			&& is_numeric($step) === true)
+			$addHtml .= " step=\"" . esc_attr($step) . "\"";
+
+		$type = "text";
+
+		if($typeNumber === true)
+			$type = "number";
+		elseif($typePassword === true)
+			$type = "password";
+
+		$class = $this->getInputClassAttr($setting, $defaultClass);
+
+		?>
+		<div class="unite-input-wrapper <?php esc_attr_e($wrapperClass); ?>">
+
+			<input
+				<?php echo UniteProviderFunctionsUC::escAddParam($class); ?>
+				id="<?php esc_attr_e($id); ?>"
+				type="<?php esc_attr_e($type); ?>"
+				name="<?php esc_attr_e($name); ?>"
+				value="<?php esc_attr_e($value); ?>"
+				<?php echo UniteProviderFunctionsUC::escAddParam($style); ?>
+				<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
+			/>
+
+			<?php if(empty($unit) === false): ?>
+				<div class="unite-input-units">
+					<?php $this->drawUnitsPicker(array($unit)); ?>
+				</div>
+			<?php endif; ?>
+
+		</div>
+		<?php
+	}
 
 	/**
 	 * draw hidden input
 	 */
 	protected function drawHiddenInput($setting){
 
+		$id = UniteFunctionsUC::getVal($setting, "id");
+		$name = UniteFunctionsUC::getVal($setting, "name");
 		$value = UniteFunctionsUC::getVal($setting, "value");
-		$value = htmlspecialchars($value);
+
 		$addHtml = $this->getDefaultAddHtml($setting);
 
 		?>
-			<input type="hidden" id="<?php echo esc_attr($setting["id"])?>" name="<?php echo esc_attr($setting["name"])?>" value="<?php echo esc_attr($value)?>" <?php echo UniteProviderFunctionsUC::escAddParam($addHtml)?> />
+		<input
+			id="<?php esc_attr_e($id); ?>"
+			type="hidden"
+			name="<?php esc_attr_e($name); ?>"
+			value="<?php esc_attr_e($value); ?>"
+			<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
+		/>
 		<?php
 	}
-
-
 
 	/**
 	 * draw button input
@@ -1602,91 +1694,73 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 	 */
 	protected function drawSelectInput($setting){
 
-		$type = UniteFunctionsUC::getVal($setting, "type");
-
-		$name = UniteFunctionsUC::getVal($setting, "name");
-
 		$isPostSelect = UniteFunctionsUC::getVal($setting, "post_select");
 		$isPostSelect = UniteFunctionsUC::strToBool($isPostSelect);
 
-		if($isPostSelect == true){
+		if($isPostSelect === true){
 			$this->drawPostPickerInput($setting);
-			return(false);
+
+			return;
 		}
 
-		$isMultiple = false;
-		if($type == "multiselect")
-			$isMultiple = true;
-
-		$disabled = "";
-		if(isset($setting["disabled"]))
-			$disabled = 'disabled="disabled"';
-
+		$id = UniteFunctionsUC::getVal($setting, "id");
+		$type = UniteFunctionsUC::getVal($setting, "type");
+		$name = UniteFunctionsUC::getVal($setting, "name");
+		$value = UniteFunctionsUC::getVal($setting, "value");
+		$disabled = UniteFunctionsUC::getVal($setting, "disabled");
+		$disabled = UniteFunctionsUC::strToBool($disabled);
+		$items = UniteFunctionsUC::getVal($setting, "items", array());
+		$items = empty($items) === false ? $items: array();
 		$args = UniteFunctionsUC::getVal($setting, "args");
 
-		$settingValue = $setting["value"];
+		if(is_array($value) === false && strpos($value, ",") !== false)
+			$value = explode(",", $value);
 
-		if(is_array($settingValue) == false && strpos($settingValue,",") !== false)
-			$settingValue = explode(",", $settingValue);
+		$multiple = ($type === "multiselect");
 
 		$addHtml = $this->getDefaultAddHtml($setting, true);
 
-		if($isMultiple == true){
+		if($multiple === true)
 			$addHtml .= " multiple";
-		}
 
-		//set this flag for true to enable select2
+		if($disabled === true)
+			$addHtml .= " disabled";
 
-		$setSelect2 = false;
-		if($isMultiple == true)
-			$setSelect2 = true;
+		$useSelect2 = false;
 
-
-		if($isPostSelect == true){
-			$setSelect2 = true;
-
-			$postSelectType = UniteFunctionsUC::getVal($setting, "post_select_type");
-
-			$addHtml .= " data-settingtype='post_select' data-postselecttype='$postSelectType'";
-
-		}
+		if($multiple === true)
+			$useSelect2 = true;
 
 		$defaultClass = "";
 
-		if($setSelect2 == true){
-
-				$defaultClass = "select2";
-		}
+		if($useSelect2 === true)
+			$defaultClass = "select2";
 
 		$class = $this->getInputClassAttr($setting, $defaultClass);
 
-		$arrItems = UniteFunctionsUC::getVal($setting, "items",array());
-		if(empty($arrItems))
-			$arrItems = array();
-
-
 		?>
-		<select id="<?php echo esc_attr($setting["id"])?>" name="<?php echo esc_attr($setting["name"])?>" <?php echo UniteProviderFunctionsUC::escAddParam($disabled)?> <?php echo UniteProviderFunctionsUC::escAddParam($class)?> <?php echo UniteProviderFunctionsUC::escAddParam($args)?> <?php echo UniteProviderFunctionsUC::escAddParam($addHtml)?>>
-		<?php
-		foreach($arrItems as $text=>$value):
+		<select
+			id="<?php esc_attr_e($id); ?>"
+			name="<?php esc_attr_e($name); ?>"
+			<?php echo UniteProviderFunctionsUC::escAddParam($class); ?>
+			<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
+			<?php echo UniteProviderFunctionsUC::escAddParam($args); ?>
+		>
+			<?php foreach($items as $itemText => $itemValue): ?>
+				<?php
 
-			//set selected
-			$selected = "";
-			$addition = "";
+				$itemSelected = is_array($value) === true
+					? in_array($itemValue, $value) === true
+					: $itemValue == $value;
 
-			if(is_array($settingValue)){
-				if(array_search($value, $settingValue) !== false)
-					$selected = 'selected="selected"';
-			}else{
-				if($value == $settingValue)
-					$selected = 'selected="selected"';
-			}
-
-			?>
-				<option <?php echo $addition?> value="<?php echo esc_attr($value)?>" <?php echo UniteProviderFunctionsUC::escAddParam($selected)?>><?php echo UniteProviderFunctionsUC::escAddParam($text)?></option>
-			<?php
-		endforeach
-		?>
+				?>
+				<option
+					value="<?php esc_attr_e($itemValue); ?>"
+					<?php echo $itemSelected === true ? "selected" : ""; ?>
+				>
+					<?php esc_html_e($itemText); ?>
+				</option>
+			<?php endforeach; ?>
 		</select>
 		<?php
 	}

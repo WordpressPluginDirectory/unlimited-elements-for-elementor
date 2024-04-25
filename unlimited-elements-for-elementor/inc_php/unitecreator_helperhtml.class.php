@@ -950,70 +950,70 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				case UniteCreatorDialogParam::PARAM_BACKGROUND:
 					switch($subtype){
 						case "attachment":
-							return "background-attachment:{{VALUE}};";
+							return "background-attachment:{{value}};";
 						case "color":
-							return "background-color:{{VALUE}};";
+							return "background-color:{{value}};";
 						case "image":
-							return "background-image:url('{{VALUE}}');";
+							return "background-image:url('{{value}}');";
 						case "position":
-							return "background-position:{{VALUE}};";
+							return "background-position:{{value}};";
 						case "repeat":
-							return "background-repeat:{{VALUE}};";
+							return "background-repeat:{{value}};";
 						case "size":
-							return "background-size:{{VALUE}};";
+							return "background-size:{{value}};";
 						case "linear-gradient":
-							return "background-image:linear-gradient({{ANGLE}},{{COLOR1}} {{STOP1}},{{COLOR2}} {{STOP2}});";
+							return "background-image:linear-gradient({{angle}},{{color1}} {{stop1}},{{color2}} {{stop2}});";
 						case "radial-gradient":
-							return "background-image:radial-gradient(at {{POSITION}},{{COLOR1}} {{STOP1}},{{COLOR2}} {{STOP2}});";
+							return "background-image:radial-gradient(at {{position}},{{color1}} {{stop1}},{{color2}} {{stop2}});";
 						default:
 							UniteFunctionsUC::throwError("Param \"$type\" subtype \"$subtype\" is not implemented.");
 					}
 				case UniteCreatorDialogParam::PARAM_BORDER:
 					switch($subtype){
 						case "width":
-							return "border-top-width:{{TOP}};border-right-width:{{RIGHT}};border-bottom-width:{{BOTTOM}};border-left-width:{{LEFT}};";
+							return "border-top-width:{{top}};border-right-width:{{right}};border-bottom-width:{{bottom}};border-left-width:{{left}};";
 						case "style":
-							return "border-style:{{VALUE}};";
+							return "border-style:{{value}};";
 						case "color":
-							return "border-color:{{VALUE}};";
+							return "border-color:{{value}};";
 						default:
 							UniteFunctionsUC::throwError("Param \"$type\" subtype \"$subtype\" is not implemented.");
 					}
 				case UniteCreatorDialogParam::PARAM_TYPOGRAPHY:
 					switch($subtype){
 						case "family":
-							return "font-family:{{VALUE}};";
+							return "font-family:{{value}};";
 						case "size":
-							return "font-size:{{VALUE}};";
+							return "font-size:{{value}};";
 						case "style":
-							return "font-style:{{VALUE}};";
+							return "font-style:{{value}};";
 						case "weight":
-							return "font-weight:{{VALUE}};";
+							return "font-weight:{{value}};";
 						case "decoration":
-							return "text-decoration:{{VALUE}};";
+							return "text-decoration:{{value}};";
 						case "transform":
-							return "text-transform:{{VALUE}};";
+							return "text-transform:{{value}};";
 						case "line-height":
-							return "line-height:{{VALUE}};";
+							return "line-height:{{value}};";
 						case "letter-spacing":
-							return "letter-spacing:{{VALUE}};";
+							return "letter-spacing:{{value}};";
 						case "word-spacing":
-							return "word-spacing:{{VALUE}};";
+							return "word-spacing:{{value}};";
 						default:
 							UniteFunctionsUC::throwError("Param \"$type\" subtype \"$subtype\" is not implemented.");
 					}
 				case UniteCreatorDialogParam::PARAM_PADDING:
-					return "padding-top:{{TOP}};padding-right:{{RIGHT}};padding-bottom:{{BOTTOM}};padding-left:{{LEFT}};";
+					return "padding-top:{{top}};padding-right:{{right}};padding-bottom:{{bottom}};padding-left:{{left}};";
 				case UniteCreatorDialogParam::PARAM_MARGINS:
-					return "margin-top:{{TOP}};margin-right:{{RIGHT}};margin-bottom:{{BOTTOM}};margin-left:{{LEFT}};";
+					return "margin-top:{{top}};margin-right:{{right}};margin-bottom:{{bottom}};margin-left:{{left}};";
 				case UniteCreatorDialogParam::PARAM_BORDER_DIMENTIONS:
-					return "border-top-left-radius:{{TOP}};border-top-right-radius:{{RIGHT}};border-bottom-right-radius:{{BOTTOM}};border-bottom-left-radius:{{LEFT}};";
+					return "border-top-left-radius:{{top}};border-top-right-radius:{{right}};border-bottom-right-radius:{{bottom}};border-bottom-left-radius:{{left}};";
 				case UniteCreatorDialogParam::PARAM_TEXTSHADOW:
-					return "text-shadow:{{X}} {{Y}} {{BLUR}} {{COLOR}};";
+					return "text-shadow:{{x}} {{y}} {{blur}} {{color}};";
 				case UniteCreatorDialogParam::PARAM_BOXSHADOW:
-					return "box-shadow:{{X}} {{Y}} {{BLUR}} {{SPREAD}} {{COLOR}} {{POSITION}};";
+					return "box-shadow:{{x}} {{y}} {{blur}} {{spread}} {{color}} {{position}};";
 				case UniteCreatorDialogParam::PARAM_CSS_FILTERS:
-					return "filter:brightness({{BRIGHTNESS}}) contrast({{CONTRAST}}) saturate({{SATURATE}}) blur({{BLUR}}) hue-rotate({{HUE}});";
+					return "filter:brightness({{brightness}}) contrast({{contrast}}) saturate({{saturate}}) blur({{blur}}) hue-rotate({{hue}});";
 				default:
 					UniteFunctionsUC::throwError("Param \"$type\" is not implemented.");
 			}
@@ -1268,6 +1268,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * is element in viewport
 	 */
     function ueIsElementInViewport(objElement) {
+	  
+	  if(document.body.scrollHeight <= (window.innerHeight + 30) )
+		return(true);	
 
       var elementTop = objElement.offset().top;
       var elementBottom = elementTop + objElement.outerHeight();

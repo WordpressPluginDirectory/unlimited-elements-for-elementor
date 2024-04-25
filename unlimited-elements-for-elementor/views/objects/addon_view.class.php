@@ -111,7 +111,7 @@ class UniteCreatorAddonView{
 		$params["class"] = "alias";
 
 		$settingsItem->addTextBox("items_section_title", "", "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;".esc_html__("Section Label", "unlimited-elements-for-elementor"), $params);
-
+		
 		$settingsItem->addControl("enable_items", "items_section_title", "show", "true");
 
 		//heading
@@ -129,7 +129,7 @@ class UniteCreatorAddonView{
 
 
 		$settingsItem->setStoredValues($options);
-
+		
 		$this->settingsItemOutput = new UniteSettingsOutputInlineUC();
 		$this->settingsItemOutput->init($settingsItem);
 		$this->settingsItemOutput->setAddCss("[wrapperid] .unite_table_settings_wide th{width:100px;}");

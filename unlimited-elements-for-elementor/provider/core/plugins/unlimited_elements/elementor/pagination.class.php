@@ -15,9 +15,15 @@ class UniteCreatorElementorPagination{
 	const SHOW_DEBUG = false;		//please turn it off
 	
 	/**
-	 * add content controls
+	 * get data of the controls
 	 */
-	private function addElementorControls_content($widget, $postListParam){
+	private function getPaginationControlsData($postListParam){
+
+		$disablePagination = UniteFunctionsUC::getVal($postListParam, "disable_pagination");
+		$disablePagination = UniteFunctionsUC::strToBool($disablePagination);
+		
+		if($disablePagination == true)
+			return(null);
 		
 		$condition = UniteFunctionsUC::getVal($postListParam, "condition");
 		
@@ -27,21 +33,138 @@ class UniteCreatorElementorPagination{
 		$enableAjax = UniteFunctionsUC::getVal($postListParam, "enable_ajax");
 		$enableAjax = UniteFunctionsUC::strToBool($enableAjax);
 		
-		$disablePagination = UniteFunctionsUC::getVal($postListParam, "disable_pagination");
-		$disablePagination = UniteFunctionsUC::strToBool($disablePagination);
-		
-		if($disablePagination === true)
-			return(false);
-		
-		
 		$paramName = UniteFunctionsUC::getVal($postListParam, "name");		
 		
+		$data = array();
+						
 		$textSection = esc_html__("Posts Pagination", "unlimited-elements-for-elementor");
+		
 		if($isFilterable == true)
 			$textSection = esc_html__("Posts Pagination and Filtering", "unlimited-elements-for-elementor");
 		
 		if($enableAjax == true)
 			$textSection = esc_html__("Posts Pagination and Filtering", "unlimited-elements-for-elementor");
+		
+				$data["section"] = array(
+			"name"=>"section_pagination",
+			"label"=>$textSection,
+			"condition"=>$condition,
+		);
+
+		$arrSettings = array(
+
+			array(
+				"name"=>"pagination_heading",
+				"type"=>UniteCreatorDialogParam::PARAM_HEADING,
+				"label"=>__( 'When turned on, the pagination will appear in archive or single pages, you have option to use the "Posts Pagination" widget for all the styling options', "unlimited-elements-for-elementor"),
+				"default"=>""
+			),
+			
+			array(
+				"name"=>"pagination_type",
+				"type"=>UniteCreatorDialogParam::PARAM_DROPDOWN,
+				"label"=>__( 'Pagination', "unlimited-elements-for-elementor"),
+				"default"=>"",
+				'options' => array(
+					'' => __( 'None', "unlimited-elements-for-elementor"),
+					'numbers' => __( 'Numbers', "unlimited-elements-for-elementor"),
+					'pagination_widget' => __( 'Using Pagination Widget', "unlimited-elements-for-elementor")
+				)
+			)
+			
+		);		
+		
+		if($enableAjax == true){
+			
+			$arrAjaxSettings = array(
+
+				array(
+					"name"=>$paramName.'_isajax',
+					"type"=>UniteCreatorDialogParam::PARAM_RADIOBOOLEAN,
+					"label"=>__( 'Enable Post Filtering', "unlimited-elements-for-elementor"),
+					"default"=>"",
+					'label_on' => __( 'Yes', 'unlimited-elements-for-elementor' ),
+					'label_off' => __( 'No', 'unlimited-elements-for-elementor' ),
+					'return_value' => 'true',
+					'separator' => 'before',
+					'description'=>__('When turned on, you can use all the post filters widgets like tabs filter, load more etc with this grid', 'unlimited-elements-for-elementor')
+				),
+			
+				array(
+					"name"=>$paramName.'_ajax_seturl',
+					"type"=>UniteCreatorDialogParam::PARAM_DROPDOWN,
+					"label"=>__( 'Filters Behaviour', "unlimited-elements-for-elementor"),
+					"default"=>"ajax",
+					'options' => array(
+						'ajax' => __( 'Ajax', "unlimited-elements-for-elementor"),
+						//'url' => __( 'Url Change Only', "unlimited-elements-for-elementor"),
+						'mixed' => __( 'Ajax and Url Change', "unlimited-elements-for-elementor"),
+						'mixed_back' => __( 'Ajax, Url Change and Back Button', "unlimited-elements-for-elementor")
+					),
+					'condition' => array($paramName.'_isajax'=>"true"),
+					'description'=>__('Choose the filters behaviour for the current grid. If third mode selected - after ajax it will remember the current grid and filters state in the url so you can get back to it later', 'unlimited-elements-for-elementor')
+				),
+				
+				array(
+					"name"=>$paramName.'_filtering_group',
+					"type"=>UniteCreatorDialogParam::PARAM_DROPDOWN,
+					"label"=>__( 'Group', "unlimited-elements-for-elementor"),
+					"default"=>"",
+					'options' => array(
+						'' => __( '[No Group]', "unlimited-elements-for-elementor"),
+						'group1' => __( 'Group1', "unlimited-elements-for-elementor"),
+						'group2' => __( 'Group2', "unlimited-elements-for-elementor"),
+						'group3' => __( 'Group3', "unlimited-elements-for-elementor"),
+						'group4' => __( 'Group4', "unlimited-elements-for-elementor"),
+						'group5' => __( 'Group5', "unlimited-elements-for-elementor")				
+					),
+					'condition' => array($paramName.'_isajax'=>"true"),
+					'description' => __( 'Allow filtering group of widgets at once', "unlimited-elements-for-elementor")
+				),
+				
+				array(
+					"name"=>$paramName.'_disable_other_hooks',
+					"type"=>UniteCreatorDialogParam::PARAM_RADIOBOOLEAN,
+					'label' => __( 'Disable Third Party Modifications', "unlimited-elements-for-elementor"),
+					"default"=>"",
+					'return_value' => 'yes',
+					'separator' => 'before',
+					'condition' => array($paramName.'_isajax'=>"true"),
+					'description'=>__('Disable other themes or plugins hooks so their code so they will not influence on the query', 'unlimited-elements-for-elementor')
+				),
+				
+			
+			);
+			
+			
+			$arrSettings = array_merge($arrSettings, $arrAjaxSettings);
+		}
+
+		
+		
+		$data["settings"] = $arrSettings;
+		
+		return($data);
+	}
+
+	
+	/**
+	 * add content controls
+	 */
+	private function addElementorControls_content($widget, $postListParam){
+		
+		$data = $this->getPaginationControlsData($postListParam);
+		
+		if(empty($data))
+			return(false);
+
+		
+		$arrSection = UniteFunctionsUC::getVal($data, "section");
+		$textSection = UniteFunctionsUC::getVal($arrSection, "label");
+		
+		$nameSection = UniteFunctionsUC::getVal($arrSection, "name");
+		$condition = UniteFunctionsUC::getVal($arrSection, "condition");
+				
 		
 		$arrSectionSettings = array(
              'label' => $textSection,
@@ -51,232 +174,82 @@ class UniteCreatorElementorPagination{
 			$arrSectionSettings["condition"] = $condition;
 			
 		$widget->start_controls_section(
-                'section_pagination', $arrSectionSettings
+                $nameSection, $arrSectionSettings
          );
 		
-		$widget->add_control(
-			'pagination_heading',
-			[
-				'label' => __( 'When turned on, the pagination will appear in archive or single pages, you have option to use the "Posts Pagination" widget for all the styling options', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::HEADING,
-				'default' => ''
-			]
-		);
-         
-         
-		$widget->add_control(
-			'pagination_type',
-			[
-				'label' => __( 'Pagination', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::SELECT,
-				'default' => '',
-				'options' => [
-					'' => __( 'None', "unlimited-elements-for-elementor"),
-					'numbers' => __( 'Numbers', "unlimited-elements-for-elementor"),
-					'pagination_widget' => __( 'Using Pagination Widget', "unlimited-elements-for-elementor")
-				],
-			]
-		);
+        $arrControls = UniteFunctionsUC::getVal($data, "settings");
 
-		//add filter enabled controls
-		
-		if($enableAjax == true){
-			
-			$widget->add_control(
-				$paramName.'_isajax',
-				[
-					'label' => __( 'Enable Post Filtering', "unlimited-elements-for-elementor"),
-					'type' => \Elementor\Controls_Manager::SWITCHER,
-					'label_on' => __( 'Yes', 'unlimited-elements-for-elementor' ),
-					'label_off' => __( 'No', 'unlimited-elements-for-elementor' ),
-					'return_value' => 'true',
-					'default' => '',
-					'separator' => 'before',
-					'description'=>__('When turned on, you can use all the post filters widgets like tabs filter, load more etc with this grid', 'unlimited-elements-for-elementor')
-				]
-			);
-			
-			$widget->add_control(
-				$paramName.'_ajax_seturl',
-				array(
-					'label' => __( 'Filters Behaviour', "unlimited-elements-for-elementor"),
-					'type' => \Elementor\Controls_Manager::SELECT,
-					'default' => 'ajax',
-					'options' => array(
-						'ajax' => __( 'Ajax', "unlimited-elements-for-elementor"),
-						//'url' => __( 'Url Change Only', "unlimited-elements-for-elementor"),
-						'mixed' => __( 'Ajax and Url Change', "unlimited-elements-for-elementor"),
-						'mixed_back' => __( 'Ajax, Url Change and Back Button', "unlimited-elements-for-elementor")
-					),
-					'condition' => array($paramName.'_isajax'=>"true"),
-					'description'=>__('Choose the filters behaviour for the current grid. If third mode selected - after ajax it will remember the current grid and filters state in the url so you can get back to it later', 'unlimited-elements-for-elementor')
-				)
-			);
-
-			$widget->add_control(
-				$paramName.'_filtering_group',
-				[
-					'label' => __( 'Group', "unlimited-elements-for-elementor"),
-					'description' => __( 'Allow filtering group of widgets at once', "unlimited-elements-for-elementor"),
-					'type' => \Elementor\Controls_Manager::SELECT,
-					'default' => '',
-					'condition' => array($paramName.'_isajax'=>"true"),
-					'options' => [
-						'' => __( '[No Group]', "unlimited-elements-for-elementor"),
-						'group1' => __( 'Group1', "unlimited-elements-for-elementor"),
-						'group2' => __( 'Group2', "unlimited-elements-for-elementor"),
-						'group3' => __( 'Group3', "unlimited-elements-for-elementor"),
-						'group4' => __( 'Group4', "unlimited-elements-for-elementor"),
-						'group5' => __( 'Group5', "unlimited-elements-for-elementor")
-					],
-				]
-			);
-			
-			
-			$widget->add_control(
-				$paramName.'_disable_other_hooks',
-				array(
-					'label' => __( 'Disable Third Party Modifications', "unlimited-elements-for-elementor"),
-					'type' => \Elementor\Controls_Manager::SWITCHER,
-					'default' => '',
-					'return_value' => 'yes',
-					'condition' => array($paramName.'_isajax'=>"true"),
-					'description'=>__('Disable other themes or plugins hooks so their code so they will not influence on the query', 'unlimited-elements-for-elementor')
-				)
-			);
-			
-			
-		}
-                  
+        foreach($arrControls as $control){
+        	
+        	$type = UniteFunctionsUC::getVal($control, "type");
+        	$name = UniteFunctionsUC::getVal($control, "name");
+        	$label = UniteFunctionsUC::getVal($control, "label");
+        	$default = UniteFunctionsUC::getVal($control, "default");
+        	$options = UniteFunctionsUC::getVal($control, "options");
+        	$description = UniteFunctionsUC::getVal($control, "description");
+        	$condition = UniteFunctionsUC::getVal($control, "condition");
+        	
+        	switch($type){
+        		case UniteCreatorDialogParam::PARAM_HEADING:
+        			
+					$widget->add_control(
+						$name,
+						array(
+							'label' => $label,
+							'type' => \Elementor\Controls_Manager::HEADING,
+							'default' => ''
+						)
+					);
+        			 
+        		break;
+        		case UniteCreatorDialogParam::PARAM_DROPDOWN:
+        			
+					$widget->add_control(
+						$name,
+						array(
+							'label' => $label,
+							'type' => \Elementor\Controls_Manager::SELECT,
+							'default' => $default,
+							'options' => $options,
+							'condition' => $condition,
+							'description' => $description
+						)
+					);
+        			
+        		break;
+        		case UniteCreatorDialogParam::PARAM_RADIOBOOLEAN:
+        			
+        			$returnValue = UniteFunctionsUC::getVal($control, "return_value");
+        			
+					$widget->add_control(
+						$name,
+						array(
+							'label' => $label,
+							'type' => \Elementor\Controls_Manager::SWITCHER,
+							'label_on' => __( 'Yes', 'unlimited-elements-for-elementor' ),
+							'label_off' => __( 'No', 'unlimited-elements-for-elementor' ),
+							'return_value' => $returnValue,
+							'default' => '',
+							'separator' => 'before',
+							'condition' => $condition,
+							'description'=>$description
+						)
+					);
+					
+        		break;
+        		default:
+        			
+        			UniteFunctionsUC::throwError("Wrong setting type: $type");
+        			
+        		break;
+        	}
+        }
+        
+               
         $widget->end_controls_section();
+        
 	}
 	
-	
-	/**
-	 * add styles controls
-	 */
-	private function addElementorControls_styles($widget){
-		
-		$widget->start_controls_section(
-			'section_pagination_style',
-			[
-				'label' => __( 'Pagination', "unlimited-elements-for-elementor"),
-				'tab' => \Elementor\Controls_Manager::TAB_STYLE,
-				'condition' => [
-					'pagination_type!' => '',
-				],
-			]
-		);
-
-		$widget->add_group_control(
-			\Elementor\Group_Control_Typography::get_type(),
-			[
-				'name' => 'pagination_typography',
-				'selector' => '{{WRAPPER}} .uc-posts-pagination',
-				'scheme' => \Elementor\Scheme_Typography::TYPOGRAPHY_2,
-			]
-		);
-
-		$widget->add_control(
-			'pagination_color_heading',
-			[
-				'label' => __( 'Colors', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::HEADING,
-				'separator' => 'before',
-			]
-		);
-
-		$widget->start_controls_tabs( 'pagination_colors' );
-		
-		$widget->start_controls_tab(
-			'pagination_color_normal',
-			[
-				'label' => __( 'Normal', "unlimited-elements-for-elementor"),
-			]
-		);
-
-		$widget->add_control(
-			'pagination_color',
-			[
-				'label' => __( 'Color', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .uc-posts-pagination .page-numbers:not(.dots)' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$widget->end_controls_tab();
-		
-		$widget->start_controls_tab(
-			'pagination_color_hover',
-			[
-				'label' => __( 'Hover', "unlimited-elements-for-elementor"),
-			]
-		);
-
-		$widget->add_control(
-			'pagination_hover_color',
-			[
-				'label' => __( 'Color', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .uc-posts-pagination a.page-numbers:hover' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$widget->end_controls_tab();
-
-		$widget->start_controls_tab(
-			'pagination_color_active',
-			[
-				'label' => __( 'Active', "unlimited-elements-for-elementor"),
-			]
-		);
-
-		$widget->add_control(
-			'pagination_active_color',
-			[
-				'label' => __( 'Color', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::COLOR,
-				'selectors' => [
-					'{{WRAPPER}} .uc-posts-pagination .page-numbers.current' => 'color: {{VALUE}};',
-				],
-			]
-		);
-
-		$widget->end_controls_tab();
-
-		$widget->end_controls_tabs();
-
-		$widget->add_responsive_control(
-			'pagination_spacing',
-			[
-				'label' => __( 'Space Between', "unlimited-elements-for-elementor"),
-				'type' => \Elementor\Controls_Manager::SLIDER,
-				'separator' => 'before',
-				'default' => [
-					'size' => 10,
-				],
-				'range' => [
-					'px' => [
-						'min' => 0,
-						'max' => 100,
-					],
-				],
-				'selectors' => [
-					'body:not(.rtl) {{WRAPPER}} .uc-posts-pagination .page-numbers:not(:first-child)' => 'margin-left: calc( {{SIZE}}{{UNIT}}/2 );',
-					'body:not(.rtl) {{WRAPPER}} .uc-posts-pagination .page-numbers:not(:last-child)' => 'margin-right: calc( {{SIZE}}{{UNIT}}/2 );',
-					'body.rtl {{WRAPPER}} .uc-posts-pagination .page-numbers:not(:first-child)' => 'margin-right: calc( {{SIZE}}{{UNIT}}/2 );',
-					'body.rtl {{WRAPPER}} .uc-posts-pagination .page-numbers:not(:last-child)' => 'margin-left: calc( {{SIZE}}{{UNIT}}/2 );',
-				],
-			]
-		);
-
-		$widget->end_controls_section();
-		
-	}
 	
 	
 	/**
@@ -286,7 +259,93 @@ class UniteCreatorElementorPagination{
 				
 		$this->addElementorControls_content($widget,$postListParam);
 		
-		//$this->addElementorControls_styles($widget);
+	}
+	
+	/**
+	 * add unite settings section
+	 */
+	public function addUniteSettingsSection(UniteCreatorSettings $settings, $postListParam = null){
+
+		$data = $this->getPaginationControlsData($postListParam);
+		
+		if(empty($data))
+			return(false);
+		
+		$arrSection = UniteFunctionsUC::getVal($data, "section");
+		
+		$textSection = UniteFunctionsUC::getVal($arrSection, "label");
+		$nameSection = UniteFunctionsUC::getVal($arrSection, "name");
+		
+		$sectionCondition = UniteFunctionsUC::getVal($arrSection, "condition");
+				
+		$settings->addSap($textSection, $nameSection);
+
+		//add section control by condition
+		
+		if(!empty($sectionCondition)){
+			
+			$controlParent = UniteFunctionsUC::getFirstNotEmptyKey($sectionCondition);
+			
+			$controlValues = UniteFunctionsUC::getVal($sectionCondition, $controlParent);
+			
+			$settings->addControl($controlParent, $nameSection, "show", $controlValues, true);
+		}
+		
+		
+        $arrControls = UniteFunctionsUC::getVal($data, "settings");
+
+        foreach($arrControls as $control){
+        	
+        	$type = UniteFunctionsUC::getVal($control, "type");
+        	$name = UniteFunctionsUC::getVal($control, "name");
+        	$label = UniteFunctionsUC::getVal($control, "label");
+        	$default = UniteFunctionsUC::getVal($control, "default");
+        	$options = UniteFunctionsUC::getVal($control, "options");
+        	$description = UniteFunctionsUC::getVal($control, "description");
+        	$condition = UniteFunctionsUC::getVal($control, "condition");
+        	
+        	$arrParams = array();
+        	$arrParams["description"] = $description;
+        	
+        	switch($type){
+        		case UniteCreatorDialogParam::PARAM_HEADING:
+        			
+        			$settings->addStaticText($label, $name);
+        			 
+        		break;
+        		case UniteCreatorDialogParam::PARAM_DROPDOWN:
+        			
+        			$options = array_flip($options);
+        			        			
+        			$settings->addSelect($name, $options, $label, $default, $arrParams);
+        			
+        		break;
+        		case UniteCreatorDialogParam::PARAM_RADIOBOOLEAN:
+        			        			
+        			$returnValue = UniteFunctionsUC::getVal($control, "return_value");
+        			
+        			$default = UniteFunctionsUC::strToBool($default);
+        			
+        			$arrParams["return_value"] = $returnValue;
+        			
+        			$settings->addRadioBoolean($name, $label, $default, "Yes","No", $arrParams);
+        			
+        		break;
+        		default:
+        			
+        			UniteFunctionsUC::throwError("Wrong setting type: $type");
+        			
+        		break;
+        	}
+        	
+        	//add conditions
+        	
+        	if(!empty($condition))
+        		$settings->addControl_byElementorConditions($name, $condition);
+        	
+        }
+        
+        
 		
 	}
 	
@@ -518,12 +577,12 @@ class UniteCreatorElementorPagination{
 		
 		//define has more by last post query
 		$foundPosts = GlobalsProviderUC::$lastPostQuery->found_posts;
-		
+			
 		if(empty($foundPosts))
 			return(-1);
 		
 		$numPosts = GlobalsProviderUC::$lastPostQuery->post_count;
-
+		
 		$queryVars = GlobalsProviderUC::$lastPostQuery->query_vars;
 		
 		$offset = UniteFunctionsUC::getVal($queryVars, "offset");
@@ -557,6 +616,7 @@ class UniteCreatorElementorPagination{
 			$nextOffset = $this->getNextOffsetByQuery();
 			
 			$hasMore = $nextOffset >= 0;
+		
 			
 		}else{
 			

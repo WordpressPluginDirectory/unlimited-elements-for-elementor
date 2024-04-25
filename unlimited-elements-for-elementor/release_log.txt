@@ -1,5 +1,31 @@
 
 
+version 1.5.104:
+
+* Feature: added support for unselect items in sync functionality
+* Feature: added feature - sort terms by parent -> children, and levels number class
+* Fix: fixed some load more issue with dynamic template loop and post lists inside
+* Fix: fixed woo category image not fetched bug
+* Fix: fixed some cases of sticky elementor elements with filters
+* Fix: fixed remote connection with single background parent and remote widget
+
+
+version 1.5.103:
+
+* Feature: added option to add additional url attributes to post links
+* Feature: improved woo category thumbnail image gether
+* Fix: fixed some widgets editor enable visibility bug
+* Feature: added option to unite gallery - strip_speed
+* Fix: fixed entrance animation run if inside a viewport window
+* Fix: fixed some security issues - escaping some fields output
+
+
+
+version 1.5.102:
+
+* Fix - fixed a small php bug
+
+
 version 1.5.101:
 
 * Feature - added "date time" attribute to items attributes list

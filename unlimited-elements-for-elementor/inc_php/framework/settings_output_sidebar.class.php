@@ -113,33 +113,6 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 	}
 
 	/**
-	 * draw units picker
-	 */
-	private function drawUnitsPicker($units, $selectedUnit){
-
-		$defaultUnit = reset($units);
-		$initialUnit = $selectedUnit ?: $defaultUnit;
-
-		?>
-		<select
-			class="unite-units-picker"
-			data-default="<?php esc_attr_e($defaultUnit); ?>"
-			data-initval="<?php esc_attr_e($initialUnit); ?>"
-		>
-			<?php foreach($units as $unit): ?>
-				<option
-					value="<?php esc_attr_e($unit); ?>"
-					data-content="<?php esc_attr_e('<div class="unite-units-picker-item">' . $unit . '</div>'); ?>"
-					<?php echo $unit === $selectedUnit ? "selected" : ""; ?>
-				>
-					<?php esc_html_e($unit); ?>
-				</option>
-			<?php endforeach; ?>
-		</select>
-		<?php
-	}
-
-	/**
 	 * draw settings row
 	 */
 	protected function drawSettingRow($setting, $mode = ""){
@@ -178,9 +151,6 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 		if (empty($tabsId) === false && empty($tabsValue) === false)
 			$addAttr .= " data-tabs-id=\"$tabsId\" data-tabs-value=\"$tabsValue\"";
 
-		$units = UniteFunctionsUC::getVal($setting, "units");
-		$unitsSelected = UniteFunctionsUC::getVal($setting, "units_selected");
-
 		$rowClass = $this->drawSettingRow_getRowClass($setting, $baseClass);
 
 		?>
@@ -200,9 +170,6 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 						</div>
 						<?php if($isResponsive === true): ?>
 							<?php $this->drawResponsivePicker($responsiveType); ?>
-						<?php endif; ?>
-						<?php if(empty($units) === false): ?>
-							<?php $this->drawUnitsPicker($units, $unitsSelected); ?>
 						<?php endif; ?>
 					</div>
 				<?php endif ?>

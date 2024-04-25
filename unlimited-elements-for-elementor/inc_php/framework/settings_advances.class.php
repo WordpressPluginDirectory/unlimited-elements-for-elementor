@@ -67,9 +67,6 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$arrItems["dotted"] = "Dotted";
 			$arrItems["double"] = "Double";
 			$arrItems["groove"] = "Groove";
-			$arrItems["ridge"] = "Ridge";
-			$arrItems["inset"] = "Inset";
-			$arrItems["outset"] = "Outset";
 			$this->addSelect($name,$arrItems,$text,$defaultValue,$arrParams);
 		}
 

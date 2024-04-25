@@ -61,7 +61,7 @@ class UniteCreatorAddonRevisioner{
 	 * restore the addon revision
 	 */
 	public function restoreAddonRevision($addon, $revisionId){
-		
+
 		$revision = $this->getAddonRevision($addon, $revisionId);
 		$filePath = $revision['path'];
 		$categoryId = null; // autodetect

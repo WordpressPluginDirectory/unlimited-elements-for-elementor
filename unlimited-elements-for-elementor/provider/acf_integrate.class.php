@@ -420,7 +420,6 @@ class UniteCreatorAcfIntegrate{
 		 */
 		private function addAcfValues($arrValues, $key, $data){
 			
-			
 			if(empty($data)){
 				$arrValues[$key] = $data;
 				return($arrValues);
@@ -654,19 +653,10 @@ class UniteCreatorAcfIntegrate{
 			
 		}
 		
-		
 		/**
-		 * get acf post fields
+		 * get fields data
 		 */
-		public function getAcfFields($postID, $objName = "post", $addPrefix = true, $imageSize = null){
-			
-			$isActive = self::isAcfActive();
-			
-			if($isActive == false)
-				return(array());
-			
-			if(!empty($imageSize))
-				$this->outputImageSize = $imageSize;
+		private function getAcfFieldsData($postID, $objName = "post"){
 			
 			switch($objName){
 				case "post":
@@ -702,7 +692,53 @@ class UniteCreatorAcfIntegrate{
 			
 			if(empty($arrData))
 				$arrData = array();
-						
+			
+			return($arrData);
+		}
+		
+		/**
+		 * get only image id's from data
+		 */
+		public function getAcfFieldsImageIDs($postID, $objName = "post"){
+			
+			$arrData = $this->getAcfFieldsData($postID, $objName);
+			
+			$arrImageiDs = array();
+			
+			foreach($arrData as $name=>$item){
+				$type = UniteFunctionsUC::getVal($item, "type");
+				
+				if($type != "image")
+					continue;
+				
+				$imageID = UniteFunctionsUC::getVal($item, "id");
+				
+				if(empty($imageID))
+					continue;
+					
+				$arrImageiDs[$name] = $imageID;
+			}
+			
+
+			return($arrImageiDs);
+		}
+		
+		
+		/**
+		 * get acf post fields
+		 */
+		public function getAcfFields($postID, $objName = "post", $addPrefix = true, $imageSize = null){
+			
+			$isActive = self::isAcfActive();
+			
+			if($isActive == false)
+				return(array());
+			
+			if(!empty($imageSize))
+				$this->outputImageSize = $imageSize;
+			
+			$arrData = $this->getAcfFieldsData($postID, $objName);
+			
 			$arrDataOutput = array();
 			foreach($arrData as $key => $value){
 				

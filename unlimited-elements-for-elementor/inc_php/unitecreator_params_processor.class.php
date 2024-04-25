@@ -88,7 +88,7 @@ class UniteCreatorParamsProcessorWork{
 		if(is_string($value)){
 
 			$value = $this->convertFromUrlAssets($value);
-			
+
 			switch($type){
 				case "uc_image":
 				case "uc_mp3":
@@ -115,10 +115,10 @@ class UniteCreatorParamsProcessorWork{
 		}
 		
 		$addonType = $this->addon->getType();
-		
+
 		if($addonType == "elementor")
 			$value = HelperProviderCoreUC_EL::processParamValueByType($value, $type, $param);
-		
+
 		return($value);
 	}
 
@@ -177,40 +177,39 @@ class UniteCreatorParamsProcessorWork{
 	 */
 	private function checkModifyParamOptions($param){
 
-		if(isset($param["options"]) == false)
-			return($param);
+		if(isset($param["options"]) === false)
+			return $param;
 
 		$phpFilter = UniteFunctionsUC::getVal($param, "php_filter_name");
 
-		if(empty($phpFilter))
-			return($param);
+		if(empty($phpFilter) === true)
+			return $param;
 
 		$options = $param["options"];
 
 		//manual modify
-
 		$options = $this->checkModifyParamOptions_manual($options, $phpFilter);
 
 		//general modify
+		$options = apply_filters("ue_modify_dropdown_" . $phpFilter, $options);
 
-		$options = apply_filters("ue_modify_dropdown_".$phpFilter, $options);
-
-		if(empty($options))
+		if(empty($options) === true)
 			$options = array();
+
+		// bug: options shouldn't be flipped, because it swaps label-value pairs, which is wrong
+		// keep for backward compatibility
+		if(empty($options) === false)
+			$options = array_flip($options);
 
 		$value = UniteFunctionsUC::getVal($param, "value");
 
-		if(!empty($options))
-			$options = array_flip($options);
-
-		if(is_string($value) && in_array($value, $options) == false)
+		if(is_string($value) === true && in_array($value, $options) === false)
 			$value = UniteFunctionsUC::getArrFirstValue($options);
 
 		$param["options"] = $options;
 		$param["value"] = $value;
 
-
-		return($param);
+		return $param;
 	}
 
 	/**
@@ -251,17 +250,16 @@ class UniteCreatorParamsProcessorWork{
 	 * process responsive param
 	 */
 	protected function getProcessedParamsValue_responsive($data, $param){
-		
+
 		$isResponsive = UniteFunctionsUC::getVal($param, "is_responsive");
 		$isResponsive = UniteFunctionsUC::strToBool($isResponsive);
-				
-		
+
 		if($isResponsive == false)
 			return($data);
-		
+
 		$defaultValueTablet = UniteFunctionsUC::getVal($param, "default_value_tablet");
 		$defaultValueMobile = UniteFunctionsUC::getVal($param, "default_value_mobile");
-	
+
 		$valueTablet = UniteFunctionsUC::getVal($param, "value_tablet", $defaultValueTablet);
 		$valueMobile = UniteFunctionsUC::getVal($param, "value_mobile",$defaultValueMobile);
 
@@ -269,8 +267,8 @@ class UniteCreatorParamsProcessorWork{
 
 		$data[$name."_tablet"] = $valueTablet;
 		$data[$name."_mobile"] = $valueMobile;
-				
-		
+
+
 		return($data);
 	}
 
@@ -1557,14 +1555,13 @@ class UniteCreatorParamsProcessorWork{
 	  * get link param data
 	 */
 	private function getLinkData($data, $value, $name, $param, $processType){
-		
-		
+
 		if(is_string($value) === true)
 			$value = array("url" => $value);
 
 		$url = UniteFunctionsUC::getVal($value, "url");
 		$url = esc_url($url);
-		
+
 		$isExternal = UniteFunctionsUC::getVal($value, "is_external");
 		$noFollow = UniteFunctionsUC::getVal($value, "nofollow");
 
@@ -1597,7 +1594,6 @@ class UniteCreatorParamsProcessorWork{
 		$data[$name . "_full"] = $urlFull;
 		$data[$name . "_noprefix"] = $urlNoPrefix;
 
-		
 		return $data;
 	}
 
@@ -1874,7 +1870,7 @@ class UniteCreatorParamsProcessorWork{
 		$name = UniteFunctionsUC::getVal($param, "name");
 
 		$isOutputProcessType = $this->isOutputProcessType($processType);
-		
+
 		//special params - all types
 		switch($type){
 			case UniteCreatorDialogParam::PARAM_DROPDOWN:
@@ -1982,7 +1978,7 @@ class UniteCreatorParamsProcessorWork{
 				continue;
 
 			$name = UniteFunctionsUC::getVal($param, "name");
-			
+
 			if(empty($name))
 				continue;
 
@@ -2038,7 +2034,7 @@ class UniteCreatorParamsProcessorWork{
 	 * get main params processed, for output
 	 */
 	public function getProcessedMainParamsValues($processType){
-		
+
 		$this->validateInited();
 
 		self::validateProcessType($processType);
@@ -2056,7 +2052,7 @@ class UniteCreatorParamsProcessorWork{
 			$arrParams = UniteProviderFunctionsUC::applyFilters(UniteCreatorFilters::FILTER_MODIFY_ADDON_OUTPUT_PARAMS, $arrParams, $this->addon);
 			$arrParams = $this->processFonts($arrParams, "main");
 		}
-				
+
 		$arrParams = array_merge($arrParams, $arrVars);
 
 		return($arrParams);

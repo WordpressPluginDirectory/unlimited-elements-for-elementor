@@ -9,7 +9,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
-	const SELECTOR_PLACEHOLDER = "{{SELECTOR}}";
+	const SELECTOR_PLACEHOLDER = "{{selector}}";
 
 	/**
 	 * add settings provider types
@@ -1273,22 +1273,16 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 	 */
 	public function addPostIDSelect($settingName, $text = null, $elementorCondition = null, $isForWoo = false, $addAttribOpt = "", $params = array()){
 
-		if(empty($text))
+		if(empty($text) === true)
 			$text = __("Search and Select Posts", "unlimited-elements-for-elementor");
-
-		$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-special-select";
 
 		$placeholder = __("All Posts", "unlimited-elements-for-elementor");
 
 		if($isForWoo === true)
 			$placeholder = __("All Products", "unlimited-elements-for-elementor");
 
-		$placeholder = str_replace(" ", "--", $placeholder);
-
-		$loaderText = __("Loading Data...", "unlimited-elements-for-elementor");
-		$loaderText = UniteFunctionsUC::encodeContent($loaderText);
-
 		$addAttrib = "";
+
 		if($isForWoo === true)
 			$addAttrib = " data-woo='yes'";
 
@@ -1299,38 +1293,36 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		if($isForWoo === "terms"){
 			$addAttrib = " data-datatype='terms'";
-			$placeholder = "All--Terms";
+			$placeholder = "All Terms";
 		}
 
 		if($isForWoo === "users"){
 			$addAttrib = " data-datatype='users'";
-			$placeholder = "All--Users";
+			$placeholder = "All Users";
 		}
 
-
-		if(isset($params["placeholder"])){
+		if(empty($params["placeholder"]) === false)
 			$placeholder = $params["placeholder"];
-		}
 
-		if($isForWoo === "single"){
-
+		if($isForWoo === "single")
 			$addAttrib = " data-issingle='true'";
-		}
 
-		if(!empty($addAttribOpt))
-			$addAttrib .= " ".$addAttribOpt;
+		if(empty($addAttribOpt) === false)
+			$addAttrib .= " " . $addAttribOpt;
 
-		$params[UniteSettingsUC::PARAM_ADDPARAMS] = "data-settingtype='post_ids' data-placeholdertext='{$placeholder}' data-loadertext='$loaderText' $addAttrib";
+		$loaderText = __("Loading data...", "unlimited-elements-for-elementor");
+		$loaderText = UniteFunctionsUC::encodeContent($loaderText);
 
 		$params["datasource"] = "post_type";
 		$params["origtype"] = "uc_select_special";
 		$params["label_block"] = true;
+		$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-special-select";
+		$params[UniteSettingsUC::PARAM_ADDPARAMS] = 'data-settingtype="post_ids" data-placeholdertext="' . esc_attr($placeholder) . '" data-loadertext="' . esc_attr($loaderText) . '" ' . $addAttrib;
 
-		if(!empty($elementorCondition))
+		if(empty($elementorCondition) === false)
 			$params["elementor_condition"] = $elementorCondition;
 
-		$this->addSelect($settingName, array(), $text , "", $params);
-
+		$this->addSelect($settingName, array(), $text, "", $params);
 	}
 
 
@@ -2418,7 +2410,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$this->addHr($name."_hr_after_order_dir", $params);
 
 		//allow to modify settings by third party plugins
-		
+
 		do_action("ue_modify_post_list_settings", $this, $name);
 
 
@@ -3008,6 +3000,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$isWooActive = UniteCreatorWooIntegrate::isWooActive();
 		if($isWooActive == true)
 			$arrSource["products"] = __("Products", "unlimited-elements-for-elementor");
+
 
 		if($isForGallery == true){
 			$arrSource["current_post_meta"] = __("Current Post Metafield", "unlimited-elements-for-elementor");

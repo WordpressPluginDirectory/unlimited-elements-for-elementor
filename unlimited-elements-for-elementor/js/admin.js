@@ -57,6 +57,7 @@ function UniteAdminUC(){
 		timer: null,
 		trasholdHandle: null,
 		trasholdDelay: 500,
+		debounceDelay: 500,
 		throttleDelay: 50,
 	};
 
@@ -501,18 +502,35 @@ function UniteAdminUC(){
 	};
 
 	/**
+	 * create function with debounce
+	 */
+	this.debounce = function (func, delay) {
+		var handle = null;
+
+		return function () {
+			var args = arguments;
+
+			clearTimeout(handle);
+
+			handle = setTimeout(() => {
+				func.apply(null, args);
+			}, delay || g_temp.debounceDelay);
+		};
+	};
+
+	/**
 	 * create function with throttle
 	 */
-	this.throttle = function (func) {
+	this.throttle = function (func, delay) {
 		var handle = null;
 
 		return function () {
 			if (handle === null) {
 				func.apply(null, arguments);
 
-				handle = setTimeout(() => {
+				handle = setTimeout(function () {
 					handle = null;
-				}, g_temp.throttleDelay);
+				}, delay || g_temp.throttleDelay);
 			}
 		};
 	};

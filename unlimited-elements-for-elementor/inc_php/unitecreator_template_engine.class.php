@@ -50,111 +50,85 @@ class UniteCreatorTemplateEngineWork{
 
 		$arrDynamicSettings = null;
 
-		if($this->isItemsFromPosts == true){
-
+		if($this->isItemsFromPosts === true){
 			//HelperProviderUC::startDebugQueries();
 
 			GlobalsProviderUC::$isUnderRenderPostItem = true;
 
 			//save post id
-
 			$arrItem = UniteFunctionsUC::getVal($itemParams, "item");
-
 			$postType = UniteFunctionsUC::getVal($arrItem, "object_type");
-
 			$postID = UniteFunctionsUC::getVal($arrItem, "object_id");
 
 			GlobalsProviderUC::$lastObjectID = $postID;
 
 			//woo commerce global object product save
-
 			if($postType == "product" && function_exists("wc_get_product")){
-
 				global $product;
 				$product = wc_get_product(GlobalsProviderUC::$lastObjectID);
 			}
 
 			//save post to allow dynamic tags inside the item
-
 			$post = UniteFunctionsUC::getVal(GlobalsProviderUC::$arrFetchedPostsObjectsCache, $postID);
 
 			self::$isPostIDSaved = false;
 
 			if(!empty($post)){
-
 				self::$isPostIDSaved = true;
 
 				global $wp_query;
 
-				//backup the original querified object
+				//backup the original queried object
 				$originalQueriedObject = $wp_query->queried_object;
 				self::$originalQueriedObject = $originalQueriedObject;
 
 				$originalQueriedObjectID = $wp_query->queried_object_id;
 				self::$originalQueriedObjectID = $originalQueriedObjectID;
 
-				$originalPost = UniteFunctionsUC::getVal($GLOBALS, 'post', null);
+				$originalPost = UniteFunctionsUC::getVal($GLOBALS, "post", null);
 				self::$originalPost = $originalPost;
 
 				$wp_query->queried_object = $post;
 				$wp_query->queried_object_id = $postID;
 
-				$GLOBALS['post'] = $post;
+				$GLOBALS["post"] = $post;
 
 				//get dynamic settings from the widget if exists
-
-				$arrDynamicSettings = apply_filters("ue_get_current_widget_settings",array());
-
+				$arrDynamicSettings = apply_filters("ue_get_current_widget_settings", array());
 			}
-
-
 		}
 
 		// handle params and html
-
 		$params = array_merge($this->arrParams, $itemParams);
 
-		if(!empty($arrDynamicSettings) && is_array($arrDynamicSettings)){
-
+		if(!empty($arrDynamicSettings) && is_array($arrDynamicSettings))
 			$params = array_merge($params, $arrDynamicSettings);
-		}
-
 
 		GlobalsProviderUC::$lastItemParams = $params;
 
 		$htmlItem = $this->twig->render($templateName, $params);
-
 		$htmlItem = do_shortcode($htmlItem);
 
-		if(!empty($sap)){
-			if($index != 0)
-				echo UniteProviderFunctionsUC::escCombinedHtml($sap);
-			echo UniteProviderFunctionsUC::escCombinedHtml($htmlItem);
-		}else
-			echo UniteProviderFunctionsUC::escCombinedHtml($htmlItem);
+		if(!empty($sap) && $index !== 0)
+			echo UniteProviderFunctionsUC::escCombinedHtml($sap);
+
+		echo UniteProviderFunctionsUC::escCombinedHtml($htmlItem);
 
 		if($newLine)
 			echo "\n";
 
-
-		if($this->isItemsFromPosts == true){
-
+		if($this->isItemsFromPosts === true){
 			GlobalsProviderUC::$isUnderRenderPostItem = false;
 
 			//restore the original queried object
-
-			if(self::$isPostIDSaved == true){
-
+			if(self::$isPostIDSaved === true){
 				$wp_query->queried_object = $originalQueriedObject;
 				$wp_query->queried_object_id = $originalQueriedObjectID;
-				$GLOBALS['post'] = $originalPost;
+				$GLOBALS["post"] = $originalPost;
 			}
-
 		}
 
 		GlobalsProviderUC::$isUnderItem = false;
-
-
 	}
 
 
@@ -163,49 +137,76 @@ class UniteCreatorTemplateEngineWork{
 	 */
 	private function returnSavedPost(){
 
-		if(self::$isPostIDSaved == false)
-			return(false);
+		if(self::$isPostIDSaved === false)
+			return;
 
 		global $wp_query;
 
 		$wp_query->queried_object = self::$originalQueriedObject;
 		$wp_query->queried_object_id = self::$originalQueriedObjectID;
-		$GLOBALS['post'] = self::$originalPost;
+		$GLOBALS["post"] = self::$originalPost;
 
 		self::$isPostIDSaved = false;
-
 	}
-
 
 	/**
 	 * put items actually
 	 */
-	private function putItemsWork($templateName, $sap=null, $numItem=null){
+	private function putItemsWork($templateName, $sap = null, $numItem = null){
 
-		if(empty($this->arrItems))
-		 	return(false);
+		if(empty($this->arrItems) === true)
+			return;
 
-		if($this->isTemplateExists($templateName) == false)
-			return(false);
+		if($this->isTemplateExists($templateName) === false)
+			return;
 
 		if($numItem !== null){
 			$itemParams = UniteFunctionsUC::getVal($this->arrItems, $numItem);
-			if(empty($itemParams))
-				return(false);
 
-			$this->outputItem($numItem, $itemParams, $templateName, $sap, false);
+			if(empty($itemParams) === false)
+				$this->outputItem($numItem, $itemParams, $templateName, $sap, false);
 
-			return(false);
+			return;
 		}
 
-		//if sap, then no new line
+		// if a sap, then no new line
 		$newLine = empty($sap);
 
-		foreach($this->arrItems as $index => $itemParams)
+		foreach($this->arrItems as $index => $itemParams){
 			$this->outputItem($index, $itemParams, $templateName, $sap, $newLine);
-
+		}
 	}
 
+	/**
+	 * check the callable for a forbidden function
+	 */
+	private function validateFilterCallable($filter, $callable){	//Security Update 2
+		
+		$forbiddenFunctions = array("exec", "eval", "system", "shell_exec", "show_source", "passthru", "pcntl_exec", "proc_open");
+
+		if(is_string($callable) === true && in_array($callable, $forbiddenFunctions) === true)
+			UniteFunctionsUC::throwError("Function \"" . $callable . "\" is forbidden for the \"" . $filter . "\" filter.");
+	}
+
+	/**
+	 * "filter" filter
+	 */
+	public function filter($env, $array, $arrow){
+
+		$this->validateFilterCallable("filter", $arrow);
+
+		return twig_array_filter($env, $array, $arrow);
+	}
+
+	/**
+	 * "map" filter
+	 */
+	public function map($env, $array, $arrow){
+
+		$this->validateFilterCallable("map", $arrow);
+
+		return twig_array_map($env, $array, $arrow);
+	}
 
 	/**
 	 * put items. input can be saporator or number of item, or null
@@ -221,20 +222,17 @@ class UniteCreatorTemplateEngineWork{
 			$input = null;
 		}
 
-		//parse the string input
-
+		// parse the string input
 		if(is_string($input)){
-
 			switch($input){
-				case "shuffle":		//shuffle items
-
+				case "shuffle": // shuffle items
 					shuffle($this->arrItems);
 
-					foreach($this->arrItems as $key => $item)
-						$this->arrItems[$key][$templateName]["item_index"] = ($key+1);
-
+					foreach($this->arrItems as $key => $item){
+						$this->arrItems[$key][$templateName]["item_index"] = ($key + 1);
+					}
 				break;
-				case "one_random":		//get one random item
+				case "one_random":    //get one random item
 					shuffle($this->arrItems);
 					$isGetFirst = true;
 				break;
@@ -245,13 +243,11 @@ class UniteCreatorTemplateEngineWork{
 					$sap = $input;
 				break;
 			}
-
 		}
 
-		//get first item
-		if($isGetFirst == true && !empty($this->arrItems) && count($this->arrItems) > 1)
+		// get first item
+		if($isGetFirst === true && !empty($this->arrItems) && count($this->arrItems) > 1)
 			$this->arrItems = array($this->arrItems[0]);
-
 
 		$this->putItemsWork($templateName, $sap, $numItem);
 	}
@@ -1493,9 +1489,9 @@ class UniteCreatorTemplateEngineWork{
 				}
 			break;
 			case "get_variable":
-				
+
 				$getVarValue = UniteFunctionsUC::getGetVar($arg1,"",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-				
+
 				return($getVarValue);
 			break;
 			break;
@@ -1531,8 +1527,11 @@ class UniteCreatorTemplateEngineWork{
 	 */
 	protected function initTwig_addExtraFunctions(){
 
-		//add extra functions
+		//override filters
+		$filterFilter = new Twig\TwigFilter("filter", array($this, "filter"), array("needs_environment" => true));
+		$filterMap = new Twig\TwigFilter("map", array($this, "map"), array("needs_environment" => true));
 
+		//add extra functions
 		$putItemsFunction = new Twig\TwigFunction('put_items', array($this,"putItems"));
 		$putItemsFunction2 = new Twig\TwigFunction('put_items2', array($this,"putItems2"));
 		$putItemsJsonFunction = new Twig\TwigFunction('put_items_json', array($this,"putItemsJson"));
@@ -1597,6 +1596,9 @@ class UniteCreatorTemplateEngineWork{
 
 		$putTestHtml = new Twig\TwigFunction('putTestHTML', array($this,"putTestHTML"));
 
+		//override filters
+		$this->twig->addFilter($filterFilter);
+		$this->twig->addFilter($filterMap);
 
 		//add extra functions
 		$this->twig->addFunction($putItemsFunction);
@@ -1647,7 +1649,6 @@ class UniteCreatorTemplateEngineWork{
 		//test functions
 		$this->twig->addFunction($putTestHtml);
 
-
 		//add filters
 		$this->twig->addFilter($filterTruncate);
 		$this->twig->addFilter($filterWPAutop);
@@ -1656,7 +1657,6 @@ class UniteCreatorTemplateEngineWork{
 		$this->twig->addFilter($filterWcPrice);
 		$this->twig->addFilter($filterJsonDecode);
 
-
 		//pro functions
 		$this->twig->addFunction($doAction);
 		$this->twig->addFunction($applyFilters);
@@ -1664,7 +1664,6 @@ class UniteCreatorTemplateEngineWork{
 		$this->twig->addFunction($ucfunc);
 
 		$this->initTwig_addExtraFunctionsPro();
-
 	}
 
 

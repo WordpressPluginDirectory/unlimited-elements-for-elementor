@@ -467,41 +467,35 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	/**
 	 * get addon output, for the editor
 	 */
-	public function getAddonOutput($objAddon, $isWrap = true, $includeSelectors = false){
+	public function getAddonOutput($objAddon, $options = array()){
 
-		$processType = UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT_BACK;
+		$isWrap = UniteFunctionsUC::getVal($options, "wrap", true);
+		$includeSelectors = UniteFunctionsUC::getVal($options, "selectors", false);
+		$rootId = UniteFunctionsUC::getVal($options, "root_id");
+
+		$params = array(
+			"wrap_js_timeout" => $isWrap,
+			"add_selectors_css" => $includeSelectors,
+			"root_id" => $rootId,
+		);
 
 		$objOutput = new UniteCreatorOutput();
-		$objOutput->setProcessType($processType);
-
-		//put show debug here
-
+		$objOutput->setProcessType(UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT_BACK);
 		$objOutput->checkOutputDebug($objAddon);
-
 		$objOutput->initByAddon($objAddon);
 
-		if($isWrap == true)
-			$params = array("wrap_js_timeout" => true);
-		else
-			$params = array();
-
-		if($includeSelectors == true)
-			$params["add_selectors_css"] = true;
-
-		$htmlAddon = $objOutput->getHtmlBody(true, false, true, $params);
-
-		$outputID = $objOutput->getWidgetID();
-
-		$arrIncludes = $objOutput->getProcessedIncludes(true);
+		$html = $objOutput->getHtmlBody(true, false, true, $params);
+		$includes = $objOutput->getProcessedIncludes(true);
+		$outputId = $objOutput->getWidgetID();
 
 		$arr = array();
-		$arr["html"] = $htmlAddon;
-		$arr["includes"] = $arrIncludes;
+		$arr["html"] = $html;
+		$arr["includes"] = $includes;
 
-		if($includeSelectors == true)
-			$arr["output_id"] = $outputID;
+		if($includeSelectors === true)
+			$arr["output_id"] = $outputId;
 
-		return ($arr);
+		return $arr;
 	}
 
 	/**
@@ -509,16 +503,16 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 */
 	public function getAddonOutputData($addonData){
 
-		//set addon type
 		$objAddon = $this->prepareAddonByData($addonData);
 
-		$isIncludeSelectors = UniteFunctionsUC::getVal($addonData, "selectors");
+		$rootId = UniteFunctionsUC::getVal($addonData, "root_id");
+		$includeSelectors = UniteFunctionsUC::getVal($addonData, "selectors");
+		$includeSelectors = UniteFunctionsUC::strToBool($includeSelectors);
 
-		$isIncludeSelectors = UniteFunctionsUC::strToBool($isIncludeSelectors);
-
-		$arrAddonContents = $this->getAddonOutput($objAddon, true, $isIncludeSelectors);
-
-		return ($arrAddonContents);
+		return $this->getAddonOutput($objAddon, array(
+			"root_id" => $rootId,
+			"selectors" => $includeSelectors,
+		));
 	}
 
 	/**
@@ -1331,7 +1325,9 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 		$objAddon = $this->initAddonByData($data);
 		$slotNum = UniteFunctionsUC::getVal($data, "slotnum");
-
+		
+		$slotNum = (int)$slotNum;
+		
 		$objAddon->clearTestDataSlot($slotNum);
 	}
 

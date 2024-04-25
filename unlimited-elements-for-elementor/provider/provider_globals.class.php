@@ -24,6 +24,11 @@ class GlobalsProviderUC{
 	const ACTION_RUN_ADMIN = "unitecreator_run_admin";
 	const ACTION_RUN_FRONT = "unitecreator_run_front";
 	
+	const RENDER_PLATFORM_ELEMENTOR = "elementor";
+	const RENDER_PLATFORM_GUTENBERG = "gutenberg";
+	
+	public static $renderPlatform = null;
+	
 	public static $arrJSHandlesModules = array();
 	
 	public static $activeAddonForSettings = null;

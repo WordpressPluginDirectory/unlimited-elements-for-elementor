@@ -297,18 +297,18 @@ class UniteCreatorDialogParamElementor extends UniteCreatorDialogParam{
 	 */
 	protected function putBorderParam(){
 
-		//---- border type
-
-		$arrType = array();
-		$arrType["none"] = "No Border";
-		$arrType["solid"] = "Solid";
-		$arrType["double"] = "Double";
-		$arrType["dotted"] = "Dotted";
-		$arrType["groove"] = "Groove";
-
-		$arrType = array_flip($arrType);
-
 		$objSettings = new UniteCreatorSettings();
+
+		//---- border type
+		$arrType = array_flip(array(
+			"" => __("Default", "unlimited-elements-for-elementor"),
+			"none" => __("None", "unlimited-elements-for-elementor"),
+			"solid" => __("Solid", "unlimited-elements-for-elementor"),
+			"dashed" => __("Dashed", "unlimited-elements-for-elementor"),
+			"dotted" => __("Dotted", "unlimited-elements-for-elementor"),
+			"double" => __("Double", "unlimited-elements-for-elementor"),
+			"groove" => __("Groove", "unlimited-elements-for-elementor"),
+		));
 
 		$objSettings->addSelect("border_type", $arrType, __("Border Type", "unlimited-elements-for-elementor"), "none");
 

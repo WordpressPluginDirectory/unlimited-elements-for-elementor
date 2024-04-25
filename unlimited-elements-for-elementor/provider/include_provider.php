@@ -14,5 +14,4 @@ require_once $pathProvider . 'wpml_integrate.class.php';
 require_once $pathProvider . 'pods_integrate.class.php';
 require_once $pathProvider . 'toolset_integrate.class.php';
 require_once $pathProvider . 'woocommerce_integrate.class.php';
-require_once $pathProvider . 'custom_post_types.class.php';
 require_once $pathProvider . 'admin_notices/includes.php';

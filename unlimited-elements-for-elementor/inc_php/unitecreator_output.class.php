@@ -11,7 +11,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 	private static $serial = 0;
 
-	const SELECTOR_VALUE_PLACEHOLDER = "{{VALUE}}";
+	const SELECTOR_VALUE_PLACEHOLDER = "{{value}}";
 
 	const TEMPLATE_HTML = "html";
 	const TEMPLATE_CSS = "css";
@@ -593,7 +593,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 						: HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_BACKGROUND, "linear-gradient");
 
 					$css = str_replace(
-						array("{{ANGLE}}", "{{POSITION}}", "{{COLOR1}}", "{{STOP1}}", "{{COLOR2}}", "{{STOP2}}"),
+						array("{{angle}}", "{{position}}", "{{color1}}", "{{stop1}}", "{{color2}}", "{{stop2}}"),
 						array($angle, $position, $color1, $stop1, $color2, $stop2),
 						$selectorValue
 					);
@@ -766,7 +766,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			$selectorValue = HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_TEXTSHADOW);
 
 			$css = str_replace(
-				array("{{X}}", "{{Y}}", "{{BLUR}}", "{{COLOR}}"),
+				array("{{x}}", "{{y}}", "{{blur}}", "{{color}}"),
 				array($x, $y, $blur, $color),
 				$selectorValue
 			);
@@ -802,7 +802,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			$selectorValue = HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_BOXSHADOW);
 
 			$css = str_replace(
-				array("{{X}}", "{{Y}}", "{{BLUR}}", "{{SPREAD}}", "{{COLOR}}", "{{POSITION}}"),
+				array("{{x}}", "{{y}}", "{{blur}}", "{{spread}}", "{{color}}", "{{position}}"),
 				array($x, $y, $blur, $spread, $color, $position),
 				$selectorValue
 			);
@@ -838,7 +838,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			$selectorValue = HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_CSS_FILTERS);
 
 			$css = str_replace(
-				array("{{BLUR}}", "{{BRIGHTNESS}}", "{{CONTRAST}}", "{{SATURATE}}", "{{HUE}}"),
+				array("{{blur}}", "{{brightness}}", "{{contrast}}", "{{saturate}}", "{{hue}}"),
 				array($blur, $brightness, $contrast, $saturation, $hue),
 				$selectorValue
 			);
@@ -857,13 +857,20 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		$values = array(
 			"desktop" => UniteFunctionsUC::getVal($param, "value"),
-			"tablet" => UniteFunctionsUC::getVal($param, "default_value_tablet"),
-			"mobile" => UniteFunctionsUC::getVal($param, "default_value_mobile"),
+			"tablet" => UniteFunctionsUC::getVal($param, "value_tablet"),
+			"mobile" => UniteFunctionsUC::getVal($param, "value_mobile"),
 		);
 
 		$options = UniteFunctionsUC::getVal($param, "options");
 
 		if(empty($options) === false){
+			// fix: flip options back, due to a bug with the filter
+			// (see UniteCreatorParamsProcessorWork->checkModifyParamOptions)
+			$phpFilter = UniteFunctionsUC::getVal($param, "php_filter_name");
+
+			if(empty($phpFilter) === false)
+				$options = array_flip($options);
+
 			// check if the value exists in the options
 			foreach($values as $device => $value){
 				if(in_array($value, $options) === false)
@@ -898,7 +905,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$unit = UniteFunctionsUC::getVal($value, "unit", "px");
 
 		$css = str_replace(
-			array("{{TOP}}", "{{RIGHT}}", "{{BOTTOM}}", "{{LEFT}}"),
+			array("{{top}}", "{{right}}", "{{bottom}}", "{{left}}"),
 			array($top . $unit, $right . $unit, $bottom . $unit, $left . $unit),
 			$selectorValue
 		);
@@ -937,7 +944,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			return "";
 
 		$css = str_replace(
-			array(self::SELECTOR_VALUE_PLACEHOLDER, "{{SIZE}}", "{{UNIT}}"),
+			array(self::SELECTOR_VALUE_PLACEHOLDER, "{{size}}", "{{unit}}"),
 			array($size . $unit, $size, $unit),
 			$selectorValue
 		);
@@ -1094,7 +1101,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			$selector = $this->prepareCSSSelector($selector);
 
-			$selectors[$selector] = $selectorValue;
+			$selectors[$selector] = strtolower($selectorValue);
 		}
 
 		return $selectors;
@@ -1108,6 +1115,11 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$styles = "";
 
 		foreach($params as $param){
+			$passed = UEParamsManager::isParamPassesConditions($params, $param);
+
+			if($passed === false)
+				continue;
+
 			$style = $this->processParamCSSSelector($param);
 
 			if(empty($style) === false)
@@ -1214,7 +1226,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 			$itemStyles = $this->processParamsCSSSelector($itemParams);
-			$itemStyles = str_replace("{{CURRENT_ITEM}}", ".elementor-repeater-item-" . $itemId, $itemStyles);
+			$itemStyles = str_replace("{{current_item}}", ".elementor-repeater-item-" . $itemId, $itemStyles);
 
 			$styles .= $itemStyles;
 		}
@@ -1474,7 +1486,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * put debug data html
 	 */
 	private function putDebugDataHtml_default($arrData, $arrItemData){
-				
+
 		$isShowData = $this->debugDataType != "items_only";
 
 		$html = "";
@@ -1496,18 +1508,18 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			$html .= dmpGet($this->valuesForDebug);
 		}
 
-		
+
 		$html .= dmpGet("<b>Widget Items Data</b>");
 
 		if(empty($arrItemData)){
 			$html .= dmpGet("no items found");
 			return($html);
 		}
-		
+
 		$arrItemData = $this->modifyItemsDataForShow($arrItemData);
-		
+
 		$html .= dmpGet($arrItemData);
-				
+
 		return($html);
 	}
 
@@ -1705,18 +1717,19 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		//get data from listing
 		$paramListing = $this->addon->getListingParamForOutput();
-		
+
 		if(!empty($paramListing) && $this->itemsType == "template"){
 
 			$arrItemData = $this->putDebugDataHtml_getItemsFromListing($paramListing, $arrData);
 		}
+
 
 		switch($this->debugDataType){
 			case "post_titles":
 			case "post_meta":
 
 				$html .= $this->putDebugDataHtml_posts($arrItemData);
-			
+
 			break;
 			case "current_post_data":
 
@@ -1945,8 +1958,15 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 			//add html
-			if($isAddSelectors == true)
-				$output .= "\n<div id=\"{$this->getWidgetWrapperID()}\">";
+			if($isAddSelectors == true){
+				$id = $this->getWidgetWrapperID();
+				$rootId = UniteFunctionsUC::getVal($params, "root_id");
+
+				if(empty($rootId) === true)
+					$rootId = $this->getWidgetID();
+
+				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root\" data-id=\"" . esc_attr($rootId) . "\">";
+			}
 
 			$output .= "\n\n" . $html;
 
@@ -2326,7 +2346,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$arrParams = $this->getAddonParams();
 
 		$arrData = array_merge($arrData, $arrParams);
-		
+
 		//set templates
 		$html = $this->addon->getHtml();
 		$css = $this->addon->getCss();
@@ -2467,7 +2487,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 				$arrItemData[$key]["item"] = $arrItem;
 			}
-			
+
 			$this->objTemplate->setParams($arrData);
 			$this->objTemplate->setArrItems($arrItemData);
 
@@ -2487,8 +2507,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			if(!empty($paramPostsList) && is_array($postListValue))
 				$arrData = array_merge($arrData, $postListValue);
 		}
-		
-				
+
 		if($this->isShowDebugData === true)
 			$this->putDebugDataHtml($arrData, $arrItemData);
 	}
@@ -2516,7 +2535,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * init by addon
 	 */
 	public function initByAddon(UniteCreatorAddon $addon){
-				
+
 		if(empty($addon))
 			UniteFunctionsUC::throwError("Wrong addon given");
 

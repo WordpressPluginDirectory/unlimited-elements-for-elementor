@@ -269,7 +269,7 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 	 * get the sizes array from size related draw setting
 	 */
 	protected function getSizesFromCustomSetting($setting){
-		
+
 		$arrSizes = array("desktop");
 		$sizes = UniteFunctionsUC::getVal($setting, "sizes");
 
@@ -413,14 +413,15 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 			</a>
 			<?php
 		}
-
+		
 		if(empty($error) === false){
 			?>
 			<div class="uc-google-connect-error">
-				<?php echo sprintf(__("Error: %s", "unlimited-elements-for-elementor"), $error); ?>
+				<?php echo sprintf(__("Error: %s", "unlimited-elements-for-elementor"), esc_html($error)); //Security Update 1 ?>
 			</div>
 			<?php
 		}
+		
 	}
 
 	/**
@@ -623,6 +624,7 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 		$name = UniteFunctionsUC::getVal($setting, "name");
 		$defaultValue = UniteFunctionsUC::getVal($setting, "default_value");
 		$value = UniteFunctionsUC::getVal($setting, "value");
+		$units = UniteFunctionsUC::getVal($setting, "units");
 		$withNames = UniteFunctionsUC::getVal($setting, "output_names");
 		$withNames = UniteFunctionsUC::strToBool($withNames);
 
@@ -685,6 +687,12 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 			$isLinked = UniteFunctionsUC::strToBool($isLinked);
 
 			?>
+
+			<?php if(empty($units) === false): ?>
+				<div class="unite-dimentions-units">
+					<?php $this->drawUnitsPicker($units); ?>
+				</div>
+			<?php endif; ?>
 
 			<div
 				class="unite-dimentions-link unite-setting-button uc-tip <?php echo $isLinked === true ? "unite-active" : ""; ?>"

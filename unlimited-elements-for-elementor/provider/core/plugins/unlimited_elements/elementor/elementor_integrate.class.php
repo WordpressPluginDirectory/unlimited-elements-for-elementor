@@ -720,7 +720,7 @@ class UniteCreatorElementorIntegrate{
 			if(empty(self::$objAddons))
 				self::$objAddons = new UniteCreatorAddons();
 
-			$output = self::$objAddons->getAddonOutput($objAddon, true);	//nowrap
+			$output = self::$objAddons->getAddonOutput($objAddon);
 
 			if(empty($output))
 				return(false);

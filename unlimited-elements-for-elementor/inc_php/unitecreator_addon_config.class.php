@@ -86,7 +86,7 @@ class UniteCreatorAddonConfig extends HtmlOutputBaseUC{
 				$params["disable_fonts"] = true;
 			
 			if($putMode == true)
-				
+			
 				$this->startAddon->putHtmlConfig(false,$params);
 			else{
 				

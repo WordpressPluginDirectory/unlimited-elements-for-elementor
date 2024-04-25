@@ -994,7 +994,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * add setting, may be in different type, of values
 		 */
 		protected function add($name, $defaultValue = "", $text = "", $type = self::TYPE_TEXT, $arrParams = array()){
-					
+
 			//validate name:
 			if(empty($name))
 				throw new Exception("Every setting should have a name!");

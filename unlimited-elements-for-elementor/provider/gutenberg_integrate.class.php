@@ -125,6 +125,7 @@ class UniteCreatorGutenbergIntegrate{
 
 		$data = array(
 			'id' => $attributes['_id'],
+			'root_id' => $attributes['_rootId'],
 			'settings' => json_decode($attributes['data'], true),
 			'selectors' => true,
 		);
@@ -207,6 +208,10 @@ class UniteCreatorGutenbergIntegrate{
 							'type' => 'string',
 							'default' => $addon->getID(),
 						),
+						'_rootId' => array(
+							'type' => 'string',
+							'default' => '',
+						),
 						'_preview' => array(
 							'type' => 'string',
 							'default' => '',
@@ -224,6 +229,7 @@ class UniteCreatorGutenbergIntegrate{
 					'supports' => array(
 						'customClassName' => false,
 						'html' => false,
+						'renaming' => false,
 						'reusable' => false,
 					),
 					'editor_style_handles' => array('uc_gutenberg_integrate'),

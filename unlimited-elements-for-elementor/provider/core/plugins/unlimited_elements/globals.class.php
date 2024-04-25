@@ -87,12 +87,14 @@ class GlobalsUnlimitedElements{
 	public static $renderingDynamicData;
 	public static $currentRenderingWidget;
 	public static $isImporting = false;
-	
+
 	/**
 	 * init globals
 	 */
 	public static function initGlobals(){
 
+		if(defined("UE_ENABLE_GUTENBERG_SUPPORT"))
+			self::$enableGutenbergSupport = true;
 
 		self::$urlTemplatesList = admin_url("edit.php?post_type=elementor_library&tabs_group=library");
 

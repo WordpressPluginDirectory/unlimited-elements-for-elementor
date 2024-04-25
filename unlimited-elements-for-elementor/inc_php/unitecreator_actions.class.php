@@ -63,7 +63,7 @@ class UniteCreatorActions{
 	public function onAjaxAction(){
 
 		if(GlobalsUC::$inDev == true || GlobalsUC::$debugAjaxErrors == true){
-			
+
 			ini_set("display_errors", "on");
 			error_reporting(E_ALL);
 		}
@@ -115,7 +115,7 @@ class UniteCreatorActions{
 					HelperProviderUC::verifyAdminPermission();
 
 					$response = $categories->removeFromData($data);
-	
+
 					HelperUC::ajaxResponseSuccess(esc_html__("The category deleted successfully", "unlimited-elements-for-elementor"), $response);
 				break;
 				case "update_category":
@@ -396,13 +396,17 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess(esc_html__("Saved", "unlimited-elements-for-elementor"));
 				break;
 				case "get_test_addon_data":
-
+					
+					HelperProviderUC::verifyAdminPermission();
+					
 					$response = $addons->getTestAddonData($data);
 
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "delete_test_addon_data":
-
+					//Security Update 3
+					HelperProviderUC::verifyAdminPermission();
+					
 					$addons->deleteTestAddonData($data);
 
 					HelperUC::ajaxResponseSuccess(esc_html__("Test data deleted", "unlimited-elements-for-elementor"));
@@ -613,40 +617,37 @@ class UniteCreatorActions{
 
 					HelperUC::ajaxResponseSuccess(esc_html__("Settings Saved", "unlimited-elements-for-elementor"));
 				break;
-				case "get_users_list_forselect":
+				case "get_link_autocomplete":
+					$response = $operations->getLinkAutocompleteFromData($data);
 
+					HelperUC::ajaxResponseData($response);
+				break;
+				case "get_users_list_forselect":
 					$arrUsersList = $operations->getUsersListForSelectFromData($data);
 
 					HelperUC::ajaxResponseData($arrUsersList);
-
 				break;
 				case "get_terms_list_forselect":
-
 					$arrTermsList = $operations->getTermsListForSelectFromData($data);
 
 					HelperUC::ajaxResponseData($arrTermsList);
-
 				break;
 				case "get_posts_list_forselect":
-
 					$arrPostList = $operations->getPostListForSelectFromData($data);
 
 					HelperUC::ajaxResponseData($arrPostList);
 				break;
 				case "get_select2_post_titles":
-
 					$arrData = $operations->getSelect2PostTitles($data);
 
 					HelperUC::ajaxResponseData(array("select2_data" => $arrData));
 				break;
 				case "get_select2_terms_titles":
-
 					$arrData = $operations->getSelect2TermsTitles($data);
 
 					HelperUC::ajaxResponseData(array("select2_data" => $arrData));
 				break;
 				case "get_select2_users_titles":
-
 					$arrData = $operations->getSelect2UsersTitles($data);
 
 					HelperUC::ajaxResponseData(array("select2_data" => $arrData));
@@ -706,7 +707,7 @@ class UniteCreatorActions{
 					UEGoogleAPIHelper::redirectToSettings($params);
 				break;
 				case "remove_google_connect_data":
-
+					
 					HelperProviderUC::verifyAdminPermission();
 
 					$objServices = new UniteServicesUC();

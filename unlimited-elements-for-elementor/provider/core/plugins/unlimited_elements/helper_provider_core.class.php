@@ -101,9 +101,9 @@ class HelperProviderCoreUC_EL{
 	 * process param value by type
 	 */
 	public static function processParamValueByType($value, $type, $param){
-			
+
     		switch($type){
-				
+
     			case UniteCreatorDialogParam::PARAM_RADIOBOOLEAN:
 
     				$trueValue = UniteFunctionsUC::getVal($param, "true_value");
@@ -487,12 +487,12 @@ class HelperProviderCoreUC_EL{
 		$arrControl["options"] = array();
 		$arrControl["label_block"] = true;
 
-		$placeholder = "All--Terms";
+		$placeholder = "All Terms";
 
 		$loaderText = __("Loading Data...", "unlimited-elements-for-elementor");
 		$loaderText = UniteFunctionsUC::encodeContent($loaderText);
 
-		$arrControl["placeholder"] = "All--Terms";
+		$arrControl["placeholder"] = "All Terms";
 
 		if(!empty($description))
 			$arrControl["description"] = $description;
@@ -851,17 +851,17 @@ class HelperProviderCoreUC_EL{
 
 		if(empty($templateID))
 			return(false);
-		
+
 		//fix some bug with dissapearing styles
-				
+
 		global $wp_filter;
 		$keyElementorFilter = "elementor/css-file/post/enqueue";
 		$arrElementorFilter = UniteFunctionsUC::getVal($wp_filter, $keyElementorFilter);
-		
+
 		if(!empty($arrElementorFilter))
 			unset( $wp_filter[ "elementor/css-file/post/enqueue" ] );
-		
-			
+
+
 		//change the template ID according the language for wpml
 
 		$isWpmlExists = UniteCreatorWpmlIntegrate::isWpmlExists();
@@ -898,7 +898,9 @@ class HelperProviderCoreUC_EL{
 		$wp_query->queried_object_id = $postID;
 
 		$GLOBALS['post'] = $post;
-
+		
+		GlobalsProviderUC::$isUnderDynamicTemplateLoop = true;
+		
 		//set author data
 
 		UniteFunctionsWPUC::setGlobalAuthorData($post);
@@ -1018,10 +1020,11 @@ class HelperProviderCoreUC_EL{
 
 		GlobalsProviderUC::$isUnderDynamicTemplateLoop = false;
 		
+		
 		//bring back the filter
 		if(!empty($arrElementorFilter) && !isset($wp_filter[$keyElementorFilter]))
 			$wp_filter[$keyElementorFilter] = $arrElementorFilter;
-		
+
 	}
 
 	/**

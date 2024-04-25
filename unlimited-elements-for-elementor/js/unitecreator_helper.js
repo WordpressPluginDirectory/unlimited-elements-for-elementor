@@ -5,6 +5,11 @@ function UniteCreatorHelper() {
 		g_ucAdmin = new UniteAdminUC();
 
 	/**
+	 * get random string
+	 */
+	this.getRandomString = g_ucAdmin.getRandomString
+
+	/**
 	 * put includes
 	 */
 	this.putIncludes = function (windowElement, includes, onLoaded) {

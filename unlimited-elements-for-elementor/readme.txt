@@ -867,6 +867,79 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+version 1.5.104: 2024-04-24
+
+Plugin Changes:
+
+* Feature: added support for unselect items in sync functionality
+* Feature: added feature - sort terms by parent -> children, and levels number class
+* Fix: fixed some load more issue with dynamic template loop and post lists inside
+* Fix: fixed woo category image not fetched bug
+* Fix: fixed some cases of sticky elementor elements with filters
+* Fix: fixed remote connection with single background parent and remote widget
+
+Widgets Changes:
+
+* Feature: Neon Glowing Button Effect (Pro) - Implemented 'Neon Line Width' option. This new functionality allows users to adjust the width of the neon line effect within the widget, providing finer control over its appearance and visual impact.
+* Feature: Scroll Sequence (Pro) - Introduced 'Hide Add Action Section' debug option, enabling users to match accurate configurations in the backend and frontend.
+* Feature: Team Member Carousel (Pro) - Introduced 'Button Text' option in items, enabling users to set custom button text for each team member for enhanced customization and flexibility.
+* Feature: Overlay Button (Free) - Added 'Icon' option, allowing users to easily add an icon to the button for enhanced visual appeal.
+* Feature: Overlay Button (Free) - Introduced 'Overlay Transition Duration' option, providing users with more control over the duration of overlay transitions for enhanced customization and user experience.
+* Feature: Dropdown Field (Pro) - Added support for 'Dropdown Value (Numeric Values)' in multi-source, enabling users to include numeric dropdown values via Multi Source.
+* Feature: Neon Glowing Button Effect (Pro) - Implemented 'Button Shadow' option. This new functionality allows users to add a shadow effect to buttons within the widget, enhancing their visual appearance and depth.
+* Feature: Mega Menu (Pro) - Implemented 'Mobile Open Menu Animation' option. This new functionality allows users to specify the animation type for opening the menu on mobile devices, enhancing the visual presentation and user experience.
+* Feature: Neon Glowing Button Effect (Pro) - Implemented 'Button Background Color' option. This new functionality allows users to customize the background color of buttons within the widget, enhancing visual design and customization possibilities.
+* Feature: Logo Carousel (Pro) - Implemented support for empty links. This new functionality allows items to become not clickable when empty links are specified, providing more control over the behavior and interaction of items within the widget.
+* Fix: Loop Carousel (Pro) - Corrected spelling mistakes and improved naming conventions, enhancing clarity and consistency.
+* Fix: Flip Box (Free) - Resolved issue where links were not firing for the first click on the back of the Flip Box. This fix ensures that links behave as expected, allowing them to be clicked and activated reliably.
+* Fix: Content Tabs (Free) - Resolved issue where Content Tabs widget couldn't work with Icon Tabs widget on the same page. This fix ensures that both widgets can coexist and function properly together, allowing for seamless integration and improved user experience.
+* Fix: Checkboxes Filter (Pro) - Enhanced Accordion Layout option for the Checkboxes Widget to improve script communication. This improvement optimizes the interaction between scripts, resulting in smoother operation and better performance of the widget.
+* Fix: Loop Grid (Pro) - Implemented additional Masonry layout check to avoid items overlapping over each other. This enhancement ensures that items are properly positioned and do not overlap, maintaining a clean and organized layout within the widget.
+* Fix: Dynamic Post Popup (Pro) - Resolved issue where popups allowed opening links in new tabs while opening the popup. This fix ensures that links within popups behave consistently and do not inadvertently open in new tabs, providing a smoother user experience.
+* Fix: Post Slider (Pro) - Addressed issue where post title typography settings were not applied, ensuring proper functionality and appearance.
+* Fix: Flip Box (Free) - Corrected a typography mistake in options.
+* Fix: Content Slider (Pro) - Resolved conflict caused between Elementor's Motion Effects and the widget due to the same animation library (animate.css), resolving CSS class conflict for smoother animation and functionality.
+* Fix: Fullscreen Menu (Free) - Resolved issue with Opening Item when Clickable Parent option is enabled.
+* Fix: Side Menu (Pro) - Resolved issue where some icons were being reverted. This fix ensures that all icons remain consistent and do not revert unexpectedly.
+* Fix: Rhombus Grid (Pro) - Increased CSS priority for 'Item Background Color Override' option. This adjustment ensures that the specified background color takes precedence over other styles, providing consistent and reliable appearance for the widget items.
+
+
+version 1.5.103: 2024-04-16
+
+Plugin Changes:
+
+* Feature: added option to add additional url attributes to post links
+* Feature: improved woo category thumbnail image gether
+* Feature: added option to unite gallery - strip_speed
+* Fix: fixed some widgets editor enable visibility bug
+* Fix: fixed entrance animation run if inside a viewport window
+* Fix: fixed some security issues - escaping some fields output
+
+Widgets Changes:
+
+* Feature: Overlay Carousel (Pro) - Implemented 'Show Dots' option. This new functionality allows users to toggle the visibility of dots within the widget, providing greater control over navigation indicators.
+* Feature: Checkbox Field (Pro) - Implemented 'Checkbox Custom Icon' option. This new functionality allows users to customize the appearance of checkboxes by providing custom icons, enhancing the visual presentation of checkboxes within the widget.
+* Feature: Video Playlist (Pro) - Implemented 'Strip Navigation Speed' option. This new functionality allows users to adjust the speed of navigation within the strip, providing finer control over the scrolling behavior.
+* Feature: Expanding Content Cards (Pro) - Implemented 'Background Image Align' option. This new functionality allows users to specify the alignment of the background image, providing greater control over its positioning within the element.
+* Feature: Post Magazine Grid (Pro) - Implemented 'Meta Date Date Format' option. This new functionality allows users to specify the date format for meta date display, providing customization options for date presentation.
+* Feature: Justified Image Carousel (Pro) - Implemented 'Show Item Title in Lightbox' option. This new functionality allows users to toggle the display of item titles within the lightbox, providing control over the visibility of titles for a better user experience.
+* Feature: Search Filter (Pro) - Implemented 'Custom Links Ending' option. This new functionality allows users to change links in the connected grid to highlight the search phrase.
+* Feature: Load More / Infinite Scroll (Pro) - Implemented 'Connect To Grids Group' option. This new functionality allows users to connect the filter widget to a particular grid widget.
+* Feature: Post Pagination (Free) - Implemented 'Connect To Grids Group' option. This new functionality allows users to connect the filter widget to a particular grid widget.
+* Feature: Content Switcher (Pro) - Introduced option to fire a resize event on tab click, ensuring proper functionality of other widgets inside tab Content Switcher for a smoother and more seamless user experience.
+* Feature: Submit Button (Free) - Implemented 'Show Field Name In Empty Field Error Message' option. This new functionality allows users to include the field name in the empty field error message, providing clearer feedback to users when a required field is left blank.
+* Feature: Side Menu (Pro) - Implemented 'Templates Width' and 'Templates Horizontal Align' options.
+* Change: Unlimited Grid (Pro) - Changed 'Title Spacing' option to 'Title Margin'. This change allows users to add margin in all directions to the title, providing more granular control over its positioning within the widget.
+* Fix: Content Box Hover Text Reveal (Free) - Resolved issue where Overlay Opacity option wasn't working on mobile devices. This fix ensures that the Overlay Opacity option functions correctly across all devices, providing consistent behavior and appearance.
+* Fix: Multi Step Form (Pro) - Fixed Multi Step Error Message not showing when empty and required field was present on active step.
+* Fix: Submit Button (Free) - Fixed Submit Button verification issue when fields with 0 value were parsed as empty.
+* Fix: Slider Field (Pro) - Resolved issue where border radius for focus state differed from regular state. This fix ensures that the border radius remains consistent across different states.
+* Fix: Icon Bullets (Free) - Fixed issue related to Hover Colors not being revealed after item hover.
+* Fix: Team Member Sliding Effect (Pro) - Resolved issue related to global colors usage. This fix ensures that global colors are properly utilized throughout the widget, maintaining consistency and accuracy in color rendering.
+* Fix: Post Magazine Grid (Pro) - Optimized widget HTML. This optimization improves the efficiency and performance of the widget by streamlining the HTML structure and reducing unnecessary code.
+* Fix: Form Fields Widgets: Resolved vulnerability where scripts could be injected under certain widget attributes. This fix ensures that scripts are properly sanitized and prevented from being inserted into widget attributes, mitigating potential security risks.
+
+
 
 version 1.5.101: 2024-04-03
 
