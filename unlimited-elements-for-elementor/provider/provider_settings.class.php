@@ -1267,22 +1267,29 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 
 	private function __________POSTS_______(){}
-
+	
+	
 	/**
 	 * add post ID select
 	 */
 	public function addPostIDSelect($settingName, $text = null, $elementorCondition = null, $isForWoo = false, $addAttribOpt = "", $params = array()){
 
-		if(empty($text) === true)
+		if(empty($text))
 			$text = __("Search and Select Posts", "unlimited-elements-for-elementor");
+
+		$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-special-select";
 
 		$placeholder = __("All Posts", "unlimited-elements-for-elementor");
 
 		if($isForWoo === true)
 			$placeholder = __("All Products", "unlimited-elements-for-elementor");
 
-		$addAttrib = "";
+		$placeholder = str_replace(" ", "--", $placeholder);
 
+		$loaderText = __("Loading Data...", "unlimited-elements-for-elementor");
+		$loaderText = UniteFunctionsUC::encodeContent($loaderText);
+
+		$addAttrib = "";
 		if($isForWoo === true)
 			$addAttrib = " data-woo='yes'";
 
@@ -1293,38 +1300,40 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		if($isForWoo === "terms"){
 			$addAttrib = " data-datatype='terms'";
-			$placeholder = "All Terms";
+			$placeholder = "All--Terms";
 		}
 
 		if($isForWoo === "users"){
 			$addAttrib = " data-datatype='users'";
-			$placeholder = "All Users";
+			$placeholder = "All--Users";
 		}
 
-		if(empty($params["placeholder"]) === false)
+
+		if(isset($params["placeholder"])){
 			$placeholder = $params["placeholder"];
+		}
 
-		if($isForWoo === "single")
+		if($isForWoo === "single"){
+
 			$addAttrib = " data-issingle='true'";
+		}
 
-		if(empty($addAttribOpt) === false)
-			$addAttrib .= " " . $addAttribOpt;
+		if(!empty($addAttribOpt))
+			$addAttrib .= " ".$addAttribOpt;
 
-		$loaderText = __("Loading data...", "unlimited-elements-for-elementor");
-		$loaderText = UniteFunctionsUC::encodeContent($loaderText);
+		$params[UniteSettingsUC::PARAM_ADDPARAMS] = "data-settingtype='post_ids' data-placeholdertext='{$placeholder}' data-loadertext='$loaderText' $addAttrib";
 
 		$params["datasource"] = "post_type";
 		$params["origtype"] = "uc_select_special";
 		$params["label_block"] = true;
-		$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-special-select";
-		$params[UniteSettingsUC::PARAM_ADDPARAMS] = 'data-settingtype="post_ids" data-placeholdertext="' . esc_attr($placeholder) . '" data-loadertext="' . esc_attr($loaderText) . '" ' . $addAttrib;
 
-		if(empty($elementorCondition) === false)
+		if(!empty($elementorCondition))
 			$params["elementor_condition"] = $elementorCondition;
 
-		$this->addSelect($settingName, array(), $text, "", $params);
-	}
+		$this->addSelect($settingName, array(), $text , "", $params);
 
+	}
+	
 
 	/**
 	 * add post list picker

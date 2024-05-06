@@ -2602,14 +2602,26 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get if the request filterable
 	 */
 	private function getIsFilterable($value, $name){
-
+		
+		//all under dynamic template is not filterable
+		
+		if(GlobalsProviderUC::$isUnderDynamicTemplateLoop == true)
+			return(false);
+		
 		$isAjax = UniteFunctionsUC::getVal($value, "{$name}_isajax");
 		$isAjax = UniteFunctionsUC::strToBool($isAjax);
+		
+		//all ajax related under ajax is positive
+		if(UniteCreatorFiltersProcess::$isUnderAjax == true && $isAjax == true)
+			return(true);
 
+		
+		//if it's not under ajax - then allow request only if ajax url is set to true
+			
 		$isAjaxSetUrl = UniteFunctionsUC::getVal($value, "{$name}_ajax_seturl");
 
 		$isFilterable = $isAjax && ($isAjaxSetUrl != "ajax");
-
+		
 		if($isFilterable == true)
 			return(true);
 

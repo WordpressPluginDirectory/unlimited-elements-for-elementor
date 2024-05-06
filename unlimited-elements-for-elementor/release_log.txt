@@ -1,5 +1,11 @@
 
 
+version 1.5.105:
+
+* Fix: fixed some filters and request related issue
+* Fix: fixed specific post and terms select
+
+
 version 1.5.104:
 
 * Feature: added support for unselect items in sync functionality

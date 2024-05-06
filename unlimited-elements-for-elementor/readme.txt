@@ -867,6 +867,35 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+
+version 1.5.105: 2024-05-05
+
+Plugin Changes:
+
+* Fix: fixed some filters and request related issue
+* Fix: fixed specific post and terms select
+
+Widget Changes:
+
+* Feature: Masonry Gallery (Pro) - Implemented 'Mute Video' option. This new functionality allows users to start videos muted within the widget, providing greater control over the audio playback and enhancing the user experience.
+* Feature: Team Member Carousel (Pro) - Introduced 'Button Text' option in items, enabling users to set custom button text for each team member for enhanced customization and flexibility.
+* Feature: Mega Menu (Pro) - Implemented 'Mobile Open Menu Animation' option. This new functionality allows users to specify the animation type for opening the menu on mobile devices, enhancing the visual presentation and user experience.
+* Feature: Logo Carousel (Pro) - Implemented support for empty links. This new functionality allows items to become not clickable when empty links are specified, providing more control over the behavior and interaction of items within the widget.
+* Feature: Scroll Sequence (Pro) - Introduced 'Hide Add Action Section' debug option, enabling users to match accurate configurations in the backend and frontend.
+* Feature: Dropdown Field (Pro) - Added support for 'Dropdown Value (Numeric Values)' in multi-source, enabling users to include numeric dropdown values via Multi Source.
+* Feature: Overlay Button (Free) - Introduced 'Overlay Transition Duration' option, providing users with more control over the duration of overlay transitions for enhanced customization and user experience.
+* Feature: Checkboxes Filter (Pro) - Introduced 'Accordion as Dropdown' option, allowing users to open the accordion as a dropdown when the layout is set to 'Accordion', preventing layout shifting and improving user experience.
+* Feature: Overlay Button (Free) - Added 'Icon' option, allowing users to easily add an icon to the button for enhanced visual appeal.
+* Feature: Event List (Pro) - Introduced 'Show End Time' option, enabling users to show or hide the event end time for enhanced flexibility and customization.
+* Feature: Animated Icon Box (Pro) - Introduced styling options for Icon and Divider, providing users with more customization choices for improved visual design.
+* Feature: Taxonomy Terms (Pro) - Implemented styling options for 1st and 2nd level of Child Term Elements. This new functionality allows users to customize the appearance of Child Term Elements at different hierarchical levels, providing greater design flexibility and control.
+* Feature: Content Carousel (Pro) - Implemented 'Image Border Radius' option. This new functionality allows users to specify the border radius for images within the widget, enabling them to create rounded or custom-shaped images for a more visually appealing design.
+* Feature: Coverflow Carousel (Pro) - Implemented 'Custom Navigation Arrows' option. This new functionality allows users to customize the navigation arrows used within the widget, enabling them to use custom-designed arrows for a more personalized look and feel.
+* Feature: One Page Scroll Navigation (Pro) - Enhanced widget flexibility to support other sections apart from the one with the tag <section>. This improvement expands compatibility with different section types, providing users with more options for integrating the widget into their website layouts.
+* Change: Animated Icon Box (Pro) - Replaced old font edit option with new typography and color options for enhanced customization and design control.
+* Change: Call To Action Button (Free) - Moved ripple 'Transition Timing' from Button Icon to Button Icon tab and renamed it to 'Ripple Timing' for improved organization and clarity.
+
+
 version 1.5.104: 2024-04-24
 
 Plugin Changes:

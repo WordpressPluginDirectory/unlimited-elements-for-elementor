@@ -34,6 +34,7 @@ class UniteCreatorFiltersProcess{
 	private $contentWidgetsDebug = array();
 	private static $lastArgs = null;	
 	private static $isUnderAjaxSearch = false;
+	public static $isUnderAjax = false;
 	private static $showEchoDebug = false;
 	
 	private $hasSelectedByRequest = false;
@@ -134,18 +135,6 @@ class UniteCreatorFiltersProcess{
 	}
 	
 	
-	/**
-	 * check if under ajax request
-	 */
-	private function isUnderAjax(){
-		
-		$ajaxAction = UniteFunctionsUC::getPostGetVariable("ucfrontajaxaction","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-		
-		if(!empty($ajaxAction))
-			return(true);
-		
-		return(false);
-	}
 	
 		
 	/**
@@ -612,39 +601,6 @@ class UniteCreatorFiltersProcess{
 	}
 	
 	
-	/**
-	 * get input filters in assoc mode
-	 */
-	private function getInputFiltersAssoc(){
-		
-		if(!empty(self::$arrFiltersAssocCache))
-			return(self::$arrFiltersAssocCache);
-		
-		$arrFilters = $this->getArrInputFilters();
-		
-		$output = array();
-		
-		$terms = UniteFunctionsUC::getVal($arrFilters, "terms");
-		
-		if(empty($terms))
-			$terms = array();
-		
-		foreach($terms as $taxonomy=>$arrTermSlugs){
-				
-			foreach($arrTermSlugs as $slug){
-				
-				$key = "term_{$taxonomy}_{$slug}";
-				
-				$output[$key] = true;
-			}
-			
-		}
-		
-		self::$arrFiltersAssocCache = $output;
-		
-		return($output);
-	}
-	
 	
 	/**
 	 * get filters arguments
@@ -885,15 +841,14 @@ class UniteCreatorFiltersProcess{
 	 */
 	public function processRequestFilters($args, $isFilterable, $isMainQuery = false){
 		
-		$isUnderAjax = $this->isUnderAjax();
+		//allow all ajax, forbid under request and not filterable.
 		
-		if($isUnderAjax == false || $isFilterable == false)
+		if($isFilterable == false)
 			return($args);
-		
+					
 		$arrFilters = $this->getRequestFilters();
 		
 		$arrMetaQuery = array();
-		
 		
 		//---- set offset and count ----
 		
@@ -2454,7 +2409,7 @@ class UniteCreatorFiltersProcess{
 		
 		$isInsideEditor = GlobalsProviderUC::$isInsideEditor;
 		
-		$isUnderAjax = $this->isUnderAjax();
+		$isUnderAjax = self::$isUnderAjax;
 		
 		if($isUnderAjax == true)
 			$isFirstLoad = false;
@@ -2693,6 +2648,8 @@ s	 */
 		$this->setShowDebug();
 		
 		$this->checkSetErrorsReporting();
+
+		self::$isUnderAjax = true;
 		
 		try{
 			
