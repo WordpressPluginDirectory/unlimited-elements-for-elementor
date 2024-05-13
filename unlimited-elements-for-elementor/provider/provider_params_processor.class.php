@@ -23,7 +23,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * add other image thumbs based of the platform
 	 */
 	protected function addOtherImageData($data, $name, $imageID){
-
+		
 		if(empty($data))
 			$data = array();
 
@@ -1404,7 +1404,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		if(is_array($value) == false)
 			return(array());
 
-
 		$filters = array();
 
 		$showDebugQuery = UniteFunctionsUC::getVal($value, "{$name}_show_query_debug");
@@ -1412,7 +1411,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		if(self::SHOW_DEBUG_QUERY == true)
 			$showDebugQuery = true;
-
+		
 		//show debug by url only for admins
 		
 		$debugType = null;
@@ -1427,8 +1426,10 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$this->advancedQueryDebug = true;
 			$debugType = "show_query";
 		}
-
-
+		
+		if($showDebugQuery == true)
+			GlobalsProviderUC::$showPostsQueryDebug = true;
+		
 		$source = UniteFunctionsUC::getVal($value, "{$name}_source");
 
 		$isForWoo = UniteFunctionsUC::getVal($param, "for_woocommerce_products");
@@ -1447,7 +1448,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$nameForFilter = $nameListing;
 
 		$isFilterable = $this->getIsFilterable($value, $nameForFilter);
-
+		
 		$isRelatedPosts = $source == "related";
 		$relatePostsType = "";
 
@@ -2336,7 +2337,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			$arrVariationTerms = $objWoo->getVariationTermsFromQueryQrgs($args);
 		}
-
 		
 		HelperUC::addDebug("Posts Query", $args);
 
@@ -2348,7 +2348,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$argsForDebug = $args;
 			if(!empty($arrQueryBase))
 				$argsForDebug = UniteFunctionsWPUC::cleanQueryArgsForDebug($argsForDebug);
-
+			
 			dmp("Custom Posts. The Query Is:");
 			dmp($argsForDebug);
 			
@@ -3064,12 +3064,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 				$arrPosts = $this->getPostListData_custom($value, $name, $processType, $param, $data, $nameListing);
 				
-				if($this->advancedQueryDebug == true){
-
-					//UniteFunctionsUC::showTrace();
-					//dmp("num posts custom: ".count($arrPosts));
-				}
-
 				$filters = array();
 				$value["uc_posts_name"] = $name;
 				
@@ -3077,17 +3071,11 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 				
 				if(!empty($arrPostsFromFilter))
 					$arrPosts = $arrPostsFromFilter;
-
-				if($this->advancedQueryDebug == true){
-
-					//dmp("num posts custom after filter: ".count($arrPosts));
-
-				}
-
+				
 
 			break;
 		}
-
+		
 		if(self::SHOW_DEBUG_QUERY == true){
 
 			dmp("don't forget to turn off the query debug");
@@ -3195,7 +3183,9 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			HelperProviderUC::printDebugQueries(true);
 		}
-
+		
+		//turn off the query debug flag
+		GlobalsProviderUC::$showPostsQueryDebug = false;
 
 		return($data);
 	}
@@ -3207,7 +3197,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get gallery item title
 	 */
 	private function getGalleryItem_title($source, $data, $name, $post, $item){
-
 		
 		switch($source){
 			case "post_title":
@@ -3239,7 +3228,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			break;
 			default:
 			case "image_auto":
-
+				
 				$title = UniteFunctionsUC::getVal($data, $name."_title");
 
 				if(empty($title))
@@ -3251,6 +3240,9 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			break;
 		}
 		
+		
+		
+		return($title);
 	}	
 		
 
@@ -3542,8 +3534,8 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		$item = array();
 		$item["type"] = "image";
-
-
+		
+		
 		if(empty($value)){
 
 			$item["image"] = GlobalsUC::$url_no_image_placeholder;
@@ -3572,9 +3564,8 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			return($item);
 		}
-
+				
 		$data = $this->getProcessedParamsValue_image($data, $value, $param);
-
 
 		$arrItem = array();
 		$keyThumb = "{$name}_thumb_$thumbSize";
@@ -3605,7 +3596,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 				$urlThumb = GlobalsUC::$url_no_image_placeholder;
 		}
 
-
 		$item["image"] = $urlImage;
 		$item["thumb"] = $urlThumb;
 
@@ -3617,15 +3607,18 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		
 		$title = $this->getGalleryItem_title($titleSource, $data, $name, $post, $sourceItem);
 		$description = $this->getGalleryItem_title($descriptionSource, $data, $name, $post, $sourceItem);
-
+		
+		
 		//demo item text
-		if($isByUrl == true && count($data) == 1){
-
+		if($isByUrl == true && count($data) <= 2){
+			
 			if(empty($title))
 				$title = "Demo Item {$index} Title";
 
 			if(empty($description))
 				$description = "Demo Item {$index} Description";
+				
+			
 		}
 
 		$item["title"] = $title;
@@ -3644,7 +3637,8 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$item["imageid"] = $id;
 
 		$item = $this->checkAddPostVideo($item, $arrParams, $post);
-
+		
+		
 		return($item);
 	}
 
@@ -3654,7 +3648,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * return the images data at the end
 	 */
 	private function getGroupedData_convertForGallery($arrItems, $source, $value, $param){
-		
+
 		
 		$name = UniteFunctionsUC::getVal($param, "name");
 		
@@ -3751,21 +3745,25 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 				break;
 				case "gallery":
-
+					
 					$id = UniteFunctionsUC::getVal($item, "id");
 					$url = UniteFunctionsUC::getVal($item, "url");
-
+					
 					//for default items
 					if(empty($id) && empty($url)){
+						
 						$url = UniteFunctionsUC::getVal($item, "image");
-
+						
 						if(!empty($url)){
 							$params["item"] = $item;
 							$params["title_source"] = "item_title";
 						}
 					}
-
-					$galleryItem = $this->getGalleryItem($id, $url,$params);
+					
+					if($id === 0)
+						$params["item"] = $item;
+										
+					$galleryItem = $this->getGalleryItem($id, $url, $params);
 
 				break;
 				case "current_post_meta":

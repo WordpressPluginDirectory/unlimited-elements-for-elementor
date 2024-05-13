@@ -12,7 +12,8 @@ function UEDynamicFilters(){
 
 	var g_showDebug = false;
 	var g_debugInitMode = false;
-
+	var g_isGutenberg = false;
+	
 	var g_types = {
 		PAGINATION:"pagination",
 		LOADMORE:"loadmore",
@@ -66,7 +67,10 @@ function UEDynamicFilters(){
 
 		REFRESH_MODE_PAGINATION: "pagination",
 		REFRESH_MODE_LOADMORE: "loadmore",
-		trashold_handle:null
+		trashold_handle:null,
+		class_widget_wrapper:"elementor-widget",
+		class_widget_container:"elementor-widget-container",
+		current_postid:null
 	};
 
 	var g_options = {
@@ -465,15 +469,16 @@ function UEDynamicFilters(){
 	 *
 	 * get element widget id from parent wrapper
 	 */
-	function getElementWidgetID(objElement) {
+	function getElementWidgetID(objElement){
+		
 		if (!objElement || objElement.length === 0)
 			throw new Error("Element not found");
-
-		var objWidget = objElement.closest(".elementor-widget");
+				
+		var objWidget = objElement.closest("."+g_vars.class_widget_wrapper);
 
 		if (objWidget.length === 0)
-			throw new Error("Element parent not found");
-
+			throw new Error("Element parent not found with class: "+g_vars.class_widget_wrapper);
+		
 		var widgetID = objWidget.data("id");
 
 		if (!widgetID)
@@ -481,13 +486,16 @@ function UEDynamicFilters(){
 
 		return widgetID;
 	}
+	
 
 	/**
 	 * get the grid widget object from elementor element id
 	 */
 	function getGridFromElementorElementID(elementID){
-
-		var objElement = g_objBody.find(".elementor-widget[data-id='"+elementID+"']");
+		
+		var selector = "."+g_vars.class_widget_wrapper+"[data-id='"+elementID+"']";
+				
+		var objElement = g_objBody.find(selector);
 
 		if(objElement.length == 0)
 			return(null);
@@ -598,10 +606,10 @@ function UEDynamicFilters(){
 	 * get element layout data
 	 */
 	function getElementLayoutData(objElement, addSyncedGrids){
-
+		
 		//get widget id
 		var widgetID = getElementWidgetID(objElement);
-		var objWidget = objElement.parents(".elementor-widget");
+		var objWidget = objElement.parents("."+g_vars.class_widget_wrapper);
 
 		//get synced grids
 		var objSyncedData = null;
@@ -623,18 +631,27 @@ function UEDynamicFilters(){
 				trace("skip sync grid");
 
 		}
-
+		
 		//get layout id
-		var objLayout = objWidget.parents(".elementor");
-
-		if(objLayout.length == 0)
-			throw new Error("layout not found");
-
-		var layoutID = objLayout.data("elementor-id");
-
-		if(!layoutID)
-			layoutID = objLayout.data("id");
-
+		
+		if(g_isGutenberg == false){
+		
+			var objLayout = objWidget.parents(".elementor");
+	
+			if(objLayout.length == 0)
+				throw new Error("layout not found");
+			
+			var layoutID = objLayout.data("elementor-id");
+	
+			if(!layoutID)
+				layoutID = objLayout.data("id");
+			
+		}else{	//gutenberg
+			
+			var layoutID = g_vars.current_postid;			
+		}
+		
+		
 		var output = {};
 
 		output["widgetid"] = widgetID;
@@ -819,7 +836,7 @@ function UEDynamicFilters(){
 	function clearChildFilters(objGrid, objCurrentFilter, isHideChildren, termID, isClearAll){
 
 		var objFilters = getGridFilters(objGrid);
-
+		
 		if(!objFilters)
 			return(false);
 
@@ -827,7 +844,7 @@ function UEDynamicFilters(){
 
 		if(objCurrentFilter)
 			var currentFilterID = objCurrentFilter.attr("id");
-
+						
 		jQuery.each(objFilters, function(index, filter){
 
 			var objFilter = jQuery(filter);
@@ -837,7 +854,7 @@ function UEDynamicFilters(){
 				return(true);
 
 			var role = objFilter.data("role");
-
+			
 			if(role != "child" && role != "main" && role != "term_child"){
 
 				if(isClearAll == true)
@@ -1183,7 +1200,7 @@ function UEDynamicFilters(){
 	 * on terms list click
 	 */
 	function onTermsLinkClick(event){
-
+		
 		var className = "uc-selected";
 
 		event.preventDefault();
@@ -1239,7 +1256,7 @@ function UEDynamicFilters(){
 		var isHideChildren = false;
 		if(!termID)
 			isHideChildren = true;
-
+		
 		//set not refresh next iteration, because of the clicked
 		if(isRefresh == false)
 			setNoRefreshFilter(objTermsFilter);
@@ -1364,13 +1381,13 @@ function UEDynamicFilters(){
 	 * on general filter change
 	 */
 	function onGeneralFilterChange(event, params){
-
+			
 		event.stopPropagation();
 
 		var isRefresh = getVal(params, "refresh");
 
 		var objFilter = jQuery(this);
-
+		
 		var filterType = objFilter.data("filtertype");
 
 		if(filterType != "general"){
@@ -1380,7 +1397,7 @@ function UEDynamicFilters(){
 			throw new Error("Not a general filter on action: " + g_vars.ACTION_FILTER_CHANGE);
 			return(false);
 		}
-
+				
 		if(isRefresh !== true)
 			setNoRefreshFilter(objFilter);
 
@@ -1393,7 +1410,21 @@ function UEDynamicFilters(){
 			throw new Error("Wrong filter change");
 			return(false);
 		}
-
+		
+		var filterRole = objFilter.data("role");
+		
+		if(filterRole == "main"){
+			
+			var isHideChildren = false;
+			
+			//if no items selected - hide all children			
+			var objData = getGeneralFilterData(objFilter);
+			if(!objData)
+				isHideChildren = true;
+			
+			clearChildFilters(objGrid, objFilter, isHideChildren);
+		}
+		
 		//check for skip action
 
 		var isSkipAction = isFilterSkipAction(objFilter);
@@ -1801,9 +1832,9 @@ function UEDynamicFilters(){
 
 		if(!htmlDebug)
 			return(false);
-
-		var gridParent = objGrid.parents(".elementor-widget-container");
-
+		
+		var gridParent = objGrid.parents("." + g_vars.class_widget_container);
+		
 		var objDebug = gridParent.find(".uc-debug-query-wrapper");
 
 		if(objDebug.length == 0)
@@ -2053,7 +2084,7 @@ function UEDynamicFilters(){
 				var htmlDebug = getVal(objHtmlDebug, widgetID);
 
 			if(htmlDebug){
-				var objParent = objFilter.parents(".elementor-widget-container");
+				var objParent = objFilter.parents("." + g_vars.class_widget_container);
 				var objDebug = objParent.find(".uc-div-ajax-debug");
 
 				if(objDebug.length)
@@ -2824,20 +2855,7 @@ function UEDynamicFilters(){
 
 				throw new Error("Duplicate Filter ID found: " + id);
 			}
-			
-			//skip alias
-			if(objFilter.hasClass("uc-filter-alias")){
-				
-				if(g_showDebug == true){
-					
-					trace("Skip Alias");
-					trace(objFilter);
-					
-				}
-				
-				return(true);
-			}
-			
+						
 			arrFilterIDs[id] = objFilter;
 
 			var isNoRefresh = objFilter.data("uc_norefresh");
@@ -3078,15 +3096,16 @@ function UEDynamicFilters(){
 			}
 
 			//if hidden - no refresh
+			
 			var isFilterHidden = objFilter.hasClass(g_vars.CLASS_HIDDEN);
 			if(isFilterHidden == true)
 				isNoRefresh = true;
-
+			
 			objFilter.data("uc_norefresh",false);
-
+			
 			var isMainFilter = (filterRole == "main");
 			var isTermChild = (filterRole == "term_child");
-
+			
 			//add to refresh filter if it's qualify
 
 			var isRefresh = true;
@@ -3173,8 +3192,11 @@ function UEDynamicFilters(){
 		var urlFilterString = "";
 
 		var urlAddition = "ucfrontajaxaction=getfiltersdata&layoutid="+layoutID+"&elid="+widgetID;
-
+				
 		urlAjax = addUrlParam(urlAjax, urlAddition);
+		
+		if(g_isGutenberg == true)
+			urlAjax = addUrlParam(urlAjax, "platform=gutenberg");
 
 		if(syncedWidgetIDs)
 			urlAjax += "&syncelids="+syncedWidgetIDs;
@@ -3375,17 +3397,28 @@ function UEDynamicFilters(){
 			trace("filters error - filters data not found");
 			return(false);
 		}
-
+		
 		g_urlBase = getVal(g_filtersData, "urlbase");
 		g_urlAjax = getVal(g_filtersData, "urlajax");
-
+		
+		var platform = getVal(g_filtersData, "platform");
+		
+		//switch to gutenberg
+		
+		if(platform == "gutenberg"){
+			g_isGutenberg = true;
+			g_vars.class_widget_wrapper = "ue-widget-root";
+			g_vars.class_widget_container = "ue-widget-root"; 
+			g_vars.current_postid = getVal(g_filtersData, "postid");
+		}
+		
 		//url keys
 
 		var objUrlKeys = getVal(g_filtersData, "urlkeys");
 		var taxSap = getVal(objUrlKeys, "tax_sap");
 		if(taxSap)
 			g_options.urlkey_taxsap = taxSap;
-
+		
 		var isShowDebug = getVal(g_filtersData, "debug");
 
 		if(isShowDebug == true)
@@ -3403,7 +3436,9 @@ function UEDynamicFilters(){
 			trace("ue filters error - ajax url not inited");
 			return(false);
 		}
-
+		
+		//trace(g_options);
+		
 		return(true);
 	}
 

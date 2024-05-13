@@ -1133,7 +1133,7 @@ class UniteCreatorTemplateEngineWork{
 
 			break;
 			case "put_unite_gallery_item":
-
+				
 				$htmlItem = UniteCreatorUniteGallery::getUniteGalleryHtmlItem($arg1);
 
 				echo $htmlItem;
@@ -1262,7 +1262,7 @@ class UniteCreatorTemplateEngineWork{
 				$arrTerms = $arg1;
 
 				HelperUC::$operations->putTermsCustomFieldsDebug($arrTerms);
-
+			
 			break;
 			case "put_post_content":
 

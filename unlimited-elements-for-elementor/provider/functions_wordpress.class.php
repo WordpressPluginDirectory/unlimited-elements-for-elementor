@@ -947,8 +947,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		
 		
 		public static function a_______TAXANOMIES_______(){}
-
-
+		
 
 		/**
 		 *
@@ -957,12 +956,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static function getTaxonomiesAssoc(){
 
 			$arr = get_taxonomies();
-
-			unset($arr["post_tag"]);
+			
 			unset($arr["nav_menu"]);
 			unset($arr["link_category"]);
 			unset($arr["post_format"]);
-
+			
 			return($arr);
 		}
 
@@ -970,7 +968,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get all tax assoc
 		 */
 		public static function getAllTaxonomiesAssoc(){
-
+			
 			$arr = get_taxonomies();
 
 			return($arr);
@@ -1068,7 +1066,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * set arguments tax query, merge with existing if avaliable
 	 */
 	public static function mergeArgsTaxQuery($args, $arrTaxQuery){
-
+		
 		if(empty($arrTaxQuery))
 			return ($args);
 
@@ -2495,7 +2493,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$postType = $postType[0];
 
 		$args["post_type"] = $postType;
-
+		
 		if(!empty($arrTax))
 			$args["tax_query"] = $arrTax;
 

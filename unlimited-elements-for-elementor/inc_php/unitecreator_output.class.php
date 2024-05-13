@@ -1665,9 +1665,10 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			//$postMeta = get_post_meta($post_id)
 
-			return($html);
 		}
-
+		
+		
+		return($html);
 
 	}
 
@@ -1711,8 +1712,8 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 */
 	private function putDebugDataHtml($arrData, $arrItemData){
 
-		$html = "<div style='font-size:16px;color:black;text-decoration:none;background-color:white;padding:3px;'>";
-
+		$html = "<div class='uc-debug-output' style='font-size:16px;color:black;text-decoration:none;background-color:white;padding:3px;'>";
+		
 		$html .= dmpGet("<b>Widget Debug Data</b> (turned on by setting in widget advanced section)<br>",true);
 
 		//get data from listing
@@ -1722,7 +1723,6 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			$arrItemData = $this->putDebugDataHtml_getItemsFromListing($paramListing, $arrData);
 		}
-
 
 		switch($this->debugDataType){
 			case "post_titles":
@@ -1958,16 +1958,27 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 			//add html
-			if($isAddSelectors == true){
-				$id = $this->getWidgetWrapperID();
-				$rootId = UniteFunctionsUC::getVal($params, "root_id");
+			
+			$addWrapper = false;
+			if(GlobalsProviderUC::$renderPlatform == GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG)
+				$addWrapper = true;
 
+			if($isAddSelectors == true)
+				$addWrapper = true;
+				
+			if($addWrapper == true){
+				
+				$id = $this->getWidgetWrapperID();
+				
+				$rootId = UniteFunctionsUC::getVal($params, "root_id");
+				
 				if(empty($rootId) === true)
 					$rootId = $this->getWidgetID();
-
+			
 				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root\" data-id=\"" . esc_attr($rootId) . "\">";
 			}
-
+			
+ 			
 			$output .= "\n\n" . $html;
 
 			if($isAddSelectors == true)

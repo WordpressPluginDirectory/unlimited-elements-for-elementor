@@ -36,7 +36,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$cats = get_categories($args);
 
 			$arr1 = UniteFunctionsWPUC::getTaxonomiesWithCats();
-
+			
 			$arrPostTypes = UniteFunctionsWPUC::getPostTypesAssoc();
 			$arrTax = UniteFunctionsWPUC::getTaxonomiesWithCats();
 			$arrCustomTypes = get_post_types(array('_builtin' => false));
@@ -2773,7 +2773,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["elementor_condition"] = $conditionGallery;
 
 		$galleryDefaults = HelperProviderUC::getArrDynamicGalleryDefaults();
-
+		
 		$this->addTextBox($name."_gallery", $galleryDefaults, __("Choose Images","unlimited-elements-for-elementor"), $params);
 
 		//============

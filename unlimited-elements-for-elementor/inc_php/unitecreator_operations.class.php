@@ -591,7 +591,7 @@ class UCOperations extends UniteElementsBaseUC{
 	 * put posts meta fields debug
 	 */
 	public function putPostsCustomFieldsDebug($arrPosts, $showCustomFields = false){
-
+		
 		if(empty($arrPosts))
 			return (false);
 
@@ -603,7 +603,7 @@ class UCOperations extends UniteElementsBaseUC{
 			$this->putPostCustomFieldsDebug($postID, $showCustomFields);
 		}
 	}
-
+	
 	/**
 	 * put posts meta fields debug
 	 */
@@ -639,7 +639,36 @@ class UCOperations extends UniteElementsBaseUC{
 
 		dmp($htmlFields);
 	}
-
+	
+	/**
+	 * put post terms debug
+	 */
+	public function putPostTermsDebug($postID){
+		
+		$strTerms = UniteFunctionsWPUC::getPostTermsTitlesString($postID, true);
+		
+		$strTerms = "<div>Post Terms: <span style='color:green;'>".esc_html($strTerms)."</style></div>";
+		
+		echo $strTerms;
+	}
+	
+	
+	/**
+	 * put posts full debug - show all info about each post
+	 */
+	public function putPostsFullDebug($arrPosts){
+		
+		foreach($arrPosts as $post){
+			$postID = $post->ID;
+			
+			$this->putPostCustomFieldsDebug($postID);
+			$this->putPostTermsDebug($postID);
+			
+		}
+		
+		
+	}
+	
 	private function a____________URL_CONTENTS____________(){
 	}
 

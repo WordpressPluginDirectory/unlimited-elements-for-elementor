@@ -867,6 +867,12 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+version 1.5.106: 2024-05-12
+
+* Fix - fixed some main/child roles checkbox filter issues
+* Fix - fixed some bug with widget posts debug not showed full info
+* Fix - fixed dissapearing gallery titles since last version.
+
 
 version 1.5.105: 2024-05-05
 

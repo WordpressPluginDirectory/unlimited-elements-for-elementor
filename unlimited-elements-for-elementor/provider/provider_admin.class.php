@@ -553,7 +553,9 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 		$dirAddons = apply_filters("ue_path_theme_addons", GlobalsUC::DIR_THEME_ADDONS);
 
 		$pathAddons = $pathCurrentTheme . $dirAddons . "/";
-
+		
+		$pathAddons = apply_filters("ue_path_install_addons", $pathAddons); 
+		
 		$this->installAddonsFromPath($pathAddons);
 	}
 

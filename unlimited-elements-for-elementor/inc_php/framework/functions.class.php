@@ -881,8 +881,33 @@ class UniteFunctionsUC{
 
 
 	public static function z_____________STRINGS_____________(){}
+	
+	/**
+	 * comma sparated to array
+	 */
+	public static function csvToArray($strCsv){
+		
+		if(empty($strCsv))
+			return(array());
+		
+		if(is_string($strCsv) == false)
+			return(array());
+			
+		$strCsv = trim($strCsv);
+			
+		$arr = explode(",", $strCsv);
+		
+		if(empty($arr))
+			return(array());
+		
+		foreach($arr as $index => $str) 
+			$arr[$index] = trim($str);
+		
+		
+		return($arr);
+	}
 
-
+	
 	/**
 	 * add tabs to strign lines
 	 */
@@ -1254,7 +1279,7 @@ class UniteFunctionsUC{
 	 * maybe json decode
 	 */
 	public static function maybeCsvDecode($str){
-
+		
 		$str = trim($str);
 
 		if(empty($str))

@@ -23,6 +23,10 @@ class UniteCreatorFiltersProcess{
 	private static $currentTermCache = null;	
 	private static $isModeInit = false;
 	
+	private static $isGutenberg = false;
+	private static $platform = false;
+	private static $objGutenberg = null;
+	
 	private static $isScriptAdded = false;
 	private static $isFilesAdded = false;
 	private static $isStyleAdded = false;
@@ -396,7 +400,7 @@ class UniteCreatorFiltersProcess{
 		$arrUrlKeys = $this->getUrlPartsKeys();
 		
 		$taxSapSign = UniteFunctionsUC::getVal($arrUrlKeys, "tax_sap","~");
-				
+		
 		$strFilters = trim($strFilters);
 		
 		$arrFilters = explode(";", $strFilters);
@@ -1025,7 +1029,6 @@ class UniteCreatorFiltersProcess{
 	 */
 	private function validateAddonAjaxReady($addon, $arrSettingsValues){
 		
-				
 		$paramPostList = $addon->getParamByType(UniteCreatorDialogParam::PARAM_POSTS_LIST);
 		
 		$paramListing = $addon->getListingParamForOutput();
@@ -1096,35 +1099,62 @@ class UniteCreatorFiltersProcess{
 	 */
 	private function getContentWidgetHtml($arrContent, $elementID, $isGrid = true){
 		
-		$arrElement = HelperProviderCoreUC_EL::getArrElementFromContent($arrContent, $elementID);
+		if(self::$isGutenberg == false)
+			$arrElement = HelperProviderCoreUC_EL::getArrElementFromContent($arrContent, $elementID);
+		else
+			$arrElement = self::$objGutenberg->getBlockByRootID($arrContent, $elementID);
 		
 		if(empty($arrElement)){
 			
-			UniteFunctionsUC::throwError("Elementor Widget with id: $elementID not found");
+			UniteFunctionsUC::throwError(self::$platform." Widget with id: $elementID not found");
 		}
 		
-		$type = UniteFunctionsUC::getVal($arrElement, "elType");
 		
-		if($type != "widget")
-			UniteFunctionsUC::throwError("The element is not a widget");
+		//Elementor Validations
 		
-		$widgetType = UniteFunctionsUC::getVal($arrElement, "widgetType");
-		
-		if(strpos($widgetType, "ucaddon_") === false){
+		if(self::$isGutenberg == false){
 			
-			if($widgetType == "global")
-				UniteFunctionsUC::throwError("Ajax filtering doesn't work with global widgets. Please change the grid to regular widget.");
+			$type = UniteFunctionsUC::getVal($arrElement, "elType");
 			
-			UniteFunctionsUC::throwError("Cannot output widget content for widget: $widgetType");
+			if($type != "widget")
+				UniteFunctionsUC::throwError("The element is not a widget");
+			
+			$widgetType = UniteFunctionsUC::getVal($arrElement, "widgetType");
+			
+			if(strpos($widgetType, "ucaddon_") === false){
+				
+				if($widgetType == "global")
+					UniteFunctionsUC::throwError("Ajax filtering doesn't work with global widgets. Please change the grid to regular widget.");
+				
+				UniteFunctionsUC::throwError("Cannot output widget content for widget: $widgetType");
+			}
+		
 		}
-			
-		$arrSettingsValues = UniteFunctionsUC::getVal($arrElement, "settings");
 		
-		$widgetName = str_replace("ucaddon_", "", $widgetType);
+		//get settings values
+		
+		if(self::$isGutenberg == false)
+			$arrSettingsValues = UniteFunctionsUC::getVal($arrElement, "settings");
+		else
+			$arrSettingsValues = self::$objGutenberg->getSettingsFromBlock($arrElement);
+
+			
+		//init addon
 		
 		$addon = new UniteCreatorAddon();
-		$addon->initByAlias($widgetName, GlobalsUC::ADDON_TYPE_ELEMENTOR);
-
+			
+		if(self::$isGutenberg == false){		//init in elementor
+			
+			$widgetName = str_replace("ucaddon_", "", $widgetType);
+			$addon->initByAlias($widgetName, GlobalsUC::ADDON_TYPE_ELEMENTOR);
+			
+		}else{		//init in gutenberg
+			
+			$blockName = UniteFunctionsUC::getVal($arrElement, "blockName");
+			$addon->initByBlockName($blockName, GlobalsUC::ADDON_TYPE_ELEMENTOR);
+		}
+					
+		
 		//make a check that ajax option is on in this widget
 		
 		if($isGrid == true){
@@ -1156,7 +1186,7 @@ class UniteCreatorFiltersProcess{
 		
 	    if($isDebugFromGet == true)
 	        $objOutput->showDebugData(true);
-
+		
 		$objOutput->initByAddon($addon);
 
 	    if($isDebugFromGet == true){
@@ -1330,7 +1360,7 @@ class UniteCreatorFiltersProcess{
 		
 		if(isset($arrFoundTermIDs[0]))
 			$arrFoundTermIDs = $arrFoundTermIDs[0];
-				
+		
 		$arrTermsAssoc = array();
 		
 		foreach($arrFoundTermIDs as $strID=>$count){
@@ -1360,6 +1390,11 @@ class UniteCreatorFiltersProcess{
 		
 		//init widget by post id and element id
 		
+		self::$platform = UniteFunctionsUC::getPostGetVariable("platform","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		
+		self::$isGutenberg = (self::$platform == "gutenberg");
+		
+				
 		$layoutID = UniteFunctionsUC::getPostGetVariable("layoutid","",UniteFunctionsUC::SANITIZE_KEY);
 		$elementID = UniteFunctionsUC::getPostGetVariable("elid","",UniteFunctionsUC::SANITIZE_KEY);
 		
@@ -1374,7 +1409,6 @@ class UniteCreatorFiltersProcess{
 		$testTermIDs = UniteFunctionsUC::getPostGetVariable("testtermids","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		UniteFunctionsUC::validateIDsList($testTermIDs);
 
-		
 		//replace terms mode
 		$isModeReplace = UniteFunctionsUC::getPostGetVariable("ucreplace","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		$isModeReplace = UniteFunctionsUC::strToBool($isModeReplace);
@@ -1385,11 +1419,18 @@ class UniteCreatorFiltersProcess{
 		
 		//if($isModeFiltersInit == true)
 			//GlobalsProviderUC::$skipRunPostQueryOnce = true;
-		
-		$arrContent = HelperProviderCoreUC_EL::getElementorContentByPostID($layoutID);
-		
+				
+		if(self::$isGutenberg == false)
+			$arrContent = HelperProviderCoreUC_EL::getElementorContentByPostID($layoutID);
+		else{	//gutenberg
+			
+			self::$objGutenberg = new UniteCreatorGutenbergIntegrate();
+			
+			$arrContent = self::$objGutenberg->getPostBlocks($layoutID);
+		}
+				
 		if(empty($arrContent))
-			UniteFunctionsUC::throwError("Elementor content not found");
+			UniteFunctionsUC::throwError(self::$platform." content not found");
 		
 		//run the post query
 		$arrHtmlWidget = $this->getContentWidgetHtml($arrContent, $elementID);
@@ -1484,7 +1525,6 @@ class UniteCreatorFiltersProcess{
 				$outputData["html_items2"] = $htmlGridItems2;
 				
 		}
-		
 		
 		if(!empty($addWidgetsHTML))
 			$outputData["html_widgets"] = $addWidgetsHTML;
@@ -1826,6 +1866,7 @@ class UniteCreatorFiltersProcess{
 		return($arrParts);
 	}
 	
+	
 	/**
 	 * get filters attributes
 	 * get the base url
@@ -1873,10 +1914,12 @@ class UniteCreatorFiltersProcess{
 		$arrData["urlbase"] = $urlBase;
 		$arrData["urlajax"] = GlobalsUC::$url_ajax_full;
 		$arrData["urlkeys"] = $arrUrlKeys;
+		$arrData["postid"] = get_the_id();
+		
 		
 		if($isDebug == true)
 			$arrData["debug"] = true;
-				
+			
 		return($arrData);
 	}
 	
@@ -2292,10 +2335,11 @@ class UniteCreatorFiltersProcess{
 		
 		if($role != "child")
 			return(false);
-			
+						
 		if(empty($arrTerms))
 			return(true);
-			
+		
+		//get number of not hidden items
 		
 		$numItems = 0;
 		
@@ -2309,21 +2353,21 @@ class UniteCreatorFiltersProcess{
 				
 			$numItems++;
 		}
-		
+				
 		if($numItems > 1)
 			return(false);
-			
+		
 		$firstItem = $arrTerms[0];
 		
 		$slug = UniteFunctionsUC::getVal($firstItem, "slug");
 		
 		$isAllItem = empty($slug);
-		
+				
 		//if there is only "all" item, it should be hidden as well
 		
 		if($isAllItem == true)
-			return(true);
-				
+			return(true);			
+			
 		return(false);		
 	}
 	
@@ -2454,19 +2498,18 @@ class UniteCreatorFiltersProcess{
 		//modify terms
 		
 		$arrTerms = UniteFunctionsUC::getVal($data, "taxonomy");
-				
+		
 		//modify the hidden as well
 		
 		$arrTerms = $this->modifyOutputTerms_setNumPosts($arrTerms, $isInitAfter, $isFirstLoad);
-		
+				
 		//modify the selected class - add first
 		$arrTerms = $this->modifyOutputTerms_addFirstItem($arrTerms, $data, $filterType);
 		
 		//modify the selected class
 		$arrTerms = $this->modifyOutputTerms_modifySelected($arrTerms, $data,$filterType);
-		
+				
 		$arrTerms = $this->modifyOutputTerms_modifySelectedByRequest($arrTerms);
-		
 		
 		$isFilterHidden = false;
 		
@@ -2478,7 +2521,7 @@ class UniteCreatorFiltersProcess{
 					$arrTerms = $this->modifyOutputTerms_tabs_modifyLimitGrayed($arrTerms, $limitGrayedItems);
 				
 				$isFilterHidden = $this->modifyOutputTerms_isFilterHidden($data, $arrTerms, $isUnderAjax);
-				
+								
 			break;
 			case self::TYPE_SELECT:
 				

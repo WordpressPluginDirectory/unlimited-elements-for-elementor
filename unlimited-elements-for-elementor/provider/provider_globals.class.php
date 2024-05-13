@@ -46,7 +46,7 @@ class GlobalsProviderUC{
 	public static $lastObjectID = null;
 	public static $isUnderDynamicTemplateLoop = false;
 	public static $isUnderNoWidgetsToDisplay = false;
-	
+	public static $showPostsQueryDebug = false;
 	
 	public static $isInsideEditor = false;	//tells that it's inside editor
 	public static $isInsideEditorBackend = false;	//tells that it's inside editor

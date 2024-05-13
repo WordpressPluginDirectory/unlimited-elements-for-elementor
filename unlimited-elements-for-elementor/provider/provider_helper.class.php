@@ -256,17 +256,17 @@ class HelperProviderUC{
 	 * get gallery defaults
 	 */
 	public static function getArrDynamicGalleryDefaults(){
-
+		
 		$urlImages = GlobalsUC::$urlPluginImages;
-
+		
 		$arrItems = array();
 
-		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery1.jpg");
-		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery2.jpg");
-		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery3.jpg");
-		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery4.jpg");
-		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery5.jpg");
-		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery6.jpg");
+		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery1.jpg","title"=>"Gallery 1 Title");
+		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery2.jpg","title"=>"Gallery 2 Title");
+		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery3.jpg","title"=>"Gallery 3 Title");
+		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery4.jpg","title"=>"Gallery 4 Title");
+		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery5.jpg","title"=>"Gallery 5 Title");
+		$arrItems[] = array("id"=>0,"url"=>$urlImages."gallery6.jpg","title"=>"Gallery 6 Title");
 
 		return($arrItems);
 	}
@@ -385,6 +385,7 @@ class HelperProviderUC{
            return($arrSettings);
     }
 
+    
 
 	/**
 	 * modify memory limit setting
@@ -980,7 +981,9 @@ class HelperProviderUC{
 
 		HelperUC::$operations->updateUnlimitedElementsGeneralSettings($settings);
 	}
-
+	
+	private function _______DEBUG_________(){}
+	
 	/**
 	 * show last posts queries
 	 */
@@ -997,6 +1000,14 @@ class HelperProviderUC{
 	    HelperUC::$operations->putPostsCustomFieldsDebug($arrLastPosts);
 
 	}
-
+	
+	/**
+	 * show posts debug
+	 */
+	public static function showPostsDebug($arrPosts){
+		
+		HelperUC::$operations->putPostsFullDebug($arrPosts);
+	}
+	
 
 }

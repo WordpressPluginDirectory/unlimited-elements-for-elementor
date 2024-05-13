@@ -468,11 +468,11 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 * get addon output, for the editor
 	 */
 	public function getAddonOutput($objAddon, $options = array()){
-
+		
 		$isWrap = UniteFunctionsUC::getVal($options, "wrap", true);
 		$includeSelectors = UniteFunctionsUC::getVal($options, "selectors", false);
 		$rootId = UniteFunctionsUC::getVal($options, "root_id");
-
+		
 		$params = array(
 			"wrap_js_timeout" => $isWrap,
 			"add_selectors_css" => $includeSelectors,

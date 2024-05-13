@@ -413,7 +413,7 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 			</a>
 			<?php
 		}
-		
+
 		if(empty($error) === false){
 			?>
 			<div class="uc-google-connect-error">
@@ -421,7 +421,6 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 			</div>
 			<?php
 		}
-		
 	}
 
 	/**

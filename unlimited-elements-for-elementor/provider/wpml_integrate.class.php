@@ -194,7 +194,7 @@ class UniteCreatorWpmlIntegrate{
 	 * get translatable fields
 	 */
 	public function getTranslatableElementorWidgetsFields($arrAddonsRecords){
-				
+		
 		$arrOutput = array();
 		
 		if(empty($arrAddonsRecords))

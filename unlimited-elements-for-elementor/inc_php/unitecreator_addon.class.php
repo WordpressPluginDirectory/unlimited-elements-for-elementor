@@ -284,7 +284,25 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			UniteFunctionsUC::throwError("Widget with name:<b> {$alias} </b> not found");
 		}
 	}
+	
+	/**
+	 * init by block name, in gutenberg
+	 */
+	public function initByBlockName($blockName, $addonType){
+		
+		UniteFunctionsUC::validateNotEmpty($blockName,"block name");
 
+		if(strpos($blockName, GlobalsUnlimitedElements::PLUGIN_NAME) === false)
+			UniteFunctionsUC::throwError("Wrong block found: $blockName");
+		
+		$alias = str_replace(GlobalsUC::PLUGIN_NAME."/","",$blockName);
+		
+		$alias = str_replace("-", "_", $alias);
+		
+		$this->initByAlias($alias, $addonType);
+		
+	}
+	
 	/**
 	 * init by name or alias
 	 */
@@ -792,7 +810,20 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 		return ($this->alias);
 	}
-
+	
+	/**
+	 * get block name by alias for gutenberg init
+	 */
+	public function getBlockName(){
+		
+		$name = str_replace("_","-",$this->alias);
+		
+		$blockName = GlobalsUnlimitedElements::PLUGIN_NAME . '/' .$name;
+		
+		return($blockName);
+	}
+	
+	
 	/**
 	 * get name or alias according the type
 	 */

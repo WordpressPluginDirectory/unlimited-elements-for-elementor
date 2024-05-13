@@ -13,6 +13,8 @@ class UniteCreatorAjaxSeach{
 	public static $customSearchEnabled = false;
 	
 	private $searchMetaKey = "";
+	private $searchInTerms = false;
+	private $strTerms = false;
 	
 	
 	/**
@@ -36,37 +38,177 @@ class UniteCreatorAjaxSeach{
 		if($numPosts >= $maxItems)
 			return($arrPosts);
 		
-		$search = $args["s"];
-			
-		unset($args["s"]);
+		$addCount = $maxItems - $numPosts;
 		
 		//search in meta
 		
 		if(!empty($this->searchMetaKey)){
-			
-			$arrMetaItem = array(
-			        'key'     => $this->searchMetaKey,
-			        'value'   => $search,
-			        'compare' => "LIKE"
-			);
-			
-			$arrMetaQuery = array("relation"=>"OR",$arrMetaItem);
-			
-			$arrExistingMeta = UniteFunctionsUC::getVal($args, "meta_query",array());
-						
-			$args["meta_query"] = array_merge($arrExistingMeta, $arrMetaQuery);
+			$arrPosts = $this->getPostsFromMetaQuery($arrPosts, $args, $addCount);
+		
+			$addCount = $maxItems - count($arrPosts);
 		}
+		
+		if($this->searchInTerms == true)
+			$arrPosts = $this->getPostsByTerms($arrPosts, $args, $addCount);
+		
+		return($arrPosts);
+	}
+	
+	/**
+	 * search posts by terms
+	 */
+	private function getPostsByTerms($arrPosts, $args, $maxPosts){
+		
+		if($this->searchInTerms == false)
+			return($arrPosts);
+		
+		$search = $args["s"];
+			
+		unset($args["s"]);
+		
+		$postType = UniteFunctionsUC::getVal($args, "post_type");
+		
+		if(empty($postType))
+			return($arrPosts);
+		
+		$arrTax = UniteFunctionsWPUC::getPostTypeTaxomonies($postType);
+		
+		if(empty($arrTax))
+			return($arrPosts);
+			
+		$arrAllTaxNames = array_keys($arrTax);
+				
+		$arrTaxNames = UniteFunctionsUC::csvToArray($this->strTerms);
+		
+		if(!empty($arrTaxNames))
+			$arrTaxNames = array_intersect($arrAllTaxNames, $arrTaxNames);
+		else
+			$arrTaxNames = $arrAllTaxNames;
+			
+		if(empty($arrTaxNames)){
+		
+			if(GlobalsProviderUC::$showPostsQueryDebug == true)
+				dmp("taxonomies not found: {$this->strTerms}. please use some of those: ".print_r($arrAllTaxNames,true));
+			
+			return($arrPosts);
+		}
+		
+		$arrTermsSearch = array();
+		$arrTermsSearch["taxonomy"] = $arrTaxNames;
+		$arrTermsSearch["search"] = $search;
+		$arrTermsSearch["hide_empty"] = true;
+		$arrTermsSearch["number"] = 50;
+		$arrTermsSearch["fields"] = "id=>name";
+		
+		$termsQuery = new WP_Term_Query();
+		$arrTermsFound = $termsQuery->query($arrTermsSearch);
+
+		if(empty($arrTermsFound)){
+		
+			if(GlobalsProviderUC::$showPostsQueryDebug == true)
+				dmp("no terms found by: $search");
+			
+			return($arrPosts);
+		}
+
+		if(GlobalsProviderUC::$showPostsQueryDebug == true){
+						
+			dmp("Searching Terms: ");
+			dmp($arrTermsSearch);
+			
+			dmp("Found Terms: ".count($arrTermsFound));
+			
+			dmp($arrTermsFound);
+			
+		}
+		
+		
+		$termIDs = array_keys($arrTermsFound);
+				
+		$taxQuery = array(
+			array(
+				"taxonomy"=>"category",
+				"field"=>"id",
+				"terms"=>$termIDs,
+				"operator"=>"IN",
+			)
+		);
+		
+		$args = UniteFunctionsWPUC::mergeArgsTaxQuery($args,$taxQuery);
 				
 		$query = new WP_Query();
 		$query->query($args);
 		
 		$arrNewPosts = $query->posts;
 		
+		//debug output
+		if(GlobalsProviderUC::$showPostsQueryDebug == true){
+						
+			dmp("Run Search By Terms Query: ");
+			dmp($args);
+			
+			dmp("Found Posts: ".count($arrNewPosts));
+		}
+
 		
-		$arrPosts = array_merge($arrPosts, $arrNewPosts);
-				
+		
+		dmp("fix the tax query by real terms!!! group by taxonomies");
+		
+		HelperProviderUC::showPostsDebug($arrNewPosts);
+		
+		exit();
+		
+		if(empty($arrNewPosts))
+			return($arrPosts);
+		
+		$arrPosts = array_merge($arrNewPosts, $arrPosts);
+		
 		return($arrPosts);
 	}
+	
+	/**
+	 * get posts from meta query
+	 */
+	private function getPostsFromMetaQuery($arrPosts, $args, $maxPosts){
+		
+		if(empty($this->searchMetaKey))
+			return($arrPosts);
+		
+		$search = $args["s"];
+			
+		unset($args["s"]);
+					
+		$arrMetaItem = array(
+		        'key'     => $this->searchMetaKey,
+		        'value'   => $search,
+		        'compare' => "LIKE"
+		);
+		
+		$arrMetaQuery = array("relation"=>"OR",$arrMetaItem);
+		
+		$arrExistingMeta = UniteFunctionsUC::getVal($args, "meta_query",array());
+					
+		$args["meta_query"] = array_merge($arrExistingMeta, $arrMetaQuery);
+		
+		$query = new WP_Query();
+		$query->query($args);
+		
+		$arrNewPosts = $query->posts;
+		
+		//debug output
+		if(GlobalsProviderUC::$showPostsQueryDebug == true){
+			
+			dmp("Run Search By Meta Query: ");
+			dmp($args);
+			
+			dmp("Found Posts: ".count($arrNewPosts));
+		}
+		
+		$arrPosts = array_merge($arrPosts, $arrNewPosts);
+		
+		return($arrPosts);
+	}
+	
 	
 	/**
 	 * supress third party filters except of this class ones
@@ -107,18 +249,38 @@ class UniteCreatorAjaxSeach{
 		
 		self::$arrCurrentParams = $arrParams;
 		
+		//--- meta
+		
 		$searchInMeta = UniteFunctionsUC::getVal($arrParams, "search_in_meta");
 		$searchInMeta = UniteFunctionsUC::strToBool($searchInMeta);
 		
-		if($searchInMeta == true){
-
-			self::$customSearchEnabled = true;
-			
-			$this->searchMetaKey = "country";
-			
-			UniteProviderFunctionsUC::addFilter("uc_filter_posts_list", array($this,"onPostsResponse"),10,3);
+		$searchMetaKey = UniteFunctionsUC::getVal($arrParams, "searchin_meta_name");
 				
+		$applyModifyFilter = false;
+		if($searchInMeta == true && !empty($searchMetaKey)){
+		
+			$applyModifyFilter = true;
+			
+			self::$customSearchEnabled = true;
+			$this->searchMetaKey = $searchMetaKey;
 		}
+	
+		//--- terms
+		
+		$searchInTerms = UniteFunctionsUC::getVal($arrParams, "search_in_terms");
+		$searchInTerms = UniteFunctionsUC::strToBool($searchInTerms);
+		
+		if($searchInTerms == true){
+			
+			$applyModifyFilter = true;
+			self::$customSearchEnabled = true;
+			$this->searchInTerms = true;
+			$this->strTerms = UniteFunctionsUC::getVal($arrParams, "search_in_taxonomy");
+			
+		}
+		
+		if($applyModifyFilter == true)
+			UniteProviderFunctionsUC::addFilter("uc_filter_posts_list", array($this,"onPostsResponse"),10,3);
 		
 	}
 
