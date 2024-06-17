@@ -264,7 +264,7 @@ class UniteCreatorActions{
 				case "delete_addon":
 
 					HelperProviderUC::verifyAdminPermission();
-
+			
 					$addons->deleteAddonFromData($data);
 
 					HelperUC::ajaxResponseSuccess(esc_html__("The addon deleted successfully", "unlimited-elements-for-elementor"));
@@ -582,12 +582,6 @@ class UniteCreatorActions{
 					else
 						HelperUC::ajaxResponseSuccess(esc_html__("Widget Updated", "unlimited-elements-for-elementor"));
 
-				break;
-				case "get_shapes_css":
-
-					$objShapes = new UniteShapeManagerUC();
-					$objShapes->outputCssShapes();
-					exit;
 				break;
 				case "save_screenshot":
 

@@ -49,6 +49,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		const TYPE_RANGE = "range";
 		const TYPE_HIDDEN = "hidden";
 		const TYPE_SWITCHER = "switcher";
+		const TYPE_BUTTONS_GROUP = "buttons_group";
 		const TYPE_DIMENTIONS = "dimentions";
 		const TYPE_TYPOGRAPHY = "typography";
 		const TYPE_TEXTSHADOW = "textshadow";
@@ -651,22 +652,22 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$this->add($name,$defaultValue,$text,self::TYPE_CHECKBOX,$arrParams);
 		}
 
-
 		/**
 		 * add text box
 		 */
-		public function addTextBox($name,$defaultValue = "",$text = "",$arrParams = array()){
-			$this->add($name,$defaultValue,$text,self::TYPE_TEXT,$arrParams);
+		public function addTextBox($name, $defaultValue = "", $text = "", $arrParams = array()){
+
+			$this->add($name, $defaultValue, $text, self::TYPE_TEXT, $arrParams);
 		}
 
 		/**
 		 * add hidden input
 		 */
-		public function addHiddenInput($name,$defaultValue = "",$text = "",$arrParams = array()){
+		public function addHiddenInput($name, $defaultValue = "", $text = "", $arrParams = array()){
 
 			$arrParams["hidden"] = true;
 
-			$this->add($name,$defaultValue,$text,self::TYPE_HIDDEN,$arrParams);
+			$this->add($name, $defaultValue, $text, self::TYPE_HIDDEN, $arrParams);
 		}
 
 		/**
@@ -1322,9 +1323,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 */
 		public function loadXMLFile($filepath, $loadedSettingsType = null){
 
-
 			$obj = UniteFunctionsUC::loadXMLFile($filepath);
-
+			
 			if(empty($obj))
 				UniteFunctionsUC::throwError("Wrong xml file format: $filepath");
 
@@ -1362,11 +1362,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				if(!empty($nodraw)){
 					$sapParams["nodraw"] = UniteFunctionsUC::strToBool($nodraw);
 				}
-
-				UniteFunctionsUC::validateNotEmpty($sapName,"sapName");
-
+				
+				UniteFunctionsUC::validateNotEmpty($sapName,"name in fieldset attributes: $sapLabel");
+				
 				if(!empty($loadFrom)){
-
+					
 					$this->addExternalSettings($loadFrom, $loadParam, $loadedSettingsType);
 					continue;
 				}
@@ -1685,8 +1685,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 */
 		private function addExternalSettings($filename, $loadParam = null, $loadType = null){
 
-			$filepathSettings = GlobalsUC::$pathSettings."{$filename}.xml";
+			$filepathSettings = GlobalsUnlimitedElements::$pathPluginSettings."{$filename}.xml";
 
+			if(file_exists($filepathSettings) == false)
+				$filepathSettings = GlobalsUC::$pathSettings."{$filename}.xml";
+			
 			if(file_exists($filepathSettings) == false)
 				UniteFunctionsUC::throwError("The file: {$filename}.xml don't found in settings folder");
 

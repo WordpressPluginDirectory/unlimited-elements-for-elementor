@@ -111,6 +111,8 @@ class UCFormEntryView{
 			),
 		);
 
+		$fields = $this->service->formatEntryFields($this->entry["fields"]);
+
 		?>
 		<div id="poststuff">
 			<div id="post-body" class="columns-2">
@@ -123,7 +125,7 @@ class UCFormEntryView{
 						<div class="inside">
 							<table class="wp-list-table widefat">
 								<tbody>
-									<?php foreach($this->entry["fields"] as $field): ?>
+									<?php foreach($fields as $field): ?>
 										<tr>
 											<td><?php echo esc_html($field["title"]); ?></td>
 											<td>
@@ -136,7 +138,7 @@ class UCFormEntryView{
 													break;
 
 													default:
-														echo esc_html($field["value"]);
+														echo nl2br(esc_html($field["value"]));
 												}
 
 												?>

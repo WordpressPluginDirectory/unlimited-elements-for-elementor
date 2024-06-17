@@ -1456,7 +1456,7 @@ class UniteCreatorElementorIntegrate{
 	 * on the content - clear widget input cache - fix some double render elementor bug
 	 */
 	public function onTheContent($content){
-
+		
 		if(GlobalsProviderUC::$isUnderDynamicTemplateLoop == false)
 			UniteCreatorOutput::clearIncludesCache();
 
@@ -1704,8 +1704,9 @@ class UniteCreatorElementorIntegrate{
     	if($isEnabled == false)
     		return(false);
 
+    		
     	$isPreviewOption = UniteFunctionsUC::getGetVar("elementor-preview", "", UniteFunctionsUC::SANITIZE_KEY);
-
+		
     	if(!empty($isPreviewOption))
     		self::$isFrontendEditorMode = true;
 

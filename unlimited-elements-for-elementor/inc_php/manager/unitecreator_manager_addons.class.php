@@ -149,7 +149,7 @@ class UniteCreatorManagerAddonsWork extends UniteCreatorManager{
 		try{
 
 			HelperUC::validateDBTablesExists();
-
+		
 		}catch(Exception $e){
 			UniteFunctionsUC::throwError("DB Tables don't installed. Please refresh the page.");
 		}

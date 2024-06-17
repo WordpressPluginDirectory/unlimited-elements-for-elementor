@@ -8,7 +8,7 @@
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
-
+	
 	const TYPE_FONT_PANEL = "fonts_panel";
 	const TYPE_ITEMS = "items";
 	const INSTAGRAM_DEFAULT_VALUE = "@gianlucavacchi";
@@ -29,7 +29,9 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 
 	private $currentAddon;
 	private $currentTabs;
-
+	private static $addEditWidgetHTML = null;
+	
+	
 
 	private function a___________GETTERS_________(){}
 
@@ -476,6 +478,16 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 		$params["label_block"] = true;
 
 		$this->add($name, $value, $title, self::TYPE_DIMENTIONS, $params);
+	}
+
+	/**
+	 * add buttons group
+	 */
+	public function addButtonsGroup($name, $items, $title, $value, $params = array()){
+
+		$params["items"] = $items;
+
+		$this->add($name, $value, $title, self::TYPE_BUTTONS_GROUP, $params);
 	}
 
 	/**
@@ -1613,8 +1625,15 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 		}
 
 		$this->addControl("show_widget_debug_data", "widget_debug_data_type", "show", "true");
-
-		$this->addEditWidgetButton();
+		
+       if(self::$addEditWidgetHTML === null){
+	    	self::$addEditWidgetHTML = HelperProviderCoreUC_EL::getGeneralSetting("show_edit_html_button");
+	    	self::$addEditWidgetHTML = UniteFunctionsUC::strToBool(self::$addEditWidgetHTML);
+       }
+	   
+		if(self::$addEditWidgetHTML === true)
+			$this->addEditWidgetButton();
+		
 	}
 
 	/**

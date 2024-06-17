@@ -152,13 +152,13 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
     // return if table exists or not.
     public function isTableExists($tableName){
         $sql = 'select * from '.$tableName;
-
+		
         $numRows = mysqli_num_rows(mysqli_query(self::$handle,"SHOW TABLES LIKE '".$tableName."'"));
         $this->checkForErrors("Is table exists error",$sql);
 
         return($numRows != 0);
     }
-
+	
     //------------------------------------------------------------
     // create database. if already created - get database.
     public function getCreateDatabase(){

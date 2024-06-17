@@ -338,7 +338,7 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * @return string
 	 */
 	public function getDate($format){
-
+			
 		$time = $this->getTime();
 		$date = $this->formatTime($time, $format);
 
@@ -373,18 +373,18 @@ class UEOpenWeatherAPIForecast extends UEOpenWeatherAPIModel{
 	 * format hours for sunset
 	 */
 	private function formatTime($timestemp, $format){
-
+		
 		$timezone = $this->getParameter("timezone");
-
+				
 		$date = new DateTime();
 		$objTimezone = new DateTimeZone($timezone);
 
 		$date->setTimestamp($timestemp);
 
 		$date->setTimezone($objTimezone);
-
+		
 		$hours = $date->format($format);
-
+		
 		return ($hours);
 	}
 

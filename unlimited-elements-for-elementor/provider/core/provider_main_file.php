@@ -6,8 +6,8 @@ try{
 	
 	//load core plugins
 	
-	$pathCorePlugins = dirname(__FILE__)."/plugins/";
-			
+	$pathCorePlugins = dirname(__FILE__)."/";
+	
 	$pathUnlimitedElementsPlugin = $pathCorePlugins."unlimited_elements/plugin.php";
 		require_once $pathUnlimitedElementsPlugin;
 	

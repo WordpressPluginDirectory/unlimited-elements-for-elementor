@@ -1,5 +1,52 @@
 
 
+version 1.5.111:
+
+* Feature: added option in general settings: 'Taxonomy Separator Sign in Ajax Filter' for backward compatability
+* Changed - changed the default taxonomy saparator to ":" instead of "~"
+* Fix: fixed getting elementor dynamic item fields in ajax 
+* Fix: background widgets didn't worked with rocket lazy load
+* Fix: filters checkboxes wasn't visible in some cases
+* Fix: avoid error messages on very old elementor versions
+
+
+version 1.5.110:
+
+* Fix: remote arrows was sendin next/prev commands twice
+* Fix: fix some password protected content related security issue
+* Fix: fix some sql security small issue 
+
+
+version 1.5.109:
+
+* Feature: added option to get page views of some post using WPP plugin
+* Feature: added option for "show db tables" in troubleshooting
+* Fix: fixed form editor form validation, excluded placeholders
+* Fix: fixed get filters based on wpml language with post count
+* Fix: Fixed some remote connection code items click code
+* Fix: Fixed clear all filters button not working bug
+* Fix: fixed multisource acf repeater checkboxes type get
+
+
+
+version 1.5.108:
+
+* Feature: update freemius SDK
+* Fix: fixed bug with select filter and active filters widgets
+* Fix: fixed bug with several main checkbox filters unselecting
+* Fix: Fixed some small security issue
+
+
+version 1.5.107:
+
+* Fix - fixed weird elementor no products on cart page bug
+* Feature - added elementor dynamic options to api integrations
+* Fix - fixed bug with faq schema output
+* Fix - fixed general settings show items at start
+* Feature - added option to get images from current product variations for the dynamic gallery.
+* Feature - added preperation for the enhanced ajax search
+
+
 version 1.5.106:
 
 * Fix - fixed some main/child roles checkbox filter issues

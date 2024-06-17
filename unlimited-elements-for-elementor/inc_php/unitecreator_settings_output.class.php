@@ -699,10 +699,10 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 				data-title-link="<?php esc_attr_e(__("Link Values", "unlimited-elements-for-elementor")); ?>"
 				data-title-unlink="<?php esc_attr_e(__("Unlink Values", "unlimited-elements-for-elementor")); ?>"
 			>
-				<svg class="unite-dimentions-icon-link unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+				<svg class="unite-dimentions-icon-link" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 					<path d="m3.5 8.5 5-5M5 3l1.672-1.672a2.829 2.829 0 0 1 4 4L9 7M3 5 1.328 6.672a2.829 2.829 0 0 0 4 4L7 9" />
 				</svg>
-				<svg class="unite-dimentions-icon-unlink unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+				<svg class="unite-dimentions-icon-unlink" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 					<path d="m5.5 2.5 1.172-1.172a2.829 2.829 0 0 1 4 4L9.5 6.5M2.5 5.5 1.328 6.672a2.829 2.829 0 0 0 4 4L6.5 9.5M3.5 8.5l1-1M7.5 4.5l1-1M.5.5l11 11" />
 				</svg>
 			</div>

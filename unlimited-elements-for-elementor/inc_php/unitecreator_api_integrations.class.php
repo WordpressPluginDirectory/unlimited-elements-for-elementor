@@ -63,6 +63,7 @@ class UniteCreatorAPIIntegrations{
 	const GOOGLE_SHEETS_DEFAULT_CACHE_TIME = 10;
 
 	const WEATHER_FORECAST_FIELD_EMPTY_API_KEY = "weather_forecast_empty_api_key";
+	const WEATHER_FORECAST_FIELD_LOCALE = "weather_forecast_locale";
 	const WEATHER_FORECAST_FIELD_COUNTRY = "weather_forecast_country";
 	const WEATHER_FORECAST_FIELD_CITY = "weather_forecast_city";
 	const WEATHER_FORECAST_FIELD_UNITS = "weather_forecast_units";
@@ -263,27 +264,33 @@ class UniteCreatorAPIIntegrations{
 	public function addSettingsFields($settingsManager, $fields, $name, $condition = null){
 
 		foreach($fields as $field){
+			
 			$params = array();
 			$params["origtype"] = $field["type"];
 			$params["description"] = isset($field["desc"]) ? $field["desc"] : "";
-
+			
 			if(!empty($condition))
 				$params["elementor_condition"] = $condition;
-
+				
 			$paramName = $name . "_" . $field["id"];
 			$paramDefault = isset($field["default"]) ? $field["default"] : "";
-
+			
 			switch($field["type"]){
 				case UniteCreatorDialogParam::PARAM_STATIC_TEXT:
 					$settingsManager->addStaticText($field["text"], $paramName, $params);
 				break;
 				case UniteCreatorDialogParam::PARAM_TEXTAREA:
+					$params["add_dynamic"] = true;
 					$settingsManager->addTextArea($paramName, $paramDefault, $field["text"], $params);
 				break;
 				case UniteCreatorDialogParam::PARAM_TEXTFIELD:
+					
+					$params["add_dynamic"] = true;
+					
 					$settingsManager->addTextBox($paramName, $paramDefault, $field["text"], $params);
 				break;
 				case UniteCreatorDialogParam::PARAM_DROPDOWN:
+					$params["add_dynamic"] = true;
 					$settingsManager->addSelect($paramName, array_flip($field["options"]), $field["text"], $paramDefault, $params);
 				break;
 				default:
@@ -1042,6 +1049,14 @@ class UniteCreatorAPIIntegrations{
 				"default" => self::WEATHER_FORECAST_UNITS_METRIC,
 			),
 			array(
+				"id" => self::WEATHER_FORECAST_FIELD_LOCALE,
+				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
+				"text" => __("Language Code", "unlimited-elements-for-elementor"),
+				"default" => "",
+				"desc" => __("2 digits of language code. for example: 'fr' (french) for the list of all codes: <a href='https://en.wikipedia.org/wiki/List_of_ISO_639_language_codes'>Press Here</a>. Leave empty for auto select. ", "unlimited-elements-for-elementor")
+			),
+			
+			array(
 				"id" => self::WEATHER_FORECAST_FIELD_CACHE_TIME,
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("Cache Time", "unlimited-elements-for-elementor"),
@@ -1062,30 +1077,33 @@ class UniteCreatorAPIIntegrations{
 		$city = $this->getRequiredParam(self::WEATHER_FORECAST_FIELD_CITY, "City");
 		$units = $this->getRequiredParam(self::WEATHER_FORECAST_FIELD_UNITS, "Units");
 		$cacheTime = $this->getCacheTimeParam(self::WEATHER_FORECAST_FIELD_CACHE_TIME, self::WEATHER_FORECAST_DEFAULT_CACHE_TIME);
-
+		$locale = $this->getParam(self::WEATHER_FORECAST_FIELD_LOCALE, "");
+		
 		$weatherService = new UEOpenWeatherAPIClient($this->getOpenWeatherApiKey());
 		$weatherService->setCacheTime($cacheTime);
-
-		$forecasts = $weatherService->getForecasts($country, $city, $units);
-
+		
+		$forecasts = $weatherService->getForecasts($country, $city, $units, $locale);
+		
 		$currentForecast = UniteFunctionsUC::getVal($forecasts, "current");
 		$hourlyForecasts = UniteFunctionsUC::getVal($forecasts, "hourly");
 		$dailyForecasts = UniteFunctionsUC::getVal($forecasts, "daily");
-
+		
 		$data = array(
 			"current" => $this->getWeatherForecastCurrentItem($currentForecast),
 			"hourly" => $this->getWeatherForecastHourlyItems($hourlyForecasts),
 			"daily" => $this->getWeatherForecastDailyItems($dailyForecasts),
 		);
-
+		
+		
 		return $data;
 	}
-
+	
+	
 	/**
 	 * get weather forecasts basic item
 	 */
 	private function getWeatherForecastBasicItem($forecast){
-
+		
 		$item = array(
 			"id" => $forecast->getId(),
 			"date" => $forecast->getDate(self::FORMAT_MYSQL_DATETIME),
@@ -1105,7 +1123,7 @@ class UniteCreatorAPIIntegrations{
 			"snow" => $forecast->getSnow(),
 			"uvi" => $forecast->getUvi(),
 		);
-
+		
 		return $item;
 	}
 

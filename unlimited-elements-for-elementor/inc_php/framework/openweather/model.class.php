@@ -14,7 +14,7 @@ abstract class UEOpenWeatherAPIModel{
 	 * @return void
 	 */
 	private function __construct($attributes, $parameters = array()){
-
+	
 		$this->attributes = $attributes;
 		$this->parameters = $parameters;
 	}
@@ -49,7 +49,7 @@ abstract class UEOpenWeatherAPIModel{
 	public static function transform($attributes, $parameters = array()){
 
 		$model = new static($attributes, $parameters);
-
+		
 		return $model;
 	}
 

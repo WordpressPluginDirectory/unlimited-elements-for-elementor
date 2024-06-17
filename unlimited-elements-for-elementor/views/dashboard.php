@@ -52,6 +52,8 @@ $urlVideoTutorials = "https://www.youtube.com/channel/UCNYLnevs1ewIxKQqPiat0xQ";
 
 $version = UNLIMITED_ELEMENTS_VERSION;
 
+HelperHtmlUC::putHtmlAdminNotices();
+
 ?>
 
 <div class="ue-root ue-dash-content">

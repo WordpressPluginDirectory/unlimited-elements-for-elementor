@@ -11,6 +11,8 @@ class UniteCreatorAddonType{
 	
 	public $textSingle, $textPlural, $typeName, $typeNameDistinct, $typeNameCategory, $textShowType;
 	public $isSVG = false, $isLayout = false, $titlePrefix = "", $isBasicType = true;
+	public $typeNameCorrection;		//used for alternative plugins
+	
 	
 	//manager
 	
@@ -91,8 +93,11 @@ class UniteCreatorAddonType{
 		if(empty($this->typeNameCategory) && $this->isLayout == true)
 			$this->typeNameCategory = GlobalsUC::ADDON_TYPE_REGULAR_LAYOUT;
 		
+		if(empty($this->typeNameCorrection))
+			$this->typeNameCorrection = $this->typeName;
+		
 	}
-	
+		
 	
 	/**
 	 * function for override

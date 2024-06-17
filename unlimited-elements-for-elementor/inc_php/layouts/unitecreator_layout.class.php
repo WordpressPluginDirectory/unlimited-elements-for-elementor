@@ -15,7 +15,7 @@ class UniteCreatorLayoutWork extends UniteElementsBaseUC{
 	protected static $arrCacheAddons = array();
 	protected $addonType = null, $arrAllOptionsCache = null;
 	protected $extraParams = array();	//extra params for link generate etc
-	protected $objShapes, $layoutType, $isTemplate = false, $objLayouts;
+	protected $layoutType, $isTemplate = false, $objLayouts;
 	protected $objLayoutType;
 	
 	const KEY_SETTINGS_ADDDATA = "uc_settings_adddata";
@@ -31,7 +31,6 @@ class UniteCreatorLayoutWork extends UniteElementsBaseUC{
 	 */
 	public function __construct(){
 		
-		$this->objShapes = new UniteShapeManagerUC();
 		$this->objLayouts = new UniteCreatorLayouts();
 		
 		parent::__construct();
@@ -1736,15 +1735,7 @@ class UniteCreatorLayoutWork extends UniteElementsBaseUC{
 	 * collect special addon names like shape deviders
 	 */
 	public function modifySettings_collectSpecialAddonNames($settings, $elementType){
-		
-		$nameTop = $this->objShapes->getShapeDividerNameFromSettings($settings, "top");
-		if(!empty($nameTop))
-			$this->arrAddonNames[$nameTop."_".GlobalsUC::ADDON_TYPE_SHAPE_DEVIDER] = GlobalsUC::ADDON_TYPE_SHAPE_DEVIDER;
-		
-		$nameBottom = $this->objShapes->getShapeDividerNameFromSettings($settings, "bottom");
-		if(!empty($nameBottom))
-			$this->arrAddonNames[$nameBottom."_".GlobalsUC::ADDON_TYPE_SHAPE_DEVIDER] = GlobalsUC::ADDON_TYPE_SHAPE_DEVIDER;
-		
+				
 		
 		$bgAddonName = $this->getBGAddonNameFromSettings($settings);
 		if(!empty($bgAddonName))

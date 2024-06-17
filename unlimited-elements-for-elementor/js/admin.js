@@ -2681,7 +2681,7 @@ jQuery(document).ready(function(){
 
 	if(!g_ucAdmin)
 		g_ucAdmin = new UniteAdminUC();
-
+	
 	g_ucAdmin.globalInit();
 
 

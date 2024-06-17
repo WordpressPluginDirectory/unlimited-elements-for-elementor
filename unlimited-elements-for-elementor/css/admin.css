@@ -1167,7 +1167,7 @@ ul.unite-context-menu li a:focus {
 	margin-left: 4px;
 }
 
-.unite-inputs .unite-setting-button-icon {
+.unite-inputs .unite-setting-button > svg {
 	width: 12px;
 	height: 12px;
 	fill: none;
@@ -1177,7 +1177,7 @@ ul.unite-context-menu li a:focus {
 	transition: stroke 0.3s ease-in-out;
 }
 
-.unite-inputs .unite-setting-button:hover > .unite-setting-button-icon {
+.unite-inputs .unite-setting-button:hover > svg {
 	stroke: var(--ue-color-primary);
 }
 
@@ -1218,13 +1218,19 @@ ul.unite-context-menu li a:focus {
 }
 
 .unite-inputs .unite-input-wrapper > input.unite-input-number {
-	width: var(--ue-number-input-width) !important;
 	text-align: center;
 }
 
 .unite-inputs .unite-input-wrapper.with-units > input.unite-input-number {
-	width: calc(var(--ue-number-input-width) + var(--ue-number-units-width)) !important;
 	padding-right: calc(var(--ue-input-padding-x) + var(--ue-number-units-width));
+}
+
+.unite-inputs .unite-inline-setting > .unite-setting-field > .unite-setting-input > .unite-input-wrapper > input.unite-input-number {
+	width: var(--ue-number-input-width) !important;
+}
+
+.unite-inputs .unite-inline-setting > .unite-setting-field > .unite-setting-input > .unite-input-wrapper.with-units > input.unite-input-number {
+	width: calc(var(--ue-number-input-width) + var(--ue-number-units-width)) !important;
 }
 
 .unite-inputs .unite-input-units {
@@ -1370,8 +1376,8 @@ ul.unite-context-menu li a:focus {
 	width: 100px;
 }
 
-.unite-inputs .unite-iconpicker-button[data-action="upload"].unite-active .unite-iconpicker-button-icon,
-.unite-inputs .unite-iconpicker-button[data-action="library"].unite-active .unite-iconpicker-button-icon {
+.unite-inputs .unite-iconpicker-button[data-action="upload"].unite-active > svg,
+.unite-inputs .unite-iconpicker-button[data-action="library"].unite-active > svg {
 	display: none;
 }
 
@@ -2332,6 +2338,37 @@ table.unite_table_settings_wide .setting_onecell_text {
 	position: relative;
 }
 
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-list-settings {
+	display: flex;
+	flex-wrap: wrap;
+	margin-right: -8px;
+	margin-left: -8px;
+}
+
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row {
+	width: 100%;
+	padding-right: 8px;
+	padding-left: 8px;
+	box-sizing: border-box;
+}
+
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row[data-name="font_family"],
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row[data-name="font_weight"],
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row[data-name^="font_size"],
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row[data-name^="line_height"],
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row[data-name^="letter_spacing"],
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-row[data-name^="word_spacing"] {
+	width: 50%;
+}
+
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-range-input {
+	width: 100%;
+}
+
+.unite-settings-sidebar .unite-list-settings > li[data-type="typography"] .unite-setting-buttons-group {
+	padding-left: 8px;
+}
+
 .unite-settings-sidebar .unite-list-settings > li.unite-responsive-hidden,
 .unite-settings-sidebar .unite-list-settings > li.unite-tabs-hidden {
 	display: none !important;
@@ -2411,6 +2448,17 @@ table.unite_table_settings_wide .setting_onecell_text {
 .unite-settings-sidebar .select2.select2-container {
 	display: block;
 	width: 100% !important;
+}
+
+.unite-settings-sidebar .unite-list-settings > li[data-type="buttons_group"] .unite-setting-buttons-group {
+	flex-grow: 1;
+}
+
+.unite-settings-sidebar .unite-setting-buttons-group[data-name="font_style"] > .unite-setting-button > svg,
+.unite-settings-sidebar .unite-setting-buttons-group[data-name="text_decoration"] > .unite-setting-button > svg,
+.unite-settings-sidebar .unite-setting-buttons-group[data-name="text_transform"] > .unite-setting-button > svg {
+	width: 16px;
+	height: 16px;
 }
 
 
@@ -2582,6 +2630,9 @@ table.unite_table_settings_wide .setting_onecell_text {
 .unite-setting-range .unite-setting-range-input {
 	width: var(--ue-number-input-width);
 	text-align: center;
+}
+
+.unite-setting-range.with-slider .unite-setting-range-input {
 	margin-left: calc(6px + var(--ue-input-padding-x));
 }
 
@@ -2863,16 +2914,20 @@ table.unite_table_settings_wide .setting_onecell_text {
 }
 
 .unite-inputs .select2-container .select2-selection--multiple .select2-selection__choice {
-	display: inline-flex;
-	flex-direction: row-reverse;
-	align-items: center;
+	max-width: 100%;
 	height: calc(var(--ue-input-height) / 2);
 	background: var(--ue-color-gray-lightest);
+	line-height: var(--ue-line-height-normal);
+	text-overflow: ellipsis;
+	white-space: nowrap;
 	border: none;
 	border-radius: var(--ue-radius);
 	margin: 2px 4px 2px 0;
-	padding-right: 4px;
+	padding-right: calc(4px + 1em + 4px);
 	padding-left: 4px;
+	position: relative;
+	overflow: hidden;
+	box-sizing: border-box;
 }
 
 .unite-inputs .select2-container .select2-selection--multiple .select2-selection__choice__remove {
@@ -2882,7 +2937,9 @@ table.unite_table_settings_wide .setting_onecell_text {
 	text-align: center;
 	color: var(--ue-color-dark);
 	margin: 0;
-	margin-left: 4px;
+	position: absolute;
+	top: 0;
+	right: 4px;
 	transition: color 0.3s ease-in-out;
 }
 
@@ -2891,6 +2948,7 @@ table.unite_table_settings_wide .setting_onecell_text {
 }
 
 .unite-inputs .select2-container .select2-selection--multiple .select2-selection__uc-plus-button {
+	padding-right: 4px;
 	cursor: pointer;
 	transition: color 0.3s ease-in-out;
 }
@@ -2900,11 +2958,15 @@ table.unite_table_settings_wide .setting_onecell_text {
 }
 
 .unite-inputs .select2-container .select2-selection--multiple .select2-search {
+	max-width: 100%;
 	margin: 2px 0;
 }
 
 .unite-inputs .select2-container .select2-selection--multiple .select2-search__field {
+	display: inline-block;
+	max-width: 100%;
 	height: calc(var(--ue-input-height) / 2);
+	border-radius: 0;
 	margin: 0;
 }
 

@@ -37,6 +37,25 @@ class UniteCreatorPluginIntegrations{
 	}
 	
 	/**
+	 * get single post views using wpp
+	 */
+	public static function WPP_getPostViews($postID){
+				
+		if(self::isWPPopularPostsExists() == false)
+			return(0);
+		
+		if(empty($postID))
+			return(0);
+			
+		if(function_exists("wpp_get_views") == false)
+			return(0);
+			
+		$numViews = wpp_get_views($postID);
+		
+		return($numViews);
+	}
+	
+	/**
 	 * get popular posts
 	 * args - post_type, cat, limit, range
 	 */
@@ -72,7 +91,6 @@ class UniteCreatorPluginIntegrations{
 		
 		if(!empty($cat))
 			$params["cat"] = $cat;
-		
 		
 		$query = new \WordPressPopularPosts\Query($params);
 		

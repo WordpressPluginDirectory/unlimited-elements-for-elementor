@@ -18,16 +18,16 @@ abstract class UEOpenWeatherAPIForecastAbstract extends UEOpenWeatherAPIModel{
 		return $id;
 	}
 
+	
 	/**
 	 * Get the date.
-	 *
 	 * @param string $format
-	 *
 	 * @return string
 	 */
 	public function getDate($format){
-
+		
 		$time = $this->getTime();
+		
 		$date = $this->formatTime($time, $format);
 
 		return $date;
@@ -308,7 +308,44 @@ abstract class UEOpenWeatherAPIForecastAbstract extends UEOpenWeatherAPIModel{
 		//		return sprintf(__("%sK", "unlimited-elements-for-elementor"), $value);
 		//}
 	}
-
+	
+	
+	/**
+	 * translate day of week
+	 */
+	protected function translateDayOfWeek($locale, $date, $timezone, $format){
+		
+		$isIntlLoaded = extension_loaded('intl');
+		if($isIntlLoaded == false)
+			return(null);
+		
+		if(class_exists("IntlDateFormatter") == false)
+			return(null);
+			
+		$string = 'EEEE';
+		
+		if($format == "D")
+			$string = 'EEE';
+		
+		
+		$formatter = new IntlDateFormatter(
+		    $locale,
+		    IntlDateFormatter::NONE, // No date format
+		    IntlDateFormatter::NONE, // No time format
+		    $timezone,         // Timezone
+		    IntlDateFormatter::GREGORIAN, // Calendar type
+		    $string // Day of the week format
+		);
+		
+		
+		$translatedDayOfWeek = $formatter->format($date);
+		
+		
+		return($translatedDayOfWeek);
+	}
+	
+	
+	
 	/**
 	 * Format the time.
 	 *
@@ -320,16 +357,27 @@ abstract class UEOpenWeatherAPIForecastAbstract extends UEOpenWeatherAPIModel{
 	protected function formatTime($timestamp, $format){
 
 		$timezone = $this->getParameter("timezone");
-
+		
 		$dateTimezone = new DateTimeZone($timezone);
 
 		$date = new DateTime();
 		$date->setTimezone($dateTimezone);
 		$date->setTimestamp($timestamp);
-
-		$time = $date->format($format);
-
-		return $time;
+		
+		$strTime = $date->format($format);
+		
+		$locale = $this->getParameter("locale");
+				
+		if($format == "D" || $format == "l" && !empty($locale) && $locale !== "en"){
+			
+			$strTranslated = $this->translateDayOfWeek($locale, $date, $timezone, $format);
+			
+			if(!empty($strTranslated))
+				$strTime = $strTranslated;
+			
+		}
+		
+		return $strTime;
 	}
 
 }

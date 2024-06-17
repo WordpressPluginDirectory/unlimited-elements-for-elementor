@@ -852,6 +852,8 @@ class UniteCreatorCategoriesWork extends UniteElementsBaseUC{
 	 */
 	private function remove($catID){
 		
+		$catID = UniteFunctionsUC::validateNumeric($catID,"category id");
+		
 		$catID = (int)$catID;
 		
 		$arrCat = $this->getCat($catID);

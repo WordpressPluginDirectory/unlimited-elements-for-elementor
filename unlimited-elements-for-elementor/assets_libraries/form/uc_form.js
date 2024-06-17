@@ -1,13 +1,13 @@
 "use strict";
 
-//version: 1.13
+//version: 1.16
 
 function UnlimitedElementsForm(){
   
   var t = this;
   
   //selectors
-  var ueInputFieldSelector, ueNumberSelector, ueNumberErrorSelector, ueOptionFieldSelector;
+  var ueInputFieldSelector, ueNumberSelector, ueNumberErrorSelector, ueOptionFieldSelector, elementorElementSelector;
   
   //objects
   var g_objCalcInputs;
@@ -34,7 +34,7 @@ function UnlimitedElementsForm(){
     var objErrorParent = objError.parents(".debug-wrapper");
     
     if(!objErrorParent.length)
-    throw new Error(consoleErrorText);    
+      throw new Error(consoleErrorText);    
     
     objErrorParent.addClass("ue_error_true");
     
@@ -48,16 +48,16 @@ function UnlimitedElementsForm(){
   function getFormulaNames(expr, objError){ 
     
     var regex = /\[(.*?)\]/g;
-	  
+    
     var matches = expr.match(regex);   
     
     var names;    
     
     if(matches)      
-    names = matches.map(match => match.substring(1, match.length - 1));     
+      names = matches.map(match => match.substring(1, match.length - 1));     
     
     if(names == undefined)
-    return(false);
+      return(false);
     
     //check for space inside name
     names.forEach(function(name, index){
@@ -108,7 +108,7 @@ function UnlimitedElementsForm(){
     var names = getFormulaNames(expr, objError);
     
     if(names == undefined || names == false)
-    return(expr);
+      return(expr);
     
     names.forEach(function(name, index){
       
@@ -161,7 +161,7 @@ function UnlimitedElementsForm(){
       
       //set formula input to date type
       if(dataDateMode == true)
-      objCalcInput.attr("type", "date");
+        objCalcInput.attr("type", "date");
       
       var inputType = objInpput.attr("type");      
       var inputValue;     
@@ -172,7 +172,7 @@ function UnlimitedElementsForm(){
         
         //if input is empty then count it as 0
         if(inputValue.length == 0)
-        inputValue = 0;
+          inputValue = 0;
         
         //see if input value is round number, if so - make sure the number is unformatted
         var dataSeparateThousandsFormat =  objInpput.data("separate-thousands-format");
@@ -190,7 +190,7 @@ function UnlimitedElementsForm(){
         
         //add parentheses if valus is less then 0
         if(inputValue < 0)
-        inputValue = "("+inputValue+")";	
+          inputValue = "("+inputValue+")";	
         
       }else{
         
@@ -216,7 +216,7 @@ function UnlimitedElementsForm(){
     var result = "";
     
     if (matches) 
-    result = matches.join('');    
+      result = matches.join('');    
     
     expr = result;
     
@@ -326,16 +326,16 @@ function UnlimitedElementsForm(){
     var dataFormat = objCalcInput.data("format");
     
     if(dataFormat == "round")
-    return(Math.round(result))
+      return(Math.round(result))
     
     if(dataFormat == "floor")
-    return(Math.floor(result))
+      return(Math.floor(result))
     
     if(dataFormat == "ceil")
-    return(Math.ceil(result))
+      return(Math.ceil(result))
     
     if(dataFormat == "fractional")
-    return(getFractionalResult(result, objCalcInput));
+      return(getFractionalResult(result, objCalcInput));
     
   }
   
@@ -350,28 +350,28 @@ function UnlimitedElementsForm(){
     
     //if no such attribute exit function
     if(!dataSeparateThousands)
-    return(val)
+      return(val)
     
     //if it set to false exit too
     if(dataSeparateThousands == false)
-    return(val);
+      return(val);
     
     var inputType = objCalcInput.attr("type");
     
     //if type is not "text" then make it "text"
     if(inputType != "text")
-    objCalcInput.attr("type", "text");
+      objCalcInput.attr("type", "text");
     
     var dataSeparateThousandsFormat = objCalcInput.data("separate-thousands-format");
     
     if(!dataSeparateThousandsFormat)
-    dataSeparateThousandsFormat = "en-US";
+      dataSeparateThousandsFormat = "en-US";
     
     val = val.toString().split(".");
     
     //different format available only for round numbers, if number isn't round then format only with coma
     if(val.length > 1 && dataSeparateThousandsFormat == "en-US")
-    val = parseFloat(val[0]).toLocaleString(dataSeparateThousandsFormat) + '.' + val[1];
+      val = parseFloat(val[0]).toLocaleString(dataSeparateThousandsFormat) + '.' + val[1];
     else
     val = parseFloat(val[0]).toLocaleString(dataSeparateThousandsFormat)
     
@@ -388,7 +388,7 @@ function UnlimitedElementsForm(){
     var dataFormula = objCalcInput.data("formula");
     
     if(dataFormula == undefined)
-    return(false);
+      return(false);
     
     //get result with numbers instead of fields name
     var result = getResult(dataFormula, objError, objCalcInput);
@@ -407,7 +407,7 @@ function UnlimitedElementsForm(){
     var inputType = objCalcInput.attr("type");
     
     if(dataRemoveReadonlyCalcMode == false || inputType != "number")
-    objCalcInput.attr('readonly', '');
+      objCalcInput.attr('readonly', '');
     
   }
   
@@ -441,7 +441,7 @@ function UnlimitedElementsForm(){
     
     var parentIdAttribute = objParent.attr("id");
     var objFormula = objParent.find("[data-formula]");
-
+    
     var dataXField = objFormula.data("field-name-x");
     var dataYField = objFormula.data("field-name-y");
     
@@ -462,11 +462,18 @@ function UnlimitedElementsForm(){
     
     jQuery.each(arr, function(index, value) {
       
-      if (jQuery.inArray(value, uniqueArray) === -1)
-      uniqueArray.push(value);
+      //check each inique value if it's not another array
+      if (jQuery.inArray(value, uniqueArray) === -1){
+        
+        var valueArray = value.split(",");
+        var valueArrayNum = valueArray.length;
+        
+        uniqueArray.push(value);
+        
+      }
       
     });
-    
+    // console.log(uniqueArray)
     return uniqueArray;
   }
   
@@ -492,7 +499,7 @@ function UnlimitedElementsForm(){
     var names = getFormulaNames(expr, objError);
     
     if(names == undefined || names == false)
-    return(false);
+      return(false);
     
     for(let i=0;i<names.length;i++){
       
@@ -502,11 +509,18 @@ function UnlimitedElementsForm(){
       g_parents.push(parentIdAttribute);
       
       g_parents = removeDuplicatesFromArray(g_parents);
-  
+      
+	  //find if any inputs in formula are x / y field for some lookup table - if exist then push to g_parents parentAttr var
+      var objParentLookupTableInputByXField = jQuery('[data-field-name-x="'+names[i]+'"]');
+      var objParentLookupTableInputByYField = jQuery('[data-field-name-y="'+names[i]+'"]');
+      var isXFiledForLookupTable = objParentLookupTableInputByXField && objParentLookupTableInputByXField.length > 0;
+      var isYFiledForLookupTable = objParentLookupTableInputByYField && objParentLookupTableInputByYField.length > 0;
+		
       //for lookup tables (if already exist parent copy its name)
-      if(parentAttr !== undefined)
-      g_parents.push(parentAttr);
-
+      if(parentAttr !== undefined && isXFiledForLookupTable == true || parentAttr !== undefined && isYFiledForLookupTable == true){        
+        g_parents.push(parentAttr);
+      }
+      
       objInpput.attr(parentAttrName, g_parents);      
       
     }  
@@ -630,19 +644,27 @@ function UnlimitedElementsForm(){
   /**
   * show main input
   */
-  function showField(objFieldWidget, classHidden){
+  function showField(objFieldWidget, classHidden, elementorHiddenClass){
     
     objFieldWidget.removeClass(classHidden);
+
+    var objParentElementorElement = objFieldWidget.closest(elementorElementSelector);
+    
+    objParentElementorElement.removeClass(elementorHiddenClass);
     
   }
   
   /**
   * hide main input
   */
-  function hideField(objFieldWidget, classHidden){
+  function hideField(objFieldWidget, classHidden, elementorHiddenClass){
     
     objFieldWidget.addClass(classHidden);
+
+    //hide parent elementor-element container to avoid unnecessary gap
+    var objParentElementorElement = objFieldWidget.closest(elementorElementSelector);
     
+    objParentElementorElement.addClass(elementorHiddenClass);
   }
   
   /**
@@ -755,12 +777,12 @@ function UnlimitedElementsForm(){
     if(objFieldWidget.hasClass(classHidden) == true){
       
       if(!objError || !objError.length)
-      objFieldWidget.prepend(hiddenHtml);
+        objFieldWidget.prepend(hiddenHtml);
       
     }else{
       
       if(objError && objError.length)
-      objError.remove();
+        objError.remove();
       
     }
     
@@ -773,7 +795,7 @@ function UnlimitedElementsForm(){
     
     //if no calc mode inpu found on page - do nothing
     if(!g_objCalcInputs.length)
-    return(false);			
+      return(false);			
     
     //look after each calc mode input field on a page
     g_objCalcInputs.each(function(){
@@ -786,12 +808,12 @@ function UnlimitedElementsForm(){
       var formula = objCalcInput.data('formula');
       
       if(!formula)
-      return(true);
+        return(true);
       
       var names = getFormulaNames(formula, objError);
       
       if(names == undefined || names == false)
-      return(false);
+        return(false);
       
       names.forEach(function(name, index){
         
@@ -829,18 +851,48 @@ function UnlimitedElementsForm(){
     }
     
   }
-
+  
   /**
-   * create condition visual for Editor
-   */
-  function setConditionVisualInEditor(obj, operator, fieldName, condition, fieldValue){
+  * create condition visual for Editor
+  */
+  function setConditionVisualInEditor(obj, operator, fieldName, condition, fieldValue, conditionsNum, conditions){
     var conditionClass = "ue-form-condition";
     var conditionStyles = 'color:#000;font-size:12px;padding:5px;border:1px solid grey;background-color:lightgrey;border-radius:5px;width:100%;margin-top:5px';
     var conditionHtml = `<div class="${conditionClass}" data-condition="['${operator}', '${fieldName}', '${condition}', '${fieldValue}']" style="${conditionStyles}">Visibility Condition: "${operator} ${fieldName} ${condition} ${fieldValue}"</div>`;
     var objCondition = obj.find(`[data-condition="['${operator}', '${fieldName}', '${condition}', '${fieldValue}']"]`);
+    var objAllConditions = obj.find(`.${conditionClass}`);
+    var visualConditionsNum = objAllConditions.length;
+ 
+    if(!objCondition || !objCondition.length){
+      
+      obj.append(conditionHtml);
+      
+      //remove unnecesary visual condition in editor (currently not doing anything)
+      if(visualConditionsNum > conditionsNum){        
 
-    if(!objCondition || !objCondition.length)
-    obj.append(conditionHtml);
+        objAllConditions.each(function(){
+          var objCondition = jQuery(this);
+          var dataCondition = objCondition.data("condition").replace(/'/g, '"');
+          var currentConditionAttr = JSON.parse(dataCondition);
+          var currentOperator = currentConditionAttr[0];
+          var currentFieldName = currentConditionAttr[1];
+          var currentCondition = currentConditionAttr[2];
+          var currentFieldValue = currentConditionAttr[3];
+
+          for(let i=0; i<conditionsNum; i++){
+      
+            var conditionArray = conditions[i];
+            var operator = conditionArray.operator;
+            var fieldName = conditionArray.field_name;
+            var condition = conditionArray.condition;
+            var fieldValue = parseInt(conditionArray.field_value);
+
+            if(operator == currentOperator && fieldName == currentFieldName && condition == currentCondition && fieldValue == currentFieldValue)
+            return(true);
+          }      
+        });
+      }
+    }
   }
   
   /*
@@ -850,13 +902,14 @@ function UnlimitedElementsForm(){
     
     var objFieldWidget = jQuery("#"+widgetId);
     var classHidden = "ucform-has-conditions";
+    var elementorHiddenClass = "elementor-hidden-desktop elementor-hidden-tablet elementor-hidden-mobile";
     var classError = "ue-error";
     
     var conditions = conditionArray.visibility_conditions;
     var conditionsNum = conditions.length;
     
     if(conditionsNum == 0)
-    return(false);
+      return(false);
     
     var totalVisibilityCondition;
     
@@ -885,10 +938,10 @@ function UnlimitedElementsForm(){
       
       //if only one item exist - ignore the condition ("&&", "||")
       if(i == 0)
-      totalVisibilityCondition = visibilityCondition;
+        totalVisibilityCondition = visibilityCondition;
       
       if(i > 0)
-      totalVisibilityCondition += visibilityOperator + visibilityCondition;      
+        totalVisibilityCondition += visibilityOperator + visibilityCondition;      
       
       //show error if condition name equals input field name
       arrNames = getNames(arrNames, fieldName);
@@ -896,17 +949,17 @@ function UnlimitedElementsForm(){
       var objInputField = objFieldWidget.find(ueInputFieldSelector);
       
       equalConditionInputNameError(objInputField, arrNames, classError);
-   
+      
       if(isInEditor == "yes")
-      setConditionVisualInEditor(objFieldWidget, operator, fieldName, condition, fieldValue);
+        setConditionVisualInEditor(objFieldWidget, operator, fieldName, condition, fieldValue, conditionsNum, conditions);
       
     }
     
     var isInEditor = objField.data("editor");
-   
+    
     if(eval(totalVisibilityCondition) == true){
       
-      showField(objFieldWidget, classHidden);
+      showField(objFieldWidget, classHidden, elementorHiddenClass);
       
       if(isInEditor == "yes"){
         // setVisibilityInEditor(objFieldWidget, classError, classHidden);
@@ -916,7 +969,7 @@ function UnlimitedElementsForm(){
     
     if(eval(totalVisibilityCondition) == false){      
       
-      hideField(objFieldWidget, classHidden);
+      hideField(objFieldWidget, classHidden, elementorHiddenClass);
       
       if(isInEditor == "yes"){        
         // setVisibilityInEditor(objFieldWidget, classError, classHidden);
@@ -936,7 +989,7 @@ function UnlimitedElementsForm(){
     
     //if no calc mode inpu found on page - do nothing
     if(!g_objCalcInputs.length)
-    return(false);
+      return(false);
     
     //look after each calc mode input field on a page
     g_objCalcInputs.each(function(){
@@ -999,7 +1052,7 @@ function UnlimitedElementsForm(){
       var dataCalcMode = objInput.data("calc-mode");
       
       if(dataCalcMode === false)
-      return(true);
+        return(true);
       
       recalculateParentInputs(objParentCalkInputs);
       
@@ -1017,6 +1070,7 @@ function UnlimitedElementsForm(){
     ueNumberSelector = ".ue-number, .ue-content";
     ueNumberErrorSelector = ".ue-number-error";
     ueOptionFieldSelector = ".ue-option-field";
+    elementorElementSelector = ".elementor-element";
     
     //objects
     g_objCalcInputs = jQuery(ueInputFieldSelector+'[data-calc-mode="true"]');

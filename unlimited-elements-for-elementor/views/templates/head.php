@@ -22,6 +22,9 @@ $logoImage = ($isProVersion === true)
 	? GlobalsUC::$urlPluginImages . "logo_unlimited-pro.svg"
 	: GlobalsUC::$urlPluginImages . "logo_unlimited.svg";
 
+//gutenberg plugin
+if(GlobalsUnlimitedElements::$isGutenbergOnly == true)
+	$logoImage = GlobalsUC::$urlPluginImages . "logo_blocks_test.png";
 
 $logoUrl = GlobalsUC::URL_SITE;
 $logoTitle = GlobalsUC::URL_SITE;

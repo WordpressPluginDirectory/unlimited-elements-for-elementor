@@ -1417,16 +1417,8 @@ class UniteCreatorWebAPIWork{
 	 */
 	protected function getImportedAddonData($addonType, $addonID){
 
-		if($addonType != GlobalsUC::ADDON_TYPE_SHAPE_DEVIDER)
-			return(array());
 
-		$objShapes = new UniteShapeManagerUC();
-		$shapeBGContent = $objShapes->getShapeBGContentBYAddonID($addonID);
-
-		$data = array();
-		$data["shape_content"] = $shapeBGContent;
-
-		return($data);
+		return(array());
 	}
 
 

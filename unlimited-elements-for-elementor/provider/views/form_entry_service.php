@@ -48,6 +48,47 @@ class UCFormEntryService{
 	}
 
 	/**
+	 * Format the entry fields.
+	 *
+	 * @param array $fields
+	 *
+	 * @return array
+	 */
+	public function formatEntryFields($fields){
+
+		foreach($fields as &$field){
+			$field = $this->formatEntryField($field);
+		}
+
+		return $fields;
+	}
+
+	/**
+	 * Format the entry field.
+	 *
+	 * @param array $field
+	 *
+	 * @return array
+	 */
+	public function formatEntryField($field){
+
+		if($field["type"] !== "text")
+			return $field;
+
+		if(empty($field["value"]) === true)
+			return $field;
+
+		$field["value"] = wp_unslash($field["value"]);
+
+		$value = json_decode($field["value"], true);
+
+		if(is_array($value) === true)
+			$field["value"] = $this->formatEntryArrayField($value);
+
+		return $field;
+	}
+
+	/**
 	 * Find the entry by the identifier.
 	 *
 	 * @param int|int[] $id
@@ -100,6 +141,7 @@ class UCFormEntryService{
 
 		foreach($results as $result){
 			$entryFields = $fields[$result["id"]];
+			$entryFields = $this->formatEntryFields($entryFields);
 			$entryMain = $this->getEntryMainField($entryFields);
 			$entryRead = $result["seen_at"] !== null;
 
@@ -241,6 +283,28 @@ class UCFormEntryService{
 		});
 
 		return $result;
+	}
+
+	/**
+	 * Format the entry's array field.
+	 *
+	 * @param array $values
+	 * @param string $prefix
+	 *
+	 * @return string
+	 */
+	private function formatEntryArrayField($values, $prefix = ""){
+
+		$formattedValue = "";
+
+		foreach($values as $key => $value){
+			if(is_array($value) === true)
+				$formattedValue .= $this->formatEntryArrayField($value, $key . " - ");
+			else
+				$formattedValue .= $prefix . $key . ": " . $value . "\n";
+		}
+
+		return $formattedValue;
 	}
 
 	/**

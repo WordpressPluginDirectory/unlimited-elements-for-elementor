@@ -115,7 +115,7 @@ class ProviderOperationsUC extends UCOperations{
 		$arrIDs = UniteFunctionsUC::getVal($data, "post_ids");
 
 		$arrTypesAssoc = UniteFunctionsWPUC::getPostTypesAssoc(array(), true);
-
+		
 		if(empty($arrIDs))
 			return(null);
 

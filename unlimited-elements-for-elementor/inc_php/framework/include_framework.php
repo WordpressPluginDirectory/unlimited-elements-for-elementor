@@ -42,7 +42,6 @@ require_once $folderIncludes . 'base_output.class.php';
 require_once $folderIncludes . 'helper_base.class.php';
 require_once $folderIncludes . 'table.class.php';
 require_once $folderIncludes . 'font_manager.class.php';
-require_once $folderIncludes . 'shapes.class.php';
 require_once $folderIncludes . 'services.class.php';
 
 //include composer - twig

@@ -93,7 +93,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(empty($tableName))
 				UniteFunctionsUC::throwError("Empty table name!!!");
-
+			
 			$sql = "show tables like '$tableName'";
 
 			$table = $wpdb->get_var($sql);
@@ -864,7 +864,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				$post = get_post($post);
 
 			$arrTerms = self::getPostTermsTitles($post, $withTax);
-
+			
 			if(empty($arrTerms))
 				return("");
 
@@ -872,7 +872,63 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			return($strTerms);
 		}
+		
+		/**
+		 * get terms titles string 
+		 */
+		public static function getTermsTitlesString($arrTerms){
+			
+			if(empty($arrTerms))
+				return("");
+				
+			$arrTermsNames = self::getTermsTitles($arrTerms, true, true);
+						
+			$strTerms = implode(", ", $arrTermsNames);
 
+			return($strTerms);
+		}
+		
+		
+		/**
+		 * get terms titles
+		 */
+		public static function getTermsTitles($arrTerms, $withTax = true, $withID = false){
+			
+			$arrTitles = array();
+			
+			if(empty($arrTerms))
+				return(array());
+
+			foreach($arrTerms as $term){
+				
+				$term = (array)$term;
+				
+				$name = UniteFunctionsUC::getVal($term, "name");
+				
+				$termID = UniteFunctionsUC::getVal($term, "term_id"); 
+				
+				if($withTax == true){
+					
+					$taxanomy = UniteFunctionsUC::getVal($term, "taxonomy");
+										
+					if(!empty($taxanomy) && $taxanomy != "category")
+						$name .= "($taxanomy)";
+				}
+				if($withID == true)
+				
+					$name = "{$name}[$termID]";
+				
+				if(empty($name))
+					continue;
+				
+				$arrTitles[] = $name;
+			}
+			
+			
+			return($arrTitles);
+		}
+		
+		
 		/**
 		 * get post terms titles
 		 */
@@ -882,31 +938,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(empty($arrTermsWithTax))
 				return(array());
-
-			$arrTitles = array();
-
-			foreach($arrTermsWithTax as $taxanomy=>$arrTerms){
-
-				if(empty($arrTerms))
-					continue;
-
-				foreach($arrTerms as $term){
-
-					$name = UniteFunctionsUC::getVal($term, "name");
-
-					if($withTax == true){
-						$taxonomy = UniteFunctionsUC::getVal($term, "taxonomy");
-
-						if(!empty($taxanomy) && $taxanomy != "category")
-							$name .= "($taxanomy)";
-					}
-
-					if(empty($name))
-						continue;
-
-					$arrTitles[] = $name;
-				}
-			}
+			
+			$arrTerms = array();
+			foreach($arrTermsWithTax as $tax=>$arrTermsItems)
+				$arrTerms = array_merge($arrTerms, $arrTermsItems);
+			
+			$arrTitles = self::getTermsTitles($arrTerms, $withTax);
 
 			return($arrTitles);
 		}
@@ -1089,7 +1126,54 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		return ($args);
 	}
-
+	
+		/**
+		 * get tax query (for posts query) from array of terms
+		 */
+		public static function getTaxQueryFromTerms($arrTerms){
+			
+			if(empty($arrTerms))
+				return(array());
+			
+			$arrByTax = array();
+			
+			foreach($arrTerms as $term){
+				
+				$taxonomy = $term->taxonomy;
+				
+				$arrTaxTerms = UniteFunctionsUC::getVal($arrByTax, $taxonomy);
+				
+				if(empty($arrTaxTerms))
+					$arrTaxTerms = array();
+				
+				$arrTaxTerms[] = $term->term_id;
+				
+				$arrByTax[$taxonomy] = $arrTaxTerms;
+			}
+			
+			//make the tax query
+			
+			$arrTaxQuery = array();
+			
+			foreach($arrByTax as $taxonomy=>$arrTermIDs){
+				
+				$arrItem = array(
+					"taxonomy"=>$taxonomy,
+					"field"=>"id",
+					"terms"=>$arrTermIDs,
+					"operator"=>"IN",
+				);
+				
+				$arrTaxQuery[] = $arrItem;
+			}
+			
+			if(count($arrTaxQuery) > 1)
+				$arrTaxQuery["relation"] = "OR";
+			
+			return($arrTaxQuery);
+		}
+		
+		
 
 		public static function a_________TAXONOMY_LEVELS___________(){}
 
@@ -2657,18 +2741,18 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		$db = self::getDB();
 
 		$tablePosts = UniteProviderFunctionsUC::$tablePosts;
-
+				
 		$strIDs = implode(",", $arrIDs);
-
+		
+		UniteFunctionsUC::validateIDsList($strIDs,"post ids");
+		
 		if(empty($strIDs))
 			return (array());
-
-		$strIDs = $db->escape($strIDs);
-
+		
 		$sql = "select ID as id,post_title as title, post_type as type from $tablePosts where ID in($strIDs)";
-
+		
 		$response = $db->fetchSql($sql);
-
+		
 		if(empty($response))
 			return (array());
 
@@ -2695,21 +2779,16 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(empty($post))
 			return ("");
-
-		//UniteFunctionsUC::showTrace();
-		//dmp($post);
-
+		
 		$postID = $post->ID;
 
 		//protection against infinate loops
 
 		if(isset(self::$cachePostContent[$postID]))
 			return (self::$cachePostContent[$postID]);
-
-		self::$cachePostContent[$postID] = $post->post_content;
-
+				
 		$isEditMode = GlobalsProviderUC::$isInsideEditor;
-
+		
 		if($isEditMode == false)
 			$content = get_the_content(null, false, $post);
 		else
@@ -3631,7 +3710,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			else
 				$objUser = get_user_by("slug", $userID);
 		}
-
+		
 		//if emtpy user - return empty
 		if(empty($objUser)){
 			$arrEmpty = array();

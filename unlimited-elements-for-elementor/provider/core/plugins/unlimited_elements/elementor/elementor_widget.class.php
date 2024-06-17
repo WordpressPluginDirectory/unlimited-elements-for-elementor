@@ -2376,7 +2376,6 @@ class UniteCreatorElementorWidget extends Widget_Base {
      */
     protected function addFreeVersionCTAControl(){
 
-
     	if(GlobalsUC::$isProVersion == true)
     		return(false);
 
@@ -3319,10 +3318,17 @@ class UniteCreatorElementorWidget extends Widget_Base {
      * get global colors array if missing
      */
     public static function getGlobalColors(){
-
+		
     	if(!empty(self::$arrGlobalColors))
     		return(false);
-
+		
+    	//don't run on woocommerce cart page - cause some weird elementor bug
+    	
+    	$isCartOrCheckoutPage = UniteCreatorWooIntegrate::isCartOrCheckoutPage();
+    	
+    	if($isCartOrCheckoutPage == true)
+    		return(array());
+    	
     	self::$arrGlobalColors = array();
 
 		$plugin = \Elementor\Plugin::$instance;
@@ -3343,8 +3349,11 @@ class UniteCreatorElementorWidget extends Widget_Base {
 		if(method_exists($dataManager,"run") == false)
 			return(false);
 
-		$arrColors = $dataManager->run("globals/colors");
-
+		
+		//this function cause items to dissapear from woo cart page
+			
+		$arrColors = $dataManager->run("globals/colors");	
+		
 		if(empty($arrColors))
 			return(false);
 
@@ -3761,13 +3770,15 @@ class UniteCreatorElementorWidget extends Widget_Base {
      */
     protected function ucRenderByAddon($objAddon){
 
+    	
     	try{
-
+	
 	    	if(empty($objAddon)){
 	    		$this->putAddonNotExistErrorMesssage();
 	    		return(false);
 	    	}
-		
+	        
+	    	
 	    	GlobalsProviderUC::$renderPlatform = GlobalsProviderUC::RENDER_PLATFORM_ELEMENTOR;
 	    	
 	    	GlobalsUnlimitedElements::$currentRenderingWidget = $this;
@@ -3786,7 +3797,8 @@ class UniteCreatorElementorWidget extends Widget_Base {
 	        $widgetID = $this->get_id();
 
 	        $addonTitle = $objAddon->getTitle();
-
+			
+	        
 	        if(GlobalsProviderUC::$isUnderNoWidgetsToDisplay == true){
 	        	echo "<!-- skip widget output: {$addonTitle} -->\n";
 	        	return(false);
@@ -3920,7 +3932,9 @@ class UniteCreatorElementorWidget extends Widget_Base {
 
 	        	$output->processIncludes("js");
 	        }
-
+			
+	        
+	        
 	        $htmlOutput = $output->getHtmlBody($scriptsHardCoded, $putCssIncludesInBody,true,$params);
 
         	echo UniteProviderFunctionsUC::escCombinedHtml($htmlOutput);

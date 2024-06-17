@@ -41,7 +41,8 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 		return ($arrPreviews);
 	}
-
+	
+	
 	/**
 	 * get active filter where string
 	 */
@@ -81,7 +82,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		$tableAddons = GlobalsUC::$table_addons;
 		$sql = "select * from {$tableAddons} where id in({$strAddons})";
 		$arrAddons = $this->db->fetchSql($sql);
-
+		
 		return ($arrAddons);
 	}
 
@@ -408,6 +409,8 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 		UniteFunctionsUC::validateNotEmpty($catID, "category id");
 
+		UniteFunctionsUC::validateNumeric($catID, "category id");
+		
 		$tableAddons = GlobalsUC::$table_addons;
 		$query = "select MAX(ordering) as maxorder from {$tableAddons} where catid={$catID}";
 
@@ -447,6 +450,9 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		if($catID === null){
 			$query = "select count(*) as num_addons from {$tableAddons}";
 		}else{
+			
+			UniteFunctionsUC::validateNumeric($catID,"Category ID");
+			
 			$query = "select count(*) as num_addons from {$tableAddons} as a";
 			$arrWhere[] = "a.catid=$catID";
 		}
@@ -715,9 +721,10 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		$addons = array();
 
 		foreach($arrAddons as $key => $addonID){
+			
 			$addon = new UniteCreatorAddon();
 			$addon->initByID($addonID);
-
+			
 			$addons[] = $addon;
 			$arrAddons[$key] = $addon->getID();
 		}
@@ -989,15 +996,19 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 * delete addon from imput data
 	 */
 	public function deleteAddonFromData($data){
-
+		
 		$addonID = UniteFunctionsUC::getVal($data, "addonID");
 		UniteFunctionsUC::validateNotEmpty($addonID, "Widget ID");
 
+		UniteFunctionsUC::validateNumeric($addonID,"widget id");
+		
 		$addon = new UniteCreatorAddon();
 		$addon->initByID($addonID);
-
+		
+		$addonID = (int)$addonID;
+		
 		$this->db->delete(GlobalsUC::$table_addons, "id={$addonID}");
-
+		
 		$addon->triggerAfterDeleteAction();
 	}
 

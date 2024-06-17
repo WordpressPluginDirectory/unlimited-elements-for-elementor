@@ -30,9 +30,16 @@ function ueCheckCatalog(){
 	
 }
 
-if(GlobalsUC::$inDev == true){
+function checkSomeFunc(){
+	
+	
+}
 
-	ueCheckCatalog();
+
+if(GlobalsUC::$inDev == true){
+	checkSomeFunc();
+	
+	//ueCheckCatalog();
 	
 }
 

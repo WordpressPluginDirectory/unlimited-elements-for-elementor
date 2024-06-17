@@ -42,7 +42,7 @@ if(UCIsAddonLibraryPluginExists()){
 		require_once $currentFolder.'/includes.php';
 		
 		HelperUC::validatePluginStartup();
-				
+		
 		require_once  GlobalsUC::$pathProvider."core/provider_main_file.php";
 				
 	}catch(Exception $e){

@@ -14,7 +14,12 @@
 		class="ue-menu-item <?php echo $view === GlobalsUnlimitedElements::VIEW_ADDONS_ELEMENTOR ? "ue-active" : ""; ?>"
 		href="<?php echo HelperUC::getViewUrl(GlobalsUnlimitedElements::VIEW_ADDONS_ELEMENTOR); ?>"
 	>
-		<?php echo esc_html__("Widgets", "unlimited-elements-for-elementor"); ?>
+		<?php if(GlobalsUnlimitedElements::$isGutenbergOnly):?>
+			<?php echo esc_html__("Blocks", "unlimited-elements-for-elementor"); ?>
+		<?php else:?>
+			<?php echo esc_html__("Widgets", "unlimited-elements-for-elementor"); ?>
+		<?php endif?>
+		
 		<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
 			<path d="M12.833 5.833h-7v7h7v-7Zm2.334 0v7h7v-7h-7Zm7 9.334h-7v7h7v-7Zm-9.334 7v-7h-7v7h7ZM3.5 3.5h21v21h-21v-21Z" />
 		</svg>
@@ -30,15 +35,21 @@
 			</svg>
 		</a>
 	<?php endif; ?>
+	
+	<?php if(GlobalsUnlimitedElements::$enableElementorSupport == true):?>
 	<a
 		class="ue-menu-item <?php echo $view === GlobalsUnlimitedElements::VIEW_TEMPLATES_ELEMENTOR ? "ue-active" : ""; ?>"
 		href="<?php echo HelperUC::getViewUrl(GlobalsUnlimitedElements::VIEW_TEMPLATES_ELEMENTOR); ?>"
 	>
+	
 		<?php echo esc_html__("Templates", "unlimited-elements-for-elementor"); ?>
 		<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 28 28">
 			<path d="m6.724 9.333-.345-.852a1.167 1.167 0 0 1 .645-1.519l10.817-4.37a1.167 1.167 0 0 1 1.519.645l6.556 16.225a1.166 1.166 0 0 1-.645 1.519l-10.817 4.37a1.167 1.167 0 0 1-1.519-.644l-.103-.255v.048H8.165A1.167 1.167 0 0 1 7 23.333v-.314l-3.908-1.58a1.167 1.167 0 0 1-.645-1.518L6.724 9.333Zm2.608 12.834h2.577l-2.577-6.378v6.378Zm-2.333-7.285-1.952 4.832 1.952.83v-5.662ZM8.98 8.689 14.66 22.75l8.654-3.496-5.681-14.063L8.98 8.69Zm3.474 2.37a1.167 1.167 0 1 1-.874-2.163 1.167 1.167 0 0 1 .874 2.164Z" />
 		</svg>
 	</a>
+	<?php endif?>
+	
+	
 	<?php if(HelperProviderUC::isFormEntriesEnabled() === true): ?>
 		<a
 			class="ue-menu-item <?php echo $view === GlobalsUnlimitedElements::VIEW_FORM_ENTRIES ? "ue-active" : ""; ?>"

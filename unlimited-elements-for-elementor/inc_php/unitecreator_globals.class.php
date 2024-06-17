@@ -180,8 +180,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static $arrAdminViewPaths = array();
 		public static $alterViewHeaderPrefix = null;
 		public static $arrViewAliases = array();
-		public static $arrDatasetTypes = array();
-		public static $currentPluginTitle = self::PLUGIN_TITLE;
+		public static $arrDatasetTypes = array();		
 		public static $objActiveAddonForAssets = null;
 		public static $isProVersion = false;
 		public static $isAdminRTL = false;
@@ -259,9 +258,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			self::initDBTableTitles();
 
 			//dmp("init globals");
-
+			
 			UniteProviderFunctionsUC::doAction(UniteCreatorFilters::ACTION_AFTER_INIT_GLOBALS);
-
+			
 			if(self::$is_admin){
 
 				$isDebugMode = UniteFunctionsUC::getGetVar("debug", "", UniteFunctionsUC::SANITIZE_KEY);

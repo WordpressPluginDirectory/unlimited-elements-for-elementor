@@ -10,9 +10,9 @@ if(!defined('UNLIMITED_ELEMENTS_INC'))
     define('UNLIMITED_ELEMENTS_INC', true);
 
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
-
+ 
 if(!defined("UNLIMITED_ELEMENTS_VERSION"))
-	define("UNLIMITED_ELEMENTS_VERSION", "1.5.106");
+	define("UNLIMITED_ELEMENTS_VERSION", "1.5.111");
 
 $currentFile = __FILE__;
 $currentFolder = dirname($currentFile);
@@ -112,6 +112,7 @@ require_once GlobalsUC::$pathProvider . 'provider_layouts_exporter.class.php';
 require_once $folderIncludesMain . 'unitecreator_addon_changelog.class.php';
 require_once $folderIncludesMain . 'unitecreator_addon_revisioner.class.php';
 require_once $folderIncludesMain . 'unitecreator_api_integrations.class.php';
+require_once $folderIncludesMain . 'unitecreator_pagination.class.php';
 
 
 //admin only, maybe split later

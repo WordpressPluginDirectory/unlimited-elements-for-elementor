@@ -519,13 +519,13 @@ class UniteProviderFunctionsUC{
 		return($arrData);
 	}
 
-
+	
 	/**
 	 * put footer text line
 	 */
 	public static function putFooterTextLine(){
 		?>
-			&copy; <?php esc_html_e("All rights reserved","unlimited-elements-for-elementor")?>, <a href="https://unlimited-elements.com" target="_blank">Unlimited Elements</a>. &nbsp;&nbsp;
+			&copy; <?php esc_html_e("All rights reserved","unlimited-elements-for-elementor")?>, <a href="https://unlimited-elements.com" target="_blank"><?php echo GlobalsUnlimitedElements::$pluginTitleCurrent ?></a>. &nbsp;&nbsp;
 		<?php
 	}
 

@@ -729,6 +729,8 @@ class UniteCreatorAcfIntegrate{
 		 */
 		public function getAcfFields($postID, $objName = "post", $addPrefix = true, $imageSize = null){
 			
+			
+			
 			$isActive = self::isAcfActive();
 			
 			if($isActive == false)
@@ -738,7 +740,7 @@ class UniteCreatorAcfIntegrate{
 				$this->outputImageSize = $imageSize;
 			
 			$arrData = $this->getAcfFieldsData($postID, $objName);
-			
+						
 			$arrDataOutput = array();
 			foreach($arrData as $key => $value){
 				
@@ -751,7 +753,7 @@ class UniteCreatorAcfIntegrate{
 			//clear image size
 			
 			$this->outputImageSize = null;
-			
+						
 			return($arrDataOutput);
 		}
 		

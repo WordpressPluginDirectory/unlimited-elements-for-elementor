@@ -336,9 +336,6 @@ function UniteSettingsUC(){
 				if(source !== "addon" && jQuery.isNumeric(value) === false)
 					value = g_ucAdmin.urlToRelative(value);
 			break;
-			case "post":
-				value = getPostPickerValue(objInput);
-			break;
 			case "items":
 				value = g_temp.objItemsManager.getItemsData();
 			break;
@@ -374,6 +371,9 @@ function UniteSettingsUC(){
 			break;
 			case "gallery":
 				value = getGalleryValues(objInput);
+			break;
+			case "buttons_group":
+				value = getButtonsGroupValue(objInput);
 			break;
 			case "icon":
 				value = getIconInputData(objInput);
@@ -496,7 +496,8 @@ function UniteSettingsUC(){
 	/**
 	 * clear input
 	 */
-	function clearInput(objInput, dataname, checkboxDataName){
+	function clearInput(objInput, dataname, checkboxDataName, skipControl){
+		
 		var name = getInputName(objInput);
 		var type = getInputType(objInput);
 		var id = objInput.prop("id");
@@ -631,6 +632,11 @@ function UniteSettingsUC(){
 
 				setPostPickerValue(objInput, defaultValue);
 			break;
+			case "post_ids":
+				defaultValue = objInput.data(dataname);
+
+				setPostIdsPickerValue(objInput, defaultValue);
+			break;
 			case "items":
 				if(dataname != "initval")
 					g_temp.objItemsManager.clearItemsPanel();
@@ -651,6 +657,11 @@ function UniteSettingsUC(){
 				defaultValue = objInput.data(dataname);
 
 				setGalleryValues(objInput, defaultValue);
+			break;
+			case "buttons_group":
+				defaultValue = objInput.data(dataname);
+
+				setButtonsGroupValue(objInput, defaultValue);
 			break;
 			case "group_selector":
 			case "map":
@@ -677,8 +688,10 @@ function UniteSettingsUC(){
 		}
 
 		objInput.removeData("unite_setting_oldvalue");
-
-		processControlSettingChange(objInput);
+		
+		if(skipControl !== true)
+			processControlSettingChange(objInput);
+		
 	}
 
 
@@ -689,7 +702,10 @@ function UniteSettingsUC(){
 		var name = getInputName(objInput);
 		var type = getInputType(objInput);
 		var id = objInput.prop("id");
-
+		
+		if(value == g_vars.NOT_UPDATE_OPTION)
+			return(false);
+		
 		switch(type){
 			case "select":
 			case "select2":
@@ -796,6 +812,9 @@ function UniteSettingsUC(){
 			case "post":
 				setPostPickerValue(objInput, value);
 			break;
+			case "post_ids":
+				setPostIdsPickerValue(objInput, value);
+			break;
 			case "items":
 				g_temp.objItemsManager.setItemsFromData(value);
 			break;
@@ -808,6 +827,9 @@ function UniteSettingsUC(){
 			break;
 			case "gallery":
 				setGalleryValues(objInput, value);
+			break;
+			case "buttons_group":
+				setButtonsGroupValue(objInput, value);
 			break;
 			case "group_selector":
 			case "map":
@@ -824,6 +846,7 @@ function UniteSettingsUC(){
 
 					//trace error
 					if(success == false){
+						trace(objInput);
 						trace("for setvalue - wrong type: " + type);
 					}
 				}
@@ -842,9 +865,12 @@ function UniteSettingsUC(){
 		t.disableTriggerChange();
 
 		var objInputs = getObjInputs();
-
-		jQuery.each(objInputs, function () {
-			clearInput(jQuery(this), dataname, checkboxDataName);
+		
+		jQuery.each(objInputs, function (index, input) {
+			
+			var objInput = jQuery(input);
+							
+			clearInput(objInput, dataname, checkboxDataName, true);
 		});
 
 		t.enableTriggerChange();
@@ -1026,6 +1052,8 @@ function UniteSettingsUC(){
 
 		objInput.on("input", function () {
 			objSlider.slider("value", objInput.val());
+
+			funcChange(null, objWrapper);
 		});
 
 		setUnitsPickerChangeHandler(objWrapper, function () {
@@ -1092,7 +1120,7 @@ function UniteSettingsUC(){
 			.on("change", function () {
 				appendPlusButton();
 
-				t.onSettingChange(null, objInput, true);
+				t.onSettingChange(null, objInput);
 			})
 			.on("select2:closing", function () {
 				// hide tipsy
@@ -1102,6 +1130,9 @@ function UniteSettingsUC(){
 		appendPlusButton();
 
 		function appendPlusButton() {
+			if (settings.ajax)
+				return;
+
 			var objOptions = objInput.find("option");
 			var objSelectedOptions = objOptions.filter(":selected");
 
@@ -1554,6 +1585,57 @@ function UniteSettingsUC(){
 		objWrapper.data("values", values || []);
 
 		renderGalleryView(objWrapper);
+	}
+
+
+	function _______BUTTONS_GROUP_____(){}
+
+	/**
+	 * init buttons group
+	 */
+	function initButtonsGroup(objWrapper, funcChange) {
+		objWrapper.find(".unite-setting-button").on("click", function () {
+			var value = jQuery(this).data("value");
+
+			setButtonsGroupValue(objWrapper, value);
+
+			funcChange(null, objWrapper);
+		});
+	}
+
+	/**
+	 * destroy buttons groups
+	 */
+	function destroyButtonsGroups() {
+		g_objWrapper.find(".unite-setting-button").off("click");
+	}
+
+	/**
+	 * get buttons group value
+	 */
+	function getButtonsGroupValue(objWrapper) {
+		return objWrapper.data("value") || null;
+	}
+
+	/**
+	 * set buttons group value
+	 */
+	function setButtonsGroupValue(objWrapper, value) {
+		value = value || null;
+
+		var deselectable = objWrapper.data("deselectable");
+		var selectedValue = objWrapper.find(".unite-setting-button.unite-active").data("value");
+
+		if (deselectable && value === selectedValue)
+			value = null;
+
+		objWrapper
+			.find(".unite-setting-button")
+			.removeClass("unite-active")
+			.filter("[data-value=\"" + value + "\"]")
+			.addClass("unite-active");
+
+		objWrapper.data("value", value);
 	}
 
 
@@ -2655,48 +2737,33 @@ function UniteSettingsUC(){
 	 * init post picker
 	 */
 	function initPostPicker(objWrapper, data, selectedValue) {
-		//fix select focus inside jquery ui dialogs
-		g_ucAdmin.fixModalDialogSelect2();
-
-		objWrapper.removeData("post_picker_value");
-
 		var objSelect = objWrapper.find(".unite-setting-post-picker");
 		var postId = objSelect.data("postid");
 		var postTitle = objSelect.data("posttitle");
-		var placeholder = objSelect.data("placeholder");
 
-		if (!data) {
+		if (!data)
 			data = [];
 
-			if (postId && postTitle) {
-				data.push({
-					id: postId,
-					text: postTitle,
-				});
-			}
+		if (postId && postTitle) {
+			data.push({
+				id: postId,
+				text: postTitle,
+			});
 		}
 
-		var urlAjax = g_ucAdmin.getUrlAjax("get_posts_list_forselect");
-
-		objSelect.select2({
-			data: data,
-			placeholder: placeholder,
-			minimumInputLength: 1,
+		initSelect2(objSelect, {
 			allowClear: true,
+			data: data,
+			minimumInputLength: 1,
+			placeholder: objSelect.data("placeholder"),
 			ajax: {
-				url: urlAjax,
+				url: g_ucAdmin.getUrlAjax("get_posts_list_forselect"),
 				dataType: "json",
 			},
 		});
 
-		//on change - trigger change event, only first time
-		objSelect.on("change", function () {
-			t.onSettingChange(null, objWrapper);
-		});
-
-		//set the value
 		if (selectedValue)
-			objSelect.val(selectedValue).trigger("change");
+			objSelect.val(selectedValue).trigger("change.select2");
 	}
 
 	/**
@@ -2708,38 +2775,15 @@ function UniteSettingsUC(){
 		if (jQuery.isArray(value) === false)
 			value = [value];
 
-		objWrapper.data("post_picker_value", value);
-
-		//clear the picker
 		if (value.length === 0) {
 			initPostPicker(objWrapper);
 
 			return;
 		}
 
-		//get titles then init
-		var urlAjax = g_ucAdmin.getUrlAjax("get_select2_post_titles");
-
-		jQuery.get(urlAjax, {
-			"post_ids": value,
-		}).then(function (data) {
-			var response = JSON.parse(data);
-			var arrData = response.select2_data;
-
-			initPostPicker(objWrapper, arrData, value);
+		g_ucAdmin.ajaxRequest("get_select2_post_titles", { post_ids: value }).then(function (response) {
+			initPostPicker(objWrapper, response.select2_data, value);
 		});
-	}
-
-	/**
-	 * get post picker value
-	 */
-	function getPostPickerValue(objWrapper) {
-		var value = objWrapper.data("post_picker_value");
-
-		if (value)
-			return value;
-
-		return objWrapper.find(".unite-setting-post-picker").select2("val");
 	}
 
 
@@ -2748,10 +2792,13 @@ function UniteSettingsUC(){
 	/**
 	 * init post ids picker
 	 */
-	function initPostIdsPicker(objInput) {
+	function initPostIdsPicker(objInput, data, selectedValue) {
 		var multiple = objInput.data("issingle") !== true;
 		var dataType = objInput.data("datatype");
 		var postType = null;
+
+		if (!data)
+			data = [];
 
 		if (objInput.data("woo") === "yes")
 			postType = "product";
@@ -2767,6 +2814,7 @@ function UniteSettingsUC(){
 
 		initSelect2(objInput, {
 			allowClear: multiple === false,
+			data: data,
 			minimumInputLength: 1,
 			multiple: multiple === true,
 			placeholder: objInput.data("placeholdertext"),
@@ -2774,11 +2822,45 @@ function UniteSettingsUC(){
 				url: g_ucAdmin.getUrlAjax(action),
 				dataType: "json",
 				data: function (params) {
-					params.post_type = postType;
+					params.q = params.term;
+
+					if (postType)
+						params.post_type = postType;
 
 					return params;
 				},
 			},
+		});
+
+		if (selectedValue)
+			objInput.val(selectedValue).trigger("change.select2");
+	}
+
+	/**
+	 * set post ids picker value
+	 */
+	function setPostIdsPickerValue(objInput, value) {
+		value = value || [];
+
+		if (jQuery.isArray(value) === false)
+			value = [value];
+
+		if (!value.length) {
+			initPostIdsPicker(objInput);
+
+			return;
+		}
+
+		var dataType = objInput.data("datatype");
+		var action = "get_select2_post_titles";
+
+		if (dataType === "terms")
+			action = "get_select2_terms_titles";
+		else if (dataType === "users")
+			action = "get_select2_users_titles";
+
+		g_ucAdmin.ajaxRequest(action, { post_ids: value }).then(function (response) {
+			initPostIdsPicker(objInput, response.select2_data, value);
 		});
 	}
 
@@ -4427,6 +4509,9 @@ function UniteSettingsUC(){
 			case "gallery":
 				initGallery(objInput, funcChange);
 			break;
+			case "buttons_group":
+				initButtonsGroup(objInput, funcChange);
+			break;
 			default:
 				//custom setting
 				var objCustomType = getCustomSettingType(type);
@@ -4601,6 +4686,7 @@ function UniteSettingsUC(){
 		destroyIconPickers();
 		destroyImageChoosers();
 		destroyGalleries();
+		destroyButtonsGroups();
 		destroyLinks();
 		destroyRangeSliders();
 		destroySubSettings();

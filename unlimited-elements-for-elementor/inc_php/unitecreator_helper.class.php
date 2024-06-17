@@ -284,16 +284,21 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * used for run code once functionality
 		 */
 		public static function isRunCodeOnce($key){
-
+			
 			$isAlreadyRun = UniteFunctionsUC::getVal(self::$arrRunOnceCache, $key);
-
+			
+			//run the code anyway, if located inside hidden template content output
+			
+			if(!empty(GlobalsProviderUC::$renderTemplateID))
+				$isAlreadyRun = false;
+			
 			if($isAlreadyRun === true){
-				return(false);
+				return(false);			//don't run the code
 			}
 
 			self::$arrRunOnceCache[$key] = true;
 
-			return(true);
+			return(true);		//run the code
 		}
 
 		/**

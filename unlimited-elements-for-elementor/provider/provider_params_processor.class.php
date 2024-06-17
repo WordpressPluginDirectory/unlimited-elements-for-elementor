@@ -775,11 +775,15 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$arrData["alias"] = UniteFunctionsUC::getVal($arrPost, "post_name");
 			$arrData["author_id"] = UniteFunctionsUC::getVal($arrPost, "post_author");
 			$arrData["post_type"] = UniteFunctionsUC::getVal($arrPost, "post_type");
-
-			$content = UniteFunctionsWPUC::getPostContent($post);
-
+			
+			$password = $post->post_password;
+			if(!empty($password))
+				$content = "";
+			else
+				$content = UniteFunctionsWPUC::getPostContent($post);
+			
 			$arrData["content"] = $content;
-
+			
 			$link = UniteFunctionsWPUC::getPermalink($post);
 			
 			//post link addition
@@ -862,7 +866,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			//get intro, intro from excerpt - tags not stripped
 
 			$exceprt = UniteFunctionsUC::getVal($arrPost, "post_excerpt");
-
+			
 			$intro = $exceprt;
 			$introFull = "";
 
@@ -882,7 +886,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$arrData["excerpt"] = $exceprt;
 			$arrData["intro"] = $intro;
 			$arrData["intro_full"] = $introFull;
-
+			
 			//put data
 			$strDate = UniteFunctionsUC::getVal($arrPost, "post_date");
 			$arrData["date"] = !empty($strDate)?strtotime($strDate):"";
@@ -2344,7 +2348,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		if($showDebugQuery == true){
 			echo "<div class='uc-debug-query-wrapper'>";	//start debug wrapper
-
+			
 			$argsForDebug = $args;
 			if(!empty($arrQueryBase))
 				$argsForDebug = UniteFunctionsWPUC::cleanQueryArgsForDebug($argsForDebug);
@@ -3767,11 +3771,13 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 				break;
 				case "current_post_meta":
+				case "current_product_variations":
 
 					//item is ID
 					$galleryItem = $this->getGalleryItem($item, null, $params);
 					
 				break;
+				
 				case "image_video_repeater":
 
 					$image = UniteFunctionsUC::getVal($item, "image");
@@ -3952,7 +3958,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			case "gallery":
 
 				$arrGalleryItems = UniteFunctionsUC::getVal($value, $name."_gallery");
-
+				
 				$data[$name."_items"] = $arrGalleryItems;
 
 			break;
@@ -3967,6 +3973,11 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 				//do nothing, convert later
 
+			break;
+			case "current_product_variations":
+				
+				$data[$name."_items"] = UniteCreatorWooIntegrate::getCurrentProductVariationImageItems();
+				
 			break;
 			case "instagram":
 
@@ -4067,6 +4078,19 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	protected function z_______________REMOTE____________(){}
 
 	/**
+	 * update for the template switcher, to keep the sync inside the template
+	 */
+	private function modifySyncGroupName($syncParentName){
+		
+		if(empty(GlobalsProviderUC::$renderTemplateID)) 
+			return($syncParentName);
+			
+		$syncParentName .= "_".GlobalsProviderUC::$renderTemplateID;
+		
+		return($syncParentName);
+	}
+	
+	/**
 	 * get remote parent type data
 	 */
 	private function getRemoteParentData($value, $name, $processType, $param, $data){
@@ -4127,12 +4151,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		if(!empty($widgetName))
 			$attributes .= " data-widgetname='$widgetName'";
 
-
 		if($isSync == true){
-
-			//get the name
+			
 			$syncParentName = UniteFunctionsUC::getVal($value, $name."_sync_name");
-
+			
+			$syncParentName = $this->modifySyncGroupName($syncParentName);
+						
 			$attributes .= " data-sync='true' data-syncid='$syncParentName'";
 		}
 
@@ -4175,9 +4199,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		HelperUC::addRemoteControlsScript();
 
+		$syncParentName = $this->modifySyncGroupName($syncParentName);
+		
+		
 		$attributes = "";
 		$attributes .= " data-sync='true' data-syncid='$syncParentName' data-remoteid='$remoteParentName'";
-
+		
 		if($isDebug == true)
 			$attributes .= " data-debug='true'";
 

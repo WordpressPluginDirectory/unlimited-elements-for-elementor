@@ -1106,49 +1106,6 @@ class UniteCreatorParamsProcessorWork{
 	}
 
 
-	private function z________SHAPE________(){}
-
-
-	/**
-	 * get the shape addon
-	 */
-	private function getProcessedParamsValue_shapeOutput($data, $value, $param){
-
-		$paramName = UniteFunctionsUC::getVal($param, "name");
-
-		$shapeData = "";
-
-		if(empty($value)){
-			$data[$paramName] = "";
-			return($data);
-		}
-
-		if(empty($this->objShapes))
-			$this->objShapes = new UniteShapeManagerUC();
-
-		$svgContent = $this->objShapes->getShapeSVGContent($value);
-		$data[$paramName] = $svgContent;
-
-		return($data);
-	}
-
-
-	/**
-	 * addon picker output
-	 */
-	private function getProcessedParamsValue_addonPickerOutput($data, $value, $param){
-
-		$addonType = UniteFunctionsUC::getVal($param, "addon_type");
-
-		switch($addonType){
-			case GlobalsUC::ADDON_TYPE_SHAPES:
-				$data = $this->getProcessedParamsValue_shapeOutput($data, $value, $param);
-			break;
-		}
-
-		return($data);
-	}
-
 
 	private function z_________INSTAGRAM_________(){}
 
@@ -1926,12 +1883,6 @@ class UniteCreatorParamsProcessorWork{
 			case UniteCreatorDialogParam::PARAM_MAP:
 				$data[$name] = $this->getGoogleMapOutput($value, $name, $param);
 			break;
-			case UniteCreatorDialogParam::PARAM_SHAPE:
-				$data = $this->getProcessedParamsValue_shapeOutput($data, $value, $param);
-			break;
-			case UniteCreatorDialogParam::PARAM_ADDONPICKER:
-				$data = $this->getProcessedParamsValue_addonPickerOutput($data, $value, $param);
-			break;
 		}
 
 		return($data);
@@ -2159,7 +2110,7 @@ class UniteCreatorParamsProcessorWork{
 	 * get item data
 	 */
 	public function getProcessedItemsData($arrItems, $processType, $forTemplate = true, $filterType = null){
-
+		
 		$this->validateInited();
 		self::validateProcessType($processType);
 

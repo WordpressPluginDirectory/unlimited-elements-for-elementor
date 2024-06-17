@@ -52,7 +52,7 @@ class UniteCreatetorParamsProcessorMultisource{
 		//check if there is some size
 		if(!empty($this->arrItemsImageSizes))
 			return;
-
+		
 		//check if there is some params
 		$params = $this->arrParamsItems;
 
@@ -71,10 +71,10 @@ class UniteCreatetorParamsProcessorMultisource{
 
 		if(empty($imageTitle))
 			return;
-
+		
 		//if no image param - show some message
 		HelperHtmlUC::outputErrorMessage("Multisource Error: Missing <b>image size attribute</b> for: <b>$imageTitle</b> image attribute. Please add it to attributes list. Special Attribute -> Image Size");
-
+		
 	}
 
 
@@ -198,7 +198,7 @@ class UniteCreatetorParamsProcessorMultisource{
 	private function getData_repeater(){
 
 		$nameParamRepeater = $this->name."_repeater";
-
+		
 		$repeaterName = UniteFunctionsUC::getVal($this->arrValues, $this->name."_repeater_name");
 
 		$location = UniteFunctionsUC::getVal($this->arrValues, $this->name."_repeater_location");
@@ -337,7 +337,8 @@ class UniteCreatetorParamsProcessorMultisource{
 
 		if(!empty($userID))
 			$arrCustomFields = UniteFunctionsWPUC::getUserCustomFields($userID, false);
-
+					
+		
 		//show debug meta text
 
 		if($this->showDebugMeta == true){
@@ -376,7 +377,8 @@ class UniteCreatetorParamsProcessorMultisource{
 		//get the items
 
 		$arrRepeaterItems = UniteFunctionsUC::getVal($arrCustomFields, $repeaterName);
-
+		
+		
 		//show debug data text
 
 		if($this->showDebugData == true){
@@ -424,8 +426,19 @@ class UniteCreatetorParamsProcessorMultisource{
 			return(array());
 		}
 
-		if(is_array($arrRepeaterItems) == false)
-			return(array());
+		//try to get the array type: field_array (output from acf)
+		
+		if(is_array($arrRepeaterItems) == false){
+			
+			$arrRepeaterItems = UniteFunctionsUC::getVal($arrCustomFields, "{$repeaterName}_array");
+			
+			if(empty($arrRepeaterItems))
+				return(array());
+			
+			$arrRepeaterItems = UniteFunctionsUC::arrayToArrAssocItems($arrRepeaterItems,"title");
+						
+			return($arrRepeaterItems);
+		}
 
 
 		return($arrRepeaterItems);
@@ -1503,7 +1516,7 @@ class UniteCreatetorParamsProcessorMultisource{
 	 * get multisource data
 	 */
 	public function getMultisourceSettingsData($value, $name, $processType, $param, $data){
-
+		
 		$this->isInsideEditor = HelperUC::isEditMode();
 
 		$itemsSource = UniteFunctionsUC::getVal($value, $name . "_source");

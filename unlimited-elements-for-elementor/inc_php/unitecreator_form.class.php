@@ -211,13 +211,13 @@ class UniteCreatorForm{
 			UniteFunctionsUC::throwError("No form data found.");
 
 		$postContent = HelperProviderCoreUC_EL::getElementorContentByPostID($postId);
-
+		
 		if(empty($postContent))
 			UniteFunctionsUC::throwError("Form elementor content not found.");
 
 		$templateContent = null;
 
-		if (empty($templateId) === false) {
+		if(empty($templateId) === false){
 			$templateContent = HelperProviderCoreUC_EL::getElementorContentByPostID($templateId);
 
 			if(empty($templateContent) === true)
@@ -254,7 +254,7 @@ class UniteCreatorForm{
 				$errors = array_merge($errors, $formErrors);
 
 				$formErrors = implode(" ", $formErrors);
-
+				
 				UniteFunctionsUC::throwError("Form settings validation failed ($formErrors).");
 			}
 
@@ -421,7 +421,26 @@ class UniteCreatorForm{
 
 		HelperUC::ajaxResponse($success, $message, $data);
 	}
+	
+	
+	/**
+	 * check if the email valid. include the placeholders in the validation
+	 */
+	private function isEmailValid($fieldValue){
+		
+		if($fieldValue == "{".self::PLACEHOLDER_ADMIN_EMAIL."}")
+			return(true);
+		 
+		if($fieldValue == "{".self::PLACEHOLDER_EMAIL_FIELD."}")
+			return(true);
 
+		$validEmail = UniteFunctionsUC::isEmailValid($fieldValue);
+		
+		
+		return($validEmail);
+	}
+	
+	
 	/**
 	 * validate form settings
 	 */
@@ -468,18 +487,19 @@ class UniteCreatorForm{
 							break;
 
 							case "email":
-								$validEmail = UniteFunctionsUC::isEmailValid($fieldValue);
-
+								
+								$validEmail = $this->isEmailValid($fieldValue);
+								
 								if($fieldValue !== "" && $validEmail === false)
-									$errors[] = sprintf(esc_html__("%s field has an invalid email address.", "unlimited-elements-for-elementor"), $errorTitle);
+									$errors[] = sprintf(esc_html__("%s field has an invalid email address: $fieldValue .", "unlimited-elements-for-elementor"), $errorTitle);
 							break;
 
 							case "email_recipients":
 								$emails = $this->prepareEmailRecipients($fieldValue);
-
+							
 								foreach($emails as $email){
-									$validEmail = UniteFunctionsUC::isEmailValid($email);
-
+									$validEmail = $this->isEmailValid($email);
+									
 									if($validEmail === false)
 										$errors[] = sprintf(esc_html__("%s field has an invalid email address: %s.", "unlimited-elements-for-elementor"), $errorTitle, $email);
 								}
@@ -867,7 +887,7 @@ class UniteCreatorForm{
 
 		$from = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("from", $action));
 		$from = $this->replacePlaceholders($from, array(self::PLACEHOLDER_ADMIN_EMAIL));
-
+		
 		$fromName = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("from_name", $action));
 		$fromName = $this->replacePlaceholders($fromName, array(self::PLACEHOLDER_SITE_NAME));
 

@@ -37,7 +37,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	protected $textBuy;
 	protected $linkBuy;
 	protected $pluginTitle;
-
+	
 	/**
 	 *
 	 * the constructor
@@ -69,7 +69,16 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 
 		$this->init();
 	}
-
+	
+	/**
+	 * get instance
+	 */
+	public static function getInstance(){
+		
+		return(self::$t);
+	}
+	
+	
 	/**
 	 * process activate event - install the db (with delta).
 	 */
@@ -97,25 +106,37 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	public function onThemeSetup(){
 	}
 
+	
 	/**
 	 * create the tables if not exists
 	 */
 	public function createTables($isForce = false){
-
-		$this->createTable(GlobalsUC::TABLE_ADDONS_NAME, $isForce);
-		$this->createTable(GlobalsUC::TABLE_CATEGORIES_NAME, $isForce);
-
+		
+		$response1 = $this->createTable(GlobalsUC::TABLE_ADDONS_NAME, $isForce);
+		
+		$response2 = $this->createTable(GlobalsUC::TABLE_CATEGORIES_NAME, $isForce);
+		
 		$isAddonChangelogEnabled = HelperProviderUC::isAddonChangelogEnabled();
 
+		$response3 = null;
+		
 		if($isAddonChangelogEnabled === true)
-			$this->createTable(GlobalsUC::TABLE_CHANGELOG_NAME, $isForce);
-
+			$response3 = $this->createTable(GlobalsUC::TABLE_CHANGELOG_NAME, $isForce);
+		
 		$isFormEntriesEnabled = HelperProviderUC::isFormEntriesEnabled();
 
+		$response4 = null;
+		$response5 = null;
+		
 		if($isFormEntriesEnabled === true){
-			$this->createTable(GlobalsUC::TABLE_FORM_ENTRIES_NAME, $isForce);
-			$this->createTable(GlobalsUC::TABLE_FORM_ENTRY_FIELDS_NAME, $isForce);
+			$response4 = $this->createTable(GlobalsUC::TABLE_FORM_ENTRIES_NAME, $isForce);
+			$response5 = $this->createTable(GlobalsUC::TABLE_FORM_ENTRY_FIELDS_NAME, $isForce);
 		}
+		
+		$responses = array($response1,$response2,$response3,$response4,$response5);
+		
+		
+		return($responses);
 	}
 
 
@@ -123,14 +144,14 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 * create tables
 	 */
 	public function createTable($tableName, $isForce = false){
-
+		
 		global $wpdb;
-
+		
 		//if table exists - don't create it.
 		$tableRealName = UniteFunctionsWPUC::prefixDBTable($tableName);
 		if($isForce == false && UniteFunctionsWPUC::isDBTableExists($tableRealName))
 			return;
-
+		
 		$charset_collate = $wpdb->get_charset_collate();
 
 		switch($tableName){
@@ -249,9 +270,12 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 				UniteFunctionsUC::throwError("table: $tableName not found");
 			break;
 		}
-
+		
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
-		dbDelta($sql);
+		$response = dbDelta($sql);
+		
+		
+		return($response);
 	}
 
 	/**
@@ -264,7 +288,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 
 		if($savedDBVersion != $this->dbVersion){
 			$this->createTables(true);
-
+			
 			update_option($optionDBVersion, $this->dbVersion);
 		}
 	}
@@ -356,9 +380,9 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 
 			return (false);
 		}
-
+		
 		$this->createTables();
-
+				
 		parent::adminPages();
 	}
 

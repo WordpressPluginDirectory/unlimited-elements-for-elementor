@@ -218,7 +218,9 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	public function initByID($id){
 
 		UniteFunctionsUC::validateNotEmpty($id, "widget id");
-
+		
+		UniteFunctionsUC::validateNumeric($id,"widget id");
+		
 		$id = (int)$id;
 
 		try{
@@ -924,8 +926,8 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 		$objAddonType = $this->getObjAddonType();
 
-		$typeName = $objAddonType->typeName;
-
+		$typeName = $objAddonType->typeNameCorrection;
+		
 		//get default preview
 		$filenameDefaultPreview = self::FILENAME_PREVIEW . "_$typeName.jpg";
 		$filepathDefaultPreview = GlobalsUC::$pathPlugin . "images/" . $filenameDefaultPreview;
@@ -1860,8 +1862,24 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		return($hasRemote);
 	}
 
+	/**
+	 * check if addon has dynamic settings
+	 */
+	public function hasElementorDynamicSettings(){
+		
+		if(empty($this->arrOriginalValues))
+			return(false);
+			
+		if(is_array($this->arrOriginalValues) == false)
+			return(false);
+			
+		if(array_key_exists("__dynamic__", $this->arrOriginalValues))
+			return(true);
+			
+		return(false);
+	}
 
-
+	
 	private function a_______GET__INCLUDES_____(){
 	}
 

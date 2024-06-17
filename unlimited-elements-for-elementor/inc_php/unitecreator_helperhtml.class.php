@@ -201,13 +201,6 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$js .= self::TAB2.'var g_ucElIcons = '.$jsonElementorIcons.';'.self::BR;
 
 
-			//output shapes
-			/*
-			$objShapes = new UniteShapeManagerUC();
-			$jsonShapes = $objShapes->getJsonShapes();
-			$js .= self::TAB2.'var g_ucArrSvgShapes = '.$jsonShapes.';'.self::BR;
-			*/
-
 			//get nonce
 			if(method_exists("UniteProviderFunctionsUC", "getNonce"))
 				$js .= self::TAB2 . "var g_ucNonce='".UniteProviderFunctionsUC::getNonce()."';";
@@ -659,7 +652,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static function outputException($e, $prefix="", $forceTrace = false){
 
 			if(empty($prefix))
-				$prefix = GlobalsUC::$currentPluginTitle." Error: ";
+				$prefix = GlobalsUnlimitedElements::$pluginTitleCurrent." Error: ";
 
 			$message = $prefix.$e->getMessage();
 			$trace = $e->getTraceAsString();

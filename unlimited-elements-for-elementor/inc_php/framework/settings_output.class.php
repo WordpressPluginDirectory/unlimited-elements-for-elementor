@@ -419,7 +419,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 					type="button"
 					title="<?php esc_attr_e("Options", "unlimited-elements-for-elementor"); ?>"
 				>
-					<svg class="unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 						<path d="M11.5 6.9V5.1l-1.668-.185a3.989 3.989 0 0 0-.355-.857l1.049-1.311-1.273-1.273-1.311 1.049a3.989 3.989 0 0 0-.857-.355L6.9.5H5.1l-.185 1.668a3.989 3.989 0 0 0-.857.355L2.747 1.474 1.474 2.747l1.049 1.311a3.989 3.989 0 0 0-.355.857L.5 5.1v1.8l1.668.185a3.989 3.989 0 0 0 .355.857L1.474 9.253l1.273 1.272 1.311-1.048a3.989 3.989 0 0 0 .857.355L5.1 11.5h1.8l.185-1.668a3.989 3.989 0 0 0 .857-.355l1.311 1.048 1.273-1.272-1.049-1.311a3.989 3.989 0 0 0 .355-.857Z" />
 						<circle cx="6" cy="6" r="1.5" />
 					</svg>
@@ -577,7 +577,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 						<?php esc_html_e("Choose Image", "unlimited-elements-for-elementor"); ?>
 					</button>
 					<button class="unite-setting-image-clear unite-setting-button" type="button">
-						<svg class="unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 13">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 13 13">
 							<path d="M1 3h11M5 3V1h3v2M10.5 5l-.401 5.607A1.5 1.5 0 0 1 8.603 12H4.394a1.5 1.5 0 0 1-1.496-1.394L2.5 5" />
 						</svg>
 					</button>
@@ -693,20 +693,20 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		<div class="unite-iconpicker">
 			<div class="unite-setting-buttons-group">
 				<div class="unite-iconpicker-button unite-setting-button uc-tip" title="<?php esc_attr_e("None", "unlimited-elements-for-elementor"); ?>" data-action="none">
-					<svg class="unite-iconpicker-button-icon unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 						<path d="m2.111 9.889 7.778-7.778" />
 						<path d="M6 11.5a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11Z" />
 					</svg>
 				</div>
 				<div class="unite-iconpicker-button unite-setting-button uc-tip" title="<?php esc_attr_e("Upload SVG", "unlimited-elements-for-elementor"); ?>" data-action="upload">
-					<svg class="unite-iconpicker-button-icon unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 						<path d="M2.5.5H2A1.5 1.5 0 0 0 .5 2v8A1.5 1.5 0 0 0 2 11.5h8a1.5 1.5 0 0 0 1.5-1.5V2A1.5 1.5 0 0 0 10 .5h-.5M.5 8.5h11" />
 						<path d="M3.5 3 6 .5 8.5 3M6 6.5v-6" />
 					</svg>
 					<img class="unite-iconpicker-uploaded-icon" src="" alt="" />
 				</div>
 				<div class="unite-iconpicker-button unite-setting-button uc-tip" title="<?php esc_attr_e("Icon Library", "unlimited-elements-for-elementor"); ?>" data-action="library">
-					<svg class="unite-iconpicker-button-icon unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 11">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 11">
 						<path d="m5.5 2.5-1-2h-4v9a1 1 0 0 0 1 1h9a1 1 0 0 0 1-1v-7h-6Z" />
 					</svg>
 					<div class="unite-iconpicker-library-icon"></div>
@@ -1060,6 +1060,41 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 	}
 
 	/**
+	 * draw buttons group setting
+	 */
+	protected function drawButtonsGroupSetting($setting){
+
+		$id = UniteFunctionsUC::getVal($setting, "id");
+		$name = UniteFunctionsUC::getVal($setting, "name");
+		$items = UniteFunctionsUC::getVal($setting, "items");
+		$deselectable = UniteFunctionsUC::getVal($setting, "deselectable");
+		$deselectable = UniteFunctionsUC::strToBool($deselectable);
+
+		$addHtml = $this->getDefaultAddHtml($setting);
+
+		?>
+		<div
+			id="<?php esc_attr_e($id); ?>"
+			class="unite-setting-buttons-group unite-setting-input-object unite-settings-exclude"
+			data-settingtype="buttons_group"
+			data-name="<?php esc_attr_e($name); ?>"
+			data-deselectable="<?php esc_attr_e($deselectable); ?>"
+			<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
+		>
+			<?php foreach($items as $itemValue => $item): ?>
+				<div
+					class="unite-setting-button uc-tip"
+					title="<?php esc_attr_e($item["title"]); ?>"
+					data-value="<?php esc_attr_e($itemValue); ?>"
+				>
+					<?php echo $item["icon"]; ?>
+				</div>
+			<?php endforeach; ?>
+		</div>
+		<?php
+	}
+
+	/**
 	 * draw tabs setting
 	 */
 	protected function drawTabsSetting($setting){
@@ -1214,6 +1249,9 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 			case UniteCreatorSettings::TYPE_GALLERY:
 				$this->drawGallerySetting($setting);
 			break;
+			case UniteCreatorSettings::TYPE_BUTTONS_GROUP:
+				$this->drawButtonsGroupSetting($setting);
+			break;
 			case UniteCreatorSettings::TYPE_TABS:
 				$this->drawTabsSetting($setting);
 			break;
@@ -1248,6 +1286,8 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$step = UniteFunctionsUC::getVal($setting, "step", 1);
 		$units = UniteFunctionsUC::getVal($setting, "units");
 		$unit = empty($units) === false ? reset($units) : "px";
+		$showSlider = UniteFunctionsUC::getVal($setting, "show_slider", true);
+		$showSlider = UniteFunctionsUC::strToBool($showSlider);
 
 		$setting["default_value"] = array("size" => $defaultValue, "unit" => $unit);
 		$setting["value"] = array("size" => $value, "unit" => $unit);
@@ -1255,6 +1295,9 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$addHtml = $this->getDefaultAddHtml($setting);
 
 		$wrapperClass = "";
+
+		if($showSlider === true)
+			$wrapperClass .= " with-slider";
 
 		if(empty($units) === false)
 			$wrapperClass .= " with-units";
@@ -1268,13 +1311,15 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 			<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
 		>
 
-			<div
-				class="unite-setting-range-slider"
-				data-value="<?php esc_attr_e($value); ?>"
-				data-min="<?php esc_attr_e($min); ?>"
-				data-max="<?php esc_attr_e($max); ?>"
-				data-step="<?php esc_attr_e($step); ?>"
-			></div>
+			<?php if($showSlider === true): ?>
+				<div
+					class="unite-setting-range-slider"
+					data-value="<?php esc_attr_e($value); ?>"
+					data-min="<?php esc_attr_e($min); ?>"
+					data-max="<?php esc_attr_e($max); ?>"
+					data-step="<?php esc_attr_e($step); ?>"
+				></div>
+			<?php endif; ?>
 
 			<input
 				class="unite-setting-range-input"
@@ -1421,6 +1466,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$disabled = UniteFunctionsUC::getVal($setting, "disabled");
 		$readonly = UniteFunctionsUC::getVal($setting, "readonly");
 		$unit = UniteFunctionsUC::getVal($setting, "unit");
+		$units = UniteFunctionsUC::getVal($setting, "units");
 		$step = UniteFunctionsUC::getVal($setting, "step");
 		$typeNumber = UniteFunctionsUC::getVal($setting, "type_number");
 		$typeNumber = UniteFunctionsUC::strToBool($typeNumber);
@@ -1447,7 +1493,10 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$wrapperClass = "";
 		$defaultClass = self::INPUT_CLASS_NORMAL;
 
-		if(empty($unit) === false){
+		if(empty($unit) === false && empty($units) === true)
+			$units = array($unit);
+
+		if(empty($units) === false){
 			$wrapperClass .= " with-units";
 			$defaultClass = self::INPUT_CLASS_NUMBER;
 			$typeNumber = true;
@@ -1480,9 +1529,9 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 				<?php echo UniteProviderFunctionsUC::escAddParam($addHtml); ?>
 			/>
 
-			<?php if(empty($unit) === false): ?>
+			<?php if(empty($units) === false): ?>
 				<div class="unite-input-units">
-					<?php $this->drawUnitsPicker(array($unit)); ?>
+					<?php $this->drawUnitsPicker($units, $unit); ?>
 				</div>
 			<?php endif; ?>
 
@@ -1931,7 +1980,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 				type="button"
 				title="<?php esc_attr_e("Reset", "unlimited-elements-for-elementor"); ?>"
 			>
-				<svg class="unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 					<path d="M10.606 9.008a5.5 5.5 0 1 1 .68-4.535"/>
 					<path d="M11.5.5v4l-3.969-.493"/>
 				</svg>
@@ -1941,7 +1990,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 				type="button"
 				title="<?php esc_attr_e("Edit", "unlimited-elements-for-elementor"); ?>"
 			>
-				<svg class="unite-setting-button-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 12 12">
 					<path d="m9 1 2 2-7 7-3 1 1-3 7-7Z" />
 				</svg>
 			</button>

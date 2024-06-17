@@ -36,7 +36,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$cats = get_categories($args);
 
 			$arr1 = UniteFunctionsWPUC::getTaxonomiesWithCats();
-			
+
 			$arrPostTypes = UniteFunctionsWPUC::getPostTypesAssoc();
 			$arrTax = UniteFunctionsWPUC::getTaxonomiesWithCats();
 			$arrCustomTypes = get_post_types(array('_builtin' => false));
@@ -1267,10 +1267,12 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 
 	private function __________POSTS_______(){}
-	
+
 	
 	/**
 	 * add post ID select
+	 * this function structure affects Elementor editor. on any change, need to validate that 
+	 * elementor post id select (manual post query selection) still works.
 	 */
 	public function addPostIDSelect($settingName, $text = null, $elementorCondition = null, $isForWoo = false, $addAttribOpt = "", $params = array()){
 
@@ -1334,28 +1336,25 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 	}
 	
-
 	/**
 	 * add post list picker
 	 */
-	protected function addPostsListPicker($name,$value,$title,$extra){
+	protected function addPostsListPicker($name, $value, $title, $extra){
 
-
- 		$simpleMode = UniteFunctionsUC::getVal($extra, "simple_mode");
+		$simpleMode = UniteFunctionsUC::getVal($extra, "simple_mode");
 		$simpleMode = UniteFunctionsUC::strToBool($simpleMode);
 
-		$allCatsMode = UniteFunctionsUC::getVal($extra, "all_cats_mode");
+		$allCatsMode = UniteFunctionsUC::getVal($extra, "all_cats_mode", true);
 		$allCatsMode = UniteFunctionsUC::strToBool($allCatsMode);
 
 		$isForWooProducts = UniteFunctionsUC::getVal($extra, "for_woocommerce_products");
 		$isForWooProducts = UniteFunctionsUC::strToBool($isForWooProducts);
 
-		$addCurrentPosts = UniteFunctionsUC::getVal($extra, "add_current_posts");
+		$addCurrentPosts = UniteFunctionsUC::getVal($extra, "add_current_posts", true);
 		$addCurrentPosts = UniteFunctionsUC::strToBool($addCurrentPosts);
 
 		$defaultMaxPosts = UniteFunctionsUC::getVal($extra, "default_max_posts");
-		$defaultMaxPosts = (int)($defaultMaxPosts);
-
+		$defaultMaxPosts = intval($defaultMaxPosts);
 
 		$arrPostTypes = array();
 
@@ -1363,18 +1362,17 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$arrPostTypes = UniteFunctionsWPUC::getPostTypesWithCats(GlobalsProviderUC::$arrFilterPostTypes);
 		//}
 
+		$textPosts = __("Posts", "unlimited-elements-for-elementor");
+		$textPost = __("Post", "unlimited-elements-for-elementor");
 
-		$isWpmlExists = UniteCreatorWpmlIntegrate::isWpmlExists();
-
-		$textPosts = __("Posts","unlimited-elements-for-elementor");
-		$textPost = __("Post","unlimited-elements-for-elementor");
-
-		if($isForWooProducts == true){
-			$textPosts = __("Products","unlimited-elements-for-elementor");
-			$textPost = __("Product","unlimited-elements-for-elementor");
+		if($isForWooProducts === true){
+			$textPosts = __("Products", "unlimited-elements-for-elementor");
+			$textPost = __("Product", "unlimited-elements-for-elementor");
 		}
 
 		/*
+		$isWpmlExists = UniteCreatorWpmlIntegrate::isWpmlExists();
+
 		if($isWpmlExists == true){
 
 			$objWpmlIntegrate = new UniteCreatorWpmlIntegrate();
@@ -1387,12 +1385,10 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		//fill simple types
 		$arrTypesSimple = array();
 
-		if($simpleMode)
-			$arrTypesSimple = array("Post"=>"post","Page"=>"page");
+		if($simpleMode === true)
+			$arrTypesSimple = array("Post" => "post", "Page" => "page");
 		else{
-
 			foreach($arrPostTypes as $arrType){
-
 				$postTypeName = UniteFunctionsUC::getVal($arrType, "name");
 				$postTypeTitle = UniteFunctionsUC::getVal($arrType, "title");
 
@@ -1401,11 +1397,9 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 				else
 					$arrTypesSimple[$postTypeTitle] = $postTypeName;
 			}
-
 		}
 
 		$arrTypesSimple["Any"] = "any";
-
 
 		//----- posts source ----
 		//UniteFunctionsUC::showTrace();
@@ -1419,62 +1413,33 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$arrCustomAndRelatedElementorCondition = array();
 		$arrManualElementorCondition = array();
 
+		if($addCurrentPosts === true){
+			$arrCurrentElementorCondition = array($name . "_source" => "current");
+			$arrNotCurrentElementorCondition = array($name . "_source!" => "current");
+			$arrCustomAndCurrentElementorCondition = array($name . "_source" => array("current", "custom"));
+			$arrCustomAndRelatedElementorCondition = array($name . "_source" => array("related", "custom"));
+			$arrCustomOnlyCondition = array($name . "_source" => "custom");
+			$arrRelatedOnlyCondition = array($name . "_source" => "related");
+			$arrNotInRelatedCondition = array($name . "_source!" => "related");
+			$arrNotManualElementorCondition = array($name . "_source!" => "manual");
+			$arrManualElementorCondition = array($name . "_source" => "manual");
 
-		if($addCurrentPosts == true){
+			$arrSourceOptions = array_flip(array(
+				"custom" => sprintf(__("Custom %s", "unlimited-elements-for-elementor"), $textPosts),
+				"current" => sprintf(__("Current Query %s", "unlimited-elements-for-elementor"), $textPosts),
+				"related" => sprintf(__("Related %s", "unlimited-elements-for-elementor"), $textPosts),
+				"manual" => __("Manual Selection", "unlimited-elements-for-elementor"),
+			));
 
-			$arrCurrentElementorCondition = array(
-				$name."_source" => "current",
-			);
-
-			$arrNotCurrentElementorCondition = array(
-				$name."_source!" => "current",
-			);
-
-			$arrCustomAndCurrentElementorCondition = array(
-				$name."_source" => array("current","custom"),
-			);
-
-			$arrCustomAndRelatedElementorCondition = array(
-				$name."_source" => array("related","custom"),
-			);
-
-
-			$arrCustomOnlyCondition = array(
-				$name."_source" => "custom",
-			);
-
-			$arrRelatedOnlyCondition = array(
-				$name."_source" => "related",
-			);
-
-			$arrNotInRelatedCondition = array(
-				$name."_source!" => "related",
-			);
-
-			$arrNotManualElementorCondition = array(
-				$name."_source!" => "manual",
-			);
-
-			$arrManualElementorCondition = array(
-				$name."_source" => "manual",
-			);
-
+			$source = UniteFunctionsUC::getVal($value, $name . "_source", "custom");
 
 			$params = array();
 			$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 			//$params["description"] = esc_html__("Choose the source of the posts list", "unlimited-elements-for-elementor");
 
-			$source = UniteFunctionsUC::getVal($value, $name."_source", "custom");
-			$arrSourceOptions = array();
-			$arrSourceOptions[sprintf(__("Current Query %s", "unlimited-elements-for-elementor"), $textPosts)] = "current";
-			$arrSourceOptions[sprintf(__("Custom %s", "unlimited-elements-for-elementor"),$textPosts)] = "custom";
-			$arrSourceOptions[sprintf(__("Related %s", "unlimited-elements-for-elementor"), $textPosts)] = "related";
-			$arrSourceOptions[__("Manual Selection", "unlimited-elements-for-elementor")] = "manual";
-
-			$this->addSelect($name."_source", $arrSourceOptions, sprintf(esc_html__("%s Source", "unlimited-elements-for-elementor"), $textPosts), $source, $params);
+			$this->addSelect($name . "_source", $arrSourceOptions, sprintf(esc_html__("%s Source", "unlimited-elements-for-elementor"), $textPosts), $source, $params);
 
 			//-------- add static text - current --------
-
 			$params = array();
 			$params["origtype"] = UniteCreatorDialogParam::PARAM_STATIC_TEXT;
 			$params["description"] = esc_html__("Choose the source of the posts list", "unlimited-elements-for-elementor");
@@ -1482,93 +1447,79 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 			$maxPostsPerPage = get_option("posts_per_page");
 
-			if($isForWooProducts == true)
+			if($isForWooProducts === true)
 				$maxPostsPerPage = UniteCreatorWooIntegrate::getDefaultCatalogNumPosts();
 
-
-			$this->addStaticText("The current $textPosts are being used in archive pages. Posts per page: {$maxPostsPerPage}. Set this option in Settings -> Reading ", $name."_currenttext", $params);
+			$this->addStaticText("The current $textPosts are being used in archive pages. Posts per page: {$maxPostsPerPage}. Set this option in Settings -> Reading ", $name . "_currenttext", $params);
 
 			//-------- add static text - related --------
-
 			$params = array();
 			$params["origtype"] = UniteCreatorDialogParam::PARAM_STATIC_TEXT;
 			$params["elementor_condition"] = $arrRelatedOnlyCondition;
 
 			$addition1 = "";
+
 			if($isForWooProducts)
 				$addition1 .= " or checkout page";
 
-			$staticText = "The ".strtolower("related {$textPosts} are being used in single {$textPost} $addition1.  Posts from same post type and terms");
+			$staticText = "The " . strtolower("related {$textPosts} are being used in single {$textPost} $addition1.  Posts from same post type and terms");
 
-			$this->addStaticText($staticText, $name."_relatedtext", $params);
-
-		}//if current posts
-
+			$this->addStaticText($staticText, $name . "_relatedtext", $params);
+		}
 
 		//-------- add related posts options --------
-
-		$arrRelatedModes = array();
-		$arrRelatedModes["or"] = "OR (default)";
-		$arrRelatedModes["and"] = "AND";
-		$arrRelatedModes["grouping"] = "GROUPING";
+		$arrRelatedModes = array_flip(array(
+			"or" => "OR (default)",
+			"and" => "AND",
+			"grouping" => "GROUPING",
+		));
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-
 		$params["elementor_condition"] = $arrRelatedOnlyCondition;
-		$params["description"] = __("In grouping mode, between taxonomies will be 'and' relation and inside same taxonomy will be 'or' relation ","unlimited-elements-for-elementor");
+		$params["description"] = __("In grouping mode, between taxonomies will be 'and' relation and inside same taxonomy will be 'or' relation ", "unlimited-elements-for-elementor");
 
-		$arrRelatedModes = array_flip($arrRelatedModes);
-
-		$this->addSelect($name."_related_mode", $arrRelatedModes, __("Related Posts Mode", "unlimited-elements-for-elementor"), "or", $params);
-
+		$this->addSelect($name . "_related_mode", $arrRelatedModes, __("Related Posts Mode", "unlimited-elements-for-elementor"), "or", $params);
 
 		//----- post type -----
-
 		$defaultPostType = "post";
-		if($isForWooProducts == true)
+
+		if($isForWooProducts === true)
 			$defaultPostType = "product";
 
-		$postType = UniteFunctionsUC::getVal($value, $name."_posttype", $defaultPostType);
+		$postType = UniteFunctionsUC::getVal($value, $name . "_posttype", $defaultPostType);
 
 		$params = array();
 
-		if($simpleMode == false){
-			$params["datasource"] = "post_type";
-			$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-post-type";
-
+		if($simpleMode === false){
 			$dataCats = UniteFunctionsUC::encodeContent($arrPostTypes);
 
+			$params["datasource"] = "post_type";
+			$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-post-type";
 			$params[UniteSettingsUC::PARAM_ADDPARAMS] = "data-arrposttypes='$dataCats' data-settingtype='select_post_type' data-settingprefix='{$name}'";
 		}
 
 		$params["origtype"] = "uc_select_special";
 		//$params["description"] = esc_html__("Select which Post Type or Custom Post Type you wish to display", "unlimited-elements-for-elementor");
-
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
-
 		$params["is_multiple"] = true;
 
-
-		if($isForWooProducts == false)
-			$this->addMultiSelect($name."_posttype", $arrTypesSimple, esc_html__("Post Types", "unlimited-elements-for-elementor"), $postType, $params);
+		if($isForWooProducts === false)
+			$this->addMultiSelect($name . "_posttype", $arrTypesSimple, esc_html__("Post Types", "unlimited-elements-for-elementor"), $postType, $params);
 
 		//----- hr -------
-
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
-		$this->addHr($name."_post_before_include",$params);
+		$this->addHr($name . "_post_before_include", $params);
 
 		// --------- Include BY some options -------------
-
 		$arrIncludeBy = array();
 
 		$isStickyPluginExists = UniteCreatorPluginIntegrations::isStickySwitchPluginEnabled();
 
-		if($isForWooProducts == false || $isStickyPluginExists == true){
+		if($isForWooProducts === false || $isStickyPluginExists === true){
 			$arrIncludeBy["sticky_posts"] = __("Include Sticky Posts", "unlimited-elements-for-elementor");
 			$arrIncludeBy["sticky_posts_only"] = __("Get Only Sticky Posts", "unlimited-elements-for-elementor");
 		}
@@ -1576,297 +1527,242 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$arrIncludeBy["author"] = __("Author", "unlimited-elements-for-elementor");
 		$arrIncludeBy["date"] = __("Date", "unlimited-elements-for-elementor");
 
-		if($isForWooProducts == false){
+		if($isForWooProducts === false)
 			$arrIncludeBy["parent"] = __("Post Parent", "unlimited-elements-for-elementor");
-		}
 
 		$arrIncludeBy["meta"] = __("Post Meta", "unlimited-elements-for-elementor");
-
 		$arrIncludeBy["current_terms"] = __("Current Page Terms", "unlimited-elements-for-elementor");
-
 		$arrIncludeBy["most_viewed"] = __("Most Viewed", "unlimited-elements-for-elementor");
-		$arrIncludeBy["php_function"] = __("IDs from PHP function","unlimited-elements-for-elementor");
-		$arrIncludeBy["ids_from_meta"] = __("IDs from Post Meta","unlimited-elements-for-elementor");
-		$arrIncludeBy["ids_from_dynamic"] = __("Post IDs from Dynamic Field","unlimited-elements-for-elementor");
+		$arrIncludeBy["php_function"] = __("IDs from PHP function", "unlimited-elements-for-elementor");
+		$arrIncludeBy["ids_from_meta"] = __("IDs from Post Meta", "unlimited-elements-for-elementor");
+		$arrIncludeBy["ids_from_dynamic"] = __("Post IDs from Dynamic Field", "unlimited-elements-for-elementor");
 		$arrIncludeBy["terms_from_dynamic"] = __("Terms from Dynamic Field", "unlimited-elements-for-elementor");
 		$arrIncludeBy["terms_from_current_meta"] = __("Terms from Current Post Meta", "unlimited-elements-for-elementor");
 		$arrIncludeBy["current_query_base"] = __("Current Query as a Base", "unlimited-elements-for-elementor");
 
-		if($isForWooProducts == true){
-			$arrIncludeBy["products_on_sale"] = __("Products On Sale Only (woo)","unlimited-elements-for-elementor");
-			$arrIncludeBy["up_sells"] = __("Up Sells Products (woo)","unlimited-elements-for-elementor");
-			$arrIncludeBy["cross_sells"] = __("Cross Sells Products (woo)","unlimited-elements-for-elementor");
+		if($isForWooProducts === true){
+			$arrIncludeBy["products_on_sale"] = __("Products On Sale Only (woo)", "unlimited-elements-for-elementor");
+			$arrIncludeBy["up_sells"] = __("Up Sells Products (woo)", "unlimited-elements-for-elementor");
+			$arrIncludeBy["cross_sells"] = __("Cross Sells Products (woo)", "unlimited-elements-for-elementor");
 			$arrIncludeBy["out_of_stock"] = __("Out Of Stock Products Only (woo)", "unlimited-elements-for-elementor");
 			$arrIncludeBy["recent"] = __("Recently Viewed Produts (woo)", "unlimited-elements-for-elementor");
 			$arrIncludeBy["products_from_post"] = __("Products From Post Content (woo)", "unlimited-elements-for-elementor");
 		}
 
-		$addPostsText = sprintf(__("Add Specific %s", "unlimited-elements-for-elementor"), $textPosts);
-
-		$includeBy = UniteFunctionsUC::getVal($value, $name."_includeby");
-
 		$arrIncludeBy = array_flip($arrIncludeBy);
-
-		$params = array();
-		$params["is_multiple"] = true;
-		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-
+		$includeBy = UniteFunctionsUC::getVal($value, $name . "_includeby");
 		$arrConditionIncludeBy = $arrCustomOnlyCondition;
-		$params["elementor_condition"] = $arrConditionIncludeBy;
-
-		$this->addMultiSelect($name."_includeby", $arrIncludeBy, esc_html__("Include By", "unlimited-elements-for-elementor"), $includeBy, $params);
-
-		//--- add hr after include by----
 
 		$params = array();
-		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
-
+		$params["is_multiple"] = true;
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["elementor_condition"] = $arrConditionIncludeBy;
 
-		$this->addHr($name."_after_include_by",$params);
+		$this->addMultiSelect($name . "_includeby", $arrIncludeBy, esc_html__("Include By", "unlimited-elements-for-elementor"), $includeBy, $params);
 
-
+		
 		//---- Include By Author -----
-
 		//optimize requests for front
-
-		$arrAuthors = array();
-
-		//if(GlobalsUC::$is_admin == true)
-
 		$arrAuthors = UniteFunctionsWPUC::getArrAuthorsShort(true);
+		$arrAuthors = array_flip($arrAuthors);
+
+		$arrConditionIncludeAuthor = $arrConditionIncludeBy;
+		$arrConditionIncludeAuthor[$name . "_includeby"] = "author";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-		$params["is_multiple"] = true;
 		$params["placeholder"] = __("Select one or more authors", "unlimited-elements-for-elementor");
+		$params["is_multiple"] = true;
 
 		$arrConditionIncludeAuthor = $arrConditionIncludeBy;
 		$arrConditionIncludeAuthor[$name."_includeby"] = "author";
 
 		$params["elementor_condition"] = $arrConditionIncludeAuthor;
 
-		$arrAuthors = array_flip($arrAuthors);
-
-		$this->addMultiSelect($name."_includeby_authors", $arrAuthors, __("Include By Authors From List", "unlimited-elements-for-elementor"), "", $params);
+		$this->addMultiSelect($name . "_includeby_authors", $arrAuthors, __("Include By Authors From List", "unlimited-elements-for-elementor"), "", $params);
 
 		//---- authors from dynamic field -----
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
+		$params["placeholder"] = __("Example: 3,5,7", "unlimited-elements-for-elementor");
 		$params["add_dynamic"] = true;
 		$params["label_block"] = true;
 		$params["placeholder"] = __("Example: 3,5,7", "unlimited-elements-for-elementor");
 
 		$params["elementor_condition"] = $arrConditionIncludeAuthor;
 
-		$this->addTextBox($name."_includeby_authors_dynamic", "", __("Or Include by Authors from Dynamic Field", "unlimited-elements-for-elementor"), $params);
-
+		$this->addTextBox($name . "_includeby_authors_dynamic", "", __("Or Include by Authors from Dynamic Field", "unlimited-elements-for-elementor"), $params);
 
 		//---- Include By Date -----
-
 		$arrDates = HelperProviderUC::getArrPostsDateSelect();
+		$arrDates = array_flip($arrDates);
+
+		$arrConditionIncludeByDate = $arrConditionIncludeBy;
+		$arrConditionIncludeByDate[$name . "_includeby"] = "date";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-
-		$arrConditionIncludeByDate = $arrConditionIncludeBy;
-		$arrConditionIncludeByDate[$name."_includeby"] = "date";
-
 		$params["elementor_condition"] = $arrConditionIncludeByDate;
 
-		$arrDates = array_flip($arrDates);
-
-		$this->addSelect($name."_includeby_date", $arrDates, __("Include By Date", "unlimited-elements-for-elementor"), "all", $params);
+		$this->addSelect($name . "_includeby_date", $arrDates, __("Include By Date", "unlimited-elements-for-elementor"), "all", $params);
 
 		//----- add date before and after -------
+		$arrConditionDateCustom = $arrConditionIncludeByDate;
+		$arrConditionDateCustom[$name . "_includeby_date"] = "custom";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
 		$params["placeholder"] = __("Choose Date", "unlimited-elements-for-elementor");
-
-		$arrConditionDateCustom = $arrConditionIncludeByDate;
-		$arrConditionDateCustom[$name."_includeby_date"] = "custom";
-
 		$params["elementor_condition"] = $arrConditionDateCustom;
 
-
 		//after date (first)
+		$params["description"] = __("Show all the posts published since the chosen date, inclusive. Format: year-month-day like \"2023-05-20\" or textual like \"sunday next week\"", "unlimited-elements-for-elementor");
 
-		$params["description"] = __("Show all the posts published since the chosen date, inclusive. Format: year-month-day like \"2023-05-20\" or textual like \"sunday next week\"","unlimited-elements-for-elementor");
-
-		$this->addTextBox($name."_include_date_after","", __("Published After Date","unlimited-elements-for-elementor"),$params);
-
+		$this->addTextBox($name . "_include_date_after", "", __("Published After Date", "unlimited-elements-for-elementor"), $params);
 
 		//before date (second)
+		$params["description"] = __("Show all the posts published until the chosen date, inclusive. Format: year-month-day like \"2023-04-15\" or textual like \"monday next week\" ", "unlimited-elements-for-elementor");
 
-		$params["description"] = __("Show all the posts published until the chosen date, inclusive. Format: year-month-day like \"2023-04-15\" or textual like \"monday next week\" ","unlimited-elements-for-elementor");
-
-		$this->addTextBox($name."_include_date_before","",__("Published Before Date","unlimited-elements-for-elementor"),$params);
-
+		$this->addTextBox($name . "_include_date_before", "", __("Published Before Date", "unlimited-elements-for-elementor"), $params);
 
 		//----- date meta field -------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Optional, Select custom field (like ACF) with date format 20210310 (Ymd). For example: event_date","unlimited-elements-for-elementor");
+		$params["description"] = __("Optional, Select custom field (like ACF) with date format 20210310 (Ymd). For example: event_date", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludeByDate;
 
-		$this->addTextBox($name."_include_date_meta","",__("Date by Meta Field","unlimited-elements-for-elementor"),$params);
+		$this->addTextBox($name . "_include_date_meta", "", __("Date by Meta Field", "unlimited-elements-for-elementor"), $params);
 
 		//----- date meta format -------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Here you can set the date format for the meta field","unlimited-elements-for-elementor");
+		$params["description"] = __("Here you can set the date format for the meta field", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludeByDate;
 
-		$this->addTextBox($name."_include_date_meta_format","Ymd",__("Date by Meta Field - Format","unlimited-elements-for-elementor"),$params);
-
+		$this->addTextBox($name . "_include_date_meta_format", "Ymd", __("Date by Meta Field - Format", "unlimited-elements-for-elementor"), $params);
 
 		//----- add hr after date -------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 		$params["elementor_condition"] = $arrConditionIncludeByDate;
 
-		$this->addHr($name."_hr_after_date",$params);
+		$this->addHr($name . "_hr_after_date", $params);
 
 		//---- Include By Post Parent -----
-
 		$arrConditionIncludeParents = $arrConditionIncludeBy;
-		$arrConditionIncludeParents[$name."_includeby"] = "parent";
+		$arrConditionIncludeParents[$name . "_includeby"] = "parent";
 
-		$this->addPostIDSelect($name."_includeby_parent", sprintf(__("Select %s Parents"), $textPosts), $arrConditionIncludeParents, $isForWooProducts);
+		$this->addPostIDSelect($name . "_includeby_parent", sprintf(__("Select %s Parents"), $textPosts), $arrConditionIncludeParents, $isForWooProducts);
 
 		//-------- include by post parent - add the parent page--------
+		$arrItems = array_flip(array(
+			"no" => __("No", "unlimited-elements-for-elementor"),
+			"start" => __("To Beginning", "unlimited-elements-for-elementor"),
+			"end" => __("To End", "unlimited-elements-for-elementor"),
+		));
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["elementor_condition"] = $arrConditionIncludeParents;
 
-		$arrItems = array(
-			"no"=>__("No","unlimited-elements-for-elementor"),
-			"start"=>__("To Beginning","unlimited-elements-for-elementor"),
-			"end"=>__("To End","unlimited-elements-for-elementor"),
-		);
-
-		$arrItems = array_flip($arrItems);
-
-		$this->addSelect($name."_includeby_parent_addparent", $arrItems, esc_html__("Add The Parent As Well", "unlimited-elements-for-elementor"), "no", $params);
-
+		$this->addSelect($name . "_includeby_parent_addparent", $arrItems, esc_html__("Add The Parent As Well", "unlimited-elements-for-elementor"), "no", $params);
 
 		//-------- include by recently viewed --------
+		$arrConditionIncludeRecent = $arrConditionIncludeBy;
+		$arrConditionIncludeRecent[$name . "_includeby"] = "recent";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_STATIC_TEXT;
-		$arrConditionIncludeRecent = $arrConditionIncludeBy;
-		$arrConditionIncludeRecent[$name."_includeby"] = "recent";
-
 		$params["elementor_condition"] = $arrConditionIncludeRecent;
 
-		$this->addStaticText("Recently viewed by the current site visitor, taken from cookie: woocommerce_recently_viewed. Works only if active wordpress widget: \"Recently Viewed Products\" ", $name."_includeby_recenttext", $params);
+		$this->addStaticText("Recently viewed by the current site visitor, taken from cookie: woocommerce_recently_viewed. Works only if active wordpress widget: \"Recently Viewed Products\" ", $name . "_includeby_recenttext", $params);
 
 		//-------- include by Post Meta --------
 
 		// --------- include by meta key -------------
+		$arrConditionIncludeMeta = $arrConditionIncludeBy;
+		$arrConditionIncludeMeta[$name . "_includeby"] = "meta";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("Meta Key","unlimited-elements-for-elementor");
-
-		$arrConditionIncludeMeta = $arrConditionIncludeBy;
-		$arrConditionIncludeMeta[$name."_includeby"] = "meta";
-
+		$params["placeholder"] = __("Meta Key", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludeMeta;
 
-		$this->addTextBox($name."_includeby_metakey", "", esc_html__("Include by Meta Key", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_metakey", "", esc_html__("Include by Meta Key", "unlimited-elements-for-elementor"), $params);
 
 		// --------- include by meta compare -------------
+		$arrItems = HelperProviderUC::getArrMetaCompareSelect();
+		$arrItems = array_flip($arrItems);
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-		$params["description"] = __("Get only those terms that has the meta key/value. For IN, NOT IN, BETWEEN, NOT BETWEEN compares, use coma separated values","unlimited-elements-for-elementor");
+		$params["description"] = __("Get only those terms that has the meta key/value. For IN, NOT IN, BETWEEN, NOT BETWEEN compares, use coma separated values", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludeMeta;
 
-		$arrItems = HelperProviderUC::getArrMetaCompareSelect();
-
-		$arrItems = array_flip($arrItems);
-
-		$this->addSelect($name."_includeby_metacompare", $arrItems, esc_html__("Include by Meta Compare", "unlimited-elements-for-elementor"), "=", $params);
+		$this->addSelect($name . "_includeby_metacompare", $arrItems, esc_html__("Include by Meta Compare", "unlimited-elements-for-elementor"), "=", $params);
 
 		// --------- include by meta value -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("Meta Value","unlimited-elements-for-elementor");
-		$params["add_dynamic"] = true;
 		$params["description"] = "";
+		$params["placeholder"] = __("Meta Value", "unlimited-elements-for-elementor");
+		$params["add_dynamic"] = true;
 		$params["label_block"] = true;
-
 		$params["elementor_condition"] = $arrConditionIncludeMeta;
 
-
-		$this->addTextBox($name."_includeby_metavalue", "", esc_html__("Include by Meta Value", "unlimited-elements-for-elementor"), $params);
-		$this->addTextBox($name."_includeby_metavalue2", "", esc_html__("Include by Meta Value 2", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_metavalue", "", esc_html__("Include by Meta Value", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_metavalue2", "", esc_html__("Include by Meta Value 2", "unlimited-elements-for-elementor"), $params);
 
 		$params["description"] = "Special keywords you can use: {current_user_id}, or like this:  value1||value2||value3";
 
-		$this->addTextBox($name."_includeby_metavalue3", "", esc_html__("Include by Meta Value 3", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_metavalue3", "", esc_html__("Include by Meta Value 3", "unlimited-elements-for-elementor"), $params);
 
 		// --------- show another meta key -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_RADIOBOOLEAN;
-
 		$params["elementor_condition"] = $arrConditionIncludeMeta;
 
-		$this->addRadioBoolean($name."_includeby_meta_addsecond", __("Add Second Meta Key", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
+		$this->addRadioBoolean($name . "_includeby_meta_addsecond", __("Add Second Meta Key", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
 
 		// --------- include by SECOND meta key -------------
+		$arrConditionMetaSecond = $arrConditionIncludeMeta;
+		$arrConditionMetaSecond[$name . "_includeby_meta_addsecond"] = "true";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("Second Meta Key","unlimited-elements-for-elementor");
-
-		$arrConditionMetaSecond = $arrConditionIncludeMeta;
-		$arrConditionMetaSecond[$name."_includeby_meta_addsecond"] = "true";
-
+		$params["placeholder"] = __("Second Meta Key", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionMetaSecond;
 
-		$this->addTextBox($name."_includeby_second_metakey", "", esc_html__("Include by Second Meta Key", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_second_metakey", "", esc_html__("Include by Second Meta Key", "unlimited-elements-for-elementor"), $params);
 
 		// --------- include by SECOND meta compare -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["elementor_condition"] = $arrConditionMetaSecond;
 
-		$this->addSelect($name."_includeby_second_metacompare", $arrItems, esc_html__("Include by Second Meta Compare", "unlimited-elements-for-elementor"), "=", $params);
+		$this->addSelect($name . "_includeby_second_metacompare", $arrItems, esc_html__("Include by Second Meta Compare", "unlimited-elements-for-elementor"), "=", $params);
 
 		// --------- include by SECOND meta value -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("Second Meta Value","unlimited-elements-for-elementor");
-		$params["add_dynamic"] = true;
 		$params["description"] = "";
-
+		$params["placeholder"] = __("Second Meta Value", "unlimited-elements-for-elementor");
+		$params["add_dynamic"] = true;
 		$params["elementor_condition"] = $arrConditionMetaSecond;
 
-		$this->addTextBox($name."_includeby_second_metavalue", "", esc_html__("Include by Second Meta Value", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_second_metavalue", "", esc_html__("Include by Second Meta Value", "unlimited-elements-for-elementor"), $params);
 
 		// --------- Meta Fields Relation -------------
+		$arrRelations = array(
+			"AND" => "AND",
+			"OR" => "OR",
+		);
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["elementor_condition"] = $arrConditionMetaSecond;
 
-		$arrRelations = array();
-		$arrRelations["AND"] = "AND";
-		$arrRelations["OR"] = "OR";
-
-		$this->addSelect($name."_includeby_meta_relation", $arrRelations, esc_html__("Meta Fields Relation", "unlimited-elements-for-elementor"), "and", $params);
+		$this->addSelect($name . "_includeby_meta_relation", $arrRelations, esc_html__("Meta Fields Relation", "unlimited-elements-for-elementor"), "and", $params);
 
 		// --------- debug post meta -------------
 
@@ -1875,301 +1771,254 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		$params["elementor_condition"] = $arrConditionIncludeMeta;
 
-		$this->addRadioBoolean($name."_includeby_meta_debug", __("Show Post Meta Fields for Debug", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
-
+		$this->addRadioBoolean($name . "_includeby_meta_debug", __("Show Post Meta Fields for Debug", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
 
 		// --------- include by PHP Function -------------
-
 		$arrConditionIncludeFunction = $arrConditionIncludeBy;
-		$arrConditionIncludeFunction[$name."_includeby"] = "php_function";
-
+		$arrConditionIncludeFunction[$name . "_includeby"] = "php_function";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("getMyIDs","unlimited-elements-for-elementor");
+		$params["placeholder"] = __("getMyIDs", "unlimited-elements-for-elementor");
 		$params["description"] = __("Get post id's array from php function. \n For example: function getMyIDs(\$arg){return(array(\"32\",\"58\")). This function MUST begin with 'get'. }");
 		$params["elementor_condition"] = $arrConditionIncludeFunction;
 
-		$this->addTextBox($name."_includeby_function_name", "", esc_html__("PHP Function Name", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_function_name", "", esc_html__("PHP Function Name", "unlimited-elements-for-elementor"), $params);
 
 		// --------- include by PHP Function Add Parameter-------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("yourtext","unlimited-elements-for-elementor");
-		$params["description"] = __("Optional. Some argument to be passed to this function. For some \"IF\" statement.","unlimited-elements-for-elementor");
+		$params["placeholder"] = __("yourtext", "unlimited-elements-for-elementor");
+		$params["description"] = __("Optional. Some argument to be passed to this function. For some \"IF\" statement.", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludeFunction;
 
-		$this->addTextBox($name."_includeby_function_addparam", "", esc_html__("PHP Function Argument", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_function_addparam", "", esc_html__("PHP Function Argument", "unlimited-elements-for-elementor"), $params);
 
 		// --------- include by id's from meta -------------
-
-		$textIDsFromMeta = __("Select Post (leave empty for current post)","unlimited-elements-for-elementor");
+		$textIDsFromMeta = __("Select Post (leave empty for current post)", "unlimited-elements-for-elementor");
 		$arrConditionIncludePostMeta = $arrConditionIncludeBy;
-		$arrConditionIncludePostMeta[$name."_includeby"] = "ids_from_meta";
+		$arrConditionIncludePostMeta[$name . "_includeby"] = "ids_from_meta";
 
-		$this->addPostIDSelect($name."_includeby_postmeta_postid", $textIDsFromMeta, $arrConditionIncludePostMeta, false,"data-issingle='true'");
+		$this->addPostIDSelect($name . "_includeby_postmeta_postid", $textIDsFromMeta, $arrConditionIncludePostMeta, false, "data-issingle='true'");
 
 		// --------- include by id's from meta field name -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Choose meta field name that has the post id's on it. Good for acf relationship for example","unlimited-elements-for-elementor");
+		$params["description"] = __("Choose meta field name that has the post id's on it. Good for acf relationship for example", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrConditionIncludePostMeta;
 
-		$this->addTextBox($name."_includeby_postmeta_metafield", "", esc_html__("Meta Field Name", "unlimited-elements-for-elementor"), $params);
-
+		$this->addTextBox($name . "_includeby_postmeta_metafield", "", esc_html__("Meta Field Name", "unlimited-elements-for-elementor"), $params);
 
 		//----- include id's from dynamic field -------
-
 		$arrConditionIncludeDynamic = $arrConditionIncludeBy;
-		$arrConditionIncludeDynamic[$name."_includeby"] = "ids_from_dynamic";
+		$arrConditionIncludeDynamic[$name . "_includeby"] = "ids_from_dynamic";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Enter post id's like 45,65,76, or select from dynamic tag","unlimited-elements-for-elementor");
-		$params["elementor_condition"] = $arrConditionIncludeDynamic;
-		$params["label_block"] = true;
+		$params["description"] = __("Enter post id's like 45,65,76, or select from dynamic tag", "unlimited-elements-for-elementor");
 		$params["add_dynamic"] = true;
+		$params["label_block"] = true;
+		$params["elementor_condition"] = $arrConditionIncludeDynamic;
 
-		$this->addTextBox($name."_includeby_dynamic_field","",__("Include Posts by Dynamic Field","unlimited-elements-for-elementor"), $params);
-
+		$this->addTextBox($name . "_includeby_dynamic_field", "", __("Include Posts by Dynamic Field", "unlimited-elements-for-elementor"), $params);
 
 		//----- include terms from dynamic field by ids -------
-
 		$arrConditionIncludeDynamic = $arrConditionIncludeBy;
-		$arrConditionIncludeDynamic[$name."_includeby"] = "terms_from_dynamic";
+		$arrConditionIncludeDynamic[$name . "_includeby"] = "terms_from_dynamic";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Enter term id's like 12,434,1289, or select from dynamic tag. You can use the term relation and include children options from below","unlimited-elements-for-elementor");
-		$params["elementor_condition"] = $arrConditionIncludeDynamic;
-		$params["label_block"] = true;
+		$params["description"] = __("Enter term id's like 12,434,1289, or select from dynamic tag. You can use the term relation and include children options from below", "unlimited-elements-for-elementor");
 		$params["add_dynamic"] = true;
+		$params["label_block"] = true;
+		$params["elementor_condition"] = $arrConditionIncludeDynamic;
 
-		$this->addTextBox($name."_includeby_terms_dynamic_field","",__("Include by Terms from Dynamic Field","unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_terms_dynamic_field", "", __("Include by Terms from Dynamic Field", "unlimited-elements-for-elementor"), $params);
 
 		//----- include terms from current post meta field -------
-
 		$arrConditionIncludeDynamic = $arrConditionIncludeBy;
-		$arrConditionIncludeDynamic[$name."_includeby"] = "terms_from_current_meta";
+		$arrConditionIncludeDynamic[$name . "_includeby"] = "terms_from_current_meta";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Enter current post meta field, that has the terms selection of the posts you want to bring. Use it to connect parent with children posts with terms","unlimited-elements-for-elementor");
-		$params["elementor_condition"] = $arrConditionIncludeDynamic;
-		$params["label_block"] = true;
-		$params["add_dynamic"] = false;
+		$params["description"] = __("Enter current post meta field, that has the terms selection of the posts you want to bring. Use it to connect parent with children posts with terms", "unlimited-elements-for-elementor");
 		$params["placeholder"] = "Example: terms_select";
+		$params["add_dynamic"] = false;
+		$params["label_block"] = true;
+		$params["elementor_condition"] = $arrConditionIncludeDynamic;
 
-		$this->addTextBox($name."_includeby_terms_from_meta","",__("Current Post Terms Select Meta Field","unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_includeby_terms_from_meta", "", __("Current Post Terms Select Meta Field", "unlimited-elements-for-elementor"), $params);
 
 		// --------- current query base -------------
-
 		$arrConditionCurrentQueryBase = $arrConditionIncludeBy;
-		$arrConditionCurrentQueryBase[$name."_includeby"] = "current_query_base";
+		$arrConditionCurrentQueryBase[$name . "_includeby"] = "current_query_base";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_STATIC_TEXT;
 		$params["elementor_condition"] = $arrConditionCurrentQueryBase;
 
-		$text = __("Get current query as a query base. Good for archive page customization. For simple uses use the 'Current Query' product source instead. ","unlimited-elements-for-elementor");
+		$text = __("Get current query as a query base. Good for archive page customization. For simple uses use the 'Current Query' product source instead. ", "unlimited-elements-for-elementor");
 
-		$this->addStaticText($text, $name."_current_query_text", $params);
-
+		$this->addStaticText($text, $name . "_current_query_text", $params);
 
 		// --------- include by most viewed -------------
-
 		$isWPPExists = UniteCreatorPluginIntegrations::isWPPopularPostsExists();
+
+		$arrConditionIncludeViewsCounter = $arrConditionIncludeBy;
+		$arrConditionIncludeViewsCounter[$name . "_includeby"] = "most_viewed";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_STATIC_TEXT;
-
-		$arrConditionIncludeViewsCounter = $arrConditionIncludeBy;
-		$arrConditionIncludeViewsCounter[$name."_includeby"] = "most_viewed";
-
 		$params["elementor_condition"] = $arrConditionIncludeViewsCounter;
 
 		$text = __("Select most viewed posts, integration with plugin: 'WordPress Popular Posts' that should be installed", "unlimited-elements-for-elementor");
 
-		if($isWPPExists == true)
+		if($isWPPExists === true)
 			$text = __("'WordPress Popular Posts' plugin activated.", "unlimited-elements-for-elementor");
 
-		$this->addStaticText($text, $name."_text_includemostviewed", $params);
+		$this->addStaticText($text, $name . "_text_includemostviewed", $params);
 
 		// --------- most viewed range -------------
-
-		if($isWPPExists == true){
+		if($isWPPExists === true){
+			$arrItems = array_flip(array(
+				"last30days" => "Last 30 Days",
+				"last7days" => "Last 7 Days",
+				"last24hours" => "Last 24 Hours",
+				"daily" => "Daily",
+				"weekly" => "Weekly",
+				"monthly" => "Monthly",
+				"all" => "All",
+			));
 
 			$params = array();
 			$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 			$params["elementor_condition"] = $arrConditionIncludeViewsCounter;
 			$params["description"] = "Besides range, it supports single post type and single category, and order direction query options";
 
-			$arrItems = array("last30days"=>"Last 30 Days",
-							  "last7days"=>"Last 7 Days",
-							  "last24hours"=>"Last 24 Hours",
-							  "daily"=>"Daily",
-							  "weekly"=>"Weekly",
-							  "monthly"=>"Monthly",
-							  "all"=>"All");
-
-			$arrItems = array_flip($arrItems);
-
-			$this->addSelect($name."_includeby_mostviewed_range", $arrItems, esc_html__("Most Viewed Time Range", "unlimited-elements-for-elementor"), "last30days", $params);
-
+			$this->addSelect($name . "_includeby_mostviewed_range", $arrItems, esc_html__("Most Viewed Time Range", "unlimited-elements-for-elementor"), "last30days", $params);
 		}
 
 		// --------- add hr before categories -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
-		$this->addHr($name."_before_categories",$params);
-
+		$this->addHr($name . "_before_categories", $params);
 
 		//----- add categories -------
-
 		$arrCats = array();
 
-		if($simpleMode == true){
-
+		if($simpleMode === true){
 			$arrCats = $arrPostTypes["post"]["cats"];
 			$arrCats = array_flip($arrCats);
 			$firstItemValue = reset($arrCats);
-
-		}else if($allCatsMode == true){
-
+		}elseif($allCatsMode === true){
 			//filter only product terms
-
-			if($isForWooProducts == true)
-				$arrPostTypes = array(
-					"product"=>UniteFunctionsUC::getVal($arrPostTypes, "product"),
-				);
-
+			if($isForWooProducts === true)
+				$arrPostTypes = array("product" => UniteFunctionsUC::getVal($arrPostTypes, "product"));
 
 			$arrCats = $this->getCategoriesFromAllPostTypes($arrPostTypes);
 			$firstItemValue = reset($arrCats);
-
 		}else{
 			$firstItemValue = "";
 		}
 
-		$category = UniteFunctionsUC::getVal($value, $name."_category", $firstItemValue);
+		$category = UniteFunctionsUC::getVal($value, $name . "_category", $firstItemValue);
 
 		$params = array();
 
-		if($simpleMode == false){
+		if($simpleMode === false){
 			$params["datasource"] = "post_category";
 			$params[UniteSettingsUC::PARAM_CLASSADD] = "unite-setting-post-category";
 		}
 
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["is_multiple"] = true;
-
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
 		$paramsTermSelect = $params;
 
-		$this->addMultiSelect($name."_category", $arrCats, esc_html__("Include By Terms", "unlimited-elements-for-elementor"), $category, $params);
-
+		$this->addMultiSelect($name . "_category", $arrCats, esc_html__("Include By Terms", "unlimited-elements-for-elementor"), $category, $params);
 
 		// --------- Include by term relation -------------
+		$arrRelationItems = array(
+			"And" => "AND",
+			"Or" => "OR",
+		);
+
+		$relation = UniteFunctionsUC::getVal($value, $name . "_category_relation", "AND");
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
-		$relation = UniteFunctionsUC::getVal($value, $name."_category_relation", "AND");
-
-		$arrRelationItems = array();
-		$arrRelationItems["And"] = "AND";
-		$arrRelationItems["Or"] = "OR";
-
-		$this->addSelect($name."_category_relation", $arrRelationItems, __("Include By Terms Relation", "unlimited-elements-for-elementor"), $relation, $params);
+		$this->addSelect($name . "_category_relation", $arrRelationItems, __("Include By Terms Relation", "unlimited-elements-for-elementor"), $relation, $params);
 
 		//--------- show children -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_RADIOBOOLEAN;
-
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
-		$isIncludeChildren = UniteFunctionsUC::getVal($value, $name."_terms_include_children", false);
+		$isIncludeChildren = UniteFunctionsUC::getVal($value, $name . "_terms_include_children", false);
 		$isIncludeChildren = UniteFunctionsUC::strToBool($isIncludeChildren);
 
-		$this->addRadioBoolean($name."_terms_include_children", __("Include Terms Children", "unlimited-elements-for-elementor"), $isIncludeChildren, "Yes", "No", $params);
+		$this->addRadioBoolean($name . "_terms_include_children", __("Include Terms Children", "unlimited-elements-for-elementor"), $isIncludeChildren, "Yes", "No", $params);
 
 		//---- manual selection search and replace -----
-
 		$textManualSelect = sprintf(__("Seach And Select %s"), $textPosts);
 
-		$this->addPostIDSelect($name."_manual_select_post_ids", $textManualSelect, $arrManualElementorCondition, $isForWooProducts);
+		$this->addPostIDSelect($name . "_manual_select_post_ids", $textManualSelect, $arrManualElementorCondition, $isForWooProducts);
 
 		// --------- add dynamic post ids -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-
-		$params["elementor_condition"] = $arrManualElementorCondition;
+		$params["description"] = "Optional. Select some dynamic field, that has output of post ids (string or array) like 15,40,23";
 		$params["add_dynamic"] = true;
 		$params["label_block"] = true;
-		$params["description"] = "Optional. Select some dynamic field, that has output of post ids (string or array) like 15,40,23";
+		$params["elementor_condition"] = $arrManualElementorCondition;
 
-		$this->addTextBox($name."_manual_post_ids_dynamic", "", __("Or Select Post IDs 	", "unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_manual_post_ids_dynamic", "", __("Or Select Post IDs 	", "unlimited-elements-for-elementor"), $params);
 
 		// --------- add hr before avoid duplicates -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 		$params["elementor_condition"] = $arrManualElementorCondition;
 
-		$this->addHr($name."_before_avoid_duplicates_manual",$params);
-
+		$this->addHr($name . "_before_avoid_duplicates_manual", $params);
 
 		//----- avoid duplicates -------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_RADIOBOOLEAN;
 		$params["description"] = __("If turned on, those posts in another widgets won't be shown", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrManualElementorCondition;
 
-		$this->addRadioBoolean($name."_manual_avoid_duplicates", __("Avoid Duplicates", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
-
+		$this->addRadioBoolean($name . "_manual_avoid_duplicates", __("Avoid Duplicates", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
 
 		// --------- add hr before exclude -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
-		$this->addHr($name."_before_exclude_by",$params);
+		$this->addHr($name . "_before_exclude_by", $params);
 
-		// --------- add include by cetrain terms (for related posts) -------------
-
+		// --------- add include by certain terms (for related posts) -------------
 		$arrTaxonomies = UniteFunctionsWPUC::getAllTaxonomiesAssoc();
+		$arrTaxonomies = array_flip($arrTaxonomies);
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["is_multiple"] = true;
-		$params["description"] = __("When selected, posts with listed taxonomies only will be included","unlimited-elements-for-elementor");
-
+		$params["description"] = __("When selected, posts with listed taxonomies only will be included", "unlimited-elements-for-elementor");
 		$params["elementor_condition"] = $arrRelatedOnlyCondition;
 
-		$arrTaxonomies = array_flip($arrTaxonomies);
-
-		$this->addMultiSelect($name."_related_taxonomies", $arrTaxonomies, __("Include By Taxonomies", "unlimited-elements-for-elementor"), "", $params);
-
+		$this->addMultiSelect($name . "_related_taxonomies", $arrTaxonomies, __("Include By Taxonomies", "unlimited-elements-for-elementor"), "", $params);
 
 		// --------- add exclude by -------------
-
 		$arrExclude = array();
 
-		if($isForWooProducts == true){
+		if($isForWooProducts === true){
 			$arrExclude["out_of_stock"] = __("Out Of Stock Products (woo)", "unlimited-elements-for-elementor");
-			$arrExclude["products_on_sale"] = __("Products On Sale (woo)","unlimited-elements-for-elementor");
+			$arrExclude["products_on_sale"] = __("Products On Sale (woo)", "unlimited-elements-for-elementor");
 
 			//todo: finish this
 			//$arrExclude["out_of_stock_variation"] = __("Out Of Stock Variation (woo)", "unlimited-elements-for-elementor");
@@ -2179,195 +2028,156 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$arrExclude["current_post"] = sprintf(__("Current %s", "unlimited-elements-for-elementor"), $textPost);
 		$arrExclude["specific_posts"] = sprintf(__("Specific %s", "unlimited-elements-for-elementor"), $textPosts);
 		$arrExclude["author"] = __("Author", "unlimited-elements-for-elementor");
-		$arrExclude["no_image"] = sprintf(__("%s Without Featured Image", "unlimited-elements-for-elementor"),$textPost);
-		$arrExclude["current_category"] = sprintf(__("%s with Current Category", "unlimited-elements-for-elementor"),$textPosts);
-		$arrExclude["current_tags"] = sprintf(__("%s With Current Tags", "unlimited-elements-for-elementor"),$textPosts);
-		$arrExclude["offset"] = sprintf(__("Offset", "unlimited-elements-for-elementor"),$textPosts);
-		$arrExclude["avoid_duplicates"] = sprintf(__("Avoid Duplicates", "unlimited-elements-for-elementor"),$textPosts);
-		$arrExclude["ids_from_dynamic"] = sprintf(__("Post IDs from Dynamic Field", "unlimited-elements-for-elementor"),$textPosts);
+		$arrExclude["no_image"] = sprintf(__("%s Without Featured Image", "unlimited-elements-for-elementor"), $textPost);
+		$arrExclude["current_category"] = sprintf(__("%s with Current Category", "unlimited-elements-for-elementor"), $textPosts);
+		$arrExclude["current_tags"] = sprintf(__("%s With Current Tags", "unlimited-elements-for-elementor"), $textPosts);
+		$arrExclude["offset"] = sprintf(__("Offset", "unlimited-elements-for-elementor"), $textPosts);
+		$arrExclude["avoid_duplicates"] = sprintf(__("Avoid Duplicates", "unlimited-elements-for-elementor"), $textPosts);
+		$arrExclude["ids_from_dynamic"] = sprintf(__("Post IDs from Dynamic Field", "unlimited-elements-for-elementor"), $textPosts);
+		$arrExclude = array_flip($arrExclude);
+
+		$conditionExcludeBy = $arrCustomAndRelatedElementorCondition;
+		$arrExcludeValues = "";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["is_multiple"] = true;
-
-		$conditionExcludeBy = $arrCustomAndRelatedElementorCondition;
-
 		$params["elementor_condition"] = $conditionExcludeBy;
 
-		$arrExclude = array_flip($arrExclude);
-
-		$arrExcludeValues = "";
-
-		$this->addMultiSelect($name."_excludeby", $arrExclude, __("Exclude By", "unlimited-elements-for-elementor"), $arrExcludeValues, $params);
-
-
+		$this->addMultiSelect($name . "_excludeby", $arrExclude, __("Exclude By", "unlimited-elements-for-elementor"), $arrExcludeValues, $params);
 
 		//----- exclude id's from dynamic field -------
-
 		$conditionExcludeByDynamic = $conditionExcludeBy;
-		$conditionExcludeByDynamic[$name."_excludeby"] = "ids_from_dynamic";
+		$conditionExcludeByDynamic[$name . "_excludeby"] = "ids_from_dynamic";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = __("Enter post id's like 45,65,76, or select from dynamic tag","unlimited-elements-for-elementor");
-		$params["elementor_condition"] = $conditionExcludeByDynamic;
-		$params["label_block"] = true;
+		$params["description"] = __("Enter post id's like 45,65,76, or select from dynamic tag", "unlimited-elements-for-elementor");
 		$params["add_dynamic"] = true;
+		$params["label_block"] = true;
+		$params["elementor_condition"] = $conditionExcludeByDynamic;
 
-		$this->addTextBox($name."_exclude_dynamic_field","",__("Exclude Posts by Dynamic Field","unlimited-elements-for-elementor"), $params);
-
-
+		$this->addTextBox($name . "_exclude_dynamic_field", "", __("Exclude Posts by Dynamic Field", "unlimited-elements-for-elementor"), $params);
 
 		//------- Already Fetched --------
-
 		$conditionExcludeByFetched = $conditionExcludeBy;
-		$conditionExcludeByFetched[$name."_excludeby"] = "avoid_duplicates";
+		$conditionExcludeByFetched[$name . "_excludeby"] = "avoid_duplicates";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_STATIC_TEXT;
 		$params["elementor_condition"] = $conditionExcludeByFetched;
 
-		$this->addStaticText(__("Avoid duplicate posts, that fetched by another post widgets in the page, and have this option seleted (avoid duplicates)","unlimited-elements-for-elementor"), $name."_alreadyfethcedtext", $params);
-
+		$this->addStaticText(__("Avoid duplicate posts, that fetched by another post widgets in the page, and have this option selected (avoid duplicates)", "unlimited-elements-for-elementor"), $name . "_alreadyfethcedtext", $params);
 
 		//------- Exclude By --- TERM --------
+		$conditionExcludeByTerms = $conditionExcludeBy;
+		$conditionExcludeByTerms[$name . "_excludeby"] = "terms";
 
 		$params = $paramsTermSelect;
-		$conditionExcludeByTerms = $conditionExcludeBy;
-		$conditionExcludeByTerms[$name."_excludeby"] = "terms";
-
 		$params["elementor_condition"] = $conditionExcludeByTerms;
 
-		$this->addMultiSelect($name."_exclude_terms", $arrCats, esc_html__("Exclude By Terms", "unlimited-elements-for-elementor"), "", $params);
+		$this->addMultiSelect($name . "_exclude_terms", $arrCats, esc_html__("Exclude By Terms", "unlimited-elements-for-elementor"), "", $params);
 
 		//------- Exclude By --- AUTHOR --------
+		$arrConditionIncludeAuthor = $conditionExcludeBy;
+		$arrConditionIncludeAuthor[$name . "_excludeby"] = "author";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-		$params["is_multiple"] = true;
 		$params["placeholder"] = __("Select one or more authors", "unlimited-elements-for-elementor");
-
-		$arrConditionIncludeAuthor = $conditionExcludeBy;
-		$arrConditionIncludeAuthor[$name."_excludeby"] = "author";
-
+		$params["is_multiple"] = true;
 		$params["elementor_condition"] = $arrConditionIncludeAuthor;
 
-		$this->addMultiSelect($name."_excludeby_authors", $arrAuthors, __("Exclude By Author", "unlimited-elements-for-elementor"), "", $params);
+		$this->addMultiSelect($name . "_excludeby_authors", $arrAuthors, __("Exclude By Author", "unlimited-elements-for-elementor"), "", $params);
 
 		//------- Exclude By --- OFFSET --------
+		$conditionExcludeByOffset = $conditionExcludeBy;
+		$conditionExcludeByOffset[$name . "_excludeby"] = "offset";
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_NUMBER;
-
-		$params["description"] = __("Use this setting to skip over posts, not showing first posts to the offset given","unlimited-elements-for-elementor");
-
-		$conditionExcludeByOffset = $conditionExcludeBy;
-		$conditionExcludeByOffset[$name."_excludeby"] = "offset";
-
-		$params["elementor_condition"] = $conditionExcludeByOffset;
+		$params["description"] = __("Use this setting to skip over posts, not showing first posts to the offset given", "unlimited-elements-for-elementor");
 		$params["add_dynamic"] = true;
+		$params["elementor_condition"] = $conditionExcludeByOffset;
 
-		$this->addTextBox($name."_offset", "0", esc_html__("Offset", "unlimited-elements-for-elementor"), $params);
-
+		$this->addTextBox($name . "_offset", "0", esc_html__("Offset", "unlimited-elements-for-elementor"), $params);
 
 		//--------- show children -------------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_RADIOBOOLEAN;
 		$params["elementor_condition"] = $conditionExcludeByTerms;
 
-		$this->addRadioBoolean($name."_terms_exclude_children", __("Exclude Terms With Children", "unlimited-elements-for-elementor"), true, "Yes", "No", $params);
+		$this->addRadioBoolean($name . "_terms_exclude_children", __("Exclude Terms With Children", "unlimited-elements-for-elementor"), true, "Yes", "No", $params);
 
 		//------- Exclude By --- SPECIFIC POSTS --------
-
 		$conditionExcludeBySpecific = $conditionExcludeBy;
-		$conditionExcludeBySpecific[$name."_excludeby"] = "specific_posts";
+		$conditionExcludeBySpecific[$name . "_excludeby"] = "specific_posts";
 
 		$params = array();
 		$params["elementor_condition"] = $conditionExcludeBySpecific;
 
-		$this->addPostIDSelect($name."_exclude_specific_posts", sprintf(__("Specific %s To Exclude", "unlimited-elements-for-elementor"),$textPosts), $conditionExcludeBySpecific, $isForWooProducts);
+		$this->addPostIDSelect($name . "_exclude_specific_posts", sprintf(__("Specific %s To Exclude", "unlimited-elements-for-elementor"), $textPosts), $conditionExcludeBySpecific, $isForWooProducts);
 
 		//----- hr -------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 		$params["elementor_condition"] = $arrNotManualElementorCondition;
 
-		$this->addHr($name."_post_after_exclude",$params);
+		$this->addHr($name . "_post_after_exclude", $params);
 
 		//------- Post Status --------
-
 		$arrStatuses = HelperProviderUC::getArrPostStatusSelect();
-
-		$params = array();
-		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-		$params["is_multiple"] = true;
-		$params["placeholder"] = __("Select one or more statuses", "unlimited-elements-for-elementor");
-
-		$params["elementor_condition"] = $arrCustomOnlyCondition;
-
 		$arrStatuses = array_flip($arrStatuses);
 
-		$this->addMultiSelect($name."_status", $arrStatuses, __("Post Status", "unlimited-elements-for-elementor"), array("publish"), $params);
+		$params = array();
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
+		$params["placeholder"] = __("Select one or more statuses", "unlimited-elements-for-elementor");
+		$params["is_multiple"] = true;
+		$params["elementor_condition"] = $arrCustomOnlyCondition;
+
+		$this->addMultiSelect($name . "_status", $arrStatuses, __("Post Status", "unlimited-elements-for-elementor"), array("publish"), $params);
 
 		//------- max items --------
-
-		$params = array("unit"=>"posts");
+		$params = array("unit" => "posts");
 
 		if(empty($defaultMaxPosts))
 			$defaultMaxPosts = 10;
 
-		$maxItems = UniteFunctionsUC::getVal($value, $name."_maxitems", $defaultMaxPosts);
+		$maxItems = UniteFunctionsUC::getVal($value, $name . "_maxitems", $defaultMaxPosts);
 
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["placeholder"] = __("100 posts if empty","unlimited-elements-for-elementor");
-
+		$params["placeholder"] = __("100 posts if empty", "unlimited-elements-for-elementor");
 		//$params["description"] = "Enter how many Posts you wish to display, -1 for unlimited";
-
-		$params["elementor_condition"] = $arrCustomAndRelatedElementorCondition;
 		$params["add_dynamic"] = true;
+		$params["elementor_condition"] = $arrCustomAndRelatedElementorCondition;
 
-		$this->addTextBox($name."_maxitems", $maxItems, sprintf(esc_html__("Max %s", "unlimited-elements-for-elementor"), $textPosts), $params);
+		$this->addTextBox($name . "_maxitems", $maxItems, sprintf(esc_html__("Max %s", "unlimited-elements-for-elementor"), $textPosts), $params);
 
 		//------- override post type --------
-
-		$arrTypesCurrent = UniteFunctionsUC::addArrFirstValue($arrTypesSimple, "","[Original Post Type]");
+		$arrTypesCurrent = UniteFunctionsUC::addArrFirstValue($arrTypesSimple, "", "[Original Post Type]");
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		$params["elementor_condition"] = $arrCurrentElementorCondition;
 
-		$this->addSelect($name."_posttype_current", $arrTypesCurrent, esc_html__("Post Type Override", "unlimited-elements-for-elementor"), "", $params);
-
+		$this->addSelect($name . "_posttype_current", $arrTypesCurrent, esc_html__("Post Type Override", "unlimited-elements-for-elementor"), "", $params);
 
 		//------- max items for current --------
-
-		$params = array("unit"=>"posts");
-
-		if(empty($defaultMaxPosts))
-			$defaultMaxPosts = 10;
-
+		$params = array("unit" => "posts");
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-
-		$params["description"] = sprintf(__("Override Number Of %s, leave empty for default. If you are using pagination widget, leave it empty", "unlimited-elements-for-elementor"),$textPosts);
-
-		$params["elementor_condition"] = $arrCurrentElementorCondition;
+		$params["description"] = sprintf(__("Override Number Of %s, leave empty for default. If you are using pagination widget, leave it empty", "unlimited-elements-for-elementor"), $textPosts);
 		$params["add_dynamic"] = true;
+		$params["elementor_condition"] = $arrCurrentElementorCondition;
 
-		$this->addTextBox($name."_maxitems_current", "", sprintf(esc_html__("Max %s", "unlimited-elements-for-elementor"), $textPosts), $params);
-
+		$this->addTextBox($name . "_maxitems_current", "", sprintf(esc_html__("Max %s", "unlimited-elements-for-elementor"), $textPosts), $params);
 
 		//----- hr before orderby --------
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 
-		$this->addHr($name."_hr_before_orderby",$params);
-
+		$this->addHr($name . "_hr_before_orderby", $params);
 
 		//----- orderby --------
-
 		$arrOrder = UniteFunctionsWPUC::getArrSortBy($isForWooProducts);
 		$arrOrder = array_flip($arrOrder);
 
@@ -2375,101 +2185,84 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$arrDir = array_flip($arrDir);
 
 		//---- orderby for custom and current -----
+		$orderBY = UniteFunctionsUC::getVal($value, $name . "_orderby", "default");
 
 		$params = array();
-
 		//$params[UniteSettingsUC::PARAM_ADDFIELD] = $name."_orderdir1";
-
-		$orderBY = UniteFunctionsUC::getVal($value, $name."_orderby", "default");
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		//$params["description"] = esc_html__("Select how you wish to order posts", "unlimited-elements-for-elementor");
 
-		$this->addSelect($name."_orderby", $arrOrder, __("Order By", "unlimited-elements-for-elementor"), $orderBY, $params);
+		$this->addSelect($name . "_orderby", $arrOrder, __("Order By", "unlimited-elements-for-elementor"), $orderBY, $params);
 
 		//--- meta value param -------
+		$arrCondition = array();
+		$arrCondition[$name . "_orderby"] = array(UniteFunctionsWPUC::SORTBY_META_VALUE, UniteFunctionsWPUC::SORTBY_META_VALUE_NUM);
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
 		$params["class"] = "alias";
-
-		$arrCondition = array();
-		$arrCondition[$name."_orderby"] = array(UniteFunctionsWPUC::SORTBY_META_VALUE, UniteFunctionsWPUC::SORTBY_META_VALUE_NUM);
-
-		$params["elementor_condition"] = $arrCondition;
 		$params["add_dynamic"] = false;
+		$params["elementor_condition"] = $arrCondition;
 
-		$this->addTextBox($name."_orderby_meta_key1", "" , __("&nbsp;&nbsp;Custom Field Name","unlimited-elements-for-elementor"), $params);
+		$this->addTextBox($name . "_orderby_meta_key1", "", __("&nbsp;&nbsp;Custom Field Name", "unlimited-elements-for-elementor"), $params);
 
 		//---- order dir -----
+		$orderDir1 = UniteFunctionsUC::getVal($value, $name . "_orderdir1", "default");
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 		//$params["description"] = esc_html__("Select order direction. Descending A-Z or Accending Z-A", "unlimited-elements-for-elementor");
 
-		$orderDir1 = UniteFunctionsUC::getVal($value, $name."_orderdir1", "default" );
-		$this->addSelect($name."_orderdir1", $arrDir, __("&nbsp;&nbsp;Order By Direction", "unlimited-elements-for-elementor"), $orderDir1, $params);
-
+		$this->addSelect($name . "_orderdir1", $arrDir, __("&nbsp;&nbsp;Order By Direction", "unlimited-elements-for-elementor"), $orderDir1, $params);
 
 		//---- hr before query id -----
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
 
-
-		$this->addHr($name."_hr_after_order_dir", $params);
+		$this->addHr($name . "_hr_after_order_dir", $params);
 
 		//allow to modify settings by third party plugins
-
 		do_action("ue_modify_post_list_settings", $this, $name);
 
-
 		//---- query id -----
-
 		$isPro = GlobalsUC::$isProVersion;
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		if($isPro == true){
 
+		if($isPro === true){
 			$title = __("Query ID", "unlimited-elements-for-elementor");
-			$params["description"] = __("Give your Query unique ID to been able to filter it in server side using add_filter() function. <a href='https://unlimited-elements.com/docs/work-with-query-id-in-posts-selection/'><a target='blank' href='https://unlimited-elements.com/docs/work-with-query-id-in-posts-selection/'>See docs here</a></a>.","unlimited-elements-for-elementor");
-
-		}else{		//free version
-
-			$params["description"] = __("Give your Query unique ID to been able to filter it in server side using add_filter() function. This feature exists in a PRO Version only. <a target='blank' href='https://unlimited-elements.com/docs/work-with-query-id-in-posts-selection/'>help</a>","unlimited-elements-for-elementor");
+			$params["description"] = __("Give your Query unique ID to been able to filter it in server side using add_filter() function. <a href='https://unlimited-elements.com/docs/work-with-query-id-in-posts-selection/'><a target='blank' href='https://unlimited-elements.com/docs/work-with-query-id-in-posts-selection/'>See docs here</a></a>.", "unlimited-elements-for-elementor");
+		}else{    //free version
 			$title = __("Query ID (pro)", "unlimited-elements-for-elementor");
+			$params["description"] = __("Give your Query unique ID to been able to filter it in server side using add_filter() function. This feature exists in a PRO Version only. <a target='blank' href='https://unlimited-elements.com/docs/work-with-query-id-in-posts-selection/'>help</a>", "unlimited-elements-for-elementor");
 			$params["disabled"] = true;
 		}
 
-		$queryID = UniteFunctionsUC::getVal($value, $name."_queryid");
+		$queryID = UniteFunctionsUC::getVal($value, $name . "_queryid");
 
-		$this->addTextBox($name."_queryid", $queryID, $title, $params);
-
+		$this->addTextBox($name . "_queryid", $queryID, $title, $params);
 
 		//---- show debug -----
-
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_RADIOBOOLEAN;
 		$params["description"] = __("Show the query for debugging purposes. Don't forget to turn it off before page release", "unlimited-elements-for-elementor");
 
-		$this->addRadioBoolean($name."_show_query_debug", __("Show Query Debug", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
+		$this->addRadioBoolean($name . "_show_query_debug", __("Show Query Debug", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
 
 		//--------- debug type posts ---------
+		$arrType = array_flip(array(
+			"basic" => __("Basic", "unlimited-elements-for-elementor"),
+			"show_query" => __("Full", "unlimited-elements-for-elementor"),
+		));
 
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
-		$params["elementor_condition"] = array($name."_show_query_debug"=>"true");
+		$params["elementor_condition"] = array($name . "_show_query_debug" => "true");
 
-		$arrType = array();
-		$arrType["basic"] = __("Basic", "unlimited-elements-for-elementor");
-		$arrType["show_query"] = __("Full", "unlimited-elements-for-elementor");
-
-		$arrType = array_flip($arrType);
-
-		$this->addSelect($name."_query_debug_type", $arrType, __("Debug Options", "unlimited-elements-for-elementor"), "basic", $params);
-
-
+		$this->addSelect($name . "_query_debug_type", $arrType, __("Debug Options", "unlimited-elements-for-elementor"), "basic", $params);
 	}
+
 
 	private function __________REMOTE_______(){}
 
@@ -2773,7 +2566,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["elementor_condition"] = $conditionGallery;
 
 		$galleryDefaults = HelperProviderUC::getArrDynamicGalleryDefaults();
-		
+
 		$this->addTextBox($name."_gallery", $galleryDefaults, __("Choose Images","unlimited-elements-for-elementor"), $params);
 
 		//============
@@ -3010,7 +2803,10 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		if($isWooActive == true)
 			$arrSource["products"] = __("Products", "unlimited-elements-for-elementor");
 
-
+		
+		if($isForGallery == true && $isWooActive == true)
+			$arrSource["current_product_variations"] = __("Current Product Variations", "unlimited-elements-for-elementor");
+		
 		if($isForGallery == true){
 			$arrSource["current_post_meta"] = __("Current Post Metafield", "unlimited-elements-for-elementor");
 		}
@@ -3104,24 +2900,9 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["class"] = "select2";
 		$params["selector"] = self::SELECTOR_PLACEHOLDER;
 		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "family");
+		$params["label_block"] = true;
 
 		$this->addSelect("font_family", $fontFamily, __("Font Family", "unlimited-elements-for-elementor"), "", $params);
-
-		// font size
-		$params = array();
-		$params["min"] = 1;
-		$params["max"] = 200;
-		$params["step"] = 1;
-		$params["units"] = $units;
-		$params["selector"] = self::SELECTOR_PLACEHOLDER;
-		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "size");
-		$params["is_responsive"] = true;
-
-		foreach($responsive as $device => $suffix){
-			$params["responsive_type"] = $device;
-
-			$this->addRangeSlider("font_size" . $suffix, "", __("Size", "unlimited-elements-for-elementor"), $params);
-		}
 
 		// font weight
 		$fontWeight = UniteFunctionsUC::getVal($data, "arrFontWeight");
@@ -3131,50 +2912,32 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params = array();
 		$params["selector"] = self::SELECTOR_PLACEHOLDER;
 		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "weight");
+		$params["label_block"] = true;
 
 		$this->addSelect("font_weight", $fontWeight, __("Weight", "unlimited-elements-for-elementor"), "", $params);
 
-		// text transform
-		$textTransform = UniteFunctionsUC::getVal($data, "arrTextTransform");
-		$textTransform = UniteFunctionsUC::addArrFirstValue($textTransform, $defaultTitle);
-		$textTransform = array_flip($textTransform);
-
+		// font size
 		$params = array();
+		$params["units"] = $units;
 		$params["selector"] = self::SELECTOR_PLACEHOLDER;
-		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "transform");
+		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "size");
+		$params["label_block"] = true;
+		$params["show_slider"] = false;
+		$params["is_responsive"] = true;
 
-		$this->addSelect("text_transform", $textTransform, __("Transform", "unlimited-elements-for-elementor"), "", $params);
+		foreach($responsive as $device => $suffix){
+			$params["responsive_type"] = $device;
 
-		// font style
-		$fontStyle = UniteFunctionsUC::getVal($data, "arrFontStyle");
-		$fontStyle = UniteFunctionsUC::addArrFirstValue($fontStyle, $defaultTitle);
-		$fontStyle = array_flip($fontStyle);
-
-		$params = array();
-		$params["selector"] = self::SELECTOR_PLACEHOLDER;
-		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "style");
-
-		$this->addSelect("font_style", $fontStyle, __("Style", "unlimited-elements-for-elementor"), "", $params);
-
-		// text decoration
-		$textDecoration = UniteFunctionsUC::getVal($data, "arrTextDecoration");
-		$textDecoration = UniteFunctionsUC::addArrFirstValue($textDecoration, $defaultTitle);
-		$textDecoration = array_flip($textDecoration);
-
-		$params = array();
-		$params["selector"] = self::SELECTOR_PLACEHOLDER;
-		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "decoration");
-
-		$this->addSelect("text_decoration", $textDecoration, __("Decoration", "unlimited-elements-for-elementor"), "", $params);
+			$this->addRangeSlider("font_size" . $suffix, "", __("Size", "unlimited-elements-for-elementor"), $params);
+		}
 
 		// line height
 		$params = array();
-		$params["min"] = 1;
-		$params["max"] = 200;
-		$params["step"] = 1;
 		$params["units"] = $units;
 		$params["selector"] = self::SELECTOR_PLACEHOLDER;
 		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "line-height");
+		$params["label_block"] = true;
+		$params["show_slider"] = false;
 		$params["is_responsive"] = true;
 
 		foreach($responsive as $device => $suffix){
@@ -3183,14 +2946,78 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$this->addRangeSlider("line_height" . $suffix, "", __("Line Height", "unlimited-elements-for-elementor"), $params);
 		}
 
+		// text transform
+		$textTransform = array(
+			"capitalize" => array(
+				"title" => __("Capitalize", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m8 11.5-3.5-9-3.5 9M2.167 8.5h4.666M9.5 13.5s.908 1.125 2.5 1c1.395-.11 2.501-.947 2.501-2.287V5.5"/><path d="M12.001 11.512c1.381 0 2.501-1.346 2.501-3.006 0-1.66-1.12-3.006-2.501-3.006C10.62 5.5 9.5 6.846 9.5 8.506c0 1.66 1.12 3.006 2.501 3.006Z"/></svg>',
+			),
+			"uppercase" => array(
+				"title" => __("Uppercase", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M7.5 12.5 4 3.5l-3.5 9M1.667 9.5h4.666M15.159 5.648c-.093-.165-.973-2.148-3.073-2.148-2.414 0-3.585 2.223-3.585 4.595 0 2.481 1.325 4.405 3.585 4.405 2.042 0 3.434-1.492 3.415-4h-3"/></svg>',
+			),
+			"lowercase" => array(
+				"title" => __("Lowercase", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2.1 5c.5-.8 1.4-1.3 2.4-1.2 1.2.1 1.9.9 1.9 1.9v4.4" /><path d="M6.4 8.1c-.6 1.3-1.7 2-2.7 2-.7 0-1.5-.5-1.7-1.3-.1-.7.3-1.6 1.3-1.9 1-.3 3.1-.2 3.1-.2M9.4 12s.9 1.1 2.5 1c1.4-.1 2.5-.9 2.5-2.3V4" /><path d="M11.9 10c1.4 0 2.5-1.3 2.5-3s-1.1-3-2.5-3-2.5 1.3-2.5 3 1.1 3 2.5 3Z" /></svg>',
+			),
+		);
+
+		$params = array();
+		$params["selector"] = self::SELECTOR_PLACEHOLDER;
+		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "transform");
+		$params["deselectable"] = true;
+
+		$this->addButtonsGroup("text_transform", $textTransform, __("Transform", "unlimited-elements-for-elementor"), "", $params);
+
+		// font style
+		$fontStyle = array(
+			"normal" => array(
+				"title" => __("Normal", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M8 13V3M6 3h4M6 13h4" /></svg>',
+			),
+			"italic" => array(
+				"title" => __("Italic", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="m6.54 12.78 2.92-9.56M7.5 3h4m-7 10h4" /></svg>',
+			),
+		);
+
+		$params = array();
+		$params["selector"] = self::SELECTOR_PLACEHOLDER;
+		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "style");
+		$params["deselectable"] = true;
+
+		$this->addButtonsGroup("font_style", $fontStyle, __("Style", "unlimited-elements-for-elementor"), "", $params);
+
+		// text decoration
+		$textDecoration = array(
+			"underline" => array(
+				"title" => __("Underline", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M3.5 14h9.4M12.1 2v5.6c0 2.1-1.7 3.9-3.9 3.9S4.3 9.8 4.3 7.6V2" /></svg>',
+			),
+			"overline" => array(
+				"title" => __("Overline", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M2 2h12M12 14 8.5 5 5 14M6 11h4.7" /></svg>',
+			),
+			"line-through" => array(
+				"title" => __("Strikethrough", "unlimited-elements-for-elementor"),
+				"icon" => '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path d="M11.5 4.7c-.7-1.5-2-2.2-3.5-2.2-1.8 0-3.4 1-3.4 2.6s1.2 2.2 2.7 2.6M2.8 7.7H14M2 7.7h12M11.2 9.3c.3.4.5.9.5 1.5 0 1.6-1.7 2.8-3.6 2.9-1.6 0-3.2-.6-3.9-2.5" /></svg>',
+			),
+		);
+
+		$params = array();
+		$params["selector"] = self::SELECTOR_PLACEHOLDER;
+		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "decoration");
+		$params["deselectable"] = true;
+
+		$this->addButtonsGroup("text_decoration", $textDecoration, __("Decoration", "unlimited-elements-for-elementor"), "", $params);
+
 		// letter spacing
 		$params = array();
-		$params["min"] = -10;
-		$params["max"] = 10;
-		$params["step"] = 0.1;
 		$params["units"] = $units;
 		$params["selector"] = self::SELECTOR_PLACEHOLDER;
 		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "letter-spacing");
+		$params["label_block"] = true;
+		$params["show_slider"] = false;
 		$params["is_responsive"] = true;
 
 		foreach($responsive as $device => $suffix){
@@ -3201,12 +3028,11 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		// word spacing
 		$params = array();
-		$params["min"] = 0;
-		$params["max"] = 100;
-		$params["step"] = 1;
 		$params["units"] = $units;
 		$params["selector"] = self::SELECTOR_PLACEHOLDER;
 		$params["selector_value"] = HelperHtmlUC::getCSSSelectorValueByParam($type, "word-spacing");
+		$params["label_block"] = true;
+		$params["show_slider"] = false;
 		$params["is_responsive"] = true;
 
 		foreach($responsive as $device => $suffix){

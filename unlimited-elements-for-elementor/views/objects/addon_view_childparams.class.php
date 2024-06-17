@@ -976,6 +976,21 @@ var json = {{ucfunc(\"csv_to_json\",yourattribute)}};
 		
 		return($arrParams);
 	}
+
+	/**
+	 * get number of post comments
+	 */
+	private function getChildParams_post_pageViews($arrParams){
+		
+		$strText = "\n";
+		$strText = "{# this function require \"wordpress popular posts\" plugin. #}\n";
+		$strText .= "{% set post_views = ucfunc(\"wpp_get_page_views\", [param_prefix].id) %} \n";
+		$strText .= "Page Views: {{post_views}} <br>\n\n";
+		
+		$arrParams[] = $this->createChildParam("page_views", null, array("raw_insert_text"=>$strText));
+		
+		return($arrParams);
+	}
 	
 	
 	/**
@@ -1390,6 +1405,7 @@ var json = {{ucfunc(\"csv_to_json\",yourattribute)}};
 		$arrParams = $this->getChildParams_post_getImageFromMeta($arrParams);
 		$arrParams = $this->getChildParams_post_putHtmlData($arrParams);
 		$arrParams = $this->getChildParams_post_numComments($arrParams);
+		$arrParams = $this->getChildParams_post_pageViews($arrParams);
 		
 		$isWooAdded = false;
 		

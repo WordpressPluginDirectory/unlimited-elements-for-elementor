@@ -5,9 +5,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 class GlobalsProviderUC{
 	
 	const ENABLE_FREEMIUS = true;
-	
-	public static $pluginName = "";
-	
+		
 	const META_KEY_LAYOUT_DATA = "_unelements_layout_data";
 	const META_KEY_LAYOUT_PARAMS = "_unelements_layout_params";
 	
@@ -68,6 +66,7 @@ class GlobalsProviderUC{
 	public static $isUnderAjax = false;
 	
 	public static $renderJSForHiddenContent = false;		//render encoded js - for hidden templates
+	public static $renderTemplateID = "";					//render template id (for the template switcher)
 	
 	public static $arrFilterPostTypes = array(		//filter post types that will not show
 				"elementor_library", 

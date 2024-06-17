@@ -121,6 +121,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 		$baseClass = "unite-setting-row";
 
 		$id = UniteFunctionsUC::getVal($setting, "id");
+		$name = UniteFunctionsUC::getVal($setting, "name");
 		$type = UniteFunctionsUC::getVal($setting, "type");
 		$text = UniteFunctionsUC::getVal($setting, "text");
 		$description = UniteFunctionsUC::getVal($setting, "description");
@@ -158,6 +159,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 			id="<?php esc_attr_e($id); ?>_row"
 			<?php echo UniteProviderFunctionsUC::escAddParam($rowClass); ?>
 			<?php echo UniteProviderFunctionsUC::escAddParam($addAttr); ?>
+			data-name="<?php esc_attr_e($name); ?>"
 			data-type="<?php esc_attr_e($type); ?>"
 		>
 

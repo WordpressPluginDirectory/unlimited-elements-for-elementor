@@ -762,7 +762,7 @@ class UCFormEntriesView extends WP_List_Table{
 		if($action !== self::ACTION_VIEW)
 			$url["ucwindow"] = "blank";
 
-		return '<a href="?' . http_build_query($url) . '">' . esc_html($label) . '</a>';
+		return '<a href="?' . http_build_query($url) . '">' . nl2br(esc_html($label)) . '</a>';
 	}
 
 	/**

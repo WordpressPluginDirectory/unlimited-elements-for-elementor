@@ -36,40 +36,6 @@ class UniteCreatorWooIntegrate{
 		$this->init();
 	}
 
-	/**
-	 * this action should be run inside the product from the widget editor
-	 */
-	public static function onInsideEditorWooProduct($productID){
-		
-		if(self::isWooActive() == false)
-			return(false);
-			
-		if(is_numeric($productID) == false)
-			return(false);
-		
-		if(empty($productID))
-			return(false);
-		
-		//run advanced product labels
-		if(class_exists("BeRocket_products_label")){
-			do_action('berocket_apl_set_label', true, $productID);
-		}
-
-		
-	}
-
-	
-	/**
-	 * bottom product integrations
-	 */
-	public static function onInsideEditorWooProductBottom($productID){
-		
-		//wishlist
-		
-		UniteCreatorPluginIntegrations::putJetWooWishlistButton();
-		
-	}
-	
 	
 	/**
 	 * init actions on start, run on "plugins_loaded" filter
@@ -124,6 +90,8 @@ class UniteCreatorWooIntegrate{
 		
 		return(false);
 	}
+	
+	
 	
 	/**
 	 * check and init instance
@@ -882,6 +850,175 @@ class UniteCreatorWooIntegrate{
 		
 	}
 	
+	
+	/**
+	 * get keys by post id
+	 */
+	private function getWooKeys($postID){
+		
+		if(self::isWooActive() == false)
+			return(null);
+		
+		$post = get_post($postID);
+		if(empty($post))
+			return(null);
+		
+		$postType = $post->post_type;
+		
+		$arrData = self::getWooDataByType($postType, $postID);
+		if(empty($arrData))
+			return(false);
+		
+		$arrKeys = array_keys($arrData);
+		
+		
+		return($arrKeys);
+		
+	}
+	
+	
+	
+	/**
+	 * get product ids from current post content
+	 */
+	public function getProductIDsFromCurrentPostContent(){
+		
+		if(is_singular() == false)
+			return(false);
+		
+		$post = get_post();
+		
+		if(empty($post))
+			return(false);
+		
+		$content = $post->post_content;
+		
+		if(empty($content))
+			return(false);
+		
+		$arrLinks = UniteFunctionsUC::parseHTMLGetLinks($content);
+		
+		if(empty($arrLinks))
+			return(false);
+		
+		$arrPostIDs = array();
+		
+		foreach($arrLinks as $link){
+			
+			$postID = url_to_postid($link);
+			
+			if(empty($postID))
+				continue;
+				
+			$arrPostIDs[] = $postID;
+		}
+		
+		return($arrPostIDs);
+	}
+
+	private function __________STATIC_FUNCTIONS________(){}
+	
+	/**
+	 * return if the current pais is a cart page
+	 */
+	public static function isCartOrCheckoutPage(){
+				
+		if(self::isWooActive() == false)
+			return(false);
+		
+		$cartPageID = wc_get_page_id("cart");
+		
+		if(empty($cartPageID))
+			return(false);
+		
+		$currentPageID = get_the_id();
+		
+		if($currentPageID == $cartPageID)
+			return(true);
+		
+		$checkoutID = wc_get_page_id("checkout");
+		
+		if($currentPageID == $checkoutID)
+			return(true);
+		
+		
+		return(false);
+	}
+	
+	/**
+	 * bottom product integrations
+	 */
+	public static function onInsideEditorWooProductBottom($productID){
+		
+		//wishlist
+		
+		UniteCreatorPluginIntegrations::putJetWooWishlistButton();
+		
+	}
+	
+	
+	/**
+	 * this action should be run inside the product from the widget editor
+	 */
+	public static function onInsideEditorWooProduct($productID){
+		
+		if(self::isWooActive() == false)
+			return(false);
+			
+		if(is_numeric($productID) == false)
+			return(false);
+		
+		if(empty($productID))
+			return(false);
+		
+		//run advanced product labels
+		if(class_exists("BeRocket_products_label")){
+			do_action('berocket_apl_set_label', true, $productID);
+		}
+
+		
+	}
+	
+	
+	/**
+	 * get default number of posts in catalog
+	 */
+	public static function getDefaultCatalogNumPosts(){
+		
+		if(function_exists("wc_get_default_products_per_row") == false)
+			return(16);
+		
+		$numProducts = wc_get_default_products_per_row() * wc_get_default_product_rows_per_page();
+		
+		return($numProducts);
+	}
+	
+	
+	/**
+	 * get woo keys by post id
+	 */
+	public static function getWooKeysByPostID($postID){
+		
+		$instance = self::getInstance();
+		
+		$response = $instance->getWooKeys($postID);
+		
+		return($response);
+	}
+	
+	/**
+	 * get woo keys without post id
+	 */
+	public static function getWooKeysNoPost(){
+		
+		$instance = self::getInstance();
+		
+		$response = $instance->getWooProductKeysNoPost();
+		
+		return($response);
+	}
+	
+	
 	/**
 	 * get the endpoints - url's
 	 */
@@ -933,109 +1070,44 @@ class UniteCreatorWooIntegrate{
 	}
 	
 	/**
-	 * get keys by post id
+	 * get current product variation images
 	 */
-	private function getWooKeys($postID){
+	public static function getCurrentProductVariationImageItems(){
 		
 		if(self::isWooActive() == false)
-			return(null);
-		
-		$post = get_post($postID);
-		if(empty($post))
-			return(null);
-		
-		$postType = $post->post_type;
-		
-		$arrData = self::getWooDataByType($postType, $postID);
-		if(empty($arrData))
-			return(false);
-		
-		$arrKeys = array_keys($arrData);
-		
-		
-		return($arrKeys);
-		
-	}
-	
-	
-	/**
-	 * get woo keys by post id
-	 */
-	public static function getWooKeysByPostID($postID){
-		
-		$instance = self::getInstance();
-		
-		$response = $instance->getWooKeys($postID);
-		
-		return($response);
-	}
-	
-	/**
-	 * get woo keys without post id
-	 */
-	public static function getWooKeysNoPost(){
-		
-		$instance = self::getInstance();
-		
-		$response = $instance->getWooProductKeysNoPost();
-		
-		return($response);
-	}
-	
-	
-	/**
-	 * get default number of posts in catalog
-	 */
-	public static function getDefaultCatalogNumPosts(){
-		
-		if(function_exists("wc_get_default_products_per_row") == false)
-			return(16);
-		
-		$numProducts = wc_get_default_products_per_row() * wc_get_default_product_rows_per_page();
-		
-		return($numProducts);
-	}
-	
-	
-	
-	/**
-	 * get product ids from current post content
-	 */
-	public function getProductIDsFromCurrentPostContent(){
-		
-		if(is_singular() == false)
-			return(false);
+			return(array());
 		
 		$post = get_post();
 		
 		if(empty($post))
-			return(false);
+			return(array());
 		
-		$content = $post->post_content;
-		
-		if(empty($content))
-			return(false);
-		
-		$arrLinks = UniteFunctionsUC::parseHTMLGetLinks($content);
-		
-		if(empty($arrLinks))
-			return(false);
-		
-		$arrPostIDs = array();
-		
-		foreach($arrLinks as $link){
-			
-			$postID = url_to_postid($link);
-			
-			if(empty($postID))
-				continue;
+		if($post->post_type != "product")
+			return(array());
+
+		$postID = $post->ID;
 				
-			$arrPostIDs[] = $postID;
+		$object = self::getInstance();
+		
+		$arrVariations = $object->getProductVariations($postID);
+		
+		if(empty($arrVariations))
+			return(array());
+			
+		$arrImageIDs = array();
+		
+		foreach($arrVariations as $variation){
+			
+			$imageID = UniteFunctionsUC::getVal($variation, "image_id");
+			
+			$arrImageIDs[] = $imageID;
 		}
 		
-		return($arrPostIDs);
+		
+		return($arrImageIDs);
 	}
-
+	
+	
 	private function __________VARIATIONS________(){}
 	
 	
@@ -1078,6 +1150,7 @@ class UniteCreatorWooIntegrate{
 		exit();
 		
 	}
+	
 	
 	private function __________CART________(){}
 	
