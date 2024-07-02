@@ -21,7 +21,12 @@ class HelperProviderCoreUC_EL{
 	private static $arrTemplatesCounter = array();
 	private static $isInfiniteLoopCode = false;
 	private static $arrAddedStyles = array();
-
+	
+	private static $currentDocument = null;
+	private static $originalQueriedObject = null;
+	private static $originalQueriedID = null;
+	private static $originalPost = null;
+	
 
 	/**
 	 * register post types of elementor library
@@ -845,7 +850,7 @@ class HelperProviderCoreUC_EL{
 	 * put the post listing template
 	 */
 	public static function putListingItemTemplate_post($post, $templateID, $widgetID, $listingType = "elementor", $withCss = false){
-
+		
 		if(empty($widgetID))
 			return(false);
 
@@ -860,7 +865,6 @@ class HelperProviderCoreUC_EL{
 
 		if(!empty($arrElementorFilter))
 			unset( $wp_filter[ "elementor/css-file/post/enqueue" ] );
-
 
 		//change the template ID according the language for wpml
 
@@ -883,7 +887,7 @@ class HelperProviderCoreUC_EL{
 		//empty the infinite loop protection
 
 		self::$arrTemplatesCounter = array();
-
+		
 		$originalPost = $GLOBALS['post'];
 
 		//backup the original querified object
@@ -896,15 +900,15 @@ class HelperProviderCoreUC_EL{
 
 		$wp_query->queried_object = $post;
 		$wp_query->queried_object_id = $postID;
-
-		$GLOBALS['post'] = $post;
 		
+		$GLOBALS['post'] = $post;
+				
 		GlobalsProviderUC::$isUnderDynamicTemplateLoop = true;
 		
 		//set author data
 
 		UniteFunctionsWPUC::setGlobalAuthorData($post);
-
+		
 		//fix for jet engine
 
 		$isJetExists = UniteCreatorPluginIntegrations::isJetEngineExists();
@@ -1233,7 +1237,106 @@ class HelperProviderCoreUC_EL{
 			echo "output term";
 
 	}
+	
+	
+	/**
+	 * save post for dynamic template - used for dynamic popup cache
+	 */
+	public static function savePostForDynamic($postID){
+		
+		$post = get_post($postID);
+		
+		if(empty($post))
+			UniteFunctionsUC::throwError("Post not found: $post");
+		
+		global $wp_query;
+		
+		//empty the infinite loop protection
+		self::$arrTemplatesCounter = array();
+		
+		self::$originalPost = $GLOBALS['post'];
+		
+		//backup the original querified object
+		self::$originalQueriedObject = $wp_query->queried_object;
+		self::$originalQueriedID = $wp_query->queried_object_id;
+		
+		$postID = $post->ID;
 
+		//set the post qieried object
+
+		$wp_query->queried_object = $post;
+		$wp_query->queried_object_id = $postID;
+		
+		$GLOBALS['post'] = $post;
+				
+		GlobalsProviderUC::$isUnderDynamicTemplateLoop = true;
+		
+		//set author data
+
+		UniteFunctionsWPUC::setGlobalAuthorData($post);
+		
+		//fix for jet engine
+
+		$isJetExists = UniteCreatorPluginIntegrations::isJetEngineExists();
+
+		if($isJetExists == true)
+			do_action("the_post", $post, false);
+		
+		//set the flag on dynamic ajax
+
+		if(GlobalsProviderUC::$isUnderAjax == true){
+			GlobalsProviderUC::$isUnderAjaxDynamicTemplate = true;
+		}
+
+		//set elementor document
+
+		$isElementorProActive = HelperUC::isElementorProActive();
+
+		$documentToChange = null;
+		
+		if($isElementorProActive == true){
+			
+			self::$currentDocument = \ElementorPro\Plugin::elementor()->documents->get_current();
+
+			$documentToChange = \Elementor\Plugin::$instance->documents->get( $postID );
+
+		}
+		
+		GlobalsUnlimitedElements::$renderingDynamicData = array(
+			"post_id"=>$postID,
+			"doc_to_change"=>$documentToChange
+		);
+		
+	}
+	
+	
+	/**
+	 * restore saved post for dynamic - not used right now
+	 */
+	public static function restorePostForDynamic(){
+		
+		if(empty(self::$originalPost))
+			UniteFunctionsUC::throwError("restorePostForDynamic error - need to save first");
+		
+		global $wp_query;
+		
+		$wp_query->queried_object = self::$originalQueriedObject;
+		$wp_query->queried_object_id = self::$originalQueriedID;
+		
+		$GLOBALS['post'] = self::$originalPost;
+
+		$isElementorProActive = HelperUC::isElementorProActive();
+		
+		if($isElementorProActive == true){
+		
+			\ElementorPro\Plugin::elementor()->documents->switch_to_document( self::$currentDocument );
+		}
+		
+		GlobalsProviderUC::$isUnderDynamicTemplateLoop = false;
+		
+	}
+	
+	
 	/**
 	 * global init
 	 */

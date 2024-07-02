@@ -427,7 +427,7 @@ function UniteAdminUC(){
 	this.getRandomString = function(numChars) {
 
 		if(!numChars)
-			 var numChars = 8;
+			 numChars = 8;
 
 		var text = "";
 		var possible = "abcdefghijklmnopqrstuvwxyz0123456789";
@@ -2681,7 +2681,7 @@ jQuery(document).ready(function(){
 
 	if(!g_ucAdmin)
 		g_ucAdmin = new UniteAdminUC();
-	
+
 	g_ucAdmin.globalInit();
 
 

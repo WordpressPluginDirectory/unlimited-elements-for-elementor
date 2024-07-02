@@ -294,6 +294,77 @@ class UCEmptyTemplate{
 	}
 	
 	
+	
+	
+	/**
+	 * render dynamic popup templates
+	 */
+	private function renderDynamicPopupTemplates(){
+				
+		$postIDs = UniteFunctionsUC::getGetVar("postids","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		
+		$isDebug = UniteFunctionsUC::getGetVar("debug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		$isDebug = UniteFunctionsUC::strToBool($isDebug);
+		
+		
+		UniteFunctionsUC::validateNotEmpty($postIDs,"post ids");
+		
+		UniteFunctionsUC::validateIDsList($postIDs,"id's list");
+		
+		$arrPostIDs = explode(",",$postIDs);
+		
+		$templateID = $this->templateID;
+				
+		$content = "";
+		
+		foreach($arrPostIDs as $postID){
+			
+			HelperProviderCoreUC_EL::savePostForDynamic($postID);
+			
+			$urlTemplate = UniteFunctionsWPUC::getPermalink($templateID);
+			
+			//render in hidden mode
+			
+			$isHidden = false;
+				
+			GlobalsProviderUC::$renderTemplateID = $templateID;
+			GlobalsProviderUC::$renderJSForHiddenContent = true;
+			
+			$output = HelperProviderCoreUC_EL::getElementorTemplate($templateID, true);
+			
+			//set hidden content
+			
+			$class = "";
+
+			$tag = "template";
+			if($isDebug == true)
+				$tag = "div";
+						
+			$output = "<{$tag} id='uc_template_output_{$templateID}_{$postID}' class='uc-template-output' data-postid='$postID' data-templateid='$templateID'>$output</{$tag}>\n";
+			
+			if(empty($output))
+				$output = "template $templateID not found";
+						
+			GlobalsProviderUC::$renderJSForHiddenContent = false;
+			
+			GlobalsProviderUC::$renderTemplateID = null;
+			
+			$content .= $output;
+			
+		}
+				
+		//don't know why, but it's not working. need to remove this dependency
+		
+		$this->renderHeaderPart();
+		
+		//check debug
+				
+		echo $content;
+		
+		$this->renderFooter();
+				
+	}
+	
 	/**
 	 * render multiple template for templates widget output
 	 */
@@ -324,7 +395,7 @@ class UCEmptyTemplate{
 			}
 			
 			$output = HelperProviderCoreUC_EL::getElementorTemplate($templateID, true);
-
+			
 			//set hidden content
 			
 			$class = "";
@@ -387,18 +458,33 @@ class UCEmptyTemplate{
 			$isMultiple = UniteFunctionsUC::getGetVar("multiple","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 			$isMultiple = UniteFunctionsUC::strToBool($isMultiple);
 			
+			$isDynamicPopup = UniteFunctionsUC::getGetVar("dynamicpopup","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+			$isDynamicPopup = UniteFunctionsUC::strToBool($isDynamicPopup);
+			
+			$type = "single";
+			if($isMultiple == true)
+				$type = "multiple";
+			else if ($isDynamicPopup == true)
+				$type = "dynamic_popup";
+			
 			if(empty($renderTemplateID))
 				UniteFunctionsUC::throwError("template id not found");
 			
 			$this->templateID = $renderTemplateID;
 			
-			if($isMultiple == true)
-				$this->renderMultipleTemplates();
-			else{
-													
-				$this->renderTemplate();
+			switch($type){
+				default:
+				case "single":
+					$this->renderTemplate();
+				break;
+				case "multiple":
+					$this->renderMultipleTemplates();
+				break;
+				case "dynamic_popup":
+					$this->renderDynamicPopupTemplates();
+				break;
 			}
-			
+						
 			
 		}catch(Exception $e){
 			

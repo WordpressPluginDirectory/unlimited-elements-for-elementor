@@ -754,10 +754,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		/**
 		 * add post picker
 		 */
-		public function addPostPicker($name,$defaultValue = "",$text = "",$arrParams = array()){
-			$this->add($name,$defaultValue,$text,self::TYPE_POST,$arrParams);
-		}
+		public function addPostPicker($name, $defaultValue = "", $text = "", $arrParams = array()){
 
+			$arrParams["label_block"] = true;
+
+			$this->add($name, $defaultValue, $text, self::TYPE_POST, $arrParams);
+		}
 
 		/**
 		 * add color picker setting
@@ -765,7 +767,6 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public function addColorPicker($name,$defaultValue = "",$text = "",$arrParams = array()){
 			$this->add($name,$defaultValue,$text,self::TYPE_COLOR,$arrParams);
 		}
-
 
 		/**
 		 * add repeater
@@ -1315,7 +1316,31 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 
 		private function a______XML_______(){}
-
+		
+		/**
+		 * check load condition for external form load
+		 */
+		private function isLoadConditionMet($loadCondition){
+			
+			if(empty($loadCondition))
+				return(true);
+				
+			switch($loadCondition){
+				case "elementor_enabled":
+					
+					return (GlobalsUnlimitedElements::$enableElementorSupport == true);
+				break;
+				case "gutenberg_enabled":
+					
+					return (GlobalsUnlimitedElements::$enableGutenbergSupport == true);
+				break;
+				default:
+					return(true);
+				break;
+			}
+				
+			return(true);
+		}
 
 		/**
 		 *
@@ -1323,8 +1348,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 */
 		public function loadXMLFile($filepath, $loadedSettingsType = null){
 
+
 			$obj = UniteFunctionsUC::loadXMLFile($filepath);
-			
+
 			if(empty($obj))
 				UniteFunctionsUC::throwError("Wrong xml file format: $filepath");
 
@@ -1342,6 +1368,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				$sapLabel = (string)UniteFunctionsUC::getVal($attribs, "label");
 				$sapIcon = (string)UniteFunctionsUC::getVal($attribs, "icon");
 				$loadFrom = (string)UniteFunctionsUC::getVal($attribs, "loadfrom");
+				$loadCondition = (string)UniteFunctionsUC::getVal($attribs, "load_condition");
 				$loadParam = (string)UniteFunctionsUC::getVal($attribs, "loadparam");
 				$loadedSettingsType = (string)UniteFunctionsUC::getVal($attribs, "loadtype");
 				$nodraw = (string)UniteFunctionsUC::getVal($attribs, "nodraw");
@@ -1367,7 +1394,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				
 				if(!empty($loadFrom)){
 					
-					$this->addExternalSettings($loadFrom, $loadParam, $loadedSettingsType);
+					$isConditionMet = $this->isLoadConditionMet($loadCondition);
+					
+					if($isConditionMet == true)
+						$this->addExternalSettings($loadFrom, $loadParam, $loadedSettingsType);
+					
 					continue;
 				}
 
@@ -1684,7 +1715,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * add settings from external file
 		 */
 		private function addExternalSettings($filename, $loadParam = null, $loadType = null){
-
+			
 			$filepathSettings = GlobalsUnlimitedElements::$pathPluginSettings."{$filename}.xml";
 
 			if(file_exists($filepathSettings) == false)

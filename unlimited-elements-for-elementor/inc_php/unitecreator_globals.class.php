@@ -258,9 +258,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			self::initDBTableTitles();
 
 			//dmp("init globals");
-			
+
 			UniteProviderFunctionsUC::doAction(UniteCreatorFilters::ACTION_AFTER_INIT_GLOBALS);
-			
+
 			if(self::$is_admin){
 
 				$isDebugMode = UniteFunctionsUC::getGetVar("debug", "", UniteFunctionsUC::SANITIZE_KEY);

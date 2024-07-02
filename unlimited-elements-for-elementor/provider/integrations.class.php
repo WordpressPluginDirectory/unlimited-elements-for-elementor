@@ -397,5 +397,122 @@ class UniteCreatorPluginIntegrations{
 		return($args);
 	}
 	
+	private function ___________SIMPLE_AUTHOR_BOX_________(){}
+	
+	
+	/**
+	 * modify get user data
+	 */
+	public function saboxGetUserData($arrData){
+		
+		$userID = UniteFunctionsUC::getVal($arrData, "id");
+		
+		if(empty($userID))
+			return($arrData);
+			
+		$arrMeta = UniteFunctionsWPUC::getAllUserMeta($userID);
+		
+		if(empty($arrMeta))
+			return($arrData);
+			
+		$urlProfileImage = UniteFunctionsUC::getVal($arrMeta, "sabox-profile-image");
+		
+		if(!empty($urlProfileImage))
+			$arrData["avatar_url"] = $urlProfileImage;
+		
+		
+		return($arrData);
+	}
+	
+	
+	/**
+	 * simple author box
+	 */
+	private function initSABoxIntegration(){
+		
+		add_filter("unlimited_elements_get_user_data",array($this,"saboxGetUserData"));
+				
+	}
+	
+	private function ___________FVPLAYER_________(){}
+	
+	/**
+	 * fvplayer - modify includeby
+	 */
+	public function fvplayerModifyPostsIncludeby($includeBy){
+		
+		$includeBy["fvplayers_user_watched"] = __("FVPlayer - User Watched Posts", "unlimited-elements-for-elementor");
+		
+		return($includeBy);
+	}
+	
+	/**
+	 * get custom post id's
+	 */
+	public function fvplayerGetCustomPostIDs($arrIDs, $includeBY, $limit){
+		
+		$arrIDs = array();
+		
+		switch($includeBY){
+			case "fvplayers_user_watched":
+				
+				$arrIDs = fv_player_get_user_watched_post_ids(array("count"=>$limit));
+		
+				//show debug
+				
+				if(GlobalsProviderUC::$showPostsQueryDebug == true){
+					dmp("FVPlayer - get user recently watched posts by function: fv_player_get_user_watched_post_ids");
+					dmp($arrIDs);
+				}
+				
+			break;
+		}
+				
+		if(empty($arrIDs))
+			$arrIDs = array();
+					
+		return($arrIDs);
+	}
+	
+	/**
+	 * check if fv player active
+	 */
+	private function initFvPlayerIntegrations(){
+		
+		//check if exists
+		global $fv_wp_flowplayer_ver;
+		
+		if(empty($fv_wp_flowplayer_ver))
+			return(false);
+			
+		//double check
+		
+		if(function_exists("fv_player_get_user_watched_post_ids") == false)
+			return(false);
+		
+		add_filter("ue_modify_post_select_includeby",array($this,"fvplayerModifyPostsIncludeby"));
+		
+		add_filter("ue_get_custom_includeby_postids",array($this,"fvplayerGetCustomPostIDs"),10,3);
+		
+	}
+	
+	private function ___________GENERAL_INIT_INTEGRATIONS_________(){}
+	
+	
+	/**
+	 * init plugin integrations - on plugins loaded
+	 */
+	public function initPluginIntegrations(){
+		
+		//simple author box
+		
+		if(class_exists("Simple_Author_Box"))
+			$this->initSABoxIntegration();
+		
+		$this->initFvPlayerIntegrations();
+			
+	}
+	
+	
 	
 }

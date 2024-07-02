@@ -75,10 +75,11 @@ class UEGoogleAPICalendarEvent extends UEGoogleAPIModel{
 	 * @return string
 	 */
 	public function getStartDate($format){
-
+		
 		$start = $this->getAttribute("start");
+		
 		$date = $this->getDate($start, $format);
-
+		
 		return $date;
 	}
 
@@ -93,7 +94,7 @@ class UEGoogleAPICalendarEvent extends UEGoogleAPIModel{
 
 		$end = $this->getAttribute("end");
 		$date = $this->getDate($end, $format);
-
+		
 		return $date;
 	}
 
@@ -113,7 +114,8 @@ class UEGoogleAPICalendarEvent extends UEGoogleAPIModel{
 		$date = $date ?: $dateTime;
 		$time = strtotime($date);
 		$date = date($format, $time);
-
+		
+		
 		return $date;
 	}
 

@@ -4,7 +4,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 class UniteProviderAdminUC extends UniteCreatorAdmin{
 
-	private $dbVersion = "5";    //used for upgrade db on plugin update
+	private $dbVersion = "6";    //used for upgrade db on plugin update
 	private static $arrMenuPages = array();
 	private static $arrSubMenuPages = array();
 	protected $capability = "manage_options";
@@ -37,7 +37,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	protected $textBuy;
 	protected $linkBuy;
 	protected $pluginTitle;
-	
+
 	/**
 	 *
 	 * the constructor
@@ -69,16 +69,16 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 
 		$this->init();
 	}
-	
+
 	/**
 	 * get instance
 	 */
 	public static function getInstance(){
-		
+
 		return(self::$t);
 	}
-	
-	
+
+
 	/**
 	 * process activate event - install the db (with delta).
 	 */
@@ -106,36 +106,36 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	public function onThemeSetup(){
 	}
 
-	
+
 	/**
 	 * create the tables if not exists
 	 */
 	public function createTables($isForce = false){
-		
+
 		$response1 = $this->createTable(GlobalsUC::TABLE_ADDONS_NAME, $isForce);
-		
+
 		$response2 = $this->createTable(GlobalsUC::TABLE_CATEGORIES_NAME, $isForce);
-		
+
 		$isAddonChangelogEnabled = HelperProviderUC::isAddonChangelogEnabled();
 
 		$response3 = null;
-		
+
 		if($isAddonChangelogEnabled === true)
 			$response3 = $this->createTable(GlobalsUC::TABLE_CHANGELOG_NAME, $isForce);
-		
+
 		$isFormEntriesEnabled = HelperProviderUC::isFormEntriesEnabled();
 
 		$response4 = null;
 		$response5 = null;
-		
+
 		if($isFormEntriesEnabled === true){
 			$response4 = $this->createTable(GlobalsUC::TABLE_FORM_ENTRIES_NAME, $isForce);
 			$response5 = $this->createTable(GlobalsUC::TABLE_FORM_ENTRY_FIELDS_NAME, $isForce);
 		}
-		
+
 		$responses = array($response1,$response2,$response3,$response4,$response5);
-		
-		
+
+
 		return($responses);
 	}
 
@@ -144,14 +144,14 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 * create tables
 	 */
 	public function createTable($tableName, $isForce = false){
-		
+
 		global $wpdb;
-		
+
 		//if table exists - don't create it.
 		$tableRealName = UniteFunctionsWPUC::prefixDBTable($tableName);
 		if($isForce == false && UniteFunctionsWPUC::isDBTableExists($tableRealName))
 			return;
-		
+
 		$charset_collate = $wpdb->get_charset_collate();
 
 		switch($tableName){
@@ -260,6 +260,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 					title VARCHAR(128) NULL,
 					name VARCHAR(64) NULL,
 					type VARCHAR(32) NULL,
+					text TEXT NULL,
   				value LONGTEXT NULL,
 					PRIMARY KEY (id),
 					INDEX entry_id_index (entry_id)
@@ -270,11 +271,11 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 				UniteFunctionsUC::throwError("table: $tableName not found");
 			break;
 		}
-		
+
 		require_once(ABSPATH . 'wp-admin/includes/upgrade.php');
 		$response = dbDelta($sql);
-		
-		
+
+
 		return($response);
 	}
 
@@ -288,7 +289,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 
 		if($savedDBVersion != $this->dbVersion){
 			$this->createTables(true);
-			
+
 			update_option($optionDBVersion, $this->dbVersion);
 		}
 	}
@@ -380,9 +381,9 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 
 			return (false);
 		}
-		
+
 		$this->createTables();
-				
+
 		parent::adminPages();
 	}
 
@@ -577,9 +578,9 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 		$dirAddons = apply_filters("ue_path_theme_addons", GlobalsUC::DIR_THEME_ADDONS);
 
 		$pathAddons = $pathCurrentTheme . $dirAddons . "/";
-		
-		$pathAddons = apply_filters("ue_path_install_addons", $pathAddons); 
-		
+
+		$pathAddons = apply_filters("ue_path_install_addons", $pathAddons);
+
 		$this->installAddonsFromPath($pathAddons);
 	}
 

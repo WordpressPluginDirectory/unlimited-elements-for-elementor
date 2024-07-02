@@ -888,6 +888,41 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+version 1.5.112: 2024-07-01
+
+Plugin Changes:
+
+* Feature: made a small integration with simple author box plugin
+* Feature: added "timezone" for google events api
+* Feature: added "current product gallery" as a gallery source for WooCommerce
+* Feature: added option for dynamic popup advanced cache
+* Feature: added integration for fvplayer
+* Feature: added links to woo minicart title and image
+* Feature: added option to send reply in form to email that set in form field
+
+Widget Changes:
+
+* Feature: Pricing Table (Free) - Introduced Tooltip functionality, allowing users to add tooltips to each list item.
+* Feature: Post Magazine Grid (Pro) - New values were added to the Show Categories option, including byTaxonomy and by Last level Taxonomy, providing users with more granular control over category display settings.
+* Feature: Blob Shapes (Free) - Enhanced the Shadow options by adding shadow size, shadow blur, shadow color type, and shadow shift settings.
+* Feature: Image Accordion (Pro) - Added the "Link All Items" option to enhance functionality and provide users with the ability to link all items collectively.
+* Feature: Calendar (Pro) - Separated the Locale option into a new tab and introduced an 'Other' option in the locale list, enabling users to manually add a locale not listed, thereby extending support for 96 locales.
+* Feature: Calendar (Pro) - Added "Open Event Link in New Tab" option to allow users to open event links in a new tab.
+* Feature: Checkboxes Filter (Pro) - Added functionality to hide the dropdown when no items are found inside.
+* Feature: Icon Accordion (Pro) - A new feature was introduced that includes the addition of an option to adjust the Icon Margin, providing users with more customization options for their interface.
+* Feature: Radio Button Field (Pro) - Added functionality to handle and process values selected from radio buttons in the form, ensuring users' selections are captured and correctly stored.
+* Change: Woo Mini Cart (Pro) - Improved the widget by adding the product link to the product title and the image in the cart.
+* Change: AJAX Search (Pro) - Added a aria-label attribute for the search button element to enhance form handling and improve accessibility.
+* Change: List Marquee (Pro) - Extended icon option to graphic element and added option for image.
+* Change: AJAX Search (Pro) - Added a name attribute for the search button element to enhance form handling and improve accessibility.
+* Change: Swipe Carousel (Pro) - An improvement was made by adding the aria-label attribute to the item link, enhancing accessibility and ensuring that all links have discernible names for better user experience.
+* Fix: Logo Marquee (Pro) - Fixed the text alignment issue and added new options: Text Align and Text Shadow.
+* Fix: Icon Accordion (Pro) - Fixed a bug where the accordions were not closing when the "Close Others on Open" option was disabled.
+* Fix: Copy Coupon Code (Pro) - Resolved a problem where the copy operation was failing in some cases. This fix ensures that the copy functionality now works reliably across all scenarios.
+* Fix: Quantity Increment Buttons (Pro) - Resolved a problem where the product quantity was not reset to 1 after adding to the cart.
+* Fix: Liquid Full Screen Menu (Pro) - Implemented a fix to address the issue where the widget was not functioning correctly within sticky containers, ensuring consistent behavior and improved user experience.
+* Fix: Before After (Pro) - Added support for carousel widgets, enabling the creation and management of dynamic, rotating content displays within the application.
+
 
 version 1.5.111: 2024-06-10
 
@@ -897,14 +932,6 @@ Plugin Changes:
 * Fix: fixed getting elementor dynamic item fields in ajax 
 * Fix: background widgets didn't worked with rocket lazy load
 * Changed - changed the default taxonomy saparator to ":" instead of "~"
-
-Widgets Changes:
-
-
-version 1.5.111 - 2024-06-04:
-
-Plugin Changes:
-
 * Feature: added option in general settings: 'Taxonomy Separator Sign in Ajax Filter' for backward compatability
 * Changed - changed the default taxonomy saparator to ":" instead of "~"
 * Fix: fixed getting elementor dynamic item fields in ajax 

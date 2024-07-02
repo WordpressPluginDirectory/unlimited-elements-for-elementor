@@ -1366,6 +1366,7 @@ ul.unite-context-menu li a:focus {
 #----------POST-PICKER---------------- {}
 
 .unite-inputs .unite-settings-postpicker-wrapper {
+	width: 100%;
 	max-width: var(--ue-input-max-width);
 }
 

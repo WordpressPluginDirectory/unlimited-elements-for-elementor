@@ -851,7 +851,7 @@ class UniteCreatorTemplateEngineWork{
 	public function getPostAuthor($authorID, $getMeta = false, $getAvatar = false){
 		
 		$arrUserData = UniteFunctionsWPUC::getUserDataById($authorID, $getMeta, $getAvatar);
-	
+		
 		return($arrUserData);
 	}
 
@@ -1175,7 +1175,7 @@ class UniteCreatorTemplateEngineWork{
 			case "get_wc_gallery":
 
 				$productID = $arg1;
-
+				
 				$objWoo = UniteCreatorWooIntegrate::getInstance();
 				$arrGallery = $objWoo->getProductGallery($productID);
 
@@ -1359,9 +1359,9 @@ class UniteCreatorTemplateEngineWork{
 			case "get_product_attributes":
 
 				$objWoo = UniteCreatorWooIntegrate::getInstance();
-
+				
 				$arrAttributes = $objWoo->getProductAttributes($arg1);
-
+				
 				return($arrAttributes);
 
 			break;

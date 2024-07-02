@@ -1,5 +1,18 @@
 
 
+
+version 1.5.112:
+
+* Feature: made a small integration with simple author box plugin
+* Feature: added "timezone" for google events api
+* Feature: added "current product gallery" as a gallery source for WooCommerce
+* Feature: added option for dynamic popup advanced cache
+* Feature: added integration for fvplayer
+* Feature: added links to woo minicart title and image
+* Feature: added option to send reply in form to email that set in form field
+
+
+
 version 1.5.111:
 
 * Feature: added option in general settings: 'Taxonomy Separator Sign in Ajax Filter' for backward compatability

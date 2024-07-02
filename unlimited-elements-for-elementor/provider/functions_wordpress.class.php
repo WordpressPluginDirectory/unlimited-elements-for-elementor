@@ -1835,16 +1835,14 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			return($arrCustomFields);
 		}
-
-
+		
 		/**
-		 * get post meta data
+		 * modify meta array
 		 */
-		public static function getPostMeta($postID, $getSystemVars = true, $prefix = null){
-
-			$arrMeta = get_post_meta($postID);
+		public static function modifyMetaArray($arrMeta, $getSystemVars = true, $prefix = null){
+			
 			$arrMetaOutput = array();
-
+			
 			foreach($arrMeta as $key=>$item){
 
 				//filter by key
@@ -1863,8 +1861,19 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 				$arrMetaOutput[$key] = $item;
 			}
+			
+			return($arrMetaOutput);
+		}
 
+		/**
+		 * get post meta data
+		 */
+		public static function getPostMeta($postID, $getSystemVars = true, $prefix = null){
 
+			$arrMeta = get_post_meta($postID);
+			
+			$arrMetaOutput = self::modifyMetaArray($arrMeta, $getSystemVars, $prefix);
+			
 			return($arrMetaOutput);
 		}
 
@@ -3557,6 +3566,22 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	}
 
 	/**
+	 * get all user meta data
+	 */
+	public static function getAllUserMeta($userID){
+		
+		$arrMeta = get_user_meta($userID, '', true);
+
+		if(empty($arrMeta))
+			return (array());
+		
+		$arrMeta = self::modifyMetaArray($arrMeta);
+		
+		return($arrMeta);
+	}
+	
+	
+	/**
 	 * get user meta
 	 */
 	public static function getUserMeta($userID, $arrMetaKeys = null, $addPrefixed = false){
@@ -3567,7 +3592,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			return (null);
 
 		$arrKeys = self::getUserMetaKeys();
-
+		
 		if(is_array($arrMetaKeys) == false)
 			$arrMetaKeys = array();
 
@@ -3575,7 +3600,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$arrKeys = array_merge($arrKeys, $arrMetaKeys);
 
 		$arrMetaKeys = UniteFunctionsUC::arrayToAssoc($arrMetaKeys);
-
+				
 		$arrOutput = array();
 		foreach($arrKeys as $key){
 			$metaValue = UniteFunctionsUC::getVal($arrMeta, $key);
@@ -3595,7 +3620,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			$arrOutput[$key] = $metaValue;
 		}
-
+		
+		
+		
 		return ($arrOutput);
 	}
 
@@ -3640,6 +3667,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		$userData = $objUser->data;
 
+		
 		$userData = UniteFunctionsUC::convertStdClassToArray($userData);
 
 		$arrData = array();
@@ -3689,9 +3717,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		//add meta
 		if($getMeta == true){
 			$arrMeta = self::getUserMeta($userID, $arrMetaKeys);
+			
 			if(!empty($arrMeta))
 				$arrData = $arrData + $arrMeta;
 		}
+		
+		$arrData = apply_filters("unlimited_elements_get_user_data", $arrData);
 
 		return ($arrData);
 	}

@@ -559,7 +559,7 @@ class HelperProviderUC{
 	 * on plugins loaded call plugin
 	 */
 	public static function onPluginsLoadedCallPlugins(){
-				
+
 		do_action("addon_library_register_plugins");
 
 		UniteProviderFunctionsUC::doAction(UniteCreatorFilters::ACTION_EDIT_GLOBALS);
@@ -583,7 +583,7 @@ class HelperProviderUC{
 	public static function registerPlugins(){
 
 		add_action("plugins_loaded", array("HelperProviderUC","onPluginsLoadedCallPlugins"));
-		
+
 	}
 
 
@@ -931,7 +931,7 @@ class HelperProviderUC{
 	 * check if backgrounds enabled
 	 */
 	public static function isBackgroundsEnabled(){
-				
+		
 		if(GlobalsUnlimitedElements::$enableElementorSupport == false)
 			return(false);
 		

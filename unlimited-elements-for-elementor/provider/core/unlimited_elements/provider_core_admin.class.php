@@ -116,6 +116,7 @@ class UniteProviderCoreAdminUC_Elementor extends UniteProviderAdminUC{
 		
 		$this->addSubMenuPage(GlobalsUnlimitedElements::VIEW_ADDONS_ELEMENTOR, $widgetsTitle, "adminPages");
 		
+				
 		if(HelperProviderUC::isBackgroundsEnabled() === true)
 			$this->addSubMenuPage(GlobalsUnlimitedElements::VIEW_BACKGROUNDS, __('Background Widgets', "unlimited-elements-for-elementor"), "adminPages");
 

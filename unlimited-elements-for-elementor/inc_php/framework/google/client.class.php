@@ -127,7 +127,7 @@ abstract class UEGoogleAPIClient{
 		$request->validateResponse(function($response){
 
 			$data = $response->json();
-
+			
 			if(empty($data["error"]) === false){
 				$error = $data["error"];
 				$message = $error["message"];
@@ -141,7 +141,7 @@ abstract class UEGoogleAPIClient{
 				$this->throwError("$message ($status)");
 			}
 		});
-
+		
 		$response = $request->request($method, $url);
 		$data = $response->json();
 

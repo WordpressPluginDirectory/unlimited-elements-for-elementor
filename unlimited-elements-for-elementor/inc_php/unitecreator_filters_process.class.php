@@ -401,7 +401,6 @@ class UniteCreatorFiltersProcess{
 		
 		$taxSapSign = UniteFunctionsUC::getVal($arrUrlKeys, "tax_sap");
 		
-		
 		//fallback, if ~ sign exists - change to it
 		
 		if($taxSapSign != "~" && strpos($strFilters,"~") !== false)
@@ -1191,23 +1190,16 @@ class UniteCreatorFiltersProcess{
 		$objOutput = new UniteCreatorOutput();
 		
 	    $isDebugFromGet = HelperUC::hasPermissionsFromQuery("ucfieldsdebug");
-
+		
 	    if($isDebugFromGet == true)
 	        $objOutput->showDebugData(true);
-
+		
 		$objOutput->initByAddon($addon);
-
-	    if($isDebugFromGet == true){
-
-	    	HelperProviderUC::showLastQueryPosts();
-
-	    	dmp("End Here");
-	    	exit();
-	    }
-
+		
+		
 		if(self::$showDebug == false){
 			$htmlDebug = ob_get_contents();
-
+			
 			ob_end_clean();
 	  	}
 
@@ -1230,13 +1222,25 @@ class UniteCreatorFiltersProcess{
 			$htmlBody = $objOutput->getHtmlOnly();
 
 			$htmlBody = $this->processAjaxHtmlOutput($htmlBody);
-
+			
 			$output["html"] = $htmlBody;
 		}
-
+		
 
 		if(!empty($htmlDebug))
 			$output["html_debug"] = $htmlDebug;
+		
+		if($isDebugFromGet == true){
+	    	
+			HelperProviderUC::showLastQueryPosts();			
+			
+			$htmlDebug = $objOutput->getHtmlDebug();
+			
+			
+			echo $htmlDebug;
+			dmp("End Here");
+			exit();
+		}
 		
 		GlobalsUnlimitedElements::$currentRenderingAddon = null;
 		
@@ -1401,7 +1405,7 @@ class UniteCreatorFiltersProcess{
 		//init widget by post id and element id
 
 		self::$platform = UniteFunctionsUC::getPostGetVariable("platform","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-
+		
 		self::$isGutenberg = (self::$platform == "gutenberg");
 		
 		$layoutID = UniteFunctionsUC::getPostGetVariable("layoutid","",UniteFunctionsUC::SANITIZE_KEY);
@@ -1432,7 +1436,10 @@ class UniteCreatorFiltersProcess{
 		if(self::$isGutenberg == false)
 			$arrContent = HelperProviderCoreUC_EL::getElementorContentByPostID($layoutID);
 		else{	//gutenberg
-
+			
+			if(class_exists("UniteCreatorGutenbergIntegrate") == false)
+				UniteFunctionsUC::throwError("no gutenberg platform enabled");
+			
 			self::$objGutenberg = new UniteCreatorGutenbergIntegrate();
 
 			$arrContent = self::$objGutenberg->getPostBlocks($layoutID);
@@ -1553,11 +1560,11 @@ class UniteCreatorFiltersProcess{
 		$outputData["query_data"] = $arrQueryData;
 		$outputData["query_ids"] = $strQueryPostIDs;
 
-
+		
 		if(self::$showEchoDebug == true){
 
 			dmp("The posts: ");
-
+			
 			HelperUC::$operations->putPostsCustomFieldsDebug(GlobalsProviderUC::$lastPostQuery->posts);
 
 			dmp("showing the debug");
@@ -1566,34 +1573,6 @@ class UniteCreatorFiltersProcess{
 		}
 
 		HelperUC::ajaxResponseData($outputData);
-
-	}
-
-	private function _______DYNAMIC_POPUP__________(){}
-
-	/**
-	 * put dynamic popup cache
-	 */
-	private function putDynamicPopupCache(){
-
-		$postID = 10767;
-
-		$templateID = 9532;
-
-		$widgetID = "max111";
-
-		$post = get_post($postID);
-
-		$template = get_post($templateID);
-
-		//dmp($template);exit();
-
-		HelperProviderCoreUC_EL::putListingItemTemplate_post($post, $templateID, $widgetID);
-
-
-
-		dmp("dynamic popup cache");
-		exit();
 
 	}
 
@@ -1694,7 +1673,7 @@ class UniteCreatorFiltersProcess{
 			return(false);
 
 		self::$isScriptAdded = true;
-
+		
 		$arrData = $this->getFiltersJSData();
 
 		$strData = UniteFunctionsUC::jsonEncodeForClientSide($arrData);
@@ -2753,13 +2732,8 @@ s	 */
 					$objWoo->outputCartFragments();
 
 				break;
-				case "dynamicpopupcache":
-
-					$this->putDynamicPopupCache();
-
-				break;
 				case "custom":
-
+					
 					do_action("uc_custom_front_ajax_action");
 
 					//if not catch - will throw error

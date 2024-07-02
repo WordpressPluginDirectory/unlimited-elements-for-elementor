@@ -78,8 +78,8 @@
 				
 			</fieldset>
 			
-			<fieldset name="background" label="Background" loadfrom="background"></fieldset>	
-			
+			<fieldset name="background" label="Background" loadfrom="background"></fieldset>						
+						
 			<fieldset name="common_hidden" loadfrom="common_hidden"></fieldset>		
 			
 			<fieldset name="advanced_settings" label="Advanced">

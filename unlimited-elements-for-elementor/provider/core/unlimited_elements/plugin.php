@@ -72,6 +72,28 @@ class UnlimitedElementsPluginUC extends UniteCreatorPluginBase{
 		
 	}
 	
+	/**
+	 * include elementor common files
+	 */
+	private function includeCommonFiles_elementor(){
+		
+		require_once $this->pathPlugin . 'elementor/elementor_integrate.class.php';
+		require_once $this->pathPlugin . "elementor/elementor_controls.class.php";
+		
+		if(is_admin()){
+			require_once $this->pathPlugin . 'elementor/elementor_layout_exporter.class.php';
+		}
+		
+	}
+	
+	/**
+	 * include gutenberg common files
+	 */
+	private function includeCommonFiles_gutenberg(){
+		
+		require_once $this->pathPlugin . 'gutenberg/gutenberg_integrate.class.php';
+	}
+	
 	
 	/**
 	 * include files
@@ -83,25 +105,56 @@ class UnlimitedElementsPluginUC extends UniteCreatorPluginBase{
 		require_once $this->pathPlugin . 'addontype_elementor_template.class.php';
 		require_once $this->pathPlugin . 'helper_provider_core.class.php';
 		
-		require_once $this->pathPlugin . 'elementor/elementor_integrate.class.php';
-		require_once $this->pathPlugin . "elementor/elementor_controls.class.php";
 		
-		if(is_admin()){
-			require_once $this->pathPlugin . 'elementor/elementor_layout_exporter.class.php';
-		}
+		if(GlobalsUnlimitedElements::$enableElementorSupport)
+			$this->includeCommonFiles_elementor();
 		
-		//require_once $this->pathPlugin . 'elementor/elementor_base_override.class.php';
+		
+		if(GlobalsUnlimitedElements::$enableGutenbergSupport)
+			$this->includeCommonFiles_gutenberg();
+		
 		
 	}
+	
 
+	
 	/**
-	 * check and load elementor integration on plugins loaded.
+	 * check and load elementor integration
 	 */
-	private function onPluginsLoaded_checkElementor(){
-		
-		
+	private function checkLoadElementor(){
+				
+		// Notice if the Elementor is not active
+		if ( ! did_action( 'elementor/loaded' ) )
+			return;
+			
+		if(GlobalsUnlimitedElements::$enableElementorSupport == false)
+			return(false);
+			
+		$objIntegrate = new UniteCreatorElementorIntegrate();
+		$objIntegrate->initElementorIntegration();
 		
 	}
+	
+	
+	/**
+	 * check and load gutenberg
+	 */
+	private function checkLoadGutenberg(){
+		
+		if(GlobalsUnlimitedElements::$enableGutenbergSupport == false)
+			return(false);
+		
+		$isEnableGutenberg = HelperProviderCoreUC_EL::getGeneralSetting("gut_enable");
+		$isEnableGutenberg = UniteFunctionsUC::strToBool($isEnableGutenberg);
+		
+		if($isEnableGutenberg == false)
+			return(false);
+
+		$gutenbergIntegrate = UniteCreatorGutenbergIntegrate::getInstance();
+		$gutenbergIntegrate->init();
+		
+	}
+	
 	
 	/**
 	 * on plugins loaded
@@ -117,14 +170,15 @@ class UnlimitedElementsPluginUC extends UniteCreatorPluginBase{
 			HelperUC::addAdminNotice("Both unlimited elements plugins, FREE and PRO are active! Please uninstall FREE version.");
 		}
 		
-		// Notice if the Elementor is not active
-		if ( ! did_action( 'elementor/loaded' ) ) {
-			return;
-		}
+		//init integrations
 		
-		$objIntegrate = new UniteCreatorElementorIntegrate();
-		$objIntegrate->initElementorIntegration();
+		$objIntegrations = new UniteCreatorPluginIntegrations();
+		$objIntegrations->initPluginIntegrations();
 		
+		
+		$this->checkLoadElementor();
+		
+		$this->checkLoadGutenberg();
 	}
 	
 	

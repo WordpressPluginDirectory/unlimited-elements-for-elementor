@@ -194,7 +194,7 @@ function UERemoteGeneralAPI(){
 	 * change item
 	 */
 	function changeItem(mixed){
-				
+		
 		var numItem = getItemNum(mixed);
 
 		var objItem = getItem(numItem);
@@ -216,7 +216,8 @@ function UERemoteGeneralAPI(){
 			
 			return(false);
 		}
-
+		
+		
 		if(!g_vars.selector_item_trigger){
 
 			objItem.trigger(g_vars.trigger_event);
@@ -523,7 +524,7 @@ function UERemoteGeneralAPI(){
 		//not allow to init general api without options
 		if(!options)
 			return(false);
-
+				
 		g_vars.is_editor = isEditor;
 
 		g_objParent = objParent;
@@ -544,10 +545,10 @@ function UERemoteGeneralAPI(){
 			trace(objParent);
 			trace(options);
 		}
-
+		
 		if(isEditor == true)
 			g_vars.trigger_event = "ucclick";
-
+		
 		if(g_isTypeEvents == false)
 			initByClasses();
 
@@ -1099,7 +1100,7 @@ function UESyncObject(){
 		}
 		
 		mapAPIs(function(api){
-			
+						
 			if(numCurrent < 0)
 				api.doAction("unselect_items");
 			else
@@ -2370,20 +2371,14 @@ function UERemoteWidgets(){
 			return(true);
 		}
 		
-		
-		if (window.parent === window.top) {
-			g_vars.is_editor = false;
-			
-			return false;
-		}
-
 		// check for elementor
-		if (typeof window.parent.elementor !== "undefined") {
+		if (window.self !== window.top && typeof window.parent.elementor !== "undefined") {
+			
 			g_vars.is_editor = true;
 
 			return true;
 		}
-		
+				
 		g_vars.is_editor = false;
 
 		return false;

@@ -1515,10 +1515,14 @@ class UniteCreatorParamsProcessorWork{
 
 		if(is_string($value) === true)
 			$value = array("url" => $value);
-
+		
 		$url = UniteFunctionsUC::getVal($value, "url");
+		
+		if(is_array($url))
+			$url = "";
+		
 		$url = esc_url($url);
-
+		
 		$isExternal = UniteFunctionsUC::getVal($value, "is_external");
 		$noFollow = UniteFunctionsUC::getVal($value, "nofollow");
 

@@ -138,7 +138,7 @@ class UCFormEntryView{
 													break;
 
 													default:
-														echo nl2br(esc_html($field["value"]));
+														echo nl2br(esc_html($field["text"] ?: $field["value"]));
 												}
 
 												?>

@@ -9,7 +9,6 @@ require_once $pathProvider . 'provider_functions.class.php';
 require_once $pathProvider . 'provider_helper.class.php';
 require_once $pathProvider . 'provider_admin_plugin_base.class.php';
 require_once $pathProvider . 'acf_integrate.class.php';
-require_once $pathProvider . 'gutenberg_integrate.class.php';
 require_once $pathProvider . 'wpml_integrate.class.php';
 require_once $pathProvider . 'pods_integrate.class.php';
 require_once $pathProvider . 'toolset_integrate.class.php';

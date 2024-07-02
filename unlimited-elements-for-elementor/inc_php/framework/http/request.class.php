@@ -46,7 +46,7 @@ class UEHttpRequest{
 	 * @return $this
 	 */
 	public function cacheTime($seconds){
-
+		
 		$this->cacheTime = $seconds;
 
 		return $this;

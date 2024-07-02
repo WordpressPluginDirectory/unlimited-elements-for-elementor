@@ -8,9 +8,9 @@
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 class UniteCreatorSettings extends UniteCreatorSettingsWork{
-
+	
 	const SELECTOR_PLACEHOLDER = "{{selector}}";
-
+	
 	/**
 	 * add settings provider types
 	 */
@@ -1548,7 +1548,10 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$arrIncludeBy["recent"] = __("Recently Viewed Produts (woo)", "unlimited-elements-for-elementor");
 			$arrIncludeBy["products_from_post"] = __("Products From Post Content (woo)", "unlimited-elements-for-elementor");
 		}
-
+		
+		$arrIncludeBy = apply_filters("ue_modify_post_select_includeby", $arrIncludeBy);
+		
+		
 		$arrIncludeBy = array_flip($arrIncludeBy);
 		$includeBy = UniteFunctionsUC::getVal($value, $name . "_includeby");
 		$arrConditionIncludeBy = $arrCustomOnlyCondition;
@@ -2804,8 +2807,10 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$arrSource["products"] = __("Products", "unlimited-elements-for-elementor");
 
 		
-		if($isForGallery == true && $isWooActive == true)
+		if($isForGallery == true && $isWooActive == true){
+			$arrSource["current_product_gallery"] = __("Current Product Gallery", "unlimited-elements-for-elementor");
 			$arrSource["current_product_variations"] = __("Current Product Variations", "unlimited-elements-for-elementor");
+		}
 		
 		if($isForGallery == true){
 			$arrSource["current_post_meta"] = __("Current Post Metafield", "unlimited-elements-for-elementor");

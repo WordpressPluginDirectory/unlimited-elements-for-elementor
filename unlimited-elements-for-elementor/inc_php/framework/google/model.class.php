@@ -24,7 +24,7 @@ abstract class UEGoogleAPIModel{
 	 * @return array
 	 */
 	public static function transformAll($items){
-
+		
 		$data = array();
 
 		foreach($items as $attributes){

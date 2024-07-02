@@ -3869,9 +3869,9 @@ class UniteCreatorElementorWidget extends Widget_Base {
 	        //set show debug data
 	        $isShowDebugData = UniteFunctionsUC::getVal($arrValues, "show_widget_debug_data");
 	        $isShowDebugData = UniteFunctionsUC::strToBool($isShowDebugData);
-
+			
 	        $isDebugFromGet = HelperUC::hasPermissionsFromQuery("ucfieldsdebug");
-
+			
 	        if($isDebugFromGet === true)
 	        	$isShowDebugData = true;
 

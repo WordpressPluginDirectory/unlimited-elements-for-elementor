@@ -36,6 +36,7 @@ class UniteCreatorAPIIntegrations{
 	const CURRENCY_EXCHANGE_DEFAULT_CACHE_TIME = 60;
 
 	const GOOGLE_EVENTS_FIELD_EMPTY_CREDENTIALS = "google_events_empty_credentials";
+	const GOOGLE_EVENTS_FIELD_TIMEZONE = "google_events_timezone";
 	const GOOGLE_EVENTS_FIELD_CALENDAR_ID = "google_events_calendar_id";
 	const GOOGLE_EVENTS_FIELD_RANGE = "google_events_range";
 	const GOOGLE_EVENTS_FIELD_ORDER = "google_events_order";
@@ -596,6 +597,12 @@ class UniteCreatorAPIIntegrations{
 				"default" => self::GOOGLE_EVENTS_DEFAULT_LIMIT,
 			),
 			array(
+				"id" => self::GOOGLE_EVENTS_FIELD_TIMEZONE,
+				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
+				"text" => __("Timezone", "unlimited-elements-for-elementor"),
+				"desc" => __("Example: Europe/Rome, UTC, -06:30, +08:45. Leave empty for timezone set in wp settings", "unlimited-elements-for-elementor"),
+			),
+			array(
 				"id" => self::GOOGLE_EVENTS_FIELD_CACHE_TIME,
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("Cache Time", "unlimited-elements-for-elementor"),
@@ -814,7 +821,8 @@ class UniteCreatorAPIIntegrations{
 		$eventsLimit = $this->getParam(self::GOOGLE_EVENTS_FIELD_LIMIT, self::GOOGLE_EVENTS_DEFAULT_LIMIT);
 		$eventsLimit = intval($eventsLimit);
 		$cacheTime = $this->getCacheTimeParam(self::GOOGLE_EVENTS_FIELD_CACHE_TIME, self::GOOGLE_EVENTS_DEFAULT_CACHE_TIME);
-
+		$timezone = $this->getParam(self::GOOGLE_EVENTS_FIELD_TIMEZONE);
+				
 		$orderFieldMap = array(
 			self::GOOGLE_EVENTS_ORDER_DATE_ASC => "date",
 			self::GOOGLE_EVENTS_ORDER_DATE_DESC => "date",
@@ -847,9 +855,9 @@ class UniteCreatorAPIIntegrations{
 
 		if(isset($eventsRange["end"]) === true)
 			$eventsParams["timeMax"] = $eventsRange["end"];
-
-		$events = $calendarService->getEvents($calendarId, $eventsParams);
-
+					
+		$events = $calendarService->getEvents($calendarId, $eventsParams, $timezone);
+		
 		foreach($events as $event){
 			$orderValue = ($orderField === "date")
 				? $event->getStartDate(self::FORMAT_MYSQL_DATETIME)

@@ -155,7 +155,7 @@ class UniteCreatorForm{
 	 */
 	private function getFieldsData($arrContent, $arrFields, $arrFiles){
 
-		$arrOutput = array();
+		$data = array();
 
 		foreach($arrFields as $arrField){
 			// get field input
@@ -166,6 +166,9 @@ class UniteCreatorForm{
 
 			// get saved settings from layout
 			$fieldSettings = HelperProviderCoreUC_EL::getAddonValuesWithDataFromContent($arrContent, $fieldId);
+
+			// @TODO: get array of the uc_items and extract text of the selected value
+			$fieldText = "";
 
 			if($fieldType === self::TYPE_FILES){
 				$fieldValue = UniteFunctionsUC::getVal($arrFiles, $fieldId, array());
@@ -179,25 +182,25 @@ class UniteCreatorForm{
 			$required = UniteFunctionsUC::getVal($fieldSettings, "required");
 			$required = UniteFunctionsUC::strToBool($required);
 
-			$arrFieldOutput = array();
-			$arrFieldOutput["title"] = $title;
-			$arrFieldOutput["name"] = $name;
-			$arrFieldOutput["type"] = $fieldType;
-			$arrFieldOutput["value"] = $fieldValue;
-			$arrFieldOutput["required"] = $required;
-			$arrFieldOutput["params"] = $fieldParams;
-
-			$arrOutput[] = $arrFieldOutput;
+			$data[] = array(
+				"title" => $title,
+				"name" => $name,
+				"type" => $fieldType,
+				"text" => $fieldText,
+				"value" => $fieldValue,
+				"required" => $required,
+				"params" => $fieldParams,
+			);
 		}
 
-		return ($arrOutput);
+		return $data;
 	}
 
 	/**
 	 * submit form
 	 */
 	public function submitFormFront(){
-
+				
 		$formData = UniteFunctionsUC::getPostGetVariable("formData", null, UniteFunctionsUC::SANITIZE_NOTHING);
 		$formFiles = UniteFunctionsUC::getFilesVariable("formFiles");
 		$formId = UniteFunctionsUC::getPostGetVariable("formId", null, UniteFunctionsUC::SANITIZE_KEY);
@@ -211,7 +214,7 @@ class UniteCreatorForm{
 			UniteFunctionsUC::throwError("No form data found.");
 
 		$postContent = HelperProviderCoreUC_EL::getElementorContentByPostID($postId);
-		
+
 		if(empty($postContent))
 			UniteFunctionsUC::throwError("Form elementor content not found.");
 
@@ -227,10 +230,11 @@ class UniteCreatorForm{
 		$addonForm = HelperProviderCoreUC_EL::getAddonWithDataFromContent($postContent, $formId);
 		$formSettings = $addonForm->getProcessedMainParamsValues();
 		$formFields = $this->getFieldsData($templateContent ?: $postContent, $formData, $formFiles);
-
+		
 		$this->doSubmitActions($formSettings, $formFields);
 	}
-
+	
+	
 	/**
 	 * do submit actions
 	 */
@@ -254,7 +258,7 @@ class UniteCreatorForm{
 				$errors = array_merge($errors, $formErrors);
 
 				$formErrors = implode(" ", $formErrors);
-				
+
 				UniteFunctionsUC::throwError("Form settings validation failed ($formErrors).");
 			}
 
@@ -421,26 +425,21 @@ class UniteCreatorForm{
 
 		HelperUC::ajaxResponse($success, $message, $data);
 	}
-	
-	
+
 	/**
-	 * check if the email valid. include the placeholders in the validation
+	 * check if the email is valid (including placeholders)
 	 */
 	private function isEmailValid($fieldValue){
-		
-		if($fieldValue == "{".self::PLACEHOLDER_ADMIN_EMAIL."}")
-			return(true);
-		 
-		if($fieldValue == "{".self::PLACEHOLDER_EMAIL_FIELD."}")
-			return(true);
 
-		$validEmail = UniteFunctionsUC::isEmailValid($fieldValue);
-		
-		
-		return($validEmail);
+		if($fieldValue === "{" . self::PLACEHOLDER_ADMIN_EMAIL . "}")
+			return true;
+
+		if($fieldValue === "{" . self::PLACEHOLDER_EMAIL_FIELD . "}")
+			return true;
+
+		return UniteFunctionsUC::isEmailValid($fieldValue);
 	}
-	
-	
+
 	/**
 	 * validate form settings
 	 */
@@ -487,19 +486,18 @@ class UniteCreatorForm{
 							break;
 
 							case "email":
-								
 								$validEmail = $this->isEmailValid($fieldValue);
-								
+
 								if($fieldValue !== "" && $validEmail === false)
 									$errors[] = sprintf(esc_html__("%s field has an invalid email address: $fieldValue .", "unlimited-elements-for-elementor"), $errorTitle);
 							break;
 
 							case "email_recipients":
 								$emails = $this->prepareEmailRecipients($fieldValue);
-							
+
 								foreach($emails as $email){
 									$validEmail = $this->isEmailValid($email);
-									
+
 									if($validEmail === false)
 										$errors[] = sprintf(esc_html__("%s field has an invalid email address: %s.", "unlimited-elements-for-elementor"), $errorTitle, $email);
 								}
@@ -714,6 +712,7 @@ class UniteCreatorForm{
 						"title" => $this->getFieldTitle($field),
 						"name" => $field["name"],
 						"type" => $field["type"],
+						"text" => $field["text"],
 						"value" => $field["value"],
 					);
 
@@ -887,13 +886,13 @@ class UniteCreatorForm{
 
 		$from = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("from", $action));
 		$from = $this->replacePlaceholders($from, array(self::PLACEHOLDER_ADMIN_EMAIL));
-		
+
 		$fromName = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("from_name", $action));
 		$fromName = $this->replacePlaceholders($fromName, array(self::PLACEHOLDER_SITE_NAME));
 
 		$replyTo = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("reply_to", $action));
-		$replyTo = $this->replacePlaceholders($replyTo, array(self::PLACEHOLDER_ADMIN_EMAIL));
-
+		$replyTo = $this->replacePlaceholders($replyTo, array(self::PLACEHOLDER_ADMIN_EMAIL, self::PLACEHOLDER_EMAIL_FIELD));
+		
 		$to = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("to", $action));
 
 		if($to === "custom")
@@ -962,7 +961,7 @@ class UniteCreatorForm{
 		foreach($this->formFields as $field){
 			$title = $this->getFieldTitle($field);
 			$name = $field["name"];
-			$value = $field["value"];
+			$value = $field["text"] ?: $field["value"];
 
 			if($field["type"] === self::TYPE_FILES)
 				$value = $this->getFilesFieldLinksHtml($value);

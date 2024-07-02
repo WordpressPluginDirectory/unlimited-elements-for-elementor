@@ -4,9 +4,7 @@
     
   <fieldset name="elementor" label="Widgets for Elementor" loadfrom="elementor" load_condition="elementor_enabled"></fieldset>
   
-  <!-- 
   <fieldset name="gutenberg" label="Blocks for Gutenberg" loadfrom="gutenberg" load_condition="gutenberg_enabled"></fieldset>
-	-->
 	
   <fieldset name="widgets" label="Widgets">
   	

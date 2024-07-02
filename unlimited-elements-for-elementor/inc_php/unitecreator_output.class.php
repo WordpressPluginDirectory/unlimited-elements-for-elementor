@@ -592,11 +592,14 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 						? HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_BACKGROUND, "radial-gradient")
 						: HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_BACKGROUND, "linear-gradient");
 
-					$css = str_replace(
-						array("{{angle}}", "{{position}}", "{{color1}}", "{{stop1}}", "{{color2}}", "{{stop2}}"),
-						array($angle, $position, $color1, $stop1, $color2, $stop2),
-						$selectorValue
-					);
+					$css = $this->processCSSSelectorReplaces($selectorValue, array(
+						"{{angle}}" => $angle,
+						"{{position}}" => $position,
+						"{{color1}}" => $color1,
+						"{{stop1}}" => $stop1,
+						"{{color2}}" => $color2,
+						"{{stop2}}" => $stop2,
+					));
 
 					$style .= $this->prepareCSSSelectorStyle($selector, $css);
 				}
@@ -765,11 +768,12 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		if($x !== "" && $y !== "" && $blur !== "" && $color !== ""){
 			$selectorValue = HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_TEXTSHADOW);
 
-			$css = str_replace(
-				array("{{x}}", "{{y}}", "{{blur}}", "{{color}}"),
-				array($x, $y, $blur, $color),
-				$selectorValue
-			);
+			$css = $this->processCSSSelectorReplaces($selectorValue, array(
+				"{{x}}" => $x,
+				"{{y}}" => $y,
+				"{{blur}}" => $blur,
+				"{{color}}" => $color,
+			));
 		}
 
 		$selector = $this->combineCSSSelectors($selectors);
@@ -801,11 +805,14 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		if($x !== "" && $y !== "" && $blur !== "" && $spread !== "" && $color !== "" && $position !== ""){
 			$selectorValue = HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_BOXSHADOW);
 
-			$css = str_replace(
-				array("{{x}}", "{{y}}", "{{blur}}", "{{spread}}", "{{color}}", "{{position}}"),
-				array($x, $y, $blur, $spread, $color, $position),
-				$selectorValue
-			);
+			$css = $this->processCSSSelectorReplaces($selectorValue, array(
+				"{{x}}" => $x,
+				"{{y}}" => $y,
+				"{{blur}}" => $blur,
+				"{{spread}}" => $spread,
+				"{{color}}" => $color,
+				"{{position}}" => $position,
+			));
 		}
 
 		$selector = $this->combineCSSSelectors($selectors);
@@ -837,11 +844,13 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		if($blur !== "" && $brightness !== "" && $contrast !== "" && $saturation !== "" && $hue !== ""){
 			$selectorValue = HelperHtmlUC::getCSSSelectorValueByParam(UniteCreatorDialogParam::PARAM_CSS_FILTERS);
 
-			$css = str_replace(
-				array("{{blur}}", "{{brightness}}", "{{contrast}}", "{{saturate}}", "{{hue}}"),
-				array($blur, $brightness, $contrast, $saturation, $hue),
-				$selectorValue
-			);
+			$css = $this->processCSSSelectorReplaces($selectorValue, array(
+				"{{blur}}" => $blur,
+				"{{brightness}}" => $brightness,
+				"{{contrast}}" => $contrast,
+				"{{saturate}}" => $saturation,
+				"{{hue}}" => $hue,
+			));
 		}
 
 		$selector = $this->combineCSSSelectors($selectors);
@@ -904,11 +913,12 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$left = UniteFunctionsUC::getVal($value, "left");
 		$unit = UniteFunctionsUC::getVal($value, "unit", "px");
 
-		$css = str_replace(
-			array("{{top}}", "{{right}}", "{{bottom}}", "{{left}}"),
-			array($top . $unit, $right . $unit, $bottom . $unit, $left . $unit),
-			$selectorValue
-		);
+		$css = $this->processCSSSelectorReplaces($selectorValue, array(
+			"{{top}}" => $top . $unit,
+			"{{right}}" => $right . $unit,
+			"{{bottom}}" => $bottom . $unit,
+			"{{left}}" => $left . $unit,
+		));
 
 		return $css;
 	}
@@ -943,11 +953,11 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		if($size === "")
 			return "";
 
-		$css = str_replace(
-			array(self::SELECTOR_VALUE_PLACEHOLDER, "{{size}}", "{{unit}}"),
-			array($size . $unit, $size, $unit),
-			$selectorValue
-		);
+		$css = $this->processCSSSelectorReplaces($selectorValue, array(
+			self::SELECTOR_VALUE_PLACEHOLDER => $size . $unit,
+			"{{size}}" => $size,
+			"{{unit}}" => $unit,
+		));
 
 		return $css;
 	}
@@ -960,7 +970,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		if($value === null || $value === "")
 			return "";
 
-		$css = str_replace(self::SELECTOR_VALUE_PLACEHOLDER, $value, $selectorValue);
+		$css = $this->processCSSSelectorReplaces($selectorValue, array(self::SELECTOR_VALUE_PLACEHOLDER => $value));
 
 		return $css;
 	}
@@ -1085,6 +1095,19 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	}
 
 	/**
+	 * process css selector replaces
+	 */
+	private function processCSSSelectorReplaces($css, $replaces){
+
+		foreach($replaces as $placeholder => $replace){
+			$css = str_replace(strtolower($placeholder), $replace, $css);
+			$css = str_replace(strtoupper($placeholder), $replace, $css);
+		}
+
+		return $css;
+	}
+
+	/**
 	 * prepare param css selectors
 	 */
 	private function prepareParamCSSSelectors($param){
@@ -1101,7 +1124,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			$selector = $this->prepareCSSSelector($selector);
 
-			$selectors[$selector] = strtolower($selectorValue);
+			$selectors[$selector] = $selectorValue;
 		}
 
 		return $selectors;
@@ -1226,7 +1249,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 			$itemStyles = $this->processParamsCSSSelector($itemParams);
-			$itemStyles = str_replace("{{current_item}}", ".elementor-repeater-item-" . $itemId, $itemStyles);
+			$itemStyles = $this->processCSSSelectorReplaces($itemStyles, array("{{current_item}}" => ".elementor-repeater-item-" . $itemId));
 
 			$styles .= $itemStyles;
 		}
@@ -1480,7 +1503,14 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$this->valuesForDebug = $arrValues;
 
 	}
-
+	
+	/**
+	 * get debug html
+	 */
+	public function getHtmlDebug(){
+		
+		return($this->htmlDebug);
+	}
 
 	/**
 	 * put debug data html
@@ -1666,8 +1696,8 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			//$postMeta = get_post_meta($post_id)
 
 		}
-		
-		
+
+
 		return($html);
 
 	}
@@ -1713,7 +1743,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	private function putDebugDataHtml($arrData, $arrItemData){
 
 		$html = "<div class='uc-debug-output' style='font-size:16px;color:black;text-decoration:none;background-color:white;padding:3px;'>";
-		
+
 		$html .= dmpGet("<b>Widget Debug Data</b> (turned on by setting in widget advanced section)<br>",true);
 
 		//get data from listing
@@ -1895,7 +1925,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		try{
 			$html = $this->objTemplate->getRenderedHtml(self::TEMPLATE_HTML);
 			$html = $this->processHtml($html);
-
+			
 			if(!empty($this->htmlDebug))
 				$html = $this->htmlDebug . $html;
 
@@ -1958,27 +1988,27 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 			//add html
-			
+
 			$addWrapper = false;
 			if(GlobalsProviderUC::$renderPlatform == GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG)
 				$addWrapper = true;
 
 			if($isAddSelectors == true)
 				$addWrapper = true;
-				
+
 			if($addWrapper == true){
-				
+
 				$id = $this->getWidgetWrapperID();
-				
+
 				$rootId = UniteFunctionsUC::getVal($params, "root_id");
-				
+
 				if(empty($rootId) === true)
 					$rootId = $this->getWidgetID();
-			
+
 				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root\" data-id=\"" . esc_attr($rootId) . "\">";
 			}
-			
- 			
+
+
 			$output .= "\n\n" . $html;
 
 			if($isAddSelectors == true)
@@ -2521,6 +2551,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		if($this->isShowDebugData === true)
 			$this->putDebugDataHtml($arrData, $arrItemData);
+		
 	}
 
 

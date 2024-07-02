@@ -57,18 +57,18 @@ class UniteSettingsOutputUC extends UniteSettingsOutputUCWork{
 		if(empty($placeholder) === true)
 			$placeholder = __("Please enter post title", "unlimited-elements-for-elementor");
 
-		$postId = "";
-		$postTitle = "";
+		$selectedPostId = "";
+		$selectedPostTitle = "";
 
 		if(empty($value) === false)
-			$postId = (int)$value;
+			$selectedPostId = (int)$value;
 
 		if(empty($value) === false){
-			$post = get_post($postId);
+			$post = get_post($selectedPostId);
 
 			if(empty($post) === false){
-				$postId = $post->ID;
-				$postTitle = $post->post_title;
+				$selectedPostId = $post->ID;
+				$selectedPostTitle = $post->post_title;
 			}
 		}
 
@@ -85,10 +85,9 @@ class UniteSettingsOutputUC extends UniteSettingsOutputUCWork{
 		>
 			<select
 				<?php echo UniteProviderFunctionsUC::escAddParam($class); ?>
-				data-name="<?php esc_attr_e($name); ?>"
 				data-placeholder="<?php esc_attr_e($placeholder); ?>"
-				data-postid="<?php esc_attr_e($postId); ?>"
-				data-posttitle="<?php esc_attr_e($postTitle); ?>"
+				data-selected-post-id="<?php esc_attr_e($selectedPostId); ?>"
+				data-selected-post-title="<?php esc_attr_e($selectedPostTitle); ?>"
 			></select>
 		</div>
 		<?php

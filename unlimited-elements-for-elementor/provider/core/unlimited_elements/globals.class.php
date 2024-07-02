@@ -116,20 +116,18 @@ class GlobalsUnlimitedElements{
 
 		//set paths
 
-		self::$pathPlugin = dirname(__FILE__)."/";
+		//set paths
 
+		self::$pathPlugin = dirname(__FILE__)."/";
+				
 		self::$pathPlugin = UniteFunctionsUC::pathToUnix(self::$pathPlugin);
 		
 		self::$pathPluginSettings = self::$pathPlugin."settings/";
 		
-	}
+		$pathElementor = self::$pathPlugin."elementor/";
 
-	
-	/**
-	 * init after loaded
-	 */
-	public static function initAfterPluginsLoaded(){
-
+		$pathGutenberg = self::$pathPlugin."gutenberg/";
+		
 		if(defined("UE_ENABLE_GUTENBERG_SUPPORT")){
 			self::$enableGutenbergSupport = true;
 		}
@@ -141,13 +139,29 @@ class GlobalsUnlimitedElements{
 				self::$isGutenbergOnly = true;
 		}
 		
+		if(is_dir($pathElementor) == false && is_dir($pathGutenberg) == true){
+			
+			self::$isGutenbergOnly = true;
+			self::$enableGutenbergSupport = true;
+			self::$enableElementorSupport = false;
+			
+			
+		}
+		
+		
+	}
+
+	
+	/**
+	 * init after loaded
+	 */
+	public static function initAfterPluginsLoaded(){
+
 		if(self::$isGutenbergOnly == true){
 			
 			self::$pluginTitleCurrent = self::PLUGIN_TITLE_GUTENBERG;
 		}
 		
-		if(self::$enableGutenbergSupport == true)
-			self::initGutenbergIntegration();
 		
 	}
 	
@@ -169,15 +183,8 @@ class GlobalsUnlimitedElements{
 
 	}
 
-	/**
-	 * init the Gutenberg integration
-	 */
-	private static function initGutenbergIntegration(){
-		
-		$gutenbergIntegrate = UniteCreatorGutenbergIntegrate::getInstance();
-		$gutenbergIntegrate->init();
-	}
-
+	
+	
 }
 
 GlobalsUnlimitedElements::initGlobals();

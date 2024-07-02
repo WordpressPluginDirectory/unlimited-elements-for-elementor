@@ -622,10 +622,9 @@ class UniteCreatorWooIntegrate{
 	}
 	
 	/**
-	 * 
-	 * get product gallery
+	 * get product gallery image id's with featured image as first image
 	 */
-	public function getProductGallery($productID){
+	public function getProductGalleryImageIDs($productID){
 		
 		if(function_exists("wc_get_product") == false)
 			return(array());
@@ -634,8 +633,26 @@ class UniteCreatorWooIntegrate{
 		
 		if(empty($product))
 			return(array());
-				
+		
+		$featuredImageID = $product->get_image_id();
+			
 		$arrAttachmentIDs = $product->get_gallery_image_ids();
+		
+		if(empty($arrAttachmentIDs))
+			$arrAttachmentIDs = array();
+		
+		if(is_array($arrAttachmentIDs) && !empty($featuredImageID))
+			array_unshift($arrAttachmentIDs, $featuredImageID);
+		
+		return($arrAttachmentIDs);
+	}
+	
+	/**
+	 * get product gallery
+	 */
+	public function getProductGallery($productID){
+		
+		$arrAttachmentIDs = $this->getProductGalleryImageIDs($productID);
 		
 		if(empty($arrAttachmentIDs))
 			return(array());
@@ -1069,6 +1086,28 @@ class UniteCreatorWooIntegrate{
 		return($response);
 	}
 	
+	
+	/**
+	 * get current product gallery, with featured image as first item
+	 */
+	public static function getCurrentProductGalleryIDs(){
+		
+		if(self::isWooActive() == false)
+			return(array());
+		
+		$post = get_post();
+		
+		if(empty($post))
+			return(array());
+				
+		$objInstance = self::getInstance();
+		
+		$arrGallery = $objInstance->getProductGalleryImageIDs($post->ID);
+		
+		
+		return($arrGallery);
+	}
+	
 	/**
 	 * get current product variation images
 	 */
@@ -1410,11 +1449,10 @@ class UniteCreatorWooIntegrate{
 		
 $htmlItem = "
 <div class=\"ue-mini-cart-item\" data-key=\"{$cart_item_key}\">
-  {$imageHTML}
+   <a class=\"ue-mini-cart-item-image-wrapper\" href=\"{$product_link}\" target=\"blank\">{$imageHTML}</a>  
    <div class=\"ue-mini-cart-item-content\">
       <div class=\"ue-mini-cart-content-wrapper\">
-         <div class=\"ue-mini-cart-item-title-text\">{$item_name}</div>
-         <div>
+			<a class=\"ue-mini-cart-item-title-text\" href=\"{$product_link}\" target=\"blank\">{$item_name}</a><div>
             <span class=\"ue_mini_qty\">{$quantity} x</span>
             <span class=\"ue_mini_price\">{$priceHtml}</span>
          </div>
