@@ -67,6 +67,7 @@ class GlobalsProviderUC{
 	
 	public static $renderJSForHiddenContent = false;		//render encoded js - for hidden templates
 	public static $renderTemplateID = "";					//render template id (for the template switcher)
+	public static $isInsideHiddenTemplate = false;				//for some output modification
 	
 	public static $arrFilterPostTypes = array(		//filter post types that will not show
 				"elementor_library", 

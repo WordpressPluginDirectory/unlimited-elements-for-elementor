@@ -612,7 +612,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 */
 	protected function setPermissionEditor(){
 
-		$this->capability = "edit_posts";
+		$this->capability = "edit_pages";
 	}
 
 	private static function a_____OTHERS____(){

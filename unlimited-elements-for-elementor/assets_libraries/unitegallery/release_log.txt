@@ -1,8 +1,12 @@
 
+
+version 1.7.80
+
+fixed fullscreen button on a slider that contains link
+
 version 1.7.78
 
 added option: slider_video_muted:false
-
 
 version 1.7.77
 

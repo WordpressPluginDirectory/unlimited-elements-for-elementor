@@ -391,11 +391,18 @@ class UniteCreatorSettingsOutput extends UniteSettingsOutputUC{
 		}
 
 		$error = UniteFunctionsUC::getGetVar("google_connect_error", $error, UniteFunctionsUC::SANITIZE_NOTHING);
-
+		
+		
 		if(empty($accessToken) === false){
+			$email = UEGoogleAPIHelper::getUserEmail();
+			
+			$isValid = UniteFunctionsUC::isEmailValid($email);
+			if($isValid == false)
+				$email = "";
+			
 			?>
 			<div class="uc-google-connect-message">
-				<?php echo sprintf(__("Connected to: <b>%s</b>", "unlimited-elements-for-elementor"), UEGoogleAPIHelper::getUserEmail()); ?>
+				<?php echo sprintf(__("Connected to: <b>%s</b>", "unlimited-elements-for-elementor"), esc_html($email)); ?>
 			</div>
 			<a class="button" href="<?php echo UEGoogleAPIHelper::getRevokeUrl(); ?>">
 				<?php esc_html_e("Disconnect from Google Sheets", "unlimited-elements-for-elementor"); ?>

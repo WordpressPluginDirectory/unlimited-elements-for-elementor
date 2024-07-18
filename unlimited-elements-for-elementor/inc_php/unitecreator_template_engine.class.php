@@ -172,9 +172,11 @@ class UniteCreatorTemplateEngineWork{
 
 		// if a sap, then no new line
 		$newLine = empty($sap);
-
+		
 		foreach($this->arrItems as $index => $itemParams){
+			
 			$this->outputItem($index, $itemParams, $templateName, $sap, $newLine);
+			
 		}
 	}
 
@@ -1232,7 +1234,7 @@ class UniteCreatorTemplateEngineWork{
 				return($arg1);
 			break;
 			case "get_term_image":
-
+				
 				//termID, meta key
 
 				$arrImage = UniteFunctionsWPUC::getTermImage($arg1, $arg2);
@@ -1503,9 +1505,9 @@ class UniteCreatorTemplateEngineWork{
 				}
 			break;
 			case "get_variable":
-
-				$getVarValue = UniteFunctionsUC::getGetVar($arg1,"",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-
+				
+				$getVarValue = UniteFunctionsUC::getGetVar($arg1,"",UniteFunctionsUC::SANITIZE_NOTHING);
+				
 				return($getVarValue);
 			break;
 			case "wpp_get_page_views":	//get post views using wordpress popular posts plugin
@@ -1856,7 +1858,7 @@ class UniteCreatorTemplateEngineWork{
 
 		if($isInsideItems == true)
 			$params = GlobalsProviderUC::$lastItemParams;
-
+		
 		$output = $this->twig->render($name, $params);
 
 		return($output);

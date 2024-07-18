@@ -177,6 +177,23 @@ class UEHttpRequest{
 	}
 
 	/**
+	 * print response debug
+	 */
+	private function printResponseDebug($requestResponse){
+		
+			$displayResponse = $requestResponse;
+			
+			if(isset($displayResponse["body"]) && strlen($displayResponse["body"]) > 500){
+				
+				$displayResponse["body"] = substr($displayResponse["body"],0,500)." (cutted)...";
+				
+			}
+			
+			dmp($displayResponse);
+		
+	}
+	
+	/**
 	 * Make a request to the server.
 	 *
 	 * @param string $method
@@ -204,7 +221,7 @@ class UEHttpRequest{
 		$cacheTime = $this->prepareCacheTime($method);
 
 		$requestResponse = UniteProviderFunctionsUC::rememberTransient($cacheKey, $cacheTime, function() use ($url, $method, $headers, $body){
-
+						
 			$wpResponse = wp_remote_request($url, array(
 				"method" => $method,
 				"headers" => $headers,
@@ -221,10 +238,9 @@ class UEHttpRequest{
 				"headers" => wp_remote_retrieve_headers($wpResponse)->getAll(),
 				"body" => wp_remote_retrieve_body($wpResponse),
 			);
-
+			
 			if($this->isDebug() === true){
-				dmp("Fetched response:");
-				dmp($requestResponse);
+				dmp("do the request!");
 			}
 
 			if(is_callable($this->validateResponse) === true){
@@ -238,9 +254,12 @@ class UEHttpRequest{
 			return $requestResponse;
 		});
 
+		//show debug
 		if($this->isDebug() === true){
-			dmp("Cached response:");
-			dmp($requestResponse);
+			
+			dmp("Cached / fetched response:");
+			$this->printResponseDebug($requestResponse);
+			
 		}
 
 		return new UEHttpResponse($requestResponse);

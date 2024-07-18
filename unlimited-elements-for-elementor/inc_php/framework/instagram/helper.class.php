@@ -62,12 +62,14 @@ class HelperInstaUC{
 	 * redirect to general settings
 	 */
 	public static function saveInstagramConnectDataAjax($data, $noUser = false, $redirect = true){
-
+		
 		$accessToken = UniteFunctionsUC::getVal($data, "access_token");
 		$userID = UniteFunctionsUC::getVal($data, "user_id");
 		$username = UniteFunctionsUC::getVal($data, "username");
 		$expiresIn = UniteFunctionsUC::getVal($data, "expires");
-
+		
+		$username = UniteFunctionsUC::validateAlphaNumeric($username);
+		
 		UniteFunctionsUC::validateNumeric($expiresIn, "expires in ");
 
 		$expiresAt = time()+$expiresIn;
@@ -80,7 +82,7 @@ class HelperInstaUC{
 			UniteFunctionsUC::validateNotEmpty($userID,"instagram user id");
 			UniteFunctionsUC::validateNotEmpty($userID,"instagram username");
 		}
-
+		
 		$arrUpdate = array();
 		$arrUpdate["instagram_access_token"] = $accessToken;
 		$arrUpdate["instagram_expires"] = $expiresAt;
@@ -166,17 +168,19 @@ class HelperInstaUC{
 		if(!empty($accessToken)){
 
 			$username = UniteFunctionsUC::getVal($data, "username");
-
+			
 			$expiresHTML = self::getHTMLExpires($expiresAt);
 
 			$urlTestView = HelperUC::getViewUrl("instagram-test");
 			$linkTest = HelperHtmlUC::getHtmlLink($urlTestView, "Test Instagram Data");
-
+			
 			$text = __("The instagram access token are already set up", "unlimited-elements-for-elementor");
-
-			if(!empty($username))
+			
+			if(!empty($username)){
+				$username = esc_html($username);
 				$text .= __(" for user: ", "unlimited-elements-for-elementor")."<b>$username</b>";
-
+			}
+			
 			?>
 			<div id="uc_instagram_reconnect_message" class="instagram-reconnect-message">
 				<?php echo $text?>

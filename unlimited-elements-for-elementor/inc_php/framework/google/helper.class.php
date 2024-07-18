@@ -101,7 +101,7 @@ class UEGoogleAPIHelper{
 
 		$returnUrl = HelperUC::getUrlAjax("remove_google_connect_data");
 		$returnUrl = UniteFunctionsUC::encodeContent($returnUrl);
-
+		
 		$params = array(
 			"revoke_token" => self::getAccessToken(),
 			"state" => $returnUrl,
@@ -121,7 +121,7 @@ class UEGoogleAPIHelper{
 	 * @throws Exception
 	 */
 	public static function saveCredentials($data){
-
+		
 		$accessToken = UniteFunctionsUC::getVal($data, "access_token");
 		$refreshToken = UniteFunctionsUC::getVal($data, "refresh_token");
 		$expiresAt = UniteFunctionsUC::getVal($data, "expires_at", 0);
@@ -133,7 +133,13 @@ class UEGoogleAPIHelper{
 		UniteFunctionsUC::validateNotEmpty($expiresAt, "expires_at");
 		UniteFunctionsUC::validateNotEmpty($scopes, "scopes");
 		UniteFunctionsUC::validateNotEmpty($user, "user");
-
+		
+		//validate email
+		$email = UniteFunctionsUC::getVal($user, "email");
+		
+		if(!empty($email))
+			UniteFunctionsUC::validateEmail($email, "Google Connect Email");
+		
 		self::validateScopes($scopes);
 
 		$credentials = array(
@@ -205,7 +211,7 @@ class UEGoogleAPIHelper{
 
 		$requestedScopes = self::getScopes();
 		$grantedScopes = array_intersect($requestedScopes, $scopes);
-
+		
 		if(count($grantedScopes) !== count($requestedScopes))
 			UniteFunctionsUC::throwError("Required permissions are missing. Please grant all requested permissions.");
 	}

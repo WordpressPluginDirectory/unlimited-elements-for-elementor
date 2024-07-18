@@ -2368,9 +2368,9 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			"description"=>__("Select the name of the parent for connetion"),
 			"origtype" => UniteCreatorDialogParam::PARAM_DROPDOWN,
 		);
-
+		
 		$this->addSelect($prefix."name", $arrNames, __("Remote Parent Name", "unlimited-elements-for-elementor"), "auto", $params);
-
+		
 		$isMoreParents = UniteFunctionsUC::getVal($param, "controller_more_parents");
 		$isMoreParents = UniteFunctionsUC::strToBool($isMoreParents);
 
@@ -2399,7 +2399,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
 		$params["elementor_condition"] = array($prefix."name"=>"custom");
-
+				
 		$this->addTextBox($prefix."custom_name", "", __("Custom Parent Name","unlimited-elements-for-elementor"), $params);
 
 
@@ -2453,10 +2453,10 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 
 		// --- remote name ----
-
-		$arrNames = HelperProviderUC::getArrRemoteParentNames();
+		
+		$arrNames = HelperProviderUC::getArrRemoteParentNames(false, false);
 		$arrNames = array_flip($arrNames);
-
+		
 		$conditionSync = $condition;
 		$conditionSync[$prefix."sync"] = "true";
 
@@ -2466,7 +2466,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		);
 
 		$this->addSelect($prefix."remote_name", $arrNames, __("Remote Parent Name", "unlimited-elements-for-elementor"), "auto", $params);
-
+		
 
 		//  --- debug ---
 

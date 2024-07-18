@@ -2179,7 +2179,7 @@ function UERemoteWidgets(){
 		var widgetID = g_objParent.attr("id");
 
 		var text = "connected to <a href='#"+widgetID+"' style='color:green;text-decoration:underline'><b>" + widgetName + "</b></a>";
-
+		
 		displayTextOnWidget(g_objWidget, text, "debug");
 
 	}

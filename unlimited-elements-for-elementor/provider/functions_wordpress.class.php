@@ -2897,11 +2897,14 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * update post ordering
 	 */
 	public static function updatePostOrdering($postID, $ordering){
-
+		
+		if(is_numeric($ordering) == false)
+			return(false);
+		
 		$arrUpdate = array(
 			'menu_order' => $ordering,
 		);
-
+		
 		self::updatePost($postID, $arrUpdate);
 	}
 
@@ -2909,7 +2912,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * update post content
 	 */
 	public static function updatePostContent($postID, $content){
-
+		
 		$arrUpdate = array("post_content" => $content);
 		self::updatePost($postID, $arrUpdate);
 	}
@@ -4049,7 +4052,16 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 	public static function a___________OTHER_FUNCTIONS__________(){
 	}
-
+	
+	/**
+	 * clear all filters of wordpress
+	 * needed for some functionality not to be distrubting by other filters and hooks
+	 */
+	public static function clearAllWPFilters(){
+		global $wp_filter;
+		$wp_filter = array();
+	}
+	
 	/**
 	 * print registered includes
 	 */

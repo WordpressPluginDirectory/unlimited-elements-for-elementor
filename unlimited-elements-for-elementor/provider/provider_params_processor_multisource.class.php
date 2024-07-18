@@ -471,7 +471,7 @@ class UniteCreatetorParamsProcessorMultisource{
 			}
 
 			$dynamicFieldValue = HelperUC::$operations->getUrlContents($url, $showDebug);
-
+			
 		}else{
 			$dynamicFieldValue = UniteFunctionsUC::getVal($this->arrValues, $this->name."_json_csv_dynamic_field");
 		}
@@ -487,31 +487,33 @@ class UniteCreatetorParamsProcessorMultisource{
 		//try json
 
 		$arrData = UniteFunctionsUC::maybeJsonDecode($dynamicFieldValue);
-
+		
 		//debug JSON
 
 		if($showDebug == true && is_array($arrData)){
 
-			dmp("JSON data found: ");
-			dmp($arrData);
-
+			dmp("JSON data found ");
+			//dmp($arrData);
+			
 			dmp("------------------------------");
-
-			return($arrData);
 		}
 
 		//if not, try csv
-		if(is_array($arrData) == false)
+		if(is_array($arrData) == false){
 			$arrData = UniteFunctionsUC::maybeCsvDecode($arrData);
 
-
-		//debug CSV
-
-		if($showDebug == true && is_array($arrData)){
-
-			dmp("CSV data found: ");
-			dmp($arrData);
+			//debug CSV
+	
+			if($showDebug == true && is_array($arrData)){
+	
+				dmp("CSV data found ");
+				dmp("------------------------------");
+				
+				//dmp($arrData);
+			}
+			
 		}
+
 
 		if(is_array($arrData) == false){
 
@@ -527,10 +529,18 @@ class UniteCreatetorParamsProcessorMultisource{
 		}
 
 
-		if($showDebug)
-			dmp("------------------------------");
 
-
+		//trim by main key
+				
+		$dataMainKey = UniteFunctionsUC::getVal($this->arrValues, $this->name."_json_csv_mainkey");
+		
+		if(!empty($dataMainKey))
+			$arrData = UniteFunctionsUC::getArrayValueByPath($arrData, $dataMainKey);
+		
+		if($showDebug == true && is_array($arrData) && !empty($dataMainKey)){
+			dmp("get the array data from the key: {$dataMainKey}");
+		}
+		
 		return($arrData);
 	}
 
@@ -984,7 +994,8 @@ class UniteCreatetorParamsProcessorMultisource{
 	 * get field data from data item
 	 */
 	private function getFieldValue($item, $paramName, $source, $dataItem, $param){
-
+		
+		
 		//set as default value
 
 		$defaultValue = UniteFunctionsUC::getVal($param, "default_value");
@@ -1223,30 +1234,28 @@ class UniteCreatetorParamsProcessorMultisource{
 		//get the source name for field
 		if($source == "field")
 			$source = UniteFunctionsUC::getVal($this->arrValues, $this->nameParam."_field_name_".$paramName);
-
+		
 		//post values source
 
 		$isFound = false;
+		
+		$value = UniteFunctionsUC::getArrayValueByPath($dataItem, $source);
 
+		$isFound = ($value !== null);
+		
+		if($isFound == false && isset($dataItem[$source]))
+			$isFound = true;
+
+		if($isFound === true){
+			$value = $this->modifyParamValue($value, $param);
+			$item[$paramName] = $value;
+			$item = $this->objProcessor->getProcessedParamData($item, $value, $param, UniteCreatorParamsProcessorWork::PROCESS_TYPE_OUTPUT);
+		}
+						
+		//get children fields values
+				
 		foreach($dataItem as $name => $value){
-
-			//if equal - just copy the data
-
-			if($name === $source){
-
-				$value = $this->modifyParamValue($value, $param);
-
-				$item[$paramName] = $value;
-
-				$item = $this->objProcessor->getProcessedParamData($item, $value, $param, UniteCreatorParamsProcessorWork::PROCESS_TYPE_OUTPUT);
-
-				$isFound = true;
-
-				continue;
-			}
-
-
-			//get children fields values
+						
 			if($this->itemsType != self::SOURCE_GALLERY){
 
 				if(strpos($name, $source."_") === 0){
@@ -1255,13 +1264,10 @@ class UniteCreatetorParamsProcessorMultisource{
 
 					$item[$paramName.$suffix] = $value;
 				}
-
 			}
-
-
 		}
-
-
+		
+		
 		/**
 		 * handle if param not found, process it anyway
 		 */
@@ -1271,7 +1277,8 @@ class UniteCreatetorParamsProcessorMultisource{
 
 			$item = $this->objProcessor->getProcessedParamData($item, $value, $param, UniteCreatorParamsProcessorWork::PROCESS_TYPE_OUTPUT);
 		}
-
+		
+		
 		return($item);
 	}
 
@@ -1308,7 +1315,7 @@ class UniteCreatetorParamsProcessorMultisource{
 
 		if(is_array($arrData))
 			$numItems = count($arrData);
-
+		
 		dmp("Input data from: <b>$source</b>, found: $numItems");
 		dmp($arrData);
 
@@ -1386,7 +1393,7 @@ class UniteCreatetorParamsProcessorMultisource{
 			//add other default fields
 			foreach($arrItemParams as $itemParam){
 				$paramName = UniteFunctionsUC::getVal($itemParam, "name");
-
+			
 				if(isset($arrUsedParams[$paramName]) === true)
 					continue;
 
@@ -1570,7 +1577,7 @@ class UniteCreatetorParamsProcessorMultisource{
 		$this->checkDebugBeforeData($itemsSource);
 
 		$arrData = $this->getData($itemsSource);
-
+		
 		$this->showDebug_input($itemsSource, $arrData);
 
 		//set empty demo output
@@ -1585,7 +1592,7 @@ class UniteCreatetorParamsProcessorMultisource{
 		}
 
 		$arrItems = $this->getItems($itemsSource, $arrData);
-
+		
 		$data[$name] = $arrItems;
 
 		if($this->showDebugData === true)

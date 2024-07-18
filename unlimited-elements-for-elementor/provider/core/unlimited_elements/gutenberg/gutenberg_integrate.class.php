@@ -13,12 +13,26 @@ class UniteCreatorGutenbergIntegrate{
 
 	private static $initialized = false;
 	private static $instance = null;
-	private static $blocks = array();
-
+	private static $cacheBlocksRegular = array();
+	private static $cacheBlocksBG = array();
+	private $categoryName;
+	private $categoryNameBG;
+	private $categorySlug;
+	private $categorySlugBG;
+	
+	
+	
 	/**
 	 * Create a new instance.
 	 */
 	public function __construct(){
+
+		$this->categorySlug = GlobalsUnlimitedElements::PLUGIN_NAME;
+		$this->categoryName = GlobalsUnlimitedElements::PLUGIN_TITLE_GUTENBERG;
+
+		$this->categorySlugBG = GlobalsUnlimitedElements::PLUGIN_NAME."_backgrounds";
+		$this->categoryNameBG = GlobalsUnlimitedElements::PLUGIN_TITLE_GUTENBERG." Backgrounds";
+		
 	}
 
 	/**
@@ -90,10 +104,15 @@ class UniteCreatorGutenbergIntegrate{
 	 * @return array
 	 */
 	public function registerCategories($categories){
-
+				
 		$categories[] = array(
-			'slug' => GlobalsUnlimitedElements::PLUGIN_NAME,
-			'title' => GlobalsUnlimitedElements::PLUGIN_TITLE_GUTENBERG,
+			'slug' => $this->categorySlug,
+			'title' => $this->categoryName
+		);
+		
+		$categories[] = array(
+			'slug' => $this->categorySlugBG,
+			'title' => $this->categoryNameBG
 		);
 		
 		return $categories;
@@ -107,11 +126,34 @@ class UniteCreatorGutenbergIntegrate{
 	public function registerBlocks(){
 
 		$blocks = $this->getBlocks();
-
+				
 		foreach($blocks as $name => $block){
 			register_block_type($name, $block);
 		}
+		
+		//register backgrouns
+		
+		$backgrounds = $this->getBlocks(true);
+		
+		foreach($backgrounds as $name => $block){
+			register_block_type($name, $block);
+		}
+		
 	}
+	
+	/**
+	 * get all blocks - regular and backgrounds
+	 */
+	public function getAllBlocks(){
+		
+		$arrBlocks = $this->getBlocks();
+		$arrBlocksBG = $this->getBlocks(true);
+		
+		$arrBlocks = array_merge($arrBlocks,$arrBlocksBG);
+		
+		return($arrBlocks);
+	}
+	
 
 	/**
 	 * Render the Gutenberg block on the frontend.
@@ -130,10 +172,11 @@ class UniteCreatorGutenbergIntegrate{
 			'settings' => json_decode($attributes['data'], true),
 			'selectors' => true,
 		);
-
+		
+		
 		$addonsManager = new UniteCreatorAddons();
 		$addonData = $addonsManager->getAddonOutputData($data);
-
+		
 		$conflictingStyles = array('font-awesome');
 		$conflictingScripts = array();
 
@@ -175,8 +218,8 @@ class UniteCreatorGutenbergIntegrate{
 
 		HelperUC::addStyleAbsoluteUrl($styleUrl, $handle);
 		HelperUC::addScriptAbsoluteUrl($scriptUrl, $handle, false, $scriptDeps);
-
-		wp_localize_script($handle, 'g_gutenbergBlocks', $this->getBlocks());
+		
+		wp_localize_script($handle, 'g_gutenbergBlocks', $this->getAllBlocks());
 		wp_localize_script($handle, 'g_gutenbergParsedBlocks', $this->getParsedBlocks());
 		wp_add_inline_script($handle, HelperHtmlUC::getGlobalJsOutput(), 'before');
 	}
@@ -186,60 +229,86 @@ class UniteCreatorGutenbergIntegrate{
 	 *
 	 * @return array
 	 */
-	private function getBlocks(){
-
-		if(empty(self::$blocks) === true){
-			$addonsOrder = '';
-			$addonsParams = array('filter_active' => 'active');
-			$addonsType = GlobalsUC::ADDON_TYPE_ELEMENTOR;
-			$addonsManager = new UniteCreatorAddons();
-			$addons = $addonsManager->getArrAddons($addonsOrder, $addonsParams, $addonsType);
-
-			foreach($addons as $addon){
-				$name = $addon->getBlockName();
-
-				self::$blocks[$name] = array(
-					'name' => $name,
-					'title' => $addon->getTitle(),
-					'icon' => $addon->getPreviewIconContents(),
-					'category' => GlobalsUnlimitedElements::PLUGIN_NAME,
-					'render_callback' => array($this, 'renderBlock'),
+	private function getBlocks($isBG = false){
+				
+		//get from cache
+		
+		if($isBG == false)
+			$arrCached = self::$cacheBlocksRegular;
+		else
+			$arrCached = self::$cacheBlocksBG;
+		
+		if(!empty($arrCached))
+			return($arrCached);
+		
+		$arrBlocks = array();
+			
+		$addonsOrder = '';
+		$addonsParams = array('filter_active' => 'active');
+		
+		$addonsType = GlobalsUC::ADDON_TYPE_ELEMENTOR;
+		
+		if($isBG == true)
+			$addonsType = GlobalsUC::ADDON_TYPE_BGADDON;
+		
+		$addonsManager = new UniteCreatorAddons();
+		$addons = $addonsManager->getArrAddons($addonsOrder, $addonsParams, $addonsType);
+			
+		foreach($addons as $addon){
+			
+			$name = $addon->getBlockName();
+			
+			$category = $this->categorySlug;
+			if($isBG)
+				$category = $this->categorySlugBG;
+			
+			$arrBlocks[$name] = array(
+				'name' => $name,
+				'title' => $addon->getTitle(),
+				'icon' => $addon->getPreviewIconContents(),
+				'category' => $category,
+				'render_callback' => array($this, 'renderBlock'),
+				'attributes' => array(
+					'_id' => array(
+						'type' => 'string',
+						'default' => $addon->getID(),
+					),
+					'_rootId' => array(
+						'type' => 'string',
+						'default' => '',
+					),
+					'_preview' => array(
+						'type' => 'string',
+						'default' => '',
+					),
+					'data' => array(
+						'type' => 'string',
+						'default' => '',
+					),
+				),
+				'example' => array(
 					'attributes' => array(
-						'_id' => array(
-							'type' => 'string',
-							'default' => $addon->getID(),
-						),
-						'_rootId' => array(
-							'type' => 'string',
-							'default' => '',
-						),
-						'_preview' => array(
-							'type' => 'string',
-							'default' => '',
-						),
-						'data' => array(
-							'type' => 'string',
-							'default' => '',
-						),
+						'_preview' => $addon->getPreviewImageUrl(),
 					),
-					'example' => array(
-						'attributes' => array(
-							'_preview' => $addon->getPreviewImageUrl(),
-						),
-					),
-					'supports' => array(
-						'customClassName' => false,
-						'html' => false,
-						'renaming' => false,
-						'reusable' => false,
-					),
-					'editor_style_handles' => array('uc_gutenberg_integrate'),
-					'script_handles' => array('jquery'),
-				);
-			}
+				),
+				'supports' => array(
+					'customClassName' => false,
+					'html' => false,
+					'renaming' => false,
+					'reusable' => false,
+				),
+				'editor_style_handles' => array('uc_gutenberg_integrate'),
+				'script_handles' => array('jquery'),
+			);
 		}
-
-		return self::$blocks;
+		
+		if($isBG == false)
+			self::$cacheBlocksRegular = $arrBlocks;
+		else
+			self::$cacheBlocksBG = $arrBlocks;
+		
+		
+		return($arrBlocks);
 	}
 
 	/**
@@ -263,11 +332,12 @@ class UniteCreatorGutenbergIntegrate{
 	 * @return array
 	 */
 	public function getParsedBlocks(){
-
+		
 		$parsedBlocks = $this->getPostBlocks();
-		$existingBlocks = $this->getBlocks();
+		$existingBlocks = $this->getAllBlocks();
+		
 		$blocks = $this->extractParsedBlocks($parsedBlocks, $existingBlocks);
-
+		
 		return $blocks;
 	}
 

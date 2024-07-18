@@ -389,7 +389,7 @@ class UniteCreatorElementorPagination{
 		}
 
 		$html = "<div class='uc-posts-pagination'>$pagination</div>";
-
+		
 		return($html);
 	}
 
@@ -413,10 +413,10 @@ class UniteCreatorElementorPagination{
 	 * get ucpage from get options
 	 */
 	private function getUCPageFromGET(){
-
+		
 		$ucpage = UniteFunctionsUC::getGetVar("ucpage","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		$ucpage = (int)$ucpage;
-
+				
 		if(empty($ucpage))
 			return(null);
 
@@ -428,14 +428,14 @@ class UniteCreatorElementorPagination{
 	 * get current page
 	 */
 	private function getCurrentPage(){
-
+		
 		//return by ucpage in case ajax request
 
 		$objFilters = new UniteCreatorFiltersProcess();
 		$isFrontAjax = $objFilters->isFrontAjaxRequest();
-
+		
 		if($isFrontAjax == true){
-
+		
 			$ucpage = $this->getUCPageFromGET();
 
 			if(!empty($ucpage))
@@ -452,7 +452,8 @@ class UniteCreatorElementorPagination{
 		}
 
 		$currentPage = (int)$currentPage;
-
+		
+		
 		return($currentPage);
 	}
 
@@ -635,8 +636,8 @@ class UniteCreatorElementorPagination{
 
 		if($hasMore == true)
 			$output["next_offset"] = $nextOffset;
-
-
+		
+		
 		return($output);
 	}
 
@@ -645,7 +646,8 @@ class UniteCreatorElementorPagination{
 	 * put pagination widget html
 	 */
 	public function putPaginationWidgetHtml($args){
-
+		
+		
 		$putPrevNext = UniteFunctionsUC::getVal($args, "put_prev_next_buttons");
 		$putPrevNext = UniteFunctionsUC::strToBool($putPrevNext);
 
@@ -669,13 +671,18 @@ class UniteCreatorElementorPagination{
 
 		$isDebug = UniteFunctionsUC::getVal($args, "debug_pagination_options");
 		$isDebug = UniteFunctionsUC::strToBool($isDebug);
-
+		
+		$addDisabledButtons = UniteFunctionsUC::getVal($args, "add_disabled_buttons");
+		$addDisabledButtons = UniteFunctionsUC::strToBool($addDisabledButtons);
+		
+		
 		if(self::SHOW_DEBUG == true)
 			$isDebug = true;
 
 		if(GlobalsUC::$showQueryDebugByUrl == true)
 			$isDebug = true;
-
+		
+		
 		$forceFormat = UniteFunctionsUC::getVal($args, "force_format");
 		if($forceFormat == "none")
 			$forceFormat = null;
@@ -711,8 +718,7 @@ class UniteCreatorElementorPagination{
 
 		//$options["total"] = 10;
 		//$options["current"] = 3;
-
-
+		
 		//-------- put pagination html
 
 		$isArchivePage = UniteFunctionsWPUC::isArchiveLocation();
@@ -758,18 +764,18 @@ class UniteCreatorElementorPagination{
 				$isArchivePage = false;
 			break;
 		}
-
+		
 		if($isArchivePage == true){
-
+			
 			$options = $this->getArchivePageOptions($options);
 
 			$ucpage = $this->getUCPageFromGET();
 
 			if(!empty($ucpage))
 				$options["current"] = $ucpage;
-
+				
 			$pagination = get_the_posts_pagination($options);
-
+			
 			//put debug
 			if($isDebug == true){
 				dmP("Archive Pagination");
@@ -795,17 +801,15 @@ class UniteCreatorElementorPagination{
 			}
 
 		}else{		//on single
-
+			
 			//skip for home pages
 			$options = $this->getSinglePageOptions($options, $forceFormat, $isDebug);
-
-			if($isDebug == true){
-
+						
+			if($isDebug == true)
 				dmp("custom query pagination");
-			}
-
+			
 			if(isset($options["current"]) == false){
-
+				
 				if($isDebug == true){
 					dmp("<b>Pagination Options (custom) </b>: <br>");
 					dmp("No pagination found for the last query <br>");
@@ -814,11 +818,11 @@ class UniteCreatorElementorPagination{
 
 				return(false);
 			}
-
+			
 			$pagination = paginate_links($options);
 		}
 
-
+	
 		if($isDebug == true){
 
 			dmp("<b>Pagination Options</b>: ");
@@ -826,7 +830,25 @@ class UniteCreatorElementorPagination{
 
 			echo "</div>";
 		}
-
+		
+		// add disabled prev / next buttons if option selected
+		
+		if($addDisabledButtons == true){
+			
+			$total = UniteFunctionsUC::getVal($options, "total", -1);
+			$current = UniteFunctionsUC::getVal($options, "current", -1);
+			
+			$prevText = UniteFunctionsUC::getVal($options, "prev_text");
+			$nextText = UniteFunctionsUC::getVal($options, "next_text");
+			
+			if($current === 1)
+				$pagination = "<a class='prev page-numbers uc-disabled' href='javascript:void(0)'> {$prevText} </a>".$pagination;
+			
+			if($current == $total)
+				$pagination = $pagination."<a class='next page-numbers uc-disabled' href='javascript:void(0)'> {$nextText} </a>";
+		}
+		
+		
 		echo $pagination;
 	}
 

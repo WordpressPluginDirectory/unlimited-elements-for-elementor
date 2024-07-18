@@ -158,10 +158,10 @@ GlobalsUC::$arrClientSideText = array(
 		"edit_section"=>esc_html__("Edit Section", "unlimited-elements-for-elementor"),
 		"copy_section"=>esc_html__("Copy Section", "unlimited-elements-for-elementor"),
 		"delete_section"=>esc_html__("Delete Section", "unlimited-elements-for-elementor"),
-		"delete_section_error"=>esc_html("This section is not empty.\\nYou can delete only empty sections."),
-		"delete_default_section_error"=>esc_html("You can not delete this section."),
-		"empty_text"=>esc_html("Empty Text"),
-		"display_condition"=>esc_html("Display Condition")
+		"delete_section_error"=>esc_html("This section is not empty.\\nYou can delete only empty sections.","unlimited-elements-for-elementor"),
+		"delete_default_section_error"=>esc_html("You can not delete this section.","unlimited-elements-for-elementor"),
+		"empty_text"=>esc_html("Empty Text","unlimited-elements-for-elementor"),
+		"display_condition"=>esc_html("Display Condition","unlimited-elements-for-elementor")
 );
 
 $filepathProviderClientText = GlobalsUC::$pathProvider."provider_client_text.php";

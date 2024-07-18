@@ -960,9 +960,9 @@ class UniteCreatorFiltersProcess{
 		if(self::$isUnderAjaxSearch == true){
 
 			$args["suppress_filters"] = true;
-
+			
 			//delete all filters in case of ajax search
-
+			
 			UniteCreatorAjaxSeach::supressThirdPartyFilters();
 
 		}
@@ -1356,7 +1356,7 @@ class UniteCreatorFiltersProcess{
 			WHERE rl.`term_taxonomy_id` IS NOT NULL AND p.`id` IN \n
 				({$request}) \n
 			GROUP BY p.`id`";
-
+		
 		$query .= $sql;
 
 		$fullQuery = "SELECT $selectTop from($query) as summary";
@@ -1468,13 +1468,37 @@ class UniteCreatorFiltersProcess{
 				dmp("--- Last Query Args:");
 				dmp($args);
 			}
-
+			
+			
 			$query = new WP_Query($args);
-
+			
+			if (is_wp_error($query)) {
+			    $error_message = $query->get_error_message();
+			    UniteFunctionsUC::throwError("test terms query failed: ".$error_message);
+			}
+			
 			$request = $query->request;
-
+			
+			//some times other hooks distrubting the request
+			//clear filters and run again if empty requests
+			
+			if(empty($request)){
+				
+				UniteFunctionsWPUC::clearAllWPFilters();
+				
+				$query = new WP_Query($args);
+				$request = $query->request;
+			}
+			
+			if(self::$showDebug == true){
+				
+				if(empty($request))
+					dmp("EMPTY TAX REQUEST!!! - WILL CAUSE ERRORS IN TEST TERMS!");
+			}
+			
+			
 			$taxRequest = $this->getInitFiltersTaxRequest($request, $testTermIDs);
-
+			
 			if(self::$showDebug == true){
 
 				dmp("---- Terms request: ");
@@ -1907,7 +1931,13 @@ class UniteCreatorFiltersProcess{
 
 		$isDebug = UniteFunctionsUC::getGetVar("ucfiltersdebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		$isDebug = UniteFunctionsUC::strToBool($isDebug);
-
+		
+		//ucpage for pagination init
+		$ucpage = UniteFunctionsUC::getGetVar("ucpage","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		if(is_numeric($ucpage) == false || $ucpage < 0)
+			$ucpage = null;
+		
+		
 		//get url parts
 		$arrUrlKeys = $this->getUrlPartsKeys();
 
@@ -1919,8 +1949,10 @@ class UniteCreatorFiltersProcess{
 		$arrData["urlajax"] = GlobalsUC::$url_ajax_full;
 		$arrData["urlkeys"] = $arrUrlKeys;
 		$arrData["postid"] = get_the_id();
-
-
+		
+		if(!empty($ucpage))
+			$arrData["ucpage"] = $ucpage;
+		
 		if($isDebug == true)
 			$arrData["debug"] = true;
 

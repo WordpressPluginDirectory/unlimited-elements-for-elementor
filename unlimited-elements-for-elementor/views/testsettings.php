@@ -32,49 +32,27 @@ function ueCheckCatalog(){
 
 function checkSomeFunc(){
 	
+	/*
 	
+	$operations = new ProviderOperationsUC();
+	
+	$data = array(
+		"post_ids"=>array(125)
+	);
+	
+	dmp($data);
+	
+	$arrData = $operations->getSelect2TermsTitles($data);
+	
+	dmp("check");
+	dmp($arrData);	
+	
+	*/
 }
 
 
-if(GlobalsUC::$inDev == true){
-	checkSomeFunc();
-	
-	//ueCheckCatalog();
-	
-}
-
-
-
-/*
-$manager = new UniteFontManagerUC();
-$manager->fetchIcons();
-*/
-
-//$font = new UniteFontManagerUC();
-//$font->fetchIcons();
+checkSomeFunc();
 
 
 exit();
 
-/*
-$webAPI = new UniteCreatorWebAPI();
-
-dmp("update catalog");
-
-$response = $webAPI->checkUpdateCatalog();
-
-dmp("update catalog response");
-
-dmp($response);
-
-$lastAPIData = $webAPI->getLastAPICallData();
-$arrCatalog = $webAPI->getCatalogData();
-
-//$arrNames = $webAPI->getArrAddonNames($arrCatalog["catalog"]);
-
-
-dmp($lastAPIData);
-dmp($arrCatalog);
-exit();
-
-*/

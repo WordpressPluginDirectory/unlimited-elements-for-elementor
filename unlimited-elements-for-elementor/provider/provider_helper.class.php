@@ -214,7 +214,7 @@ class HelperProviderUC{
 	/**
 	 * get remote parent names
 	 */
-	public static function getArrRemoteParentNames($isSecond = false){
+	public static function getArrRemoteParentNames($isSecond = false, $putCustom = true){
 
 		$arrNames = array();
 
@@ -226,14 +226,14 @@ class HelperProviderUC{
 		$arrNames["third"] = __("Third", "unlimited-elements-for-elementor");
 		$arrNames["fourth"] = __("Fourth", "unlimited-elements-for-elementor");
 
-		if($isSecond == false)
+		if($isSecond == false && $putCustom == true)
 			$arrNames["custom"] = __("Custom Name", "unlimited-elements-for-elementor");
 
 		return($arrNames);
 	}
 
 	/**
-	 * get remote parent names
+	 * get remote sync names
 	 */
 	public static function getArrRemoteSyncNames(){
 
@@ -865,8 +865,8 @@ class HelperProviderUC{
 
 		$capability = "manage_options";
 		if($permission == "editor")
-			$capability = "edit_posts";
-
+			$capability = "edit_pages";
+		
 		$isUserHasPermission = current_user_can($capability);
 
 		return($isUserHasPermission);

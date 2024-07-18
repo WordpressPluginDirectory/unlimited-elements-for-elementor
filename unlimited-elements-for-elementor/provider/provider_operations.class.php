@@ -30,27 +30,32 @@ class ProviderOperationsUC extends UCOperations{
 	 * get select 2 terms titles from array of id's or slugs
 	 */
 	public function getSelect2TermsTitles($data){
-
+		
 		$arrIDs = UniteFunctionsUC::getVal($data, "post_ids");
-
+		
 		if(empty($arrIDs))
 			return(null);
-
+		
+		if(is_numeric($arrIDs))
+			$arrIDs = array($arrIDs);
+		
 		if(is_string($arrIDs)){
 			$arrIDs = explode(",", $arrIDs);
 		}
-
+		
 		$firstID = $arrIDs[0];
-
+				
 		//search by slugs
 		if(is_numeric($firstID) == false){
 			$args = array("slug"=>$arrIDs);
 		}else{
 			$args = array("include"=>$arrIDs);
 		}
-
+		
+		$args["hide_empty"] = false;
+				
 		$response = get_terms($args);
-
+		
 		if(empty($response))
 			return(null);
 

@@ -888,13 +888,76 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
+version 1.5.114: 2024-07-17
+
+Plugin Changes
+
+* Feature: implimented &quot;advanced cache&quot; option for &quot;dynamic popup&quot;
+* Feature: improved json/csv api usage in multisrouce, added paths as field names and data key selection
+* Feature: added option for disabled buttons in pagination
+* Change: updated freemius sdk version to the latest
+* Fix: removed &quot;custom remote name&quot; from background widgets style
+* Fix: Galleries - fixed fullscreen button on a slider that contains link
+* Fix: in filters fixed init pagination number after init request
+* Fix: fixed optin &quot;is derect parent&quot; in terms selection
+* Fix: fixed get titles with empty posts for in terms selector 
+* Fix: fixed some filters related php bug of empty request on sync with grid.
+
+Widget Changes
+
+* Feature: Woo Category Carousel (Pro) - Added 'Navigation Rewind' option. When disabled, it hides the navigation arrows on the first and last carousel items.
+* Feature: Team Member Carousel (Pro) - Added an Image Link option, allowing users to link images to specified URLs for enhanced navigation and user interaction.
+* Feature: Woo Product Grid (Pro) - Added typography and color styling options for text after prices.
+* Feature: Loop Carousel (Pro) - Added 'Navigation Rewind' option. When disabled, it hides the navigation arrows on the first and last carousel items.
+* Feature: Icon Box Accordion (Pro) - Added support for using the widget within the Template Switcher widget.
+* Feature: Dynamic Post Popup (Pro) - Added an &quot;Advanced Cache&quot; option that loads all popups content at once after the page load, improving performance and user experience by reducing subsequent load times and enhancing content delivery.
+* Feature: Unlimited Google Maps (Pro) - Added a &quot;Phone Number As Link&quot; option, allowing phone numbers to be automatically formatted as clickable links for improved user experience and functionality.
+* Feature: Semi Circle Progress Bar (Pro) - Added support for using the widget within the Template Switcher, enhancing functionality and providing more versatile template management options.
+* Feature: Price Range Filter (Pro) - Added 'Tooltip Thousand Separator' option to enable formatting of tooltip numbers.
+* Feature: Team Member Carousel (Pro) - Added support for Dynamic Post Popup within the widget, enabling enhanced interactive content display and user engagement.
+* Feature: Loop Grid (Pro) - Added styling options for the active element, allowing for customized appearance and enhanced user interface design for elements in their active state.
+* Feature: Woo Product Carousel (Pro) - Added 'Navigation Rewind' option. When disabled, it hides the navigation arrows on the first and last carousel items.
+* Feature: Taxonomy Terms (Pro) - Added an option to disable term links, allowing users to remove hyperlink functionality from term elements as needed.
+* Feature: Loop Grid (Pro) - Added Remote Connection options, enabling enhanced flexibility and functionality for remote integrations and communication between different widgets.
+* Feature: Checkbox Field (Pro) - Added the option to use Item Titles as values, allowing for more flexible and intuitive configuration of item properties based on their titles.
+* Feature: Content Switcher (Pro) - Added the 'Tab Hash ID' option in item and functionality, allowing users to open tabs using a hash link (e.g., if the 'Tab Hash ID' is set to 'my-second-tab' and the user opens the URL example.com/#my-second-tab, the second tab will open automatically).
+* Feature: Post Carousel (Pro) - Added 'Navigation Rewind' option. When disabled, it hides the navigation arrows on the first and last carousel items.
+* Change: NPS Field (Pro) - Changed the &lt;form&gt; tag to a &lt;div&gt; tag in the widget's HTML to improve layout structure and compatibility.
+* Change: Radio Button Field (Pro) - Changed the &lt;form&gt; tag to a &lt;div&gt; tag in the widget's HTML to improve layout structure and compatibility.
+* Change: Scale Field (Pro) - Changed the &lt;form&gt; tag to a &lt;div&gt; tag in the widget's HTML to improve layout structure and compatibility.
+* Change: Checkbox Field (Pro) - Changed handling for Checkbox Values with Text as the default values, ensuring consistent and expected behavior for checkbox inputs.
+* Change: Woo Product Grid (Pro) - Organized the pricing layout options into a new section titled 'Price Layout' for better usability and navigation.
+* Change: Simple Popup (Free) - Removed empty links from the link elements to ensure clean and functional HTML.
+* Change: Image Accordion (Pro) - Renamed the 'Transition' option to 'Transition Duration' and added support to select the value in milliseconds (ms).
+* Fix: Image Accordion (Pro) - Resolved the title positioning issue and added a new option, 'Title Hover Position,' to allow customization of the title's position on hover.
+* Fix: Unlimited Google Maps (Pro) - Fixed widgets behavior after applying filters to ensure consistent functionality and proper display of filtered content.
+* Fix: Logo Marquee (Pro) - Fixed the issue where the incorrect number of items was showing when the scrollbar was visible on the page. Previously, the width of the viewport was calculated excluding the scrollbar. Now, the actual viewport width is calculated including the scrollbar.
+* Fix: Team Member Carousel (Pro) - Optimized the HTML code of the widget for improved performance and cleaner structure.
+* Fix: Unlimited Timeline (Free) - Fixed an issue where images with an empty src attribute were still present in the DOM, ensuring that such elements are properly removed or handled to maintain clean and efficient HTML structure.
+* Fix: Post Magazine Grid (Pro) - Fixed an issue where the button hover color was not visible, ensuring proper visual feedback when users interact with buttons.
+* Fix: Toggle Text Button (Free) - Fixed an issue where, in some cases, clicking a button triggered the Elementor Page Transition animation.
+* Fix: One Page Scroll Navigation (Pro) - Fixed an issue where multiple scroll events were required to snap a section, ensuring that a single scroll event now properly snaps the section.
+* Fix: Parallax Background (Pro) - Added proper alt attributes for img elements to improve accessibility and SEO.
+* Fix: Audio Player (Pro) - Fixed an issue where clicking the Download button loaded a default audio file instead of the current one.
+* Fix: Liquid Button (Pro) - Added support for working within the Template Switcher widget, enhancing integration and functionality.
+* Fix: Confirm Field (Pro) - Fixed an issue where labels did not wrap to a second line on small screen widths, ensuring better readability and layout consistency on mobile devices.
+* Fix: Compact Gallery (Free) - Added a fix to address issues caused by early widget initialization, ensuring that widgets initialize at the correct time and function properly even in complex loading scenarios.
+* Fix: Liquid Full Screen Menu (Pro) - Fixed an issue where the fix for sticky containers was not working properly in conjunction with optimization plugins.
+
+
+version 1.5.113: 2024-07-04
+
+* Fix: fixed some small security issues found by wordfence
+* Feature: added search fitler to url replace in post widgets filters
+
+
 version 1.5.112: 2024-07-01
 
 Plugin Changes:
 
 * Feature: made a small integration with simple author box plugin
-* Feature: added "timezone" for google events api
-* Feature: added "current product gallery" as a gallery source for WooCommerce
+* Feature: added &quot;timezone&quot; for google events api
+* Feature: added &quot;current product gallery&quot; as a gallery source for WooCommerce
 * Feature: added option for dynamic popup advanced cache
 * Feature: added integration for fvplayer
 * Feature: added links to woo minicart title and image
@@ -905,9 +968,9 @@ Widget Changes:
 * Feature: Pricing Table (Free) - Introduced Tooltip functionality, allowing users to add tooltips to each list item.
 * Feature: Post Magazine Grid (Pro) - New values were added to the Show Categories option, including byTaxonomy and by Last level Taxonomy, providing users with more granular control over category display settings.
 * Feature: Blob Shapes (Free) - Enhanced the Shadow options by adding shadow size, shadow blur, shadow color type, and shadow shift settings.
-* Feature: Image Accordion (Pro) - Added the "Link All Items" option to enhance functionality and provide users with the ability to link all items collectively.
+* Feature: Image Accordion (Pro) - Added the &quot;Link All Items&quot; option to enhance functionality and provide users with the ability to link all items collectively.
 * Feature: Calendar (Pro) - Separated the Locale option into a new tab and introduced an 'Other' option in the locale list, enabling users to manually add a locale not listed, thereby extending support for 96 locales.
-* Feature: Calendar (Pro) - Added "Open Event Link in New Tab" option to allow users to open event links in a new tab.
+* Feature: Calendar (Pro) - Added &quot;Open Event Link in New Tab&quot; option to allow users to open event links in a new tab.
 * Feature: Checkboxes Filter (Pro) - Added functionality to hide the dropdown when no items are found inside.
 * Feature: Icon Accordion (Pro) - A new feature was introduced that includes the addition of an option to adjust the Icon Margin, providing users with more customization options for their interface.
 * Feature: Radio Button Field (Pro) - Added functionality to handle and process values selected from radio buttons in the form, ensuring users' selections are captured and correctly stored.
@@ -917,7 +980,7 @@ Widget Changes:
 * Change: AJAX Search (Pro) - Added a name attribute for the search button element to enhance form handling and improve accessibility.
 * Change: Swipe Carousel (Pro) - An improvement was made by adding the aria-label attribute to the item link, enhancing accessibility and ensuring that all links have discernible names for better user experience.
 * Fix: Logo Marquee (Pro) - Fixed the text alignment issue and added new options: Text Align and Text Shadow.
-* Fix: Icon Accordion (Pro) - Fixed a bug where the accordions were not closing when the "Close Others on Open" option was disabled.
+* Fix: Icon Accordion (Pro) - Fixed a bug where the accordions were not closing when the &quot;Close Others on Open&quot; option was disabled.
 * Fix: Copy Coupon Code (Pro) - Resolved a problem where the copy operation was failing in some cases. This fix ensures that the copy functionality now works reliably across all scenarios.
 * Fix: Quantity Increment Buttons (Pro) - Resolved a problem where the product quantity was not reset to 1 after adding to the cart.
 * Fix: Liquid Full Screen Menu (Pro) - Implemented a fix to address the issue where the widget was not functioning correctly within sticky containers, ensuring consistent behavior and improved user experience.
@@ -931,9 +994,9 @@ Plugin Changes:
 * Feature: added option in general settings: 'Taxonomy Separator Sign in Ajax Filter' for backward compatability
 * Fix: fixed getting elementor dynamic item fields in ajax 
 * Fix: background widgets didn't worked with rocket lazy load
-* Changed - changed the default taxonomy saparator to ":" instead of "~"
+* Changed - changed the default taxonomy saparator to &quot;:&quot; instead of &quot;~&quot;
 * Feature: added option in general settings: 'Taxonomy Separator Sign in Ajax Filter' for backward compatability
-* Changed - changed the default taxonomy saparator to ":" instead of "~"
+* Changed - changed the default taxonomy saparator to &quot;:&quot; instead of &quot;~&quot;
 * Fix: fixed getting elementor dynamic item fields in ajax 
 * Fix: background widgets didn't worked with rocket lazy load
 * Fix: filters checkboxes wasn't visible in some cases
@@ -944,13 +1007,13 @@ Widget Changes:
 
 * Feature: List (Free) - Added Override Color Title/Text options for each item, allowing for individualized customization.
 * Feature: List (Free) - Added an Icon Margin option for enhanced layout control.
-* Feature: Card Carousel (Free) - Added a new value "Above Image" to the Show Title option.
+* Feature: Card Carousel (Free) - Added a new value &quot;Above Image&quot; to the Show Title option.
 * Feature: Content Accordion (Free) - Added support for integrating the widget within carousel widgets, enhancing its functionality and allowing for greater flexibility in design layouts.
 * Feature: Calendar (Pro) - Added Italian (it) to the available locales for enhanced language support.
-* Feature: Product Bullets (Pro) - Added "Column" and "Column Reverse" values to the Content Direction option for improved layout flexibility.
-* Change: Content Slider (Pro) - Changed the display CSS property from 'flex' to 'block' for cases where the Content Source option in an item is set to "template."
+* Feature: Product Bullets (Pro) - Added &quot;Column&quot; and &quot;Column Reverse&quot; values to the Content Direction option for improved layout flexibility.
+* Change: Content Slider (Pro) - Changed the display CSS property from 'flex' to 'block' for cases where the Content Source option in an item is set to &quot;template.&quot;
 * Change: One Page Scroll Navigation (Pro) - Changed method of calling the wheel event from jQuery to JavaScript.
-* Change: Content Accordion (Free) - Changed heading's HTML tag from <div> to <a> and added role attribute for accessibility, enabling users to open and close accordions using keyboards and accessibility devices.
+* Change: Content Accordion (Free) - Changed heading's HTML tag from &lt;div&gt; to &lt;a&gt; and added role attribute for accessibility, enabling users to open and close accordions using keyboards and accessibility devices.
 * Change: Event List (Pro) - Added description to Time Zone option.
 * Fix: Mega Menu (Pro) - Resolved an issue where menu items were overlapping each other in iOS device.
 * Fix: Mega Menu (Pro) - Fixed an issue where mobile menu items displayed only a white background color.
@@ -978,8 +1041,8 @@ Widgets Changes:
 * Feature: Email Field (Pro) - Added Asterisk Size option, allowing customization of asterisk size for better design flexibility and emphasis.
 * Feature: Phone Field (Pro) - Added Asterisk Size option, allowing customization of asterisk size for better design flexibility and emphasis.
 * Feature: Event List (Pro) - Added Timezone option, ensuring that expired and upcoming events are counted according to the specified timezone for accurate event scheduling and display.
-* Feature: Number Field (Pro) - Added "Limit Number of Digits" option, allowing users to restrict the number of digits displayed for better control and readability of numerical data.
-* Feature: Phone Field (Pro) - Added "Limit Number of Digits" option, allowing users to restrict the number of digits displayed for better control and readability of numerical data.
+* Feature: Number Field (Pro) - Added &quot;Limit Number of Digits&quot; option, allowing users to restrict the number of digits displayed for better control and readability of numerical data.
+* Feature: Phone Field (Pro) - Added &quot;Limit Number of Digits&quot; option, allowing users to restrict the number of digits displayed for better control and readability of numerical data.
 * Feature: Transparent Split Hero (Free) - Added options to enable or disable widget contents like title, subtitle, etc., and introduced an option to add an image or logo for greater customization and flexibility.
 * Feature: Unlimited Charts (Pro) - Added Line Chart Background Color option, allowing customization of the background color for line charts to enhance visual appeal.
 * Fix: Submit Button (Free) - Added validation function for the phone field to ensure correct email format and improve data accuracy.
@@ -997,7 +1060,7 @@ version 1.5.109: 2024-05-29
 Plugin Changes:
 
 * Feature: added option to get page views of some post using WPP plugin
-* Feature: added option for "show db tables" in troubleshooting
+* Feature: added option for &quot;show db tables&quot; in troubleshooting
 * Fix: fixed form editor form validation, excluded placeholders
 * Fix: fixed get filters based on wpml language with post count
 * Fix: Fixed some remote connection code items click code
@@ -1007,7 +1070,7 @@ Plugin Changes:
 Widgets Changes: 
  
 * Feature: Email Field (Pro) - Added validation function for the email field to ensure correct email format and improve data accuracy.
-* Feature: Number Field (Pro) - ​Introduced the "Disable Calculation in Editor" debug option to prevent the page from crashing or becoming unresponsive when multiple fields are set to calculation mode, enhancing stability during editing.​
+* Feature: Number Field (Pro) - ​Introduced the &quot;Disable Calculation in Editor&quot; debug option to prevent the page from crashing or becoming unresponsive when multiple fields are set to calculation mode, enhancing stability during editing.​
 * Feature: AJAX Search (Pro) - Added Show Post Image option to enable or disable the display of images in posts, providing more control over post appearance
 * Feature: Submit Button (Free) - Added validation function for the email field to ensure correct email format and improve data accuracy.
 * Feature: Team Member Card (Free) - Added Icon Size Inner option to adjust the height of the icon itself, providing more precise control over icon dimensions.
@@ -1040,7 +1103,7 @@ Widget Changes:
 * Feature: Dark Mode (Free) - Introduced 'Do not affect SVG' option to prevent SVG images from inverting when toggling dark mode, ensuring correct image display.
 * Feature: Load More / Infinite Scroll (Pro) - Added Button Hover Animation option to enable animations when hovering over button, enhancing interactivity and visual appeal.
 * Feature: Load More / Infinite Scroll (Pro) - Added Icon Position option, allowing users to customize the placement of icons for better design flexibility.
-* Feature: Woo Product Grid (Pro) - Added "Show Only Lowest Variable Price" option to display only the lowest price for variable products, enhancing price visibility and simplicity for users.
+* Feature: Woo Product Grid (Pro) - Added &quot;Show Only Lowest Variable Price&quot; option to display only the lowest price for variable products, enhancing price visibility and simplicity for users.
 * Fix: Dynamic Post Popup (Pro) - Fixed Navigation Arrows functionality issue when Animation option was enabled, ensuring smooth and consistent navigation experience.
 * Fix: Dynamic Popup Button (Pro) - Added suppot for Loop Carousel widget with enabled Loop option.
 * Fix: Woo Mini Cart (Pro) - Fixed widgets behaviour for Shop pages when page name is different then default.
@@ -1063,12 +1126,12 @@ Plugin Changes:
 
 Widget Changes:
 
-* Feature: Event List (Pro) - Added "Remove All Upcoming Events Except Next One" functionality, facilitating the removal of all upcoming events except for the next scheduled event for streamlined event management.
+* Feature: Event List (Pro) - Added &quot;Remove All Upcoming Events Except Next One&quot; functionality, facilitating the removal of all upcoming events except for the next scheduled event for streamlined event management.
 * Feature: Animated Icon Box (Pro) - Added Description Opacity option to customize the opacity level of descriptions for enhanced visual aesthetics and readability.
 * Feature: Underline Animated Button (Free) - Added Animation Move Amount option, enabling users to customize the amount of movement in animations for enhanced visual effects.
 * Feature: Remote Tabs (Pro) - Added Item Min Height option for better customization; users can now set a minimum height for items displayed.
-* Feature: Load More / Infinite Scroll (Pro) - Added the "Show Load More Button Icon" option to enhance interface; users can now customize the icon displayed for the load more button.
-* Feature: Mega Menu (Pro) - Added a new functionality enabling "Expand / Collapse Visible On" option, allowing expansion or collapse of visibility based on specific criteria.
+* Feature: Load More / Infinite Scroll (Pro) - Added the &quot;Show Load More Button Icon&quot; option to enhance interface; users can now customize the icon displayed for the load more button.
+* Feature: Mega Menu (Pro) - Added a new functionality enabling &quot;Expand / Collapse Visible On&quot; option, allowing expansion or collapse of visibility based on specific criteria.
 * Feature: Side Menu (Pro) - Added Menu Padding option. This new feature allows to add padding to the container of the Menu items.
 * Feature: Woo Product Grid (Pro) - Made Content Padding, Category Label Spacing, and Title Spacing options responsive for improved adaptability across various screen sizes and devices.
 * Feature: Icon Image Content Box (Free) - Implemented functionality to link Icon and Title to the same destination as the Image.
@@ -1082,7 +1145,7 @@ Widget Changes:
 * Fix: Expanding Content Cards (Pro) - Addressed CSS filter issue where it was displaying incorrectly on mobile devices, ensuring proper rendering and display consistency across all devices.
 * Fix: Post Grid (Pro) - Fixed issue where Typography option was not functioning as expected, ensuring proper functionality and usability.
 * Fix: Justified Image Carousel (Pro) - Fixed issue where width of images was incorrectly set in certain cases, ensuring proper display and functionality across all scenarios.
-* Fix: Layers (Pro) - Resolved issue with the "Item Shadow" option. This fix ensures that the item shadow is applied correctly within the widget.
+* Fix: Layers (Pro) - Resolved issue with the &quot;Item Shadow&quot; option. This fix ensures that the item shadow is applied correctly within the widget.
 
 
 version 1.5.106: 2024-05-12
@@ -1115,7 +1178,7 @@ Widget Changes:
 * Feature: Taxonomy Terms (Pro) - Implemented styling options for 1st and 2nd level of Child Term Elements. This new functionality allows users to customize the appearance of Child Term Elements at different hierarchical levels, providing greater design flexibility and control.
 * Feature: Content Carousel (Pro) - Implemented 'Image Border Radius' option. This new functionality allows users to specify the border radius for images within the widget, enabling them to create rounded or custom-shaped images for a more visually appealing design.
 * Feature: Coverflow Carousel (Pro) - Implemented 'Custom Navigation Arrows' option. This new functionality allows users to customize the navigation arrows used within the widget, enabling them to use custom-designed arrows for a more personalized look and feel.
-* Feature: One Page Scroll Navigation (Pro) - Enhanced widget flexibility to support other sections apart from the one with the tag <section>. This improvement expands compatibility with different section types, providing users with more options for integrating the widget into their website layouts.
+* Feature: One Page Scroll Navigation (Pro) - Enhanced widget flexibility to support other sections apart from the one with the tag &lt;section&gt;. This improvement expands compatibility with different section types, providing users with more options for integrating the widget into their website layouts.
 * Change: Animated Icon Box (Pro) - Replaced old font edit option with new typography and color options for enhanced customization and design control.
 * Change: Call To Action Button (Free) - Moved ripple 'Transition Timing' from Button Icon to Button Icon tab and renamed it to 'Ripple Timing' for improved organization and clarity.
 
@@ -1125,7 +1188,7 @@ version 1.5.104: 2024-04-24
 Plugin Changes:
 
 * Feature: added support for unselect items in sync functionality
-* Feature: added feature - sort terms by parent -> children, and levels number class
+* Feature: added feature - sort terms by parent -&gt; children, and levels number class
 * Fix: fixed some load more issue with dynamic template loop and post lists inside
 * Fix: fixed woo category image not fetched bug
 * Fix: fixed some cases of sticky elementor elements with filters
@@ -1198,8 +1261,8 @@ version 1.5.101: 2024-04-03
 
 Plugin Changes:
 
-* Feature - added "date time" attribute to items attributes list
-* Feature - made some integration for "relevanssi" plugin
+* Feature - added &quot;date time&quot; attribute to items attributes list
+* Feature - made some integration for &quot;relevanssi&quot; plugin
 * Feature - added woo rating stars to multisource fields
 * Feature - added visual text that showing the form fields conditions
 * Fix - fixed filters mode init mode
@@ -1214,8 +1277,8 @@ Widgets Changes:
 * Feature: Radio Button Field (Pro) - Implemented 'Set First Item Selected' option. This new functionality allows users to automatically select the first item in the widget.
 * Feature: Fullscreen Menu (Free) - Implemented 'Open Current Submenu On Page Load' option. This new functionality allows users to automatically expand the current submenu on page load, providing immediate access to relevant content.
 * Feature: Background Slider (Pro) - Introduced 'Add SEO Tags' option, allowing users to include alt and title attributes for images for improved search engine optimization of the widget content.
-* Feature: Floating Chat Buttons (Pro) - Introduced "Close Message Box After Send" option, allowing automatic closure of the message box after clicking the send button for improved user experience and convenience.
-* Feature: Floating Chat Buttons (Pro) - Introduced "Close Button After Click" option, enabling automatic closure of the buttons after clicking any button, eliminating the need for manual closure for enhanced user convenience and interaction.
+* Feature: Floating Chat Buttons (Pro) - Introduced &quot;Close Message Box After Send&quot; option, allowing automatic closure of the message box after clicking the send button for improved user experience and convenience.
+* Feature: Floating Chat Buttons (Pro) - Introduced &quot;Close Button After Click&quot; option, enabling automatic closure of the buttons after clicking any button, eliminating the need for manual closure for enhanced user convenience and interaction.
 * Feature: Content Grid (Pro) - Implemented 'Description' option. This new functionality allows users to add a description to the widget, providing additional context or instructions.
 * Feature: SVG Animation (Free) - Optimized widget for Elementor Popup compatibility. This update ensures seamless integration and improved performance when using the widget within Elementor Popups.
 * Feature: Animated Ripples (Pro) - Introduced 'Ripple Scale' option, enabling users to control the size of the ripples for enhanced visual customization and effect.
@@ -1235,12 +1298,12 @@ Widgets Changes:
 * Change: Checkboxes Filter (Pro) - Added 'aria-label' attribute to links. This new functionality enhances accessibility by providing descriptive labels for elements.
 * Change: Post Carousel (Pro) - Added 'alt' and 'title' attributes to the image for improved SEO optimization and accessibility.
 * Change: Flip Box Carousel (Pro) - Changed some selectors in CSS to avoid empty items appearing on live page.
-* Change: Underline Animated Button (Free) - Changed <section> tag to <div>. This update improves the semantic structure of the widget, ensuring better compatibility with various screen readers and accessibility standards.
+* Change: Underline Animated Button (Free) - Changed &lt;section&gt; tag to &lt;div&gt;. This update improves the semantic structure of the widget, ensuring better compatibility with various screen readers and accessibility standards.
 * Change: Unlimited Charts (Pro) - Updated the animation option to trigger animation when the chart comes into view instead of upon initial load, improving user experience and visual appeal.
 * Change: Submit Button (Free) - Changed the position of Empty Field Errors to be grouped after the submit button. This update enhances the layout and organization of error messages, providing users with a clearer indication of missing information before submission.
 * Change: Post Blocks (Free) - Changed CSS selector for Typography option for better accessibility. This update improves the accessibility of the Typography option by using a more descriptive and accessible CSS selector.
 * Change: List Marquee (Pro) - Increased speed limit to 1000. This update enhances the speed capabilities of the widget, allowing for faster performance and smoother animations.
-* Change: Checkbox Field (Pro) - Increased accessibility by adding IDs to input elements and "for" attributes to label elements. This update improves accessibility by associating labels with their corresponding form controls, making it easier for screen readers and other assistive technologies to interpret and navigate the form.
+* Change: Checkbox Field (Pro) - Increased accessibility by adding IDs to input elements and &quot;for&quot; attributes to label elements. This update improves accessibility by associating labels with their corresponding form controls, making it easier for screen readers and other assistive technologies to interpret and navigate the form.
 * Change: Masonry Gallery (Pro) - Implemented 'Autoplay Video In Lightbox' option. This new functionality allows users to enable autoplay for videos displayed within the lightbox, providing a more dynamic and engaging viewing experience.
 * Change: WhatsApp Chat (Pro) - Added 'aria-label' attribute to links. This new functionality enhances accessibility by providing descriptive labels for elements.
 * Fix: Number Field (Pro) - Implemented CSS protection from the max-width CSS property. This new functionality safeguards against unintended styling conflicts or overrides caused by the max-width property.
@@ -1254,7 +1317,7 @@ Plugin Changes:
 
 * Feature: added option to connect the filters to some specific grid group
 * Fix: fixed js run for background output not always happend
-* Fix: filters was shown only related to grid taxonomies after changing to "all" 
+* Fix: filters was shown only related to grid taxonomies after changing to &quot;all&quot; 
 * Fix: returned some tiles gallery images that was missing
 
 Widgets Changes:
@@ -1350,7 +1413,7 @@ Widgets Updates:
 * Fix: Unlimited Timeline (Free) - Optimized CSS code. This update improves performance and reduces the overall footprint of the stylesheet, enhancing efficiency and loading times.
 * Fix: Remote Link (Pro) - Resolved issue where the Text Shadow option was erroneously interpreted as Box Shadow. The fix ensures that the Text Shadow option now functions correctly, providing the intended text shadow effect.
 * Fix: Scroll Sequence (Pro) - Revised and improved descriptions of the widget fields for better clarity.
-* Fix: Post Magazine Grid (Pro) - Added 'raw' tag to category names to fix the display issue where the '&' symbol in category names was not displaying correctly.
+* Fix: Post Magazine Grid (Pro) - Added 'raw' tag to category names to fix the display issue where the '&amp;' symbol in category names was not displaying correctly.
 * Fix: Before After (Pro) - Improved widget interaction with Elementor's Popups. This update ensures seamless integration and optimal performance when using the widget within Elementor's Popup functionality.
 * Fix: Grid Gallery (Pro) - Resolved an issue where the widget was not extending to full width within Elementor Container.
 * Fix: Particle Image (Pro) - Added protection from lazy load. This update ensures compatibility and proper functionality, mitigating potential issues related to lazy loading on various platforms.
@@ -1358,7 +1421,7 @@ Widgets Updates:
 
 version 1.5.95: 2024-02-12:
 
-* Feature: Ensure that the blog displayed on the "Home" page of the plugin is always up-to-date.
+* Feature: Ensure that the blog displayed on the &quot;Home&quot; page of the plugin is always up-to-date.
 * Feature: Implemented support for tags in the widget catalog.
 * Feature: Added an option for galleries to play videos in muted mode.
 * Feature: Integrated weather forecast data preparation for the widget.
@@ -1475,10 +1538,10 @@ version 1.5.93: 2024-01-18:
 * Feature: Added functionality for the price range filter.
 * Change: Updated the Freemius version.
 * Change: Modified the text format for the export change log.
-* Change: Restored the "import with images" feature after incorporating file type checks for security.
+* Change: Restored the &quot;import with images&quot; feature after incorporating file type checks for security.
 * Fix: Enhanced the handling of multiple user records for the 'exclude users' option in the users query (Ajax-based).
 * Fix: Corrected URL CSS and JS inclusion issues in Elementor editor.
-* Fix: Corrected a bug related to "mini cart widget" in PHP in specific cases.
+* Fix: Corrected a bug related to &quot;mini cart widget&quot; in PHP in specific cases.
 
 * Feature - Card Carousel (Free) - Introduced 'Hide Item' option. This new functionality allows users to hide items instead of deleting them permanently, offering a more reversible and flexible approach to item management.
 * Feature - Post Grid (Pro) - Implemented 'Layout Type: Above' option. This new functionality allows users to change the position of the content box to above the image.
@@ -1496,7 +1559,7 @@ version 1.5.93: 2024-01-18:
 * Fix - Post Carousel (Pro) - Resolved issue with the side-by-side layout.
 * Feature - Logo Grid (Free) - Enhanced responsiveness for item 'Padding' option. This update ensures that item padding adjusts effectively across various screen sizes and device resolutions for a consistent layout.
 * Feature - Logo Grid (Free) - Implemented 'Direction' option. This new feature is particularly useful for RTL (Right-to-Left) websites, allowing users to specify the direction of the widget's layout for improved compatibility.
-* Feature - Content Accordion (Free) - Introduced a new feature that allows the expansion of all accordion items by clicking on an external element with the class "ue-content-accordion-expand-all".
+* Feature - Content Accordion (Free) - Introduced a new feature that allows the expansion of all accordion items by clicking on an external element with the class &quot;ue-content-accordion-expand-all&quot;.
 * Feature - Memory Game (Pro) - Introduced template option for success message, Allowing users to show Elementor template as success message.
 * Feature - Memory Game (Pro) - Added 'Completion Time' option, enabling users to show the time it took to complete the game for a more informative and engaging experience.
 * Feature - Content Accordion (Free) - Introduced 'Additional Header Content' option in the accordion, allowing users to include additional content after the header title.
@@ -1509,10 +1572,10 @@ version 1.5.92: 2024-01-04:
 * Feature: Introduced the change log option in the widget editor.
 * Feature: Introduced the ability to connect with Google API for multi-source options.
 * Feature: Included an option to link with Google Sheets under the general settings for forms.
-* Feature: Integrated a "show globals" feature in troubleshooting for enhanced diagnostics.
+* Feature: Integrated a &quot;show globals&quot; feature in troubleshooting for enhanced diagnostics.
 * Feature: Implemented the capability to output cart fragments for the woo mini cart.
-* Feature: Provided an option for "none" under lightbox-type in galleries, allowing users to disable the lightbox.
-* Feature: Added an "excerpt" field to post fields within the widget editor for more detailed posts.
+* Feature: Provided an option for &quot;none&quot; under lightbox-type in galleries, allowing users to disable the lightbox.
+* Feature: Added an &quot;excerpt&quot; field to post fields within the widget editor for more detailed posts.
 * Fix: Replaced site_url() with home_url() in global variables for better website navigation.
 * Fix: Resolved a conflict with another select2 on the admin side, ensuring smoother operations.
 * Fix: Rectified an error with multiple order by clauses in post queries to improve data sorting.
@@ -1550,16 +1613,16 @@ version 1.5.90: 2023-12-18:
 version 1.5.89: 2023-12-17:
 
 * Fix: fixed some post filters detection issues on the page
-* Fix: fixed some "$type not found" message in php
-* Fix: fixed some "infinite template found: " message in php (emtpy template load protection)
+* Fix: fixed some &quot;$type not found&quot; message in php
+* Fix: fixed some &quot;infinite template found: &quot; message in php (emtpy template load protection)
 * Change: added instagram api access error message
-* Change: removed "import with images" functionality. replaced by doubly plugin.
+* Change: removed &quot;import with images&quot; functionality. replaced by doubly plugin.
 
 
 version 1.5.88: 2023-12-11:
 
-* Feature: added "iframe" gallery type to the gallery items
-* Fix: fixed the "show/hide edit html button" option from general settings
+* Feature: added &quot;iframe&quot; gallery type to the gallery items
+* Fix: fixed the &quot;show/hide edit html button&quot; option from general settings
 * Fix: fixed the general_settings.xml php error
 * Fix: fixed some issue with gallery loading on pages and current meta keys
 * Fix: fixed default value in datetime control
@@ -1600,7 +1663,7 @@ version 1.5.84: 2023-09-20
 * Feature: changed the admin view to new design (added designed header and menu)
 * Feature: added option to enable animation on swipe to owl carousel js
 * Feature: added woo mini cart functionality
-* Feature: added option: "current query as a base" to post selection -> include by
+* Feature: added option: &quot;current query as a base&quot; to post selection -&gt; include by
 
 * Fix: added support for webp in the manager
 * Fix: allow fetching images from media library post type for the galleries 
@@ -1635,10 +1698,10 @@ version 1.5.81:  2023-08-10
 
 version 1.5.80:  2023-08-07
 
-* Feature: added option to get "all taxonomy terms" from a post 
+* Feature: added option to get &quot;all taxonomy terms&quot; from a post 
 * Feature: added html preperations for the woocommerce minicart
-* Feature: added "this week" to the date selection query
-* Feature: added "grouping" mode in the "related posts"
+* Feature: added &quot;this week&quot; to the date selection query
+* Feature: added &quot;grouping&quot; mode in the &quot;related posts&quot;
 * Fix: the pagination now works on top of the grid
 * Fix: fixed some init ajax filters multiple issues
 * Fix: fixed the error with the assets path set
@@ -1647,7 +1710,7 @@ version 1.5.80:  2023-08-07
 version 1.5.79:  2023-07-24
 
 * Fix: changed name for area-label to aria-label
-* Fix: in filters - refresh single filter if "all" selected and there are hidden items
+* Fix: in filters - refresh single filter if &quot;all&quot; selected and there are hidden items
 * Fix: changed protection against inifnite loop to 200
 * Fix: show child filters at start if there are selected items
 * Fix: date time attribute processor - if no date given - don't take current time
@@ -1665,13 +1728,13 @@ version 1.5.77: 2023-07-13
 
 * Fix: fixed dropzone collision in widget editor view
 * Fix: fixed sort filter price filtering
-* Fix: fixed max number in addons db table. from "int" to "bigint"
+* Fix: fixed max number in addons db table. from &quot;int&quot; to &quot;bigint&quot;
 * Fix: replaced some deprecated by elementor codes
 
 
 version 1.5.76: 2023-07-12
 
-* Feature: added "rem" unit in slider attribute
+* Feature: added &quot;rem&quot; unit in slider attribute
 * Fix: fixed some small bug with remote sync debug
 * Fix: fixed the truncate in multisource
 * Fix: fixed some small bugs related to remote controls
@@ -1699,7 +1762,7 @@ version 1.5.73: 2023-06-26
 * Feature: added options for revisions in widget editor
 * Fix: added support for wordpress proxy in api calling
 * Fix: fixed empty post in query result
-* Fix: fixed "wrong template ID" elementor error in post accordion
+* Fix: fixed &quot;wrong template ID&quot; elementor error in post accordion
 
 
 version 1.5.72: 2023-06-21
@@ -1713,19 +1776,19 @@ version 1.5.71: 2023-06-20
 
 * Change: removed js includes of the forms and filters from backend editor
 * Change: changed colors of the free version notification in dark mode
-* Fix: fix the "link" type in wpml integration automatic translation
+* Fix: fix the &quot;link&quot; type in wpml integration automatic translation
 * Feature: add support for the conditions in ue forms
 
 
 version 1.5.70 2023-06-19:
 
-* Change: added some "birthday sale" banner
-* Feature: added "truncate text" modifier to multisource fields
+* Change: added some &quot;birthday sale&quot; banner
+* Feature: added &quot;truncate text&quot; modifier to multisource fields
 * Feature: dynamic tags now works inside posts and products related widgets
 * Feature: added twig highlighting in codemirror editor
 * Fix: fixed sequence animation sliders bug (fields didn't loaded in elementor)
 * Fix: change the comment from // to /* */ in filters js output to allow proper page compression.
-* Fix: the "time ago" string is now translatable 
+* Fix: the &quot;time ago&quot; string is now translatable 
 * Fix: fixed the wpml elementor template id output
 * Fix: fixed backgrounds bug with containers in editor
 * Fix: fixed some small bugs with the checkbox filter
@@ -1740,12 +1803,12 @@ version 1.5.69: 2023-06-08:
 version 1.5.68: 2023-06-06:
 
 * Change: added functionality for sort filter 
-* Feature: added field: "form conditions" for the upcoming form
+* Feature: added field: &quot;form conditions&quot; for the upcoming form
 * Feature: added link translation to wpml integration
 * Feature: added link_attributes field to post list fields in twig
 * Fix: fixed slider control min max values in case of multiple units
 * Fix: add do shortcode from ajax items response
-* Fix: fixed posts grid output with "product" taxonomy without woocommerce
+* Fix: fixed posts grid output with &quot;product&quot; taxonomy without woocommerce
 * Fix: fixed getting cross sell products query in product list
 
 
@@ -1776,12 +1839,12 @@ version 1.5.63 2023-05-23:
 * Fix: fixed the dynamic popup with multiple fields code 
 * Fix: fixed some sync if the clicked item is link
 * Feature: added support for sort post filter
-* Feature: hide "show only insalled" checkbox in widgets manager if no widget installed.
+* Feature: hide &quot;show only insalled&quot; checkbox in widgets manager if no widget installed.
 
 
 version 1.5.62 2023-05-14:
 
-* Feature: added "edit template" link in template selector
+* Feature: added &quot;edit template&quot; link in template selector
 * Feature: added hidden template edit button to top bar
 * Feature: added option for dynamic popup link to connect to many links in the widget
 * Fix: solved some php error with parse dynamic settings in php 8.1
@@ -1805,7 +1868,7 @@ version 1.5.60 - 2023-04-30:
 * Fix: fixed link field settings for multisoure
 * Fix: fixed some bugs with regular price in woocommerce widgets
 * Fix: filters js file loaded in editor as well
-* Fix: fixed some small php bug regarding "pathBase"
+* Fix: fixed some small php bug regarding &quot;pathBase&quot;
 * Fix: fixed conditions in multiple select control
 * Change: updated unite gallery version
 * Change: disabled autoload in update_option for the catalog variable
@@ -1835,7 +1898,7 @@ version 1.5.57: 2023-03-20
 
 * Feature: improved the multisource selectors
 * Feature: added option to get image from post meta in post fields - widget editor
-* Fix: added "skins" folder to unite gallery
+* Fix: added &quot;skins&quot; folder to unite gallery
 * Fix: added more compatability to woo commerce grids with discounts plugins
 * Fix: fixed same uc_id in dynamic templates
 
@@ -1850,7 +1913,7 @@ version 1.5.56: 2023-03-13:
 * Fix: fixed responsive css in dynamic loop
 * Fix: fixed dynamic loop with jet engine acf fields
 * Fix: fixed slider control units for vh, vx and % 
-* Fix: added "before today" for past year in date qury
+* Fix: added &quot;before today&quot; for past year in date qury
 * Change: the uc_id will not change now when page refresh
 
 
@@ -1869,9 +1932,9 @@ version 1.5.55: 2023-02-23:
 version 1.5.54: 2023-02-15
 
 * Change: added some define variable that indicate the under ajax search
-* Change: added "collect", and "output" to schema types in content accordion widget for example
+* Change: added &quot;collect&quot;, and &quot;output&quot; to schema types in content accordion widget for example
 * Feature: added wpml auto translate integration
-* Feature: added option to select "all taxonomies" in exclude terms in terms selection
+* Feature: added option to select &quot;all taxonomies&quot; in exclude terms in terms selection
 * Feature: added option - only direct children to terms select include by
 * Feature: added option to post select to get posts by terms from curent meta field
 * Fix: preserve tags when truncate
@@ -1880,7 +1943,7 @@ version 1.5.54: 2023-02-15
 
 version 1.5.53: 2023-02-07
 
-* Fix: keep exclude terms in grid when filtering with "override terms" mode
+* Fix: keep exclude terms in grid when filtering with &quot;override terms&quot; mode
 * Fix: fixed get_terms() not found php error from 1.5.52 version
 
 
@@ -1903,7 +1966,7 @@ version 1.5.51: 2023-01-31
 
 version 1.5.50: 2023-01-24
 
-* Feature: added "media" to post types select in advanced post query
+* Feature: added &quot;media&quot; to post types select in advanced post query
 * Feature: improved the date time attribute
 
 
@@ -1929,7 +1992,7 @@ version 1.5.48: 2023-01-19
 version 1.5.47: 2023-01-10
 
 * Feature: added more units to slider attribute
-* Feature: added "any" post type to post types select
+* Feature: added &quot;any&quot; post type to post types select
 * Feature: added include and exclude current post terms in terms selection
 * Feature: added option to carousel - scroll to head - force
 * Feature: allow import widgets with theme activate
@@ -2015,7 +2078,7 @@ version 1.5.38: 2022-11-10
 * Fix: fixed galleries default sizes with post filters
 * Fix: fixed hidden option in select filter in safari browser
 * Fix: fixed non ssl assets url
-* Feature: added "schema" special attribute
+* Feature: added &quot;schema&quot; special attribute
 * Fix: fixed false autoplay in carousel
 
 
@@ -2116,7 +2179,7 @@ version 1.5.27: 2022-09-02
 * Fix: removed some console logs in filter.js file
 * Fix: fixed ajax pagination jump
 * Fix: fixed unitegallery strict standards bugs
-* Change: renamed field - "use dynamic fields" to "use current post data" in widget editor
+* Change: renamed field - &quot;use dynamic fields&quot; to &quot;use current post data&quot; in widget editor
 * Change: updated freemius sdk to: 2.4.5
 
 
@@ -2239,7 +2302,7 @@ version 1.5.14: 2022-05-24
 version 1.5.13: 2022-05-23
 
 
-* Feature: added integration with "sticky posts switch" plugin
+* Feature: added integration with &quot;sticky posts switch&quot; plugin
 * Feature: added special attribute type - entrance animation
 
 * Fix: fixed sync bug between two similar elements
@@ -2256,8 +2319,8 @@ version 1.5.12: 2022-05-08
 
 * Feature: added integration for wpml media change
 * Feature: bug fix: fixed hover animations setting don't work on front in some cases
-* Feature: in post selection by date added options for "future from today", and "future from tomorrow".
-* Feature: added new function: "put_hide_ids_css" to hide some css comma saparated id's from css tab.
+* Feature: in post selection by date added options for &quot;future from today&quot;, and &quot;future from tomorrow&quot;.
+* Feature: added new function: &quot;put_hide_ids_css&quot; to hide some css comma saparated id's from css tab.
 * Feature: added support for ajax refresh for multiple synced grids together
 * Feature: added option to test instagram data
 * Feature: added phpinfo view in settings - troubleshooting 
@@ -2272,7 +2335,7 @@ version 1.5.11: 2022-04-13
 
 * Feature: made option to put elementor post_content inside post widget if the post made by elementor
 * Feature: added additional fields to getPostAuthor function like avatar url and author meta
-* Feature: show the "no posts" message with filters in post list / grid
+* Feature: show the &quot;no posts&quot; message with filters in post list / grid
 * Feature: add background location (back/front) to background widgets
 * Feature: done option to get post parent with the posts in posts selection
 * Fix: set prices display in woocommerce widgets including tax
@@ -2288,7 +2351,7 @@ version 1.5.10: 2022-04-04
 
 * Fix: fixed title and description source in gallery source selection
 * Fix: fixed the dropdown attribute php filter for elementor
-* Feature: added "menu_id" for various uses as menu attribute output
+* Feature: added &quot;menu_id&quot; for various uses as menu attribute output
 * Feature: added option for side offset in owl carousel
 * Feature: added option for second items html refresh in ajax filters
 
@@ -2338,7 +2401,7 @@ Fix: fix: fixed jquery include for remote widgets
 version 1.5.4 =  2022-03-06:
 
 * Feature: added roles to post filter: single, main and child
-* Feature: added option "placeholder" and "disable dynamic" for text field control
+* Feature: added option &quot;placeholder&quot; and &quot;disable dynamic&quot; for text field control
 * Feature: added option for debug meta fields in post list, post grid
 * Fix: fixed some pagination widget buttons related issues
 * Fix: fixed non clickable items in some widgets
@@ -2367,12 +2430,12 @@ version 1.5.1 =	2022-02-21:
 * Feature: improved post pagination debug and added force options
 * Feature: added code for the button filters
 * Feature: added option to shuffle owl carousel
-* Feature: added option for general "shuffle" in items
+* Feature: added option for general &quot;shuffle&quot; in items
 * Feature: made option for text modify, and get the current page url and current page title
 * Feature: get feature image of a product from a first gallery image if featured image not exists
-* Feature: added function "one_random" and "first" to get_items twig function
+* Feature: added function &quot;one_random&quot; and &quot;first&quot; to get_items twig function
 * Feature: added support for jet listing item
-* Change: changed the "choose template" setting text to attirbute title
+* Change: changed the &quot;choose template&quot; setting text to attirbute title
 * Fix: fixed load more if offset turned on in the grid
 * Fix: fixed link control attributes parsing
 * Fix: fixed sync general api related bugs in elementor editor
@@ -2388,7 +2451,7 @@ version 1.5.0 =  2022-02-02:
 
 version 1.4.99:  2022-01-27:
 
-* Feature: added option for disable content filtering in general settings->troubleshooting
+* Feature: added option for disable content filtering in general settings-&gt;troubleshooting
 * Feature: added taxonomies in widget debug output
 * Fix: fixed some gallery lazy load related js bugs
 
@@ -2439,7 +2502,7 @@ version 1.4.94 = 2021-12-14:
 * Fix: added content filtering by filter widget_text_content for all the embed and other content modifications
 * Fix: fixed edit defaulsin widget settings
 * Fix: fixed some polylang issues with the template in dynamic template widgets
-* Fix: [security] remove the "duplicate layout" functionality (not used in the plugin) that had some security issues 
+* Fix: [security] remove the &quot;duplicate layout&quot; functionality (not used in the plugin) that had some security issues 
 
 
 version 1.4.93 = 2021-12-03:
@@ -2465,8 +2528,8 @@ version 1.4.91 = 2021-11-23:
 version 1.4.90 = 2021-11-22:
 
 * Addition: added black friday banner discount banner and link
-* Change: improved "sync widgets" editor experience
-* Fix: fixed depricated "post" attribute bug
+* Change: improved &quot;sync widgets&quot; editor experience
+* Fix: fixed depricated &quot;post&quot; attribute bug
 * Fix: modified zip extracting error messages
 
 
@@ -2512,7 +2575,7 @@ version 1.4.84 = 2021-10-13:
 
 * Feature: added taxonomy terms full query debug option
 * Feature: improved full debug type in posts query
-* Feature: added items support in editor->background switcher
+* Feature: added items support in editor-&gt;background switcher
 * Feature: added support for remote controls
 * Feature: functionality to posts load more
 * Feature: added second condition
@@ -2539,13 +2602,13 @@ version 1.4.82 = 2021-09-20:
 * Feature: added dynamic group attributes for galleries, including image and video
 * Feature: added option to convert one date string to another with ucdate filter
 * Feature: added option to use items in background widgets
-* Feature: added ucfunc("set") and ucfunc("get") functions in twig for remember and retrieve variables
-* Feature: added include by option: "children of current term" to category selection options
+* Feature: added ucfunc(&quot;set&quot;) and ucfunc(&quot;get&quot;) functions in twig for remember and retrieve variables
+* Feature: added include by option: &quot;children of current term&quot; to category selection options
 * Feature: added option to pull woo product variations in twig
 * Feature: added placeholder: link_withprefix, link_noprefix for link attribute
 * Fix: fixed error when exists dynamic link in dynamic loop widgets
 * Fix: enabled pagination in a single type in dynamic template grid
-* Fix: the "not equal" attributes condition now works
+* Fix: the &quot;not equal&quot; attributes condition now works
 * Fix: fixed not editable empty dropdown attribute in widget editor
 * Fix: fixed mb_string absence php bug
 * Fix: fixed heading attribute label
@@ -2576,7 +2639,7 @@ version 1.4.80 = 2021-08-09:
 * Feature: added heading text option for items section
 * Feature: added extra fields to image base gallery options
 * Feature: added php filter option for variable
-* Feature: added twig functions "get_post_term" and "is_post_has_term". The examples visible when you click on item.posts.putPostTerm placeholder
+* Feature: added twig functions &quot;get_post_term&quot; and &quot;is_post_has_term&quot;. The examples visible when you click on item.posts.putPostTerm placeholder
 * Fix: fixed some test widgets output relate bugs
 * Fix: conditions settings was not affected typography controls
 * Fix: fixed template dynamic background image didn't displayed bug in dynamic loops
@@ -2629,7 +2692,7 @@ version 1.4.74 = 2021-06-02
 
 * Feature: added function put_date_range to twig functions. good for events widgets
 * Feature: added integration with google map
-* Feature: added function: "run_code_once" for twig
+* Feature: added function: &quot;run_code_once&quot; for twig
 * Feature: added grouped options for the gallery
 * Feature: added option to get posts by date from custom ACF field
 * Feature: added gallery settings options for dynamic settings attribute
@@ -2639,11 +2702,11 @@ version 1.4.74 = 2021-06-02
 
 version 1.4.73 = 2021-05-20
 
-* Feature: added twig function: "put_attributes_json" that available in js tab in widget editor
+* Feature: added twig function: &quot;put_attributes_json&quot; that available in js tab in widget editor
 * Feature: added constant - uc_inside_editor - for distinquish between editor and site front
 * Feature: added multiple select attribute
 * Feature: added listing attribute support
-* Fix: fixed "request too long" message on a widget preview - shortened preview url
+* Fix: fixed &quot;request too long&quot; message on a widget preview - shortened preview url
 * Fix: fixed several bugs with condition field in widgets editor
 * Fix: fixed hidden image size select on item attributes
 * Fix: fixed acf group field output
@@ -2687,9 +2750,9 @@ version 1.4.69 = 2021-04-04
 
 * Feature: added extra query debug options for custom post types selector
 * Feature: added choose image size select option to image attribute
-* Feature: added "image_attributes" placeholder for image output in widget editor
+* Feature: added &quot;image_attributes&quot; placeholder for image output in widget editor
 * Change: added default values select to hover animations attribute
-* Change: changed button "add to cart" to "select options" for variable products in woocommerce list widgets
+* Change: changed button &quot;add to cart&quot; to &quot;select options&quot; for variable products in woocommerce list widgets
 * Fix: fixed border radius attribute from width to radius
 * Fix: added missing thumb sizes for image select
 
@@ -2719,7 +2782,7 @@ version 1.4.67 = 2021-03-12
 
 version 1.4.66 = 2021-02-18
 
-* Feature: added "box shadow" attribute type
+* Feature: added &quot;box shadow&quot; attribute type
 * Feature: added url_posts and num_posts to users output
 * Feature: added option for selector 2 and selector 3 in several attributes
 * Feature: added copy / paste attributes sections in widget editor
@@ -2747,7 +2810,7 @@ version 1.4.65 = 2021-02-03
 
 version 1.4.64 = 2021-02-02
 
-* Change: moved "edit widget html" button to advanced section in general tab
+* Change: moved &quot;edit widget html&quot; button to advanced section in general tab
 * Feature:  added option to exclude products on sale in products query section in widget settings
 * Feature:  added option to exclude specific posts in post selection widget settings
 * Feature:  added woocommerce related products select in post selection
@@ -2758,7 +2821,7 @@ version 1.4.64 = 2021-02-02
 * Feature:  added offset setting to widget posts selection
 * Feature:  added author url and author post count to users fields
 * Feature:  added max number of users to user selection attribute
-* Feature:  added "elementor template" attribute
+* Feature:  added &quot;elementor template&quot; attribute
 * Fix:  fixed small php bug in post selection control
 * Fix: fixed js bug in items repeater
 * Fix: fixed exclude role not worked in user selection attribute
@@ -2773,18 +2836,18 @@ version 1.4.63 = 2021-01-26
 * Feature: added exclude by term setting in widget post selection
 * Change: moved debug data from advaned to general folder in elementor widget settings
 * Fix: fixed woo commerce prices number format
-* Fix: fixed refresh posts on "post query" section open in widget post settings
+* Fix: fixed refresh posts on &quot;post query&quot; section open in widget post settings
 * Fix: fixed manual posts selection default order
 
 
 version 1.4.62 = 2021-01-21
 
 * Feature: added text shadow field
-* Feature: added "manual selection" in posts query
+* Feature: added &quot;manual selection&quot; in posts query
 * Feature: added compatability tag
-* Fix: fixed image size thumb name with "-" sign inside
+* Fix: fixed image size thumb name with &quot;-&quot; sign inside
 * Fix: fixed some php warning related to array to string conversion, happening in php 8
-* Change: show woo commerce placeholders if selected "for woocommerce products" checkbox in post list attribute
+* Change: show woo commerce placeholders if selected &quot;for woocommerce products&quot; checkbox in post list attribute
 * Change: improved woo category output placeholder help, added getTermCustomFields function
 
 
@@ -2802,14 +2865,14 @@ version 1.4.61 = 2021-01-14
 version 1.4.60 = 2020-12-30
 
 * Feature: added option for third party integration for woocommerce grid
-* Feature: added integration for "advanced labels for woocommerce" plugin
+* Feature: added integration for &quot;advanced labels for woocommerce&quot; plugin
 * Feature: added view file button in assets manager
 * Feature: added svg icon option together with font icon for elementor panel widget box
 * Feature: added preview image on mouseover inside elementor panel widget box
-* Feature: added option for disabling "edit widget html" from widget settings
+* Feature: added option for disabling &quot;edit widget html&quot; from widget settings
 
 * Fix: fixed empty settings when there are gallery item setting only
-* Fix: added "no settings" heading in case that no attributes in the widget
+* Fix: added &quot;no settings&quot; heading in case that no attributes in the widget
 * Fix: fixed some php warnings for php 8.0
 
 
@@ -2920,7 +2983,7 @@ version 1.4.43 - 2020-09-22 =
 
 * Feature: added option to group attributes into sections
 * Feature: done instagram access token auto renew
-* Feature: added "selector" to color picker attribute
+* Feature: added &quot;selector&quot; to color picker attribute
 * Fix: improved consolidate widgets option protection
 * Fix: fixed select default widget images
 * Fix: fixed default items in gallery item (image base fields)
@@ -2932,26 +2995,26 @@ version 1.4.42 - 2020-08-06 =
 
 * Feature: added option to get grouped woocomerce products
 * Feature: added instagram connect to official API
-* Feature: added function: getUserData(), added into "twig code examples" panel
-* Feature: added "printVar" and "showDebug" functions "twig code examples" panel
-* Feature: done "login with instagram" in general settings, and get data from instgram API
-* Fix: sorted "overwrite widgets" issue on import
+* Feature: added function: getUserData(), added into &quot;twig code examples&quot; panel
+* Feature: added &quot;printVar&quot; and &quot;showDebug&quot; functions &quot;twig code examples&quot; panel
+* Feature: done &quot;login with instagram&quot; in general settings, and get data from instgram API
+* Fix: sorted &quot;overwrite widgets&quot; issue on import
 * Fix: fixed dropdown attribute when work with html data
 
 
 version 1.4.41 - 2020-06-18 =
 
-* Feature: added additional controls to "number" attribute
-* Feature: added "exclude uncategorized category" to woocommerce categories select 
+* Feature: added additional controls to &quot;number&quot; attribute
+* Feature: added &quot;exclude uncategorized category&quot; to woocommerce categories select 
 * Feature: added responsive controls to slider attribute
 * Fix: fixed template type variable issues in elementor integration
-* Fix: show pagination only when "current query" is available
+* Fix: show pagination only when &quot;current query&quot; is available
 * Fix: fixed select2 field min width in posts query
 
 version 1.4.40 - 2020-06-10 =
 
-* Change: hided "consolidate widgets" general setting
-* Feature: added "show/hide wrapping html comments" to general settings
+* Change: hided &quot;consolidate widgets&quot; general setting
+* Feature: added &quot;show/hide wrapping html comments&quot; to general settings
 * Fix: fixed export template filename
 
 version 1.4.39 - 2020-06-02 =
@@ -2967,9 +3030,9 @@ version 1.4.36 - 2020-05-21 =
 * Feature: added support for pods panda repeater
 * Fix: done some solution for max_execution_time issues when installing template
 * Fix: fixed rtl on templates dialog popup
-* Fix: corrected the naming near the "number" field
-* Fix: cleared "twig" library from some not needed files.
-* Change: removed "image view" file from framework.
+* Fix: corrected the naming near the &quot;number&quot; field
+* Fix: cleared &quot;twig&quot; library from some not needed files.
+* Change: removed &quot;image view&quot; file from framework.
 
 
 version 1.4.35 - 2020-05-11 =
@@ -2977,14 +3040,14 @@ version 1.4.35 - 2020-05-11 =
 * Feature: added term custom fields support
 * Feature: added term meta fields support
 * Change: moved composer vendor folder to plugin root
-* Change: fixed empty templates list bug when "show only installed widget" checkbox checked
+* Change: fixed empty templates list bug when &quot;show only installed widget&quot; checkbox checked
 * Fix: sorted out some of the templates import bugs
 
 
 version 1.4.34 - 2020-05-06 =
 
 * Fix: removed category ations from templates section
-* Fix: show "putPostMeta" function even if no example post available
+* Fix: show &quot;putPostMeta&quot; function even if no example post available
 * Fix: fixed finally all the DB not installed issues on elementor and admin pages
 
 
@@ -3020,8 +3083,8 @@ version 1.4.28 - 2020-04-10 =
 version 1.4.27 - 2020-04-01 =
 
 Fix: fixed widget default icon in manager
-Feature: added "getPostMeta, putPostMeta, printPostMeta" functions
-Feature: added "getPostData" function for acf related posts, that get's all the data from the related post including custom fields
+Feature: added &quot;getPostMeta, putPostMeta, printPostMeta&quot; functions
+Feature: added &quot;getPostData&quot; function for acf related posts, that get's all the data from the related post including custom fields
 
 
 version 1.4.26 - 2020-03-28 =
@@ -3034,24 +3097,24 @@ version 1.4.26 - 2020-03-28 =
 
 version 1.4.25 - 2020-03-09 =
 
-* Feature: added "responsive controls" to margin and padding setting
-* Feature: made "refresh catalog" button
-* Feature: added "num_items" variable to the widget editor
-* Change: removed the "default fonts" from widget defaults screen
-* Fix: fixed some php bug in "implode" function
+* Feature: added &quot;responsive controls&quot; to margin and padding setting
+* Feature: made &quot;refresh catalog&quot; button
+* Feature: added &quot;num_items&quot; variable to the widget editor
+* Change: removed the &quot;default fonts&quot; from widget defaults screen
+* Fix: fixed some php bug in &quot;implode&quot; function
 * Fix: fixed posts from sub categories in post list
 
 
 version 1.4.24 - 2020-02-14 =
 
-* Feature: made "export with images" option in templates
+* Feature: made &quot;export with images&quot; option in templates
 * Fix: fixed import category widgets
 * Fix: fixed icon html output placeholder
 
 version 1.4.23 - 2020-02-02 =
 
 * Feature: improved the slider attribute
-* Feature: added "menu" attribute
+* Feature: added &quot;menu&quot; attribute
 
 version 1.4.22 - 2020-01-28 =
 
@@ -3087,8 +3150,8 @@ version 1.4.20 - 2020-01-15 =
 version 1.4.19 - 2019-12-31 =
 
 * Feature: added filter by slug to terms attribute
-* Feature: changed repeater items titles to the ones from "title" field instead of "Item1", "Item2" etc.
-* Feature: added automated styling for date field, added "ucdate" filter for that.
+* Feature: changed repeater items titles to the ones from &quot;title&quot; field instead of &quot;Item1&quot;, &quot;Item2&quot; etc.
+* Feature: added automated styling for date field, added &quot;ucdate&quot; filter for that.
 * Feature: done functionality for display post author
 * Change: changed the font awesome attribute to fa5
 * Change: added strip html tags from truncate function
@@ -3097,10 +3160,10 @@ version 1.4.19 - 2019-12-31 =
 version 1.4.18 - 2019-12-31 =
 
 * Feature: added all image sizes to posts
-* Feature: added "putPostTerms" function to posts
+* Feature: added &quot;putPostTerms&quot; function to posts
 * Feature: added wpautop filter to twig
 * Feature: added option for custom twig PHP functinoality for PRO version
-* Feature: hide "edit widget html" button for user that don't have capability to see the plugin 
+* Feature: hide &quot;edit widget html&quot; button for user that don't have capability to see the plugin 
 * Feature: added wpml compatablity
 * Feature: added related posts in posts list
 * Feature: added padding and margin controls (pro)
@@ -3115,7 +3178,7 @@ version 1.4.16 - 2019-08-12 =
 
 * Feature: added post query relation (and, or) chooser
 * Change: update to freemius sdk 2.3.1
-* Feature: added "trancate" filter
+* Feature: added &quot;trancate&quot; filter
 * Fix: fixed editor permissions PHP Error
 
 version 1.4.15 - 2019-19-11 =
@@ -3289,7 +3352,7 @@ version 1.4.10 - 2019-28-9 =
 
 = 1.3.23 - 2019-05-01 =
 * Feature: Added dynamic fields to all text controls
-* Feature: Added "edit html" button to all widgets
+* Feature: Added &quot;edit html&quot; button to all widgets
 * Fix: Fixed consolidated addons render bugs
 
 = 1.3.22 - 2019-04-25 =
@@ -3431,7 +3494,7 @@ Yes, you get 25% discount for all annual plan automatic renewals. The renewal pr
 
 = How do I install and activate the 'Unlimited Elements for Elementor' plugin on WordPress? =
 
-To install the 'Unlimited Elements' plugin on your WordPress site, access your WordPress Dashboard and go to Plugins -> Add New. In the search box, enter 'Unlimited Elements.' Locate the plugin in the search results and click on the 'Install Now' button. Once the installation is finished, click on the 'Activate' button, and 'Unlimited Elements for Elementor' will be successfully activated on your WordPress site.
+To install the 'Unlimited Elements' plugin on your WordPress site, access your WordPress Dashboard and go to Plugins -&gt; Add New. In the search box, enter 'Unlimited Elements.' Locate the plugin in the search results and click on the 'Install Now' button. Once the installation is finished, click on the 'Activate' button, and 'Unlimited Elements for Elementor' will be successfully activated on your WordPress site.
 
 = Do I need to know code to use Unlimited Elements? =
 

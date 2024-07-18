@@ -786,6 +786,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			
 			$link = UniteFunctionsWPUC::getPermalink($post);
 			
+			
 			//post link addition
 			
 			$postLinkAdd = UniteFunctionsUC::getPostGetVariable("postlinkadd","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
@@ -2373,7 +2374,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		if($disableOtherHooks === "yes" && GlobalsProviderUC::$isUnderAjax == true){
 			global $wp_filter;
 			$wp_filter = array();
-
+			
 			if($showDebugQuery == true){
 				dmp("disable third party hooks...");
 			}
@@ -4580,11 +4581,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$arrIncludeTermIDs = array();
 		$includeParentID = null;
 		$isDirectParent = true;
-
+		
 		$args = array();
 
 		$arrMetaQuery = array();
-
+		
+		
 		foreach($arrIncludeBy as $includeby){
 
 			switch($includeby){
@@ -4599,8 +4601,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 					if(is_array($includeParentID))
 						$includeParentID = $includeParentID[0];
 
-					$isDirectParent = UniteFunctionsUC::getVal($value, $name."_taxonomy_include_parent_isdirect");
-
+					$isDirectParent = UniteFunctionsUC::getVal($value, $name."_include_parent_isdirect");
 					$isDirectParent = UniteFunctionsUC::strToBool($isDirectParent);
 
 				break;
@@ -4766,10 +4767,10 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			$args["include"] = $arrIncludeTermIDs;
 		}
-
-
+		
+			
 		if(!empty($includeParentID)){
-
+			
 			$parentKey = "parent";
 			if($isDirectParent == false)
 				$parentKey = "child_of";

@@ -36,9 +36,13 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	private $isShowDebugData = false;
 	private $debugDataType = "";
 	private $valuesForDebug = null;
-
+	
 	private $itemsSource = "";
-
+	
+	private $isGutenberg = false;
+	private $isBackground = false;
+	private $isGutenbergBackground = false;
+	
 	private static $arrScriptsHandles = array();
 
 	private static $arrUrlCacheCss = array();
@@ -52,7 +56,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	public static $bufferCssIncludes;
 
 	private static $arrGeneratedIDs = array();
-
+		
 	private $htmlDebug = "";
 
 
@@ -69,7 +73,10 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 
 		$this->processType = UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT;
-
+		
+		if(GlobalsProviderUC::$renderPlatform == GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG)
+			$this->isGutenberg = true;
+		
 	}
 
 
@@ -386,11 +393,13 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			if(empty($handle))
 				$handle = HelperUC::getUrlHandle($url, $addonName);
-
+			
 			$isInCache = $this->isIncludeInCache($url, $handle, $type);
-
-			if($isInCache == true){
-
+			
+			//if inside hidden template - no cache needed. should output the css each time.
+			
+			if($isInCache == true && GlobalsProviderUC::$isInsideHiddenTemplate !== true){
+				
 				continue;
 			}
 
@@ -1776,7 +1785,74 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$this->htmlDebug = $html;
 	}
 
+	private function a________GUTENBERG_BACKGROUND___________(){}
+	
+	/**
+	 * modify js for gutenberg background output
+	 */
+	private function modifyGutenbergBGJS($js){
+		
+		$ucID = $this->generatedID;
+		
+		$js = "
+jQuery(document).ready(function(){ \n
+	jQuery(\"#{$ucID}-root\").parent().css({\"position\":\"relative\"});
+	jQuery(\"#{$ucID}-root\").addClass(\"uc-background-active\");
+	
+$js 
+}) //onready wrapper;
+		";
 
+		return($js);
+	}
+	
+	/**
+	 * modify css for gutenberg output
+	 */
+	private function modifyGutenbergBGCSS($css){
+		
+		$ucID = $this->generatedID;
+		
+		$css = "
+/* background wrapper */
+#{$ucID}-root.uc-background-active{
+	position: absolute;
+	top:0px;
+	left:0px;
+	height:100%;
+	width:100%;
+	z-index:-1 !important;
+	background-color:blue;
+}
+$css
+";
+		
+	return($css);	
+	}
+	
+	/**
+	 * modify gutenberg bg html
+	 */
+	private function modifyGutenbergBGHTML(){
+		
+		$html = "";
+		
+		$isInsideEditor = $this->isInsideEditor();
+		
+		if($isInsideEditor == false)
+			return($html);
+
+		$addonTitle = $this->addon->getTitle();
+		
+		$addonTitle = esc_html($addonTitle);
+		
+		$text = __("Background Placeholder for ","unlimited-elements-for-elementor");
+		
+		$html .= "<div class='uc-background-editor-placeholder'>{$text} {$addonTitle}</div>";
+		
+		return($html);
+	}
+	
 	private function a________GENERAL___________(){}
 
 
@@ -1928,11 +2004,22 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			
 			if(!empty($this->htmlDebug))
 				$html = $this->htmlDebug . $html;
-
+			
 			//make css
 			$css = $this->objTemplate->getRenderedHtml(self::TEMPLATE_CSS);
 			$js = $this->objTemplate->getRenderedHtml(self::TEMPLATE_JS);
-
+			
+			$arrData = $this->getConstantData();
+						
+			if($this->isGutenbergBackground){
+				$params["wrap_js_timeout"] = false;
+				
+				$js = $this->modifyGutenbergBGJS($js);
+				
+				$css = $this->modifyGutenbergBGCSS($css);
+				
+			}
+			
 			//fetch selectors (add google font includes on the way)
 			$isAddSelectors = UniteFunctionsUC::getVal($params, "add_selectors_css");
 			$isAddSelectors = UniteFunctionsUC::strToBool($isAddSelectors);
@@ -1947,12 +2034,12 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			if($putCssIncludes == true)
 				$arrCssIncludes = $this->getProcessedIncludes(true, true, "css");
-
+						
 			if($isOutputComments == true)
 				$output = "\n<!-- start {$title} -->";
 			else
 				$output = "\n";
-
+			
 			//add css includes if needed
 			if(!empty($arrCssIncludes)){
 				$htmlIncludes = $this->getHtmlIncludes($arrCssIncludes);
@@ -1962,7 +2049,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 				else
 					$output .= "\n" . $htmlIncludes;
 			}
-
+						
 			//add css
 			if(!empty($css)){
 				$css = "/* widget: $title */" . self::BR2 . $css . self::BR2;
@@ -1988,18 +2075,19 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 			//add html
-
+			
 			$addWrapper = false;
 			if(GlobalsProviderUC::$renderPlatform == GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG)
 				$addWrapper = true;
 
 			if($isAddSelectors == true)
 				$addWrapper = true;
-
+				
+				
 			if($addWrapper == true){
 
 				$id = $this->getWidgetWrapperID();
-
+				
 				$rootId = UniteFunctionsUC::getVal($params, "root_id");
 
 				if(empty($rootId) === true)
@@ -2007,13 +2095,18 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root\" data-id=\"" . esc_attr($rootId) . "\">";
 			}
-
-
+			
+			
 			$output .= "\n\n" . $html;
-
+						
 			if($isAddSelectors == true)
 				$output .= "\n</div>";
-
+			
+			//add background placeholder after the wrapper
+			
+			if($this->isGutenbergBackground)
+				$output .= $this->modifyGutenbergBGHTML();
+				
 			//add js
 			$isOutputJs = false;
 
@@ -2022,7 +2115,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			if(isset($params["wrap_js_start"]) || isset($params["wrap_js_timeout"]))
 				$isOutputJs = true;
-
+						
 			//output js
 			if($isOutputJs == true){
 				$isJSAsModule = $this->addon->getOption("js_as_module");
@@ -2108,8 +2201,23 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		return $this->getWidgetID() . "-root";
 	}
-
-
+	
+	/**
+	 * get if inside editor or not
+	 */
+	private function isInsideEditor(){
+		
+		$data = $this->getConstantData();
+		
+		$insideEditor = UniteFunctionsUC::getVal($data, "uc_inside_editor");
+		
+		if($insideEditor == "yes")
+			return(true);
+		
+		return(false);
+	}
+	
+	
 	/**
 	 * get addon contstant data that will be used in the template
 	 */
@@ -2164,7 +2272,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$isInsideEditor = false;
 		if($this->processType == UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT_BACK)
 			$isInsideEditor = true;
-
+		
 		//$data["is_inside_editor"] = $isInsideEditor;
 
 		$data = UniteProviderFunctionsUC::addSystemConstantData($data);
@@ -2592,9 +2700,17 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$this->itemsType = $this->addon->getItemsType();
 
 		$this->arrOptions = $this->addon->getOptions();
-
+		
+		$typeName = $this->addon->getType();
+		
+		if($typeName == GlobalsUC::ADDON_TYPE_BGADDON)
+			$this->isBackground = true;
+			
+		if($this->isBackground == true && $this->isGutenberg == true)
+			$this->isGutenbergBackground = true;
+					
 		//modify by special type
-
+		
 		switch($this->itemsType){
 			case "instagram":
 			case "post":

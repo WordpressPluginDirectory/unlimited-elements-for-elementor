@@ -1,5 +1,24 @@
 
 
+version 1.5.114:
+
+* Feature: implimented "advanced cache" option for "dynamic popup"
+* Feature: improved json/csv api usage in multisrouce, added paths as field names and data key selection
+* Feature: added option for disabled buttons in pagination
+* Change: updated freemius sdk version to the latest
+* Fix: removed "custom remote name" from background widgets style
+* Fix: Galleries - fixed fullscreen button on a slider that contains link
+* Fix: in filters fixed init pagination number after init request
+* Fix: fixed optin "is derect parent" in terms selection
+* Fix: fixed get titles with empty posts for in terms selector 
+* Fix: fixed some filters related php bug of empty request on sync with grid.
+
+
+version 1.5.113:
+
+* Fix: fixed some small security issues found by wordfence
+* Feature: added search fitler to url replace in post widgets filters
+
 
 version 1.5.112:
 

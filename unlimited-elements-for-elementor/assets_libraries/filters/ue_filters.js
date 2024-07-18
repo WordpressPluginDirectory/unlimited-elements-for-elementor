@@ -72,7 +72,8 @@ function UEDynamicFilters(){
 		trashold_handle:null,
 		class_widget_wrapper:"elementor-widget",
 		class_widget_container:"elementor-widget-container",
-		current_postid:null
+		current_postid:null,
+		ucpage_url:null
 	};
 
 	var g_options = {
@@ -455,7 +456,7 @@ function UEDynamicFilters(){
 
 		if(!isInitAfter)
 			isInitAfter = isSpecialFilterInitAfter(objFilter, objGrid);
-
+		
 		if(isInitAfter === true)
 			addFilterToInitAfter(objFilter, objGrid);
 		
@@ -1072,19 +1073,16 @@ function UEDynamicFilters(){
 	 * get pagination selected url or null if is current
 	 */
 	function getPaginationSelectedData(objPagination){
-
-		var objCurrentLink = objPagination.find("a.current");
-
+				
+		var objCurrentLink = objPagination.find("a.current,span.current");
+			
 		if(objCurrentLink.length == 0)
 			return(null);
 
 		var url = objCurrentLink.attr("href");
-
-		if(!url)
-			return(null);
-
+				
 		var numPage = objCurrentLink.text();
-
+		
 		if(jQuery.isNumeric(numPage) == false)
 			numPage = null;
 
@@ -2606,7 +2604,7 @@ function UEDynamicFilters(){
 
 				//save initial state
 				var isStateEmpty = jQuery.isEmptyObject(history.state);
-
+				
 				var objState = {"ucaction":"change", "ajaxurl":ajaxUrl, "gridid":gridID, selected_terms:arrTerms};
 
 				if(isStateEmpty){
@@ -2958,7 +2956,7 @@ function UEDynamicFilters(){
 		var wasInitMode = objGrid.data("was_init_mode");
 
 		var arrFilterIDs = {};
-
+				
 		//get ajax options
 		jQuery.each(objFilters, function(index, objFilter){
 
@@ -2999,20 +2997,22 @@ function UEDynamicFilters(){
 
 			switch(type){
 				case g_types.PAGINATION:
-
-					if(isFiltersInitMode == false){
-
+						
 						//run pagination only if it's clicked, unless reset pagination
 						var isClicked = objFilter.hasClass(g_vars.CLASS_CLICKED);
-						if(isClicked == true){
+						if(isClicked == true || isFiltersInitMode == true){
 
 							 var paginationData = getPaginationSelectedData(objFilter);
-
+							 
 							 var paginationPage = getVal(paginationData, "page");
-
+							 
 							 if(paginationPage)
 								 page = paginationPage;		//never set the url
-
+							 
+							 //set page from url
+							 if(isFiltersInitMode == true && !page && g_vars.ucpage_url)
+								 page = g_vars.ucpage_url;
+							
 							 if(g_showDebug){
 								 trace("pagination data");
 								 trace(paginationData);
@@ -3020,7 +3020,6 @@ function UEDynamicFilters(){
 
 							objFilter.removeClass(g_vars.CLASS_CLICKED);
 						}
-					}
 
 				break;
 				case g_types.LOADMORE:
@@ -3197,6 +3196,9 @@ function UEDynamicFilters(){
 				break;
 			}
 			
+			
+			
+			
 			//handle filters init mode
 			
 			if(isFiltersInitMode == true){
@@ -3261,7 +3263,7 @@ function UEDynamicFilters(){
 
 		});		//end filters iteration
 
-
+		
 		//add init filters additions
 
 		var urlAddition_filtersTest = "";
@@ -3350,7 +3352,7 @@ function UEDynamicFilters(){
 
 		if(page){
 			urlAjax += "&ucpage="+page;
-
+			
 			urlReplace = addUrlParam(urlReplace, "ucpage="+page);
 		}
 
@@ -3406,11 +3408,13 @@ function UEDynamicFilters(){
 		//search
 		if(search){
 			search = encodeURIComponent(search);
-
+			
 			//search = escape(search);
 			urlAjax += "&ucs=" + search;
 
 			urlFilterString = addUrlParam(urlFilterString, "ucs=" + search);
+			
+			urlReplace += "&ucs=" + search;
 		}
 
 		//avoid duplicates - exclude, disable the offset
@@ -3432,6 +3436,7 @@ function UEDynamicFilters(){
 			urlAjax += "&ucoffset="+offset;
 
 			urlFilterString = addUrlParam(urlFilterString, "offset=" + offset);
+			
 		}
 
 		//add custom additional attributes
@@ -3537,6 +3542,11 @@ function UEDynamicFilters(){
 			g_vars.class_widget_container = "ue-widget-root"; 
 			g_vars.current_postid = getVal(g_filtersData, "postid");
 		}
+		
+		//ucpage url
+		var ucpage = getVal(g_filtersData,"ucpage");
+		if(jQuery.isNumeric(ucpage))
+			g_vars.ucpage_url = ucpage;
 		
 		//url keys
 

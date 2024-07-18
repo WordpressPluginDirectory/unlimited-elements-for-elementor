@@ -329,6 +329,7 @@ class UCEmptyTemplate{
 				
 			GlobalsProviderUC::$renderTemplateID = $templateID;
 			GlobalsProviderUC::$renderJSForHiddenContent = true;
+			GlobalsProviderUC::$isInsideHiddenTemplate = true;
 			
 			$output = HelperProviderCoreUC_EL::getElementorTemplate($templateID, true);
 			
@@ -346,7 +347,7 @@ class UCEmptyTemplate{
 				$output = "template $templateID not found";
 						
 			GlobalsProviderUC::$renderJSForHiddenContent = false;
-			
+			GlobalsProviderUC::$isInsideHiddenTemplate = false;
 			GlobalsProviderUC::$renderTemplateID = null;
 			
 			$content .= $output;

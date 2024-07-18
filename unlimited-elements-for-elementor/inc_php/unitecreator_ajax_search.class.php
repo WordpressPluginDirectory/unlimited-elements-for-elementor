@@ -11,6 +11,7 @@ class UniteCreatorAjaxSeach{
 	
 	public static $arrCurrentParams;
 	public static $customSearchEnabled = false;
+	public static $enableThirdPartyHooks = false;
 	
 	private $searchMetaKey = "";
 	private $searchInTerms = false;
@@ -199,7 +200,13 @@ class UniteCreatorAjaxSeach{
 	 * supress third party filters except of this class ones
 	 */
 	public static function supressThirdPartyFilters(){
-			
+		
+		
+		//on the enable hooks setting - don't supress hooks
+		
+		if(self::$enableThirdPartyHooks === true)
+			return(false);
+				
 		global $wp_filter;
 		
 		if(self::$customSearchEnabled == false){
@@ -233,7 +240,16 @@ class UniteCreatorAjaxSeach{
 		$arrParams = $addon->getProcessedMainParamsValues(UniteCreatorParamsProcessor::PROCESS_TYPE_CONFIG);
 		
 		self::$arrCurrentParams = $arrParams;
+				
+		//enable hooks
+
+		$enableHooks = UniteFunctionsUC::getVal($arrParams, "enable_third_party_hooks");
+		$enableHooks = UniteFunctionsUC::strToBool($enableHooks);
 		
+		if($enableHooks == true)
+			self::$enableThirdPartyHooks = true;
+		
+			
 		//--- meta
 		
 		$searchInMeta = UniteFunctionsUC::getVal($arrParams, "search_in_meta");

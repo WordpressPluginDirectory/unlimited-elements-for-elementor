@@ -313,7 +313,7 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess(esc_html__("Widgets Removed", "unlimited-elements-for-elementor"), $response);
 				break;
 				case "update_addons_order":
-
+				
 					HelperProviderUC::verifyAdminPermission();
 
 					$addons->saveOrderFromData($data);
@@ -370,8 +370,8 @@ class UniteCreatorActions{
 				break;
 				case "get_addon_output_data":  //from elementor editor bg/gutenberg
 
-					$response = $addons->getAddonOutputData($data);
-
+					$response = $addons->getAddonOutputData($data, true);
+					
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "show_preview":
@@ -661,7 +661,7 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess(esc_html__("Template Imported", "unlimited-elements-for-elementor"), $response);
 				break;
 				case "save_instagram_connect_data":
-
+				
 					HelperProviderUC::verifyAdminPermission();
 
 					$objServices = new UniteServicesUC();
@@ -680,12 +680,12 @@ class UniteCreatorActions{
 					HelperInstaUC::redirectToGeneralSettings();
 				break;
 				case "save_google_connect_data":
-
+					
 					HelperProviderUC::verifyAdminPermission();
 
 					$objServices = new UniteServicesUC();
 					$objServices->includeGoogleAPI();
-
+					
 					try{
 						$params = array();
 						$error = UniteFunctionsUC::getVal($data, "error");
@@ -694,6 +694,7 @@ class UniteCreatorActions{
 							UniteFunctionsUC::throwError($error);
 
 						UEGoogleAPIHelper::saveCredentials($data);
+						
 					}catch(Exception $exception){
 						$params = array("google_connect_error" => $exception->getMessage());
 					}
