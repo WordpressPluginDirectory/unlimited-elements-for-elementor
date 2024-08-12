@@ -115,6 +115,11 @@ class UCEmptyTemplate{
 	 */
 	private function renderFooter(){
 		
+		?>
+		<!-- Start Footer! -->
+		<?php 
+				
+		
 		wp_footer();
 				
 		?>

@@ -586,7 +586,7 @@ class UniteCreatorMappickerView{
 
 		$this->init();
 
-		ob_start();
+		UniteFunctionsUC::obStart();
 			$this->putHtmlClientSide();
 			$content = ob_get_contents();
 		ob_end_clean();

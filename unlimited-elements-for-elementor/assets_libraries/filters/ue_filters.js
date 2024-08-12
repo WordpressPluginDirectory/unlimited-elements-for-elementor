@@ -1103,14 +1103,17 @@ function UEDynamicFilters(){
 	 * on ajax pagination click
 	 */
 	function onAjaxPaginationLinkClick(event){
-
+		
 		var objLink = jQuery(this);
 
+		//run the ajax, prevent default
+		event.preventDefault();
+		
 		var objPagination = objLink.parents(".uc-filter-pagination");
 
 		var objLinkCurrent = objPagination.find(".current");
 
-
+		
 		//on next button click
 
 		if(objLink.hasClass("next")){
@@ -1147,9 +1150,7 @@ function UEDynamicFilters(){
 		if(!objGrid || objGrid.length == 0)
 			throw new Error("Grid not found!");
 
-		//run the ajax, prevent default
-		event.preventDefault();
-
+		
 		objPagination.addClass(g_vars.CLASS_CLICKED);
 
 		if(g_showDebug == true){
@@ -2859,13 +2860,13 @@ function UEDynamicFilters(){
 
 		if(!isLoadMoreMode)
 			var isLoadMoreMode = false;
-		
+				
 		if(g_showDebug){
 			trace("getGridAjaxOptions");
 
 			trace("Filters:");
 			trace(objFilters);
-
+			
 			trace("grid:");
 			trace(objGrid);
 			trace("is init: " + isFiltersInitMode);
@@ -2957,6 +2958,7 @@ function UEDynamicFilters(){
 
 		var arrFilterIDs = {};
 				
+		
 		//get ajax options
 		jQuery.each(objFilters, function(index, objFilter){
 
@@ -3020,6 +3022,7 @@ function UEDynamicFilters(){
 
 							objFilter.removeClass(g_vars.CLASS_CLICKED);
 						}
+						
 
 				break;
 				case g_types.LOADMORE:
@@ -3418,11 +3421,12 @@ function UEDynamicFilters(){
 		}
 
 		//avoid duplicates - exclude, disable the offset
-
+		
+		
 		if(objGrid.hasClass("uc-avoid-duplicates") && isLoadMoreMode == true){
-
-			var strExcludePostIDs = getExcludePostIDs();
-
+		
+			var strExcludePostIDs = getExcludePostIDs(objGrid);
+			
 			if(strExcludePostIDs){
 				urlAjax += "&ucexclude="+strExcludePostIDs;
 				offset = null;
@@ -3484,11 +3488,15 @@ function UEDynamicFilters(){
 
 	/**
 	 * get all exclude post ids from all avoid duplicates grids
+	 * except of the current grid
 	 */
-	function getExcludePostIDs(){
-
-		var objGrids = jQuery(".uc-avoid-duplicates");
-
+	function getExcludePostIDs(objCurrentGrid){
+				
+		var objGrids = jQuery(".uc-avoid-duplicates").not(objCurrentGrid);
+				
+		if(objGrids.length == 0)
+			return("");
+		
 		var strIDs = "";
 
 		jQuery.each(objGrids, function(index, grid){
@@ -3648,9 +3656,14 @@ function UEDynamicFilters(){
 
 			switch(type){
 				case g_types.PAGINATION:
-
+					
+					//avoid other services to run functions when click the link
+								
+					var objLinks = jQuery(".uc-filter-pagination a");
+					objLinks.off("click"); 
+					
 					objParent.on("click",".uc-filter-pagination a", onAjaxPaginationLinkClick);
-
+					
 				break;
 				case g_types.LOADMORE:
 
@@ -3803,7 +3816,7 @@ function UEDynamicFilters(){
 	 * init pagination filter
 	 */
 	function initFilters(objFilters){
-
+		
 		if(g_showDebug == true){
 
 			trace("init filters");
@@ -4122,7 +4135,8 @@ function UEDynamicFilters(){
 
 		//get the filters
 		var objFilters = jQuery(".uc-grid-filter, .uc-filter-pagination").not("." + g_vars.CLASS_FILTER_INITED);
-
+		
+		
 		//wait for load...
 
 		var objFiltersLoading = objFilters.filter(".uc-waitforload");
@@ -4165,8 +4179,7 @@ function UEDynamicFilters(){
 		g_objBody = jQuery("body");
 
 		var success = initGlobals();
-
-		//run again on fail 3 times
+					//run again on fail 3 times
 		if(success == false){
 
 			if(typeof window.ueFiltersTimeoutCounter != "undefined")
@@ -4191,7 +4204,17 @@ function UEDynamicFilters(){
 		runInitFilters();
 
 		initGeneralEvents();
-
+		
+		
+		//run init again on elementor popup
+		
+		jQuery( document ).on( 'elementor/popup/show', function(event, id, objPopup){
+			
+			g_objBody.trigger(g_vars.EVENT_DOM_UPDATED);
+			
+		});
+		
+		
 	}
 
 
@@ -4295,11 +4318,11 @@ function UEDynamicFilters(){
 			trace("Filters not loaded, jQuery not loaded");
 			return(false);
 		}
-
+		
 		jQuery("document").ready(function(){
 			setTimeout(init, 200);
 		});
-
+		
 	}
 
 	construct();

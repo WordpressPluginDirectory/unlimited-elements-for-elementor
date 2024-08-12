@@ -275,14 +275,21 @@ class UCOperations extends UniteElementsBaseUC{
 			UniteFunctionsUC::throwError("Can't make thumb folder: {$pathThumbs}. Please check php and folder permissions");
 
 		$filepathImage = $info["filepath"];
-
-		$filenameThumb = $this->imageView->makeThumb($filepathImage, $pathThumbs, $thumbWidth);
-
+		
+		try{
+			$filenameThumb = $this->imageView->makeThumb($filepathImage, $pathThumbs, $thumbWidth);
+		
+		}catch(Exception $e){
+			$filenameThumb = null;
+		}
+		
 		$urlThumb = "";
 		if(!empty($filenameThumb)){
 			$urlThumbs = $info["url_dir_thumbs"];
 			$urlThumb = $urlThumbs . $filenameThumb;
-		}
+		}else
+			$urlThumb = UniteFunctionsUC::getVal($info, "url_full");
+		
 
 		return ($urlThumb);
 	}

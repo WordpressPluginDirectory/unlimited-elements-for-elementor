@@ -143,7 +143,7 @@
 
             add_action( 'admin_footer', array( &$this, 'edit_and_echo_plugin_information_dialog_contents' ), 0, 1 );
 
-            ob_start();
+            UniteFunctionsUC::obStart();
         }
 
         /**
@@ -290,7 +290,7 @@
          * @since  1.1.6
          */
         function catch_plugin_update_row() {
-            ob_start();
+            UniteFunctionsUC::obStart();
         }
 
         /**

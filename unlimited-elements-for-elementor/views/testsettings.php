@@ -21,9 +21,6 @@ function ueCheckCatalog(){
 	
 	dmp("addons that support animation");
 	
-	//UniteFunctionsUC::timestamp2DateTime($stamp)
-	
-	
 	dmp($arrAddons);
 	exit();
 	
@@ -31,6 +28,21 @@ function ueCheckCatalog(){
 }
 
 function checkSomeFunc(){
+
+	
+	$data = array(
+		"id"=>100
+	);
+	
+	
+	$addons = new UniteCreatorAddons();
+	
+	$html = $addons->getAddonSettingsHTMLFromData($data);
+	
+	
+	
+	dmp(htmlspecialchars($html));
+	exit();
 	
 	/*
 	

@@ -468,7 +468,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(is_array($name))
 				UniteFunctionsUC::throwError("addSap function: sap name can't be array: $text");
-
+			
+			if(is_numeric($tab) || $tab === true)
+				UniteFunctionsUC::throwError("The tab should not be numeric");
+			
 			if(empty($tab))
 				$tab = self::TAB_CONTENT;
 
@@ -487,7 +490,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$sap["text"] = $text;
 			$sap["icon"] = $icon;
 			$sap["tab"] = $tab;
-
+			
+			
 			if(!empty($params))
 				$sap = array_merge($sap, $params);
 

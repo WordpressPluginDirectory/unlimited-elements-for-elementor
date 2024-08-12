@@ -4568,7 +4568,7 @@
             $server_ip = WP_FS__REMOTE_ADDR;
 
             // Add PHP info for deeper investigation.
-            ob_start();
+            UniteFunctionsUC::obStart();
             phpinfo();
             $php_info = ob_get_clean();
 

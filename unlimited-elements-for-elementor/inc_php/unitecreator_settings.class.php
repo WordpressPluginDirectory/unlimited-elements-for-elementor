@@ -788,20 +788,20 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 				$params["origtype"] = UniteCreatorDialogParam::PARAM_REPEATER;
 				$params["hide_label"] = true;
 				$params["title_field"] = "{{{title}}} ({{{type}}})";
-
+				
 				$description = UniteFunctionsUC::getVal($param, "description");
 
 				if(!empty($description))
 					$params["description"] = $description;
 
 				$settingsItems = HelperProviderUC::getSortFilterRepeaterFields();
-
+				
 				$settingsValues = HelperProviderUC::getSortFilterDefaultValues();
 
 				$title = UniteFunctionsUC::getVal($param, "title");
 
 				$this->addRepeater("{$name}_fields", $settingsItems, $settingsValues, $title, $params);
-
+				
 			break;
 			case "currency_api":
 				UniteCreatorAPIIntegrations::getInstance()->addServiceSettingsFields($this, UniteCreatorAPIIntegrations::TYPE_CURRENCY_EXCHANGE, $name, $condition);
@@ -1635,7 +1635,35 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			$this->addEditWidgetButton();
 		
 	}
+	
+	/**
+	 * add the background section
+	 */
+	public function addGutenbergEditorBackgroundSection(){
+		
+		$this->addSap(esc_html__("Background", "unlimited-elements-for-elementor"), "uc_background");
+		
+		$params = array();
+		$params["description"] = __("Choose the background location.", "unlimited-elements-for-elementor");
 
+		$arrItems = array(
+			'back'  => __( 'In Background', 'unlimited-elements-for-elementor' ),
+			'front' => __( 'In Foregroud', 'unlimited-elements-for-elementor' )
+			/*
+			'body' => __( 'Site Body Background', 'unlimited-elements-for-elementor' ),
+			'body_front' => __( 'Site Body Foreground', 'unlimited-elements-for-elementor' ),
+			'layout' => __( 'Layout Background', 'unlimited-elements-for-elementor' ),
+			'layout_front' => __( 'Layout Foreground', 'unlimited-elements-for-elementor' )
+			*/
+		);
+		
+		$arrItems = array_flip($arrItems);
+		
+		$this->addSelect("background_location", $arrItems, __( 'Background Location', 'unlimited-elements-for-elementor' ), "back", $params);
+		
+	}
+	
+	
 	/**
 	 * add image sizes param
 	 */

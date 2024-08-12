@@ -20,6 +20,12 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 	}
 	
+	if(!function_exists("dmpHtml")){
+		function dmpHtml($str){
+			dmp(htmlspecialchars($str));
+		}
+	}
+	 
 	if(!function_exists("dmpGet")){
 		
 		function dmpGet($str){

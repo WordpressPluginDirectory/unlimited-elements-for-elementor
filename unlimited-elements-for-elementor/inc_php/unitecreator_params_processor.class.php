@@ -2034,11 +2034,13 @@ class UniteCreatorParamsProcessorWork{
 	 */
 	public function getProcessedItemsData_getImageSize($processType = null){
 
+		
 		if($processType == self::PROCESS_TYPE_CONFIG)
 			return(null);
-
+				
 		$paramsSpecial = $this->addon->getParams(UniteCreatorDialogParam::PARAM_SPECIAL);
 
+		
 		if(empty($paramsSpecial))
 			return(null);
 
@@ -2051,10 +2053,7 @@ class UniteCreatorParamsProcessorWork{
 				continue;
 
 			$value = UniteFunctionsUC::getVal($param, "value");
-
-			if(empty($value))
-				return(null);
-
+			
 			$name = UniteFunctionsUC::getVal($param, "name");
 
 			if(is_array($value)){
@@ -2068,8 +2067,8 @@ class UniteCreatorParamsProcessorWork{
 
 			$arrValues[$destParamName] = $value;
 		}
-
-
+		
+		
 		return($arrValues);
 	}
 

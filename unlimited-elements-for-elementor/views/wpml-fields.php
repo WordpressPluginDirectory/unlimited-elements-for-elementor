@@ -27,7 +27,6 @@ function wpmlAutoTranslationTest(){
 			
 		$widgetName = str_replace("ucaddon_","",$name)."_elementor";
 		
-		
 		$arrItemsFields = UniteFunctionsUC::getVal(UniteCreatorWpmlIntegrate::$arrWidgetItemsData, $widgetName);
 
 		

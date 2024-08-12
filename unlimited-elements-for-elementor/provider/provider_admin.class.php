@@ -707,7 +707,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 */
 	private function getAdminPageBody(){
 
-		ob_start();
+		UniteFunctionsUC::obStart();
 
 		$this->adminPages();
 
@@ -887,9 +887,9 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 			if($isAjax == false)
 				return (false);
 		}
-
+		
 		$action = UniteFunctionsUC::getPostGetVariable("action", "", UniteFunctionsUC::SANITIZE_KEY);
-
+			
 		if($action != "unlimitedelements_ajax_action")
 			return (false);
 

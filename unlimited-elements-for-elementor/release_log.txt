@@ -1,5 +1,32 @@
 
 
+version 1.5.117:
+
+* Fix: improved the manual sorting and debuging of authors list
+* Fix: fixed post selection in editor in new chrome version.
+* Fix: where there is no posts in id's from dynamic or id's from meta in posts selection - return no posts instead of all posts
+* Fix: fixed third party filters suppress filters for ajax search bug - they was always suppress, and wpml integration didn't worked.
+* Feature: improved callbacks debug in full posts query debug
+
+
+version 1.5.116:
+
+* Fix: fixed some editor select2 bug
+
+version 1.5.115:
+
+* Feature: added option to use form fields contents in subject and from name fields in submit button
+* Feature: added woocommerce minicart extra html hooks
+* Fix: fixed instagram username validation. added dot to the check.
+* Fix: fixed image chooser field update inside the widget editor
+* Feature: filtering now works inside elementor popup
+* Bug fix: some small bug with fitlering pagination and avoid duplicated option
+* Feature: added option to sort users by ids in users query
+* Feature: integrated get main category functionality with rank math
+* Feature: added integration with wpml for sorting filter
+
+
+
 version 1.5.114:
 
 * Feature: implimented "advanced cache" option for "dynamic popup"

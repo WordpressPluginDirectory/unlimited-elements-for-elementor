@@ -30,8 +30,8 @@ class UniteCreatorForm{
 	const ACTION_WEBHOOK2 = "webhook2";
 	const ACTION_REDIRECT = "redirect";
 	const ACTION_GOOGLE_SHEETS = "google_sheets";
-	const ACTION_HOOK = "hook";
-
+	const ACTION_HOOK = "hook";	
+	
 	const PLACEHOLDER_ADMIN_EMAIL = "admin_email";
 	const PLACEHOLDER_EMAIL_FIELD = "email_field";
 	const PLACEHOLDER_FORM_FIELDS = "form_fields";
@@ -265,6 +265,7 @@ class UniteCreatorForm{
 			// Check for spam
 			$isSpam = $this->detectFormSpam();
 
+			
 			if($isSpam === true){
 				$spamError = $this->getSpamErrorMessage();
 
@@ -308,8 +309,9 @@ class UniteCreatorForm{
 
 						case self::ACTION_EMAIL:
 						case self::ACTION_EMAIL2:
+							
 							$emailFields = $this->getEmailFields($action);
-
+							
 							$debugData[$action] = $emailFields;
 
 							$this->sendEmail($emailFields);
@@ -350,13 +352,16 @@ class UniteCreatorForm{
 						break;
 
 						case self::ACTION_HOOK:
+							
 							$hookFields = $this->getHookFields();
 
 							$debugData[$action] = $hookFields;
+							
+							$customActionName = $hookFields["name"];
+							
+							$this->executeCustomAction($customActionName);
 
-							$this->executeFormAction("custom/{$hookFields["name"]}");
-
-							$debugMessages[] = "Hook has been successfully executed.";
+							$debugMessages[] = "Hook: $customActionName has been successfully executed.";
 						break;
 
 						default:
@@ -386,6 +391,8 @@ class UniteCreatorForm{
 			$success = true;
 			$message = $this->getFormSuccessMessage();
 		}catch(Exception $exception){
+			
+			
 			$success = false;
 			$message = $this->getFormErrorMessage();
 
@@ -397,6 +404,7 @@ class UniteCreatorForm{
 			if(in_array($exception->getCode(), $preserveMessageErrorCodes) === true)
 				$message = $exception->getMessage();
 
+				
 			$debugMessages[] = $exception->getMessage();
 		}
 
@@ -883,13 +891,13 @@ class UniteCreatorForm{
 	 * get email fields
 	 */
 	private function getEmailFields($action){
-
+	
 		$from = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("from", $action));
 		$from = $this->replacePlaceholders($from, array(self::PLACEHOLDER_ADMIN_EMAIL));
-
+		
 		$fromName = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("from_name", $action));
-		$fromName = $this->replacePlaceholders($fromName, array(self::PLACEHOLDER_SITE_NAME));
-
+		$fromName = $this->replaceTitlePlaceholders($fromName);
+		
 		$replyTo = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("reply_to", $action));
 		$replyTo = $this->replacePlaceholders($replyTo, array(self::PLACEHOLDER_ADMIN_EMAIL, self::PLACEHOLDER_EMAIL_FIELD));
 		
@@ -907,14 +915,15 @@ class UniteCreatorForm{
 
 		$bcc = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("bcc", $action));
 		$bcc = $this->replacePlaceholders($bcc, array(self::PLACEHOLDER_ADMIN_EMAIL, self::PLACEHOLDER_EMAIL_FIELD));
+		
 		$bcc = $this->prepareEmailRecipients($bcc);
-
+		
 		$subject = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("subject", $action));
-		$subject = $this->replacePlaceholders($subject, array(self::PLACEHOLDER_SITE_NAME));
-
+		$subject = $this->replaceTitlePlaceholders($subject);
+		
 		$message = UniteFunctionsUC::getVal($this->formSettings, $this->getFieldKey("message", $action));
 		$message = $this->prepareEmailMessageField($message);
-
+		
 		$emailFields = array(
 			"from" => $from,
 			"from_name" => $fromName,
@@ -931,7 +940,7 @@ class UniteCreatorForm{
 		$emailFields = $this->applyActionFieldsFilter($action, $emailFields);
 
 		$emailFields["headers"] = array_merge($this->prepareEmailHeaders($emailFields), $emailFields["headers"]);
-
+		
 		return $emailFields;
 	}
 
@@ -950,12 +959,12 @@ class UniteCreatorForm{
 	}
 
 	/**
-	 * prepare email message field
+	 * get form fields replaces
 	 */
-	private function prepareEmailMessageField($emailMessage){
-
+	private function getFieldsReplaces($includeAllFields = false){
+		
 		$formFieldsReplace = array();
-		$formFieldPlaceholders = array();
+		
 		$formFieldReplaces = array();
 
 		foreach($this->formFields as $field){
@@ -978,23 +987,53 @@ class UniteCreatorForm{
 
 		$formFieldsReplace = implode("<br />", $formFieldsReplace);
 
+		$emailReplaces = array_merge(array(
+			self::PLACEHOLDER_FORM_FIELDS => $formFieldsReplace,
+		), $formFieldReplaces);
+		
+		
+		return(array($formFieldPlaceholders, $emailReplaces));
+	}
+	
+	/**
+	 * prepare email message field
+	 */
+	private function prepareEmailMessageField($emailMessage,$includeFormFields = true){
+
+		$formFieldPlaceholders = array();
+		
+		$arrResponse = $this->getFieldsReplaces($includeFormFields);
+		
+		$formFieldPlaceholders = $arrResponse[0];
+		$emailReplaces = $arrResponse[1];
+		
 		$emailPlaceholders = array_merge(array(
 			self::PLACEHOLDER_ADMIN_EMAIL,
 			self::PLACEHOLDER_EMAIL_FIELD,
 			self::PLACEHOLDER_SITE_NAME,
-			self::PLACEHOLDER_FORM_FIELDS,
 		), $formFieldPlaceholders);
-
-		$emailReplaces = array_merge(array(
-			self::PLACEHOLDER_FORM_FIELDS => $formFieldsReplace,
-		), $formFieldReplaces);
-
+		
+		if($includeFormFields == true)
+			$emailPlaceholders[] = self::PLACEHOLDER_FORM_FIELDS;
+		
 		$emailMessage = $this->replacePlaceholders($emailMessage, $emailPlaceholders, $emailReplaces);
 		$emailMessage = preg_replace("/(\r\n|\r|\n)/", "<br />", $emailMessage); // nl2br
-
+		
+		
 		return $emailMessage;
 	}
-
+	
+	/**
+	 * replace title placeholders
+	 */
+	private function replaceTitlePlaceholders($fromName){
+		
+		$fromName = $this->prepareEmailMessageField($fromName, false);
+		
+		return($fromName);
+	}
+	
+	
 	/**
 	 * prepare email headers
 	 */
@@ -1202,7 +1241,7 @@ class UniteCreatorForm{
 	private function getHookFields(){
 
 		$name = UniteFunctionsUC::getVal($this->formSettings, "hook_name");
-
+		
 		$hookFields = array(
 			"name" => $name,
 		);
@@ -1211,10 +1250,20 @@ class UniteCreatorForm{
 	}
 
 	/**
+	 * execute custom action
+	 */
+	private function executeCustomAction($name){
+		
+		$hookName = self::HOOK_NAMESPACE . "/$name";
+		
+		do_action($hookName, $this->formFields, $this->formSettings);
+	}
+	
+	/**
 	 * execute form action
 	 */
 	private function executeFormAction($name){
-
+		
 		do_action(self::HOOK_NAMESPACE . "/$name", $this->formFields, $this->formSettings);
 	}
 
@@ -1566,6 +1615,10 @@ class UniteCreatorForm{
 	 */
 	private function getAntispamSettings(){
 
+		//for local installations always not check spam
+		if(GlobalsUC::$isLocal == true)
+			return(false);
+		
 		$enabled = HelperProviderCoreUC_EL::getGeneralSetting("form_antispam_enabled");
 		$enabled = UniteFunctionsUC::strToBool($enabled);
 

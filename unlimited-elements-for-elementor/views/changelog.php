@@ -455,7 +455,9 @@ class UCChangelogView extends WP_List_Table{
 
 		$filename = "changelog-" . current_time("mysql") . ".txt";
 		$content = implode("\n", $lines);
-
+		
+		$content = htmlspecialchars($content);
+		
 		UniteFunctionsUC::downloadTxt($filename, $content);
 	}
 

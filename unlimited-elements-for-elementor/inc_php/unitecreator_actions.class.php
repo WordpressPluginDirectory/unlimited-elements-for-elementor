@@ -353,7 +353,7 @@ class UniteCreatorActions{
 				case "get_addon_settings_html":    //from elementor/gutenberg
 
 					$html = $addons->getAddonSettingsHTMLFromData($data);
-
+										
 					HelperUC::ajaxResponseData(array("html" => $html));
 				break;
 				case "get_addon_item_settings_html":  //from elementor
@@ -369,7 +369,7 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_addon_output_data":  //from elementor editor bg/gutenberg
-
+										
 					$response = $addons->getAddonOutputData($data, true);
 					
 					HelperUC::ajaxResponseData($response);
@@ -445,10 +445,11 @@ class UniteCreatorActions{
 
 				break;
 				case "get_image_url":
+					
 					$id = UniteFunctionsUC::getVal($data, "id");
 					$size = UniteFunctionsUC::getVal($data, "size", "full");
 					$url = UniteProviderFunctionsUC::getImageUrlFromImageID($id, $size);
-
+					
 					HelperUC::ajaxResponseData(array("url" => $url));
 				break;
 				case "get_version_text":

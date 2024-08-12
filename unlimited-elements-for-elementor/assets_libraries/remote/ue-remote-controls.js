@@ -7,7 +7,6 @@ function UERemoteGeneralAPI(){
 	var g_isTypeEvents = false;
 	var g_options = null;
 
-
 	var g_vars = {
 		parent_id:"",
 		class_items:"",
@@ -82,11 +81,11 @@ function UERemoteGeneralAPI(){
 	 * get total items
 	 */
 	function getNumTotal(){
-
+		
 		var objItems = g_objParent.find("."+g_vars.class_items);
-
+		
 		var numTotal = objItems.length;
-
+				
 		return(numTotal);
 	}
 
@@ -295,9 +294,9 @@ function UERemoteGeneralAPI(){
 				return(current);
 			break;
 			case "get_total_items":
-
+				
 				var total = getNumTotal();
-
+				
 				if(g_vars.enableDebug)
 					trace("response: "+total);
 
@@ -346,7 +345,7 @@ function UERemoteGeneralAPI(){
 			}
 
 			var observer = new MutationObserver(function(records){
-
+				
 				runWithTrashold(function(){
 
 					if(g_vars.enableDebug == true)
@@ -477,16 +476,22 @@ function UERemoteGeneralAPI(){
 	 * init by classes
 	 */
 	function initByClasses(){
-
+				
 		try{
 			
 			var widgetName = g_objParent.data("widgetname");
 			
 			g_vars.class_items = getVal(g_options, "class_items");
-
-			if(!g_vars.class_items)
+			
+			if(!g_vars.class_items){
+				
+				var widgetID = g_objParent.attr("id");
+				trace("missing class_items in "+widgetID);
+				trace(g_vars);
+				
 				throw new Error(widgetName +" - missing 'class_items' option");
-
+			}
+			
 			g_vars.class_active = getVal(g_options, "class_active");
 
 			if(!g_vars.class_active)
@@ -520,7 +525,7 @@ function UERemoteGeneralAPI(){
 	 * init the api
 	 */
 	this.init = function(objParent, options, isEditor){
-
+		
 		//not allow to init general api without options
 		if(!options)
 			return(false);
@@ -539,7 +544,7 @@ function UERemoteGeneralAPI(){
 
 		if(enableDebug == true)
 			g_vars.enableDebug = true;
-
+		
 		if(g_vars.enableDebug == true){
 			trace("init general api");
 			trace(objParent);
@@ -1003,19 +1008,26 @@ function UESyncObject(){
 
 		if(g_objApis.length == 0)
 			return(false);
-
+				
 		var numItems = objAPI.doAction("get_total_items");
 
 		//check with first existing api number of items
 		for(var elID in g_objApis){
-
+			
 			var firstExistingAPI = g_objApis[elID];
 
 			var numItemsExisting = firstExistingAPI.doAction("get_total_items");
 			
-			if(numItemsExisting !== numItems)
+			if(numItemsExisting !== numItems){
+				
+				var objElement = objAPI.getElement();
+				var elementID = objElement.attr("id");
+				
+				trace("Sync failed "+elementID+" has "+numItems+" items and "+elID+" has "+numItemsExisting+ " items");
+				
 				throw new Error("Sync failed, number of items should be the same. Now it's "+numItems+" and "+numItemsExisting);
-
+			}
+			
 			return(false);
 		}
 
@@ -1718,18 +1730,24 @@ function UERemoteWidgets(){
 
 		if(optionsFromData)
 			g_vars.options_api = optionsFromData;
-
-		if(g_vars.trace_debug == true){
-			if(g_vars.options_api)
-				trace(g_vars.options_api);
-			else
-				g_vars.options_api = {};
+		
+		var optionsAPI = {};
+		
+		var optionsAPI = jQuery.extend({},g_vars.options_api);
+		
+		if(jQuery.isEmptyObject(g_vars.options_api) == false)
+			jQuery.extend({},optionsAPI, g_vars.options_api);
 			
-			g_vars.options_api.trace_debug = true;
+		if(g_vars.trace_debug == true){
+			
+			if(optionsAPI)
+				trace(optionsAPI);
+				
+			optionsAPI["trace_debug"] = true;			
 		}
-
+		
 		var isInited = g_api.init(g_objParent, g_vars.options_api, isEditor);
-
+		
 		if(g_vars.trace_debug == true){
 			trace("inited: " + isInited);
 		}
@@ -2258,7 +2276,14 @@ function UERemoteWidgets(){
 			trace("Do Action: ");
 			trace(action+ " "+arg1+" "+arg2);
 		}
-
+		
+		if(!g_api){
+			if(g_vars.trace_debug)
+				trace("empty g_api, exit");
+			
+			return(false);
+		}
+		
 		switch(action){
 			case "prev":
 			case "next":
@@ -2268,7 +2293,7 @@ function UERemoteWidgets(){
 				if(apiType == "carousel"){
 
 					g_api.doAction(action);
-
+					
 					return(false);
 				}
 				
@@ -2278,7 +2303,7 @@ function UERemoteWidgets(){
 		}
 
 		var response = g_api.doAction(action, arg1, arg2);
-
+		
 		if(g_vars.trace_debug){
 			trace("Response: ");
 			trace(response);

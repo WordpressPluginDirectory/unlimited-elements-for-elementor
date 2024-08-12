@@ -13,8 +13,9 @@ function UniteCreatorHelper() {
 	 * put includes
 	 */
 	this.putIncludes = function (windowElement, includes, onLoaded) {
+		
 		var objWindow = jQuery(windowElement.document);
-
+		
 		// make a list of handles
 		var arrHandles = {};
 
@@ -30,7 +31,7 @@ function UniteCreatorHelper() {
 
 		// load css files and first js file
 		var isFirstJS = true;
-
+		
 		jQuery.each(includes, function (event, include) {
 			if (include.type === "css") {
 				loadIncludeFile(include);
@@ -42,7 +43,7 @@ function UniteCreatorHelper() {
 				}
 			}
 		});
-
+		
 		checkAllFilesLoaded();
 
 		// prepare include handle
@@ -52,15 +53,19 @@ function UniteCreatorHelper() {
 
 		// check that all files loaded by handle
 		function checkAllFilesLoaded() {
+									
 			if (jQuery.isEmptyObject(arrHandles) === false)
 				return;
-
-			if (typeof onLoaded === "function")
-				onLoaded();
+			
+			if (typeof onLoaded === "function"){
+				setTimeout(onLoaded, 500);
+			}
+			
 		}
 
 		// load include file
 		function loadIncludeFile(objInclude) {
+			
 			var handle = prepareIncludeHandle(objInclude);
 			var type = objInclude.type;
 			var url = objInclude.url;
@@ -83,6 +88,7 @@ function UniteCreatorHelper() {
 
 			// onload trigger event when all scripts loaded
 			data.onload = function (obj, handle) {
+								
 				var objDomInclude = jQuery(obj);
 
 				objDomInclude.data("isloaded", true);
@@ -90,14 +96,15 @@ function UniteCreatorHelper() {
 				// delete the handle from the list, and check for all files loaded
 				if (arrHandles.hasOwnProperty(handle) === true) {
 					delete arrHandles[handle];
-
+					
 					checkAllFilesLoaded();
 				}
 
 				var tagName = objDomInclude.prop("tagName").toLowerCase();
-
+				
 				if (tagName === "script")
 					onJsFileLoaded();
+				
 			};
 
 			//if file not included - include it
@@ -147,6 +154,7 @@ function UniteCreatorHelper() {
 
 		// on js file loaded - load next file
 		function onJsFileLoaded() {
+						
 			for (var index in arrHandles) {
 				var include = arrHandles[index];
 

@@ -12,7 +12,7 @@ class UniteCreatorAddonType{
 	public $textSingle, $textPlural, $typeName, $typeNameDistinct, $typeNameCategory, $textShowType;
 	public $isSVG = false, $isLayout = false, $titlePrefix = "", $isBasicType = true;
 	public $typeNameCorrection;		//used for alternative plugins
-	
+	public $isBackground = false;
 	
 	//manager
 	

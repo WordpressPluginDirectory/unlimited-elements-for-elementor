@@ -48,7 +48,7 @@ class UniteCreatetorParamsProcessorMultisource{
 	 * validate that the param size exists - if not - put error
 	 */
 	private function validateImageSizeExists(){
-
+		
 		//check if there is some size
 		if(!empty($this->arrItemsImageSizes))
 			return;
@@ -64,16 +64,23 @@ class UniteCreatetorParamsProcessorMultisource{
 
 		foreach($params as $param){
 			$type = UniteFunctionsUC::getVal($param, "type");
-
-			if($type == UniteCreatorDialogParam::PARAM_IMAGE)
+			
+			if($type == UniteCreatorDialogParam::PARAM_IMAGE){
 				$imageTitle = UniteFunctionsUC::getVal($param, "title");
+			}
+			
 		}
-
+		
+		
+		//some precautions
 		if(empty($imageTitle))
 			return;
 		
+		$addonTitle = $this->addon->getTitle();
+		
+		
 		//if no image param - show some message
-		HelperHtmlUC::outputErrorMessage("Multisource Error: Missing <b>image size attribute</b> for: <b>$imageTitle</b> image attribute. Please add it to attributes list. Special Attribute -> Image Size");
+		HelperHtmlUC::outputErrorMessage("Multisource Error: Missing <b>image size attribute</b> for: <b>$imageTitle</b> image attribute. in widget: <b>$addonTitle</b>. Please add it to attributes list. Special Attribute -> Image Size");
 		
 	}
 
@@ -1546,7 +1553,7 @@ class UniteCreatetorParamsProcessorMultisource{
 		$this->arrDefaults = $this->getAttributeDefaults($param);
 		$this->arrItemsImageSizes = $this->objProcessor->getProcessedItemsData_getImageSize($this->processType);
 		$this->arrParamsItems = $this->addon->getParamsItems();
-
+		
 		//validate
 		$this->validateImageSizeExists();
 

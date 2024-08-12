@@ -26,8 +26,11 @@ class HelperProviderCoreUC_EL{
 	private static $originalQueriedObject = null;
 	private static $originalQueriedID = null;
 	private static $originalPost = null;
+	private static $arrPreloadDBData = null;
+	private static $arrPostsWidgetNames = null;
 	
-
+	
+	
 	/**
 	 * register post types of elementor library
 	 */
@@ -736,7 +739,132 @@ class HelperProviderCoreUC_EL{
 
 		return($output);
 	}
+	
+	private static function ______PRELOAD_DB________(){}
+	
+    /**
+     * collect posts widget names by record
+     * for later pagination enable check
+     */
+    private static function collectPostsWidgetsByRecord($record){
 
+    	$config = UniteFunctionsUC::getVal($record, "config");
+    	if(empty($config))
+    		return(false);
+
+    	$arrConfig = UniteFunctionsUC::jsonDecode($config);
+
+    	$params = UniteFunctionsUC::getVal($arrConfig, "params");
+    	if(empty($params))
+    		return(false);
+
+    	foreach($params as $param){
+
+    		$type = UniteFunctionsUC::getVal($param, "type");
+    		if($type != UniteCreatorDialogParam::PARAM_POSTS_LIST && $type != UniteCreatorDialogParam::PARAM_LISTING)
+    			continue;
+
+    		//post list only
+    		$widgetName = UniteFunctionsUC::getVal($record, "alias");
+
+    		self::$arrPostsWidgetNames[$widgetName] = true;
+			
+    		return(false);
+    	}
+    }
+	
+	
+	/**
+	 * preload db data for the addons and categories
+	 */
+	public static function getPreloadDBData($isOutputPage = false){
+		
+		if(!empty(self::$arrPreloadDBData))
+			return(self::$arrPreloadDBData);
+		
+    	$db = HelperUC::getDB();
+
+    	$tableCats = GlobalsUC::$table_categories;
+    	$tableAddons = GlobalsUC::$table_addons;
+    	$addonType = GlobalsUnlimitedElements::ADDONSTYPE_ELEMENTOR;
+    	$addonTypeBG = GlobalsUC::ADDON_TYPE_BGADDON;
+
+    	$whereAddonType = "addons.addontype in('{$addonType}','{$addonTypeBG}')";
+		
+    	//for output - get without cats
+    	if($isOutputPage){
+
+	    	$query = "select * from $tableAddons as addons";
+	    	$query .= " where $whereAddonType and addons.is_active=1";
+
+    	}else{		//for editor - get with categories
+
+    		$query = "select addons.*, cats.title as cat_title ,cats.alias as cat_alias, cats.ordering as cat_ordering from $tableAddons as addons";
+    		$query .= " left join $tableCats as cats on(addons.catid = cats.id)";
+    		$query .= " where $whereAddonType and addons.is_active=1 order by cat_ordering";
+    	}
+
+    	$arrRecords = $db->fetchSql($query, true);
+
+    	if(empty($arrRecords))
+    		return(null);
+		
+    	$arrBGAddonsRecords = array();
+    	$arrAddonsRecords = array();
+    	$arrCatsRecords = array();
+    	
+    	
+    	//get cats records
+    	foreach($arrRecords as $record){
+
+    		$addonName = UniteFunctionsUC::getVal($record, "name");
+    		$recordAddonType = UniteFunctionsUC::getVal($record, "addontype");
+
+    		//save bg addon record
+    		if($recordAddonType == $addonTypeBG){
+    			$arrBGAddonsRecords[$addonName] = $record;
+    			continue;
+    		}
+			
+    		self::collectPostsWidgetsByRecord($record);
+
+    		$arrAddonsRecords[$addonName] = $record;
+			
+    		//cache category records
+    		if($isOutputPage == true)
+    			continue;
+
+    		$catID = UniteFunctionsUC::getVal($record, "catid");
+    		$catTitle = UniteFunctionsUC::getVal($record, "cat_title");
+    		$catAlias = UniteFunctionsUC::getVal($record, "cat_alias");
+    		$catOrdering = UniteFunctionsUC::getVal($record, "cat_ordering");
+
+    		if(empty($catAlias))
+    			$catAlias = "cat_".$catID;
+
+    		if(isset($arrCatsRecords[$catAlias]))
+    			continue;
+
+    		$catRecord = array();
+    		$catRecord["id"] = $catID;
+    		$catRecord["title"] = $catTitle;
+    		$catRecord["alias"] = $catAlias;
+    		$catRecord["ordering"] = $catOrdering;
+
+    		$arrCatsRecords[$catAlias] = $catRecord;
+    	}
+		
+    	$data = array();
+    	$data["addons"] = $arrAddonsRecords;
+    	$data["bg_addons"] = $arrBGAddonsRecords;
+    	$data["cats"] = $arrCatsRecords;
+    	$data["posts_widgets_names"] = self::$arrPostsWidgetNames;
+		
+    	self::$arrPreloadDBData = $data;
+    	
+    	return($data);
+	}
+	
 	private static function ______LISTING________(){}
 
 	/**
@@ -1352,7 +1480,7 @@ class HelperProviderCoreUC_EL{
 		$pathRelative = str_replace(GlobalsUC::$pathPlugin, "", self::$pathCore);
 
 		self::$urlCore = GlobalsUC::$urlPlugin.$pathRelative;
-		
+				
 		self::$filepathGeneralSettings = self::$pathCore."settings/general_settings_el.xml";
 				
 		//add_action("init", array("HelperProviderCoreUC_EL", "onInitAction"));

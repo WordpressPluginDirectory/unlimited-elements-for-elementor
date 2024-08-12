@@ -41,7 +41,7 @@ class UniteCreatorAddonType_BGAddon extends UniteCreatorAddonType{
 		
 		$this->addonView_urlBack = HelperUC::getViewUrl(GlobalsUnlimitedElements::VIEW_BACKGROUNDS);
 		$this->addonView_showSmallIconOption = false;		
-		
+		$this->isBackground = true;
 		
 	}
 	

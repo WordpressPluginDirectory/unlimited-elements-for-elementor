@@ -466,7 +466,7 @@
                 return $actions[0];
             }
 
-            ob_start();
+            UniteFunctionsUC::obStart();
 
             ?>
             <div class="fs-cta fs-dropdown">

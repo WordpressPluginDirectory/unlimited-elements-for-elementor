@@ -580,7 +580,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			if(empty($image))
 				UniteFunctionsUC::throwError("can't convert image");
 		    
-			ob_start();
+			UniteFunctionsUC::obStart();
 			
 			imagejpeg($image, null, $quality);
 		    

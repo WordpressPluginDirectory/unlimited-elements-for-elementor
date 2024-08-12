@@ -71,7 +71,6 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		else
 			$this->objTemplate = new UniteCreatorTemplateEngine();
 
-
 		$this->processType = UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT;
 		
 		if(GlobalsProviderUC::$renderPlatform == GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG)
@@ -90,7 +89,8 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$this->processType = $type;
 
 	}
-
+	
+	
 	/**
 	 * validate inited
 	 */
@@ -342,7 +342,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		$arrProcessedIncludes = array_merge($arrIncludesJS, $arrIncludesCss);
 		$arrProcessedIncludes = $this->excludeExistingInlcudes($arrProcessedIncludes);
-
+		
 		// add widget scripts to editor
 		if(!empty(HelperUC::$arrWidgetScripts)){
 			foreach(HelperUC::$arrWidgetScripts as $handle => $urlScript){
@@ -442,16 +442,16 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		return($html);
 	}
-
-
+	
+	
 	/**
 	 * process includes
 	 * includes type = "all,js,css"
 	 */
 	public function processIncludes($includesType = "all"){
-
+		
 		$arrIncludes = $this->getProcessedIncludes(true, true, $includesType);
-
+		
 		$addonName = $this->addon->getName();
 
 		$arrDep = $this->addon->getIncludesJsDependancies();
@@ -462,7 +462,6 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			$url = $include["url"];
 			$handle = UniteFunctionsUC::getVal($include, "handle");
 			$deps = UniteFunctionsUC::getVal($include, "deps");
-
 
 			if(empty($handle))
 				$handle = HelperUC::getUrlHandle($url, $addonName);
@@ -493,9 +492,12 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			}
 
 		}
-
+		
+		//process special includes if available
+		
 	}
-
+	
+	
 	private function a________PREVIEW_HTML________(){}
 
 	/**
@@ -1270,7 +1272,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * get selectors css
 	 */
 	public function getSelectorsCss(){
-
+				
 		$style = $this->processPreviewParamsSelectors();
 
 		return $style;
@@ -1811,7 +1813,41 @@ $js
 	 */
 	private function modifyGutenbergBGCSS($css){
 		
+				
+		
 		$ucID = $this->generatedID;
+		
+		$isInsideEditor = $this->isInsideEditor();
+		
+		//back css
+		
+		if($isInsideEditor == true){
+			
+			$css = "#{$ucID}-root .uc-background-editor-placeholder{
+				font-size:12px;
+				padding:20px;
+				color:black;
+			}
+			
+			#{$ucID}-root{
+				position:relative;
+				border:1px solid gray;
+				background-color:lightgray;
+			}
+			
+			$css";
+			
+			return($css);
+		}
+		
+		//front css
+
+		$arrValues = $this->addon->getOriginalValues();
+		$backgroundLocation = UniteFunctionsUC::getVal($arrValues, "background_location");
+		
+		$zIndex = -1;
+		if($backgroundLocation == "front")
+			$zIndex = 999;
 		
 		$css = "
 /* background wrapper */
@@ -1821,8 +1857,7 @@ $js
 	left:0px;
 	height:100%;
 	width:100%;
-	z-index:-1 !important;
-	background-color:blue;
+	z-index:{$zIndex} !important;
 }
 $css
 ";
@@ -1834,7 +1869,7 @@ $css
 	 * modify gutenberg bg html
 	 */
 	private function modifyGutenbergBGHTML(){
-		
+				
 		$html = "";
 		
 		$isInsideEditor = $this->isInsideEditor();
@@ -1848,7 +1883,9 @@ $css
 		
 		$text = __("Background Placeholder for ","unlimited-elements-for-elementor");
 		
-		$html .= "<div class='uc-background-editor-placeholder'>{$text} {$addonTitle}</div>";
+		$text2 = __("Will cover the parent block in front end.","unlimited-elements-for-elementor");
+		
+		$html .= "<div class='uc-background-editor-placeholder'>{$text} <b>{$addonTitle}</b>. $text2</div>";
 		
 		return($html);
 	}
@@ -1986,7 +2023,8 @@ $css
 	 * place output by shortcode
 	 */
 	public function getHtmlBody($scriptHardCoded = true, $putCssIncludes = false, $putCssInline = true, $params = null){
-
+		
+		
 		$this->validateInited();
 
 		//render the js inside "template" tag always if available
@@ -2020,12 +2058,14 @@ $css
 				
 			}
 			
+			
 			//fetch selectors (add google font includes on the way)
 			$isAddSelectors = UniteFunctionsUC::getVal($params, "add_selectors_css");
 			$isAddSelectors = UniteFunctionsUC::strToBool($isAddSelectors);
 
 			$cssSelectors = "";
 
+			
 			if($isAddSelectors === true)
 				$cssSelectors = $this->getSelectorsCss();
 
@@ -2274,9 +2314,9 @@ $css
 			$isInsideEditor = true;
 		
 		//$data["is_inside_editor"] = $isInsideEditor;
-
+		
 		$data = UniteProviderFunctionsUC::addSystemConstantData($data);
-
+		
 		$data = UniteProviderFunctionsUC::applyFilters(UniteCreatorFilters::FILTER_ADD_ADDON_OUTPUT_CONSTANT_DATA, $data);
 
 		$this->cacheConstants = $data;
@@ -2628,12 +2668,13 @@ $css
 			$itemIndex = 0;
 
 			foreach($arrItemData as $key => $item){
+								
 				$itemIndex++;
 
 				$arrItem = $item["item"];
 				$arrItem["item_index"] = $itemIndex;
 				$arrItem["item_id"] = $this->generatedID . "_item" . $itemIndex;
-
+				
 				$arrItemData[$key]["item"] = $arrItem;
 			}
 
@@ -2705,7 +2746,7 @@ $css
 		
 		if($typeName == GlobalsUC::ADDON_TYPE_BGADDON)
 			$this->isBackground = true;
-			
+				
 		if($this->isBackground == true && $this->isGutenberg == true)
 			$this->isGutenbergBackground = true;
 					

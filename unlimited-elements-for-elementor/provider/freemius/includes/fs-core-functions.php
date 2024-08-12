@@ -51,7 +51,7 @@
         }
 
         function fs_get_template( $path, &$params = null ) {
-            ob_start();
+            UniteFunctionsUC::obStart();
 
             $VARS = &$params;
             require fs_get_template_path( $path );

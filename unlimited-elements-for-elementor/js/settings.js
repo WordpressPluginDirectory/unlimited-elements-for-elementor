@@ -124,7 +124,7 @@ function UniteSettingsUC(){
 				var objTip = jQuery(this);
 
 				return objTip.data("tipsy-gravity") || "s";
-			},
+			}
 		});
 
 		jQuery(document).on("click", ".uc-tip", function () {
@@ -702,6 +702,7 @@ function UniteSettingsUC(){
 	 * set input value
 	 */
 	function setInputValue(objInput, value, objValues){
+		
 		var name = getInputName(objInput);
 		var type = getInputType(objInput);
 		var id = objInput.prop("id");
@@ -793,20 +794,21 @@ function UniteSettingsUC(){
 				setIconInputValue(objInput, value);
 			break;
 			case "image":
+								 
 				if (jQuery.isPlainObject(value) === false) {
 					if (jQuery.isNumeric(value) === true) {
 						value = {
 							id: value,
-							url: g_ucAdmin.getVal(objValues, name + "_url"),
+							url: g_ucAdmin.getVal(objValues, name + "_url")
 						};
 					} else {
 						value = {
 							id: g_ucAdmin.getVal(objValues, name + "_imageid"),
-							url: value,
+							url: value
 						};
 					}
 				}
-
+								
 				setImageInputValue(objInput, value);
 			break;
 			case "link":
@@ -937,6 +939,7 @@ function UniteSettingsUC(){
 	 * set values, clear first
 	 */
 	this.setValues = function (objValues) {
+		
 		validateInited();
 
 		t.disableTriggerChange();
@@ -1050,7 +1053,7 @@ function UniteSettingsUC(){
 			},
 			change: function () {
 				funcChange(null, objWrapper);
-			},
+			}
 		});
 
 		objInput.on("input", function () {
@@ -1276,7 +1279,7 @@ function UniteSettingsUC(){
 
 				g_colorPickerWrapper.css({
 					"left": posLeft,
-					"top": posTop,
+					"top": posTop
 				});
 			});
 		}
@@ -1398,7 +1401,7 @@ function UniteSettingsUC(){
 	}
 
 	function _______IMAGE_SETTING_____(){}
-
+	
 	/**
 	 * update image url base
 	 */
@@ -1433,7 +1436,156 @@ function UniteSettingsUC(){
 				t.updateImageFieldState(objInput, urlBase);
 		});
 	}
+	
+	
+	/**
+	 * init image chooser
+	 */
+	t.initImageChooser = function (objWrapper, funcChange) {
+		
+		var source = objWrapper.data("source");
+		
+		var objPreview = objWrapper.find(".unite-setting-image-preview");
+		var objChooseButton = objWrapper.find(".unite-setting-image-choose");
+		var objClearButton = objWrapper.find(".unite-setting-image-clear");
+		var objUrl = objWrapper.find(".unite-setting-image-url");
+		var objSize = objWrapper.find(".unite-setting-image-size");
+		
+		if(source == "addon")
+			objSize = null;
+			
+		// make compatible with widget params dialog
+		if (typeof funcChange !== "function") {
+			funcChange = function (){
+				objUrl.trigger("input");
+			};
+		}
+		
+		objUrl.on("change",function(){
+			objUrl.trigger("input");
+		});
+		
+		objUrl.on("input", function (event) {
+						
+			var url = objUrl.val();
 
+			if (url === "")
+				objPreview.removeAttr("style");
+			else
+				objPreview.css("background-image", "url('" + url + "')");
+
+			// reset image id if the input has been changed manually
+			if (event.originalEvent)
+				objWrapper.data("image-id", null);
+
+			var imageId = objWrapper.data("image-id");
+
+			objUrl.closest(".unite-setting-image-section").toggleClass("unite-hidden", !!imageId);
+			
+			if(objSize)
+				objSize.closest(".unite-setting-image-section").toggleClass("unite-hidden", !imageId);
+			
+		});
+		
+		
+		if(objSize){
+			
+			objSize.on("change", function () {
+				
+				objSize.prop("disabled", true);
+				
+				const data = getImageInputValue(objWrapper);
+				
+				g_ucAdmin.ajaxRequest("get_image_url", data, function (response) {
+					data.url = response.url;
+
+					setImageInputValue(objWrapper, data);
+					
+					funcChange(null, objWrapper);
+				}).always(function () {
+					objSize.prop("disabled", false);
+				});
+			});
+			
+		}
+
+		objChooseButton.on("click", function (event) {
+			
+			event.stopPropagation();
+
+			var source = objWrapper.data("source");
+
+			g_ucAdmin.openAddImageDialog(g_uctext.choose_image, function (imageUrl, imageId) {
+								
+				if (source === "addon")
+					setImageInputValue(objWrapper, imageUrl.url_assets_relative);
+				else
+					setImageInputValue(objWrapper, { id: imageId, url: imageUrl });
+
+				funcChange(null, objWrapper);
+				
+			}, false, source);
+		});
+
+		objClearButton.on("click", function (event) {
+			event.stopPropagation();
+
+			setImageInputValue(objWrapper, "");
+
+			funcChange(null, objWrapper);
+		});
+
+		objPreview.on("click", function () {
+			objChooseButton.trigger("click");
+		});
+	}
+
+	/**
+	 * destroy image chooser
+	 */
+	function destroyImageChoosers() {
+		g_objWrapper.find(".unite-setting-image-preview").off("click");
+		g_objWrapper.find(".unite-setting-image-choose").off("click");
+		g_objWrapper.find(".unite-setting-image-clear").off("click");
+		g_objWrapper.find(".unite-setting-image-url").off("input");
+		g_objWrapper.find(".unite-setting-image-size").off("change");
+	}
+
+	/**
+	 * get image input value
+	 */
+	function getImageInputValue(objWrapper) {
+		var id = objWrapper.data("image-id");
+		var url = objWrapper.find(".unite-setting-image-url").val();
+		var size = objWrapper.find(".unite-setting-image-size").val();
+
+		var data = {
+			id: id,
+			url: g_ucAdmin.urlToRelative(url),
+			size: size
+		};
+
+		return data;
+	}
+
+	/**
+	 * set image input value
+	 */
+	function setImageInputValue(objWrapper, value) {
+		
+		if (typeof value === "string")
+			value = { url: value };
+
+		value.id = value.id || null;
+		value.url = g_ucAdmin.urlToFull(value.url);
+		value.size = value.size || "full";
+
+		objWrapper.data("image-id", value.id);
+		objWrapper.find(".unite-setting-image-url").val(value.url).trigger("input");
+		objWrapper.find(".unite-setting-image-size").val(value.size);
+	}
+	
+	
 
 	function _______GALLERY_____(){}
 
@@ -1483,13 +1635,13 @@ function UniteSettingsUC(){
 	function openGalleryFrame(action, images, onChange) {
 		var states = {
 			add: "gallery-library",
-			edit: "gallery-edit",
+			edit: "gallery-edit"
 		};
 
 		var options = {
 			frame: "post",
 			state: states[action],
-			multiple: true,
+			multiple: true
 		};
 
 		if (images.length > 0) {
@@ -1502,12 +1654,12 @@ function UniteSettingsUC(){
 				perPage: -1,
 				post__in: ids,
 				orderby: "post__in",
-				order: "ASC",
+				order: "ASC"
 			});
 
 			options.selection = new wp.media.model.Selection(attachments.models, {
 				props: attachments.props.toJSON(),
-				multiple: true,
+				multiple: true
 			});
 		}
 
@@ -1702,7 +1854,7 @@ function UniteSettingsUC(){
 	 * init saps tabs
 	 */
 	function initSapsTabs(){
-
+		
 		if(!g_objWrapper){
 			g_objSapTabs = null;
 			return(false);
@@ -1725,25 +1877,32 @@ function UniteSettingsUC(){
 	 * init saps accordion type
 	 */
 	function initSapsAccordion(){
+		
 		var objTabs = g_objWrapper.children(".unite-settings-accordion-saps-tabs").children(".unite-settings-tab");
 		var objAccordions = g_objWrapper.children(".unite-postbox:not(.unite-no-accordion)");
 		var objAccordionTitles = objAccordions.children(".unite-postbox-title");
 
 		objTabs.on("click", function () {
+						
 			var objTab = jQuery(this);
+						
 			var objRoot = objTab.closest(".unite-settings-accordion-saps-tabs");
 			var id = objTab.data("id");
 
 			objRoot.find(".unite-settings-tab").removeClass("unite-active");
 			objTab.addClass("unite-active");
-
-			var objContents = objAccordions.hide().filter("[data-tab='" + id + "']").show();
-
+			
+			objAccordions.hide();
+			
+			var objContents = objAccordions.filter("[data-tab='" + id + "']");
+			objContents.show();
+			
 			if (objContents.filter(".unite-active").length === 0)
 				objContents.filter(":first").find(".unite-postbox-title").trigger("click");
 		});
 
 		objAccordionTitles.on("click", function () {
+			
 			var objRoot = jQuery(this).closest(".unite-postbox");
 			var tab = objRoot.data("tab");
 
@@ -1764,6 +1923,7 @@ function UniteSettingsUC(){
 		if (objTabs.length > 0) {
 			objTabs.filter(":first").trigger("click");
 		}
+		
 		else {
 			objAccordions.show();
 
@@ -2238,7 +2398,7 @@ function UniteSettingsUC(){
 
 				if (iconPos > containerHeight)
 					objContainer.scrollTop(iconPos - (containerHeight / 2 - 50));
-			},
+			}
 		});
 
 		// on filter input
@@ -2337,7 +2497,7 @@ function UniteSettingsUC(){
 		var params = {
 			name: name,
 			icons: arrIcons,
-			template: iconsTemplate,
+			template: iconsTemplate
 		};
 
 		if (optParams)
@@ -2418,131 +2578,6 @@ function UniteSettingsUC(){
 		objInput.val(value).trigger("input");
 	}
 
-
-	function __________IMAGE_CHOOSER__________(){}
-
-	/**
-	 * init image chooser
-	 */
-	t.initImageChooser = function (objWrapper, funcChange) {
-		var objPreview = objWrapper.find(".unite-setting-image-preview");
-		var objChooseButton = objWrapper.find(".unite-setting-image-choose");
-		var objClearButton = objWrapper.find(".unite-setting-image-clear");
-		var objUrl = objWrapper.find(".unite-setting-image-url");
-		var objSize = objWrapper.find(".unite-setting-image-size");
-
-		// make compatible with widget params dialog
-		if (typeof funcChange !== "function") {
-			funcChange = function () {
-				objUrl.trigger("input");
-			};
-		}
-
-		objUrl.on("input", function (event) {
-			var url = objUrl.val();
-
-			if (url === "")
-				objPreview.removeAttr("style");
-			else
-				objPreview.css("background-image", "url('" + url + "')");
-
-			// reset image id if the input has been changed manually
-			if (event.originalEvent)
-				objWrapper.data("image-id", null);
-
-			var imageId = objWrapper.data("image-id");
-
-			objUrl.closest(".unite-setting-image-section").toggleClass("unite-hidden", !!imageId);
-			objSize.closest(".unite-setting-image-section").toggleClass("unite-hidden", !imageId);
-		});
-
-		objSize.on("change", function () {
-			objSize.prop("disabled", true);
-
-			const data = getImageInputValue(objWrapper);
-
-			g_ucAdmin.ajaxRequest("get_image_url", data, function (response) {
-				data.url = response.url;
-
-				setImageInputValue(objWrapper, data);
-
-				funcChange(null, objWrapper);
-			}).always(function () {
-				objSize.prop("disabled", false);
-			});
-		});
-
-		objChooseButton.on("click", function (event) {
-			event.stopPropagation();
-
-			var source = objWrapper.data("source");
-
-			g_ucAdmin.openAddImageDialog(g_uctext.choose_image, function (imageUrl, imageId) {
-				if (source === "addon")
-					setImageInputValue(objWrapper, imageUrl.url_assets_relative);
-				else
-					setImageInputValue(objWrapper, { id: imageId, url: imageUrl });
-
-				funcChange(null, objWrapper);
-			}, false, source);
-		});
-
-		objClearButton.on("click", function (event) {
-			event.stopPropagation();
-
-			setImageInputValue(objWrapper, "");
-
-			funcChange(null, objWrapper);
-		});
-
-		objPreview.on("click", function () {
-			objChooseButton.trigger("click");
-		});
-	}
-
-	/**
-	 * destroy image chooser
-	 */
-	function destroyImageChoosers() {
-		g_objWrapper.find(".unite-setting-image-preview").off("click");
-		g_objWrapper.find(".unite-setting-image-choose").off("click");
-		g_objWrapper.find(".unite-setting-image-clear").off("click");
-		g_objWrapper.find(".unite-setting-image-url").off("input");
-		g_objWrapper.find(".unite-setting-image-size").off("change");
-	}
-
-	/**
-	 * get image input value
-	 */
-	function getImageInputValue(objWrapper) {
-		var id = objWrapper.data("image-id");
-		var url = objWrapper.find(".unite-setting-image-url").val();
-		var size = objWrapper.find(".unite-setting-image-size").val();
-
-		var data = {
-			id: id,
-			url: g_ucAdmin.urlToRelative(url),
-			size: size,
-		};
-
-		return data;
-	}
-
-	/**
-	 * set image input value
-	 */
-	function setImageInputValue(objWrapper, value) {
-		if (typeof value === "string")
-			value = { url: value };
-
-		value.id = value.id || null;
-		value.url = g_ucAdmin.urlToFull(value.url);
-		value.size = value.size || "full";
-
-		objWrapper.data("image-id", value.id);
-		objWrapper.find(".unite-setting-image-url").val(value.url).trigger("input");
-		objWrapper.find(".unite-setting-image-size").val(value.size);
-	}
 
 
 	function __________TABS__________(){}
@@ -2767,7 +2802,7 @@ function UniteSettingsUC(){
 
 					return params;
 				},
-			},
+			}
 		});
 
 		if (selectedValue)
@@ -3329,7 +3364,7 @@ function UniteSettingsUC(){
 			includes[handle] = {
 				handle: handle,
 				type: "css",
-				url: url,
+				url: url
 			};
 		}
 
@@ -3641,7 +3676,7 @@ function UniteSettingsUC(){
 
 				var objParent = {
 					id: parentID,
-					value: parentValue,
+					value: parentValue
 				};
 
 				action = getControlAction(objParent, objControl);
@@ -3709,7 +3744,7 @@ function UniteSettingsUC(){
 
 		var objParent = {
 			id: controlID,
-			value: controlValue,
+			value: controlValue
 		};
 
 		jQuery.each(arrChildControls, function (childName, objControl) {
@@ -4028,7 +4063,7 @@ function UniteSettingsUC(){
 			"{{top}}": value.top + value.unit,
 			"{{right}}": value.right + value.unit,
 			"{{bottom}}": value.bottom + value.unit,
-			"{{left}}": value.left + value.unit,
+			"{{left}}": value.left + value.unit
 		};
 	}
 
@@ -4054,7 +4089,7 @@ function UniteSettingsUC(){
 		return {
 			"{{value}}": value.size + value.unit,
 			"{{size}}": value.size,
-			"{{unit}}": value.unit,
+			"{{unit}}": value.unit
 		};
 	}
 
@@ -4471,6 +4506,7 @@ function UniteSettingsUC(){
 	 * init single input event
 	 */
 	function initInputEvents(objInput, funcChange) {
+		
 		if (!funcChange)
 			funcChange = t.onSettingChange;
 
@@ -4568,6 +4604,7 @@ function UniteSettingsUC(){
 	 * init settings events
 	 */
 	function initSettingsEvents() {
+		
 		var objInputs = getObjInputs();
 
 		jQuery.each(objInputs, function () {
@@ -4842,7 +4879,8 @@ function UniteSettingsUC(){
 
 		if (!g_objWrapper)
 			throw new Error("Unable to detect settings wrapper.");
-
+		
+		
 		g_temp.settingsID = g_objWrapper.prop("id");
 		g_temp.isSidebar = g_objWrapper.hasClass("unite-settings-sidebar");
 		g_temp.disableExcludeSelector = g_ucAdmin.getVal(options, "disable_exclude_selector");
@@ -4854,12 +4892,15 @@ function UniteSettingsUC(){
 		initOptions();
 		initItemsPanel();
 		initRepeaters();
+		
 		initSaps();
+		
 		initResponsivePicker();
 		initUnitsPicker();
 		initAnimationsSelector();
 		initGlobalEvents();
-
+		
+		
 		t.updateEvents();
 		t.clearSettingsInit();
 

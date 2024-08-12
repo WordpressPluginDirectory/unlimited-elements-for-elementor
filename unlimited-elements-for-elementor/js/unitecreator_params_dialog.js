@@ -295,10 +295,11 @@ function UniteCreatorParamsDialog(){
 	 * fill params dialog
 	 */
 	function fillParamsDialog(objData){
-
+		
 		clearParamDialog();
 
 		selectParamDialogTabByType(objData.type);
+
 
 		var objInputs = getCurrentInputs();
 
@@ -364,7 +365,7 @@ function UniteCreatorParamsDialog(){
 
 			if(typeof objSpecialInput.onFillInputData == "function")
 				objSpecialInput.onFillInputData(objInput, objData);
-
+			
 		});
 
 
@@ -1672,6 +1673,7 @@ function UniteCreatorParamsDialog(){
 	 * trigger event
 	 */
 	function triggerEvent(eventName, params){
+				
 		if(!params)
 			var params = null;
 
@@ -2092,11 +2094,11 @@ function UniteCreatorParamsDialog(){
 			return(false);
 
 		objSettingsWrappers.each(function(){
-
+			
 			var objWrapper = jQuery(this);
 			var objSettings = new UniteSettingsUC();
 			objSettings.init(objWrapper);
-
+			
 		});
 
 	}

@@ -2307,7 +2307,7 @@ class UniteCreatorManagerAddonsWork extends UniteCreatorManager{
 		$output = new UniteSettingsOutputWideUC();
 		$output->init($settings);
 
-		ob_start();
+		UniteFunctionsUC::obStart();
 		$output->draw("uc_category_settings");
 
 		$htmlSettings = ob_get_contents();

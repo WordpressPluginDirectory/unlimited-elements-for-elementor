@@ -57,6 +57,7 @@ class HelperInstaUC{
 		exit();
 	}
 
+	
 	/**
 	 * save connect data, from ajax function
 	 * redirect to general settings
@@ -68,7 +69,7 @@ class HelperInstaUC{
 		$username = UniteFunctionsUC::getVal($data, "username");
 		$expiresIn = UniteFunctionsUC::getVal($data, "expires");
 		
-		$username = UniteFunctionsUC::validateAlphaNumeric($username);
+		self::validateInstance($username);
 		
 		UniteFunctionsUC::validateNumeric($expiresIn, "expires in ");
 
@@ -379,7 +380,7 @@ class HelperInstaUC{
 	public static function validateInstance($user, $instance="user"){
 
 		UniteFunctionsUC::validateNotEmpty($user,"instagram $instance");
-
+		
 		if(preg_match('/^[a-zA-Z0-9._]+$/', $user) == false)
 			UniteFunctionsUC::throwError("The instagram $instance is incorrect");
 

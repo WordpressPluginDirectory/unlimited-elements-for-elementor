@@ -235,7 +235,7 @@ class UniteSettingsOutputSidebarUC extends UniteCreatorSettingsOutput{
 	 * draw sap before override
 	 */
 	protected function drawSapBefore($sap, $key){
-
+		
 		$tab = UniteFunctionsUC::getVal($sap, "tab");
 		$name = UniteFunctionsUC::getVal($sap, "name");
 		$text = UniteFunctionsUC::getVal($sap, "text");

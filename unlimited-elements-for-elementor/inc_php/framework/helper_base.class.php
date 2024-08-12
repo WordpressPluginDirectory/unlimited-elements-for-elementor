@@ -43,7 +43,6 @@ class UniteHelperBaseUC extends HtmlOutputBaseUC{
 			echo $content;
 		}
 		
-		
 		$isJsonOutput = UniteFunctionsUC::getGetVar("json","",UniteFunctionsUC::SANITIZE_KEY);
 		$isJsonOutput = UniteFunctionsUC::strToBool($isJsonOutput);
 		

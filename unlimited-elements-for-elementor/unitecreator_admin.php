@@ -80,14 +80,14 @@ class UniteCreatorAdmin extends UniteBaseAdminClassUC{
 	 * common scripts even if the plugin not load, use this function only if no choise.
 	 */
 	public static function onAddScripts(){
-
+		
 		self::addMustScripts();
-
+		
 		HelperUC::addScript("unitecreator_assets", "unitecreator_assets");
 		HelperUC::addStyle("unitecreator_styles","unitecreator_css","css");
 
 		$viewForIncludes = self::$view;
-
+				
 		//take from view aliased if exists
 		if(isset(GlobalsUC::$arrViewAliases[$viewForIncludes]))
 			$viewForIncludes = GlobalsUC::$arrViewAliases[$viewForIncludes];
@@ -151,7 +151,7 @@ class UniteCreatorAdmin extends UniteBaseAdminClassUC{
 
 			break;
 			case GlobalsUC::VIEW_TEST_ADDON:
-
+			
 				self::onAddScriptsBrowser();
 				UniteCreatorManager::putScriptsIncludes(UniteCreatorManager::TYPE_ITEMS_INLINE);
 

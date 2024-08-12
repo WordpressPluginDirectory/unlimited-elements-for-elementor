@@ -23,7 +23,10 @@ class UniteFunctionsUC{
 	 * throw error
 	 */
 	public static function throwError($message, $code = 0){
-
+		
+		if($code === null)
+			$code = 0;
+		
 		throw new Exception($message, $code);
 	}
 
@@ -827,7 +830,7 @@ class UniteFunctionsUC{
 	 * get id's array from any input
 	 */
 	public static function getIDsArray($input){
-
+		
 		if(empty($input))
 			return(array());
 
@@ -1628,7 +1631,7 @@ class UniteFunctionsUC{
 				$position = 0;
 				$tags = array();
 
-				ob_start();
+				self::obStart();
 
 				while ($printedLength < $maxLength && preg_match('{</?([a-z]+)[^>]*>|&#?[a-zA-Z0-9]+;}', $html, $match, PREG_OFFSET_CAPTURE, $position)){
 
@@ -2036,7 +2039,7 @@ class UniteFunctionsUC{
 		if(empty($val))
 			return(true);
 
-		$match = preg_match('/^[0-9,]+$/', $val);
+		$match = preg_match('/^[0-9,\s]+$/', $val);
 
 		if($match == 0)
 			return(false);
@@ -2940,10 +2943,19 @@ class UniteFunctionsUC{
 		$strDate = date("d M Y",$stamp);	//27 Jun 2009
 		return($strDate);
 	}
-
-
-
+	
+	
 	public static function z___________OTHERS__________(){}
+	
+	
+	/**
+	 * ob start with some debug
+	 */
+	public static function obStart(){
+		
+		//dmp("ob start!!!");
+		ob_start();
+	}
 	
 	/**
 	 * check if max debug available

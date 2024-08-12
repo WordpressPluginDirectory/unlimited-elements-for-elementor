@@ -32,6 +32,16 @@ class UniteCreatorWpmlIntegrate{
 		return(false);
 	}
 	
+	/**
+	 * get default site langauge
+	 */
+	public function getDefaultSiteLanguage(){
+		
+		$wpml_settings = get_site_option('icl_sitepress_settings');
+		$default_language = isset($wpml_settings['default_language']) ? $wpml_settings['default_language'] : '';
+		
+		return($default_language);
+	}
 	
 	/**
 	 * init the languages
@@ -50,7 +60,8 @@ class UniteCreatorWpmlIntegrate{
 		$this->arrShortPrefix = array();
 		
 		$this->arrShortPrefix["__none__"] = __("Not Selected","unlimited-elements-for-elementor");
-				
+
+		
 		//set active and short
 		foreach($this->arrLanguages as $language){
 			
@@ -80,7 +91,7 @@ class UniteCreatorWpmlIntegrate{
 	/**
 	 * get active languages
 	 */
-	public function getLanguagesShort($addPrefix = false){
+	public function getLanguagesShort($addPrefix = false, $noActive = false){
 		
 		if(self::isWpmlExists() == false)
 			return(array());
@@ -90,7 +101,20 @@ class UniteCreatorWpmlIntegrate{
 		if($addPrefix == true)
 			return($this->arrShortPrefix);
 		
-		return($this->arrShort);
+		$arrLang = $this->arrShort;
+		
+		//get without active langauge
+		if($noActive == true){
+			
+			$defaultLanguage = $this->getDefaultSiteLanguage();
+			if(empty($defaultLanguage))
+				$defaultLanguage = UniteFunctionsUC::getArrFirstValue($arrLang);
+			
+			unset($arrLang[$defaultLanguage]);
+		}
+		
+				
+		return($arrLang);
 	}
 	
 	/**
@@ -226,7 +250,6 @@ class UniteCreatorWpmlIntegrate{
 				$paramsItems = $addon->getParamsItems();
 				
 				$arrItemsFields = $this->getTranslatableParamsFields($widgetTitle, $paramsItems, true);
-				
 			}
 			
 			if(empty($arrFields) && empty($arrItemsFields))

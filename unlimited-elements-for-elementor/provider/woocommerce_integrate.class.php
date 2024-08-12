@@ -1447,6 +1447,12 @@ class UniteCreatorWooIntegrate{
 			if(!empty($urlImage))
 				$imageHTML = "<img class=\"ue-mini-cart-item-image\" src=\"{$urlImage}\" >";
 		
+			
+			//extra html hooks
+			
+			$extraHTML_item = apply_filters("ue_woocart_item_extra_html", "", $wc_product_id);
+			$extraHTML_itemContent = apply_filters("ue_woocart_item_content_extra_html", "" , $wc_product_id);
+			
 $htmlItem = "
 <div class=\"ue-mini-cart-item\" data-key=\"{$cart_item_key}\">
    <a class=\"ue-mini-cart-item-image-wrapper\" href=\"{$product_link}\" target=\"blank\">{$imageHTML}</a>  
@@ -1455,6 +1461,7 @@ $htmlItem = "
 			<a class=\"ue-mini-cart-item-title-text\" href=\"{$product_link}\" target=\"blank\">{$item_name}</a><div>
             <span class=\"ue_mini_qty\">{$quantity} x</span>
             <span class=\"ue_mini_price\">{$priceHtml}</span>
+         {$extraHTML_itemContent}
          </div>
          <div class=\"ue_mini_quantity_input\">
             <span class=\"ue_mini_minus\">-</span>
@@ -1464,6 +1471,7 @@ $htmlItem = "
       </div>
       <div class=\"ue-mini-cart-item-delete\"><i class=\"far fa-trash-alt\"></i></div>
    </div>
+   {$extraHTML_item}   
 </div>
 
 ";

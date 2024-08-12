@@ -1829,7 +1829,7 @@ class UniteCreatorAddonView{
 
 		//make html
 
-		ob_start();
+		UniteFunctionsUC::obStart();
 
 		$addonTitle = $addon->getTitle();
 
@@ -1935,7 +1935,7 @@ class UniteCreatorAddonView{
 		$changelog = new UniteCreatorAddonChangelog();
 		$changelogs = $changelog->getAddonChangelogs($addonID);
 
-		ob_start();
+		UniteFunctionsUC::obStart();
 
 		?>
 		<?php if(empty($changelogs)): ?>
@@ -2002,7 +2002,7 @@ class UniteCreatorAddonView{
 		$revisions = $revisioner->getAddonRevisions($addon);
 		$previousRevision = null;
 
-		ob_start();
+		UniteFunctionsUC::obStart();
 
 		?>
 		<?php if(empty($revisions)): ?>

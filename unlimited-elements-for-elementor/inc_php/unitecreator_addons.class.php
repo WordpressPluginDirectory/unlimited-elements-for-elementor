@@ -487,13 +487,34 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 			"add_selectors_css" => $includeSelectors,
 			"root_id" => $rootId,
 		);
-
+		
+		$cacheOutput = false;
+		if(GlobalsProviderUC::$isInsideEditor == true)
+			$cacheOutput = true;
+		
+		if($cacheOutput == true){
+			UniteFunctionsUC::obStart();
+		}
+		
 		$objOutput = new UniteCreatorOutput();
 		$objOutput->setProcessType(UniteCreatorParamsProcessor::PROCESS_TYPE_OUTPUT_BACK);
 		$objOutput->checkOutputDebug($objAddon);
 		$objOutput->initByAddon($objAddon);
-
+		
+		$htmlBefore = null;
+		
+		if($cacheOutput == true){
+			$htmlBefore = ob_get_contents();			
+			ob_end_clean();
+		}
+		
 		$html = $objOutput->getHtmlBody(true, false, true, $params);
+		
+		
+		if(!empty($htmlBefore)){
+			$html = $htmlBefore.$html;
+		}
+		
 		$includes = $objOutput->getProcessedIncludes(true);
 		$outputId = $objOutput->getWidgetID();
 
@@ -508,22 +529,46 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	}
 
 	/**
+	 * check addon global variables
+	 */
+	private function checkInitAddonGlobalVars($addonData){
+		
+		//set edit mode
+		$source = UniteFunctionsUC::getVal($addonData, "source");
+		if($source == "editor")
+			GlobalsProviderUC::$isInsideEditor = true;
+		
+		$platform = UniteFunctionsUC::getVal($addonData, "platform");
+		if($platform == "gutenberg")
+			GlobalsProviderUC::$renderPlatform = GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG;
+		
+	}
+	
+	
+	/**
 	 * get addon output data
 	 */
 	public function getAddonOutputData($addonData, $isWrap = false){
 		
+		$this->checkInitAddonGlobalVars($addonData);
+					
 		$objAddon = $this->prepareAddonByData($addonData);
-
+		
 		$rootId = UniteFunctionsUC::getVal($addonData, "root_id");
 		$includeSelectors = UniteFunctionsUC::getVal($addonData, "selectors");
 		$includeSelectors = UniteFunctionsUC::strToBool($includeSelectors);
-
-		return $this->getAddonOutput($objAddon, array(
+		
+		$outputOptions = array(
 			"root_id" => $rootId,
 			"selectors" => $includeSelectors,
 			"wrap"=>$isWrap
-		));
+		);
+		 
+		$output = $this->getAddonOutput($objAddon, $outputOptions);
+		
+		return($output);
 	}
+	
 
 	/**
 	 * get addon config html by data
@@ -556,14 +601,16 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 * get item settings html
 	 */
 	public function getAddonSettingsHTMLFromData($data){
-
+		
+		$this->checkInitAddonGlobalVars($data);
+		
 		$objAddon = $this->initAddonByData($data);
-
+		
 		//remember the addon for use inside the settings classes (used for multisource)
 		GlobalsProviderUC::$activeAddonForSettings = $objAddon;
-
+		
 		$html = $objAddon->getHtmlConfig(false, true);
-
+		
 		return ($html);
 	}
 
@@ -644,8 +691,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 * prepare addon by data
 	 */
 	public function prepareAddonByData($addonData){
-
-
+		
 		$addonName = UniteFunctionsUC::getVal($addonData, "name");
 		$addonType = UniteFunctionsUC::getVal($addonData, "addontype");
 
@@ -656,7 +702,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 		if(empty($addonName) && !empty($addonID) && is_numeric($addonID)){
 			//  init by id
-
+			
 			$objAddon->initByID($addonID);
 		}else{
 			//  init by name or alias and type
@@ -1200,8 +1246,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	 * init addon by data
 	 */
 	public function initAddonByData($data){
-
-
+				
 		if(is_string($data)){
 			$data = json_decode($data);
 			$data = UniteFunctionsUC::convertStdClassToArray($data);

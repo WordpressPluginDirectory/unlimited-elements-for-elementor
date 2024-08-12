@@ -94,6 +94,9 @@ class GlobalsUnlimitedElements{
 	public static $isImporting = false;
 	public static $pluginTitleCurrent;
 	
+	public static $urlPlugin;
+	public static $urlPluginGutenberg;
+	
 	public static $pathPlugin;
 	public static $pathPluginSettings;
 	
@@ -115,9 +118,7 @@ class GlobalsUnlimitedElements{
 			self::$debugAdminNotices = true;
 
 		//set paths
-
-		//set paths
-
+		
 		self::$pathPlugin = dirname(__FILE__)."/";
 				
 		self::$pathPlugin = UniteFunctionsUC::pathToUnix(self::$pathPlugin);
@@ -132,6 +133,14 @@ class GlobalsUnlimitedElements{
 			self::$enableGutenbergSupport = true;
 		}
 		
+		
+		$serverName = UniteFunctionsUC::getVal($_SERVER, "SERVER_NAME");
+		
+		if($serverName == "work.unlimited-elements.com"){
+			self::$enableGutenbergSupport = true;
+		}
+
+		
 		if(GlobalsUC::$inDev == true && defined("UE_DISABLE_ELEMENTOR_SUPPORT")){
 			self::$enableElementorSupport = false;
 			
@@ -145,7 +154,6 @@ class GlobalsUnlimitedElements{
 			self::$enableGutenbergSupport = true;
 			self::$enableElementorSupport = false;
 			
-			
 		}
 		
 		
@@ -156,13 +164,17 @@ class GlobalsUnlimitedElements{
 	 * init after loaded
 	 */
 	public static function initAfterPluginsLoaded(){
+		
+		self::$urlPlugin = HelperProviderCoreUC_EL::$urlCore;
 
+		self::$urlPluginGutenberg = self::$urlPlugin."gutenberg/";
+		
+		
 		if(self::$isGutenbergOnly == true){
 			
 			self::$pluginTitleCurrent = self::PLUGIN_TITLE_GUTENBERG;
 		}
-		
-		
+				
 	}
 	
 	

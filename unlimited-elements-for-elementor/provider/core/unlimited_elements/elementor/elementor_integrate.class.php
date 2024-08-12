@@ -181,7 +181,7 @@ class UniteCreatorElementorIntegrate{
 	 * register addons
 	 */
 	private function registerWidgets_addons($arrAddons, $isRecords = false){
-				
+		
 		if(self::$isWidgetsRegistered == true)
 			return(false);
 
@@ -347,7 +347,7 @@ class UniteCreatorElementorIntegrate{
 			return(false);
 
 		self::logMemoryUsage("before widgets registered");
-
+		
 		self::$numRegistered = 0;
 
 		if(self::$isConsolidated)
@@ -416,12 +416,32 @@ class UniteCreatorElementorIntegrate{
 		HelperUC::addDebug("set template type: ".self::$templateType);
 	}
 
+	/**
+	 * on categories registered
+	 */
+	public function onCategoriesRegistered(){
+				
+		$this->addUCCategories();
+				
+	}
 
     /**
      * on widgets registered event
      * register elementor widgets from the library
      */
     public function onWidgetsRegistered() {
+		
+    	//preload db data
+    	
+    	try{
+
+    		$this->preloadElementorDBData();
+					
+    	}catch(Exception $e){
+
+    		$this->isSystemErrorOccured = true;
+    	}
+    	
 		
     	//$this->initTemplateTypeVars();
     	$this->initOtherVars();
@@ -431,7 +451,7 @@ class UniteCreatorElementorIntegrate{
     	$this->registerWidgets();
 		
     }
-
+	
 
     /**
      * register controls
@@ -497,7 +517,7 @@ class UniteCreatorElementorIntegrate{
      * add all categories
      */
     private function addUCCategories(){
-
+		    	
     	$objElementsManager = \Elementor\Plugin::instance()->elements_manager;
 
     	//add general category
@@ -541,118 +561,28 @@ class UniteCreatorElementorIntegrate{
 
     }
 
-    /**
-     * collect posts widget names by record
-     * for later pagination enable check
-     */
-    private function collectPostsWidgetsByRecord($record){
-
-    	$config = UniteFunctionsUC::getVal($record, "config");
-    	if(empty($config))
-    		return(false);
-
-    	$arrConfig = UniteFunctionsUC::jsonDecode($config);
-
-    	$params = UniteFunctionsUC::getVal($arrConfig, "params");
-    	if(empty($params))
-    		return(false);
-
-    	foreach($params as $param){
-
-    		$type = UniteFunctionsUC::getVal($param, "type");
-    		if($type != UniteCreatorDialogParam::PARAM_POSTS_LIST && $type != UniteCreatorDialogParam::PARAM_LISTING)
-    			continue;
-
-    		//post list only
-    		$widgetName = UniteFunctionsUC::getVal($record, "alias");
-
-    		self::$arrPostsWidgetNames[$widgetName] = true;
-
-    		return(false);
-    	}
-    }
 
 
     /**
      * preload all the elementor data
      */
     private function preloadElementorDBData(){
-
+		 		
     	//don't let run the function twice
     	if(!empty(self::$arrAddonsRecords))
 			return(false);
-
-    	$db = HelperUC::getDB();
-
-    	$tableCats = GlobalsUC::$table_categories;
-    	$tableAddons = GlobalsUC::$table_addons;
-    	$addonType = GlobalsUnlimitedElements::ADDONSTYPE_ELEMENTOR;
-    	$addonTypeBG = GlobalsUC::ADDON_TYPE_BGADDON;
-
-    	$whereAddonType = "addons.addontype='{$addonType}'";
-
-    	if($this->enableBackgroundWidgets == true)
-    		$whereAddonType = "addons.addontype in('{$addonType}','{$addonTypeBG}')";
-
-    	//for output - get without cats
-    	if(self::$isOutputPage){
-
-	    	$query = "select * from $tableAddons as addons";
-	    	$query .= " where $whereAddonType and addons.is_active=1";
-
-    	}else{		//for editor - get with categories
-
-    		$query = "select addons.*, cats.title as cat_title ,cats.alias as cat_alias, cats.ordering as cat_ordering from $tableAddons as addons";
-    		$query .= " left join $tableCats as cats on(addons.catid = cats.id)";
-    		$query .= " where $whereAddonType and addons.is_active=1 order by cat_ordering";
-    	}
-
-
-    	$arrRecords = $db->fetchSql($query, true);
-
-    	if(empty($arrRecords))
-    		return(false);
-
-    	//get cats records
-    	foreach($arrRecords as $record){
-
-    		$addonName = UniteFunctionsUC::getVal($record, "name");
-    		$recordAddonType = UniteFunctionsUC::getVal($record, "addontype");
-
-    		//save bg addon record
-    		if($recordAddonType == $addonTypeBG){
-    			self::$arrBGAddonsRecords[$addonName] = $record;
-    			continue;
-    		}
-
-    		$this->collectPostsWidgetsByRecord($record);
-
-    		self::$arrAddonsRecords[$addonName] = $record;
-
-    		//cache category records
-    		if(self::$isOutputPage == true)
-    			continue;
-
-    		$catID = UniteFunctionsUC::getVal($record, "catid");
-    		$catTitle = UniteFunctionsUC::getVal($record, "cat_title");
-    		$catAlias = UniteFunctionsUC::getVal($record, "cat_alias");
-    		$catOrdering = UniteFunctionsUC::getVal($record, "cat_ordering");
-
-    		if(empty($catAlias))
-    			$catAlias = "cat_".$catID;
-
-    		if(isset($this->arrCatsRecords[$catAlias]))
-    			continue;
-
-    		$catRecord = array();
-    		$catRecord["id"] = $catID;
-    		$catRecord["title"] = $catTitle;
-    		$catRecord["alias"] = $catAlias;
-    		$catRecord["ordering"] = $catOrdering;
-
-    		$this->arrCatsRecords[$catAlias] = $catRecord;
-    	}
-
+		
+		$arrData = HelperProviderCoreUC_EL::getPreloadDBData(self::$isOutputPage);
+		
+		if(empty($arrData))
+			return(false);
+		
+		self::$arrBGAddonsRecords = UniteFunctionsUC::getVal($arrData, "bg_addons");
+		self::$arrAddonsRecords = UniteFunctionsUC::getVal($arrData, "addons");
+		$this->arrCatsRecords = UniteFunctionsUC::getVal($arrData, "cats");
+		self::$arrPostsWidgetNames = UniteFunctionsUC::getVal($arrData, "posts_widgets_names");
+		
+    	
     }
 
 
@@ -661,17 +591,8 @@ class UniteCreatorElementorIntegrate{
      */
     public function onElementorInit(){
 
-    	try{
-
-    		$this->preloadElementorDBData();
-
-    		$this->addUCCategories();
-
-    	}catch(Exception $e){
-
-    		$this->isSystemErrorOccured = true;
-    	}
-
+    	
+    	
     }
 
 
@@ -1783,12 +1704,12 @@ class UniteCreatorElementorIntegrate{
 
     	//set if edit mode for widget output
     	self::$isEditMode = HelperUC::isEditMode();
-
+		
     	//if turn it on - please do good QA - it's for saving resources on save builder action
     	//self::$isSaveBuilderMode = $this->isSaveBuilderAction();
-
+		
     	GlobalsProviderUC::$isInsideEditor = self::$isEditMode;
-
+		
     	$arrSettingsValues = HelperProviderCoreUC_EL::getGeneralSettingsValues();
 
     	//validation for very old version
@@ -1828,7 +1749,9 @@ class UniteCreatorElementorIntegrate{
     	}
 
     	add_action('elementor/editor/init', array($this, 'onEditorInit'));
-
+		
+		add_action( 'elementor/elements/categories_registered', array($this, 'onCategoriesRegistered') );    	
+    	
     	if($this->isOldElementorVersion == true)
     		add_action('elementor/widgets/widgets_registered', array($this, 'onWidgetsRegistered'));
     	else

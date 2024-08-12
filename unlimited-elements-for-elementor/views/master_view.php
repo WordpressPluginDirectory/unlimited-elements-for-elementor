@@ -14,7 +14,7 @@ $bottomLineClass = "";
 if($view == "layout")
 	$bottomLineClass = " unite-position-right";
 
-ob_start();
+UniteFunctionsUC::obStart();
 
 self::requireView($view);
 

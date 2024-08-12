@@ -61,7 +61,7 @@
 	);
 
 
-	ob_start();
+	UniteFunctionsUC::obStart();
 
 	$method = ''; // Leave blank so WP_Filesystem can populate it as necessary.
 
