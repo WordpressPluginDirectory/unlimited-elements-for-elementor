@@ -2184,7 +2184,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["elementor_condition"] = $arrCurrentElementorCondition;
 
 		$this->addSelect($name . "_posttype_current", $arrTypesCurrent, esc_html__("Post Type Override", "unlimited-elements-for-elementor"), "", $params);
-		
+
 		//------- max items for current --------
 		$params = array("unit" => "posts");
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;

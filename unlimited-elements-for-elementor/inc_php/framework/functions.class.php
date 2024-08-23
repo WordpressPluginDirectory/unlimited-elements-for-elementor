@@ -830,7 +830,7 @@ class UniteFunctionsUC{
 	 * get id's array from any input
 	 */
 	public static function getIDsArray($input){
-		
+
 		if(empty($input))
 			return(array());
 
@@ -2039,7 +2039,7 @@ class UniteFunctionsUC{
 		if(empty($val))
 			return(true);
 
-		$match = preg_match('/^[0-9,\s]+$/', $val);
+		$match = preg_match('/^[0-9,]+$/', $val);
 
 		if($match == 0)
 			return(false);

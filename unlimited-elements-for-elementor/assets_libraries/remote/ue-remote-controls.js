@@ -345,7 +345,7 @@ function UERemoteGeneralAPI(){
 			}
 
 			var observer = new MutationObserver(function(records){
-				
+
 				runWithTrashold(function(){
 
 					if(g_vars.enableDebug == true)

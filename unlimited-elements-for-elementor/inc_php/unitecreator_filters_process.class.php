@@ -980,15 +980,15 @@ class UniteCreatorFiltersProcess{
 
 		//supress all filters
 		if(self::$isUnderAjaxSearch == true){
-			
-			if(UniteCreatorAjaxSeach::$enableThirdPartyHooks == false)
-				$args["suppress_filters"] = true;
+
+			$args["suppress_filters"] = true;
 			
 			//delete all filters in case of ajax search
 			
 			UniteCreatorAjaxSeach::supressThirdPartyFilters();
+
 		}
-		
+
 		//Woo Prices
 
 		if(!empty($priceFrom)){

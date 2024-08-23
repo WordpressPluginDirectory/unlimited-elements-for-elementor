@@ -19,6 +19,7 @@ class UniteCreatorGutenbergIntegrate{
 	 * Create a new instance.
 	 */
 	public function __construct(){
+		
 	}
 
 	/**
@@ -93,9 +94,9 @@ class UniteCreatorGutenbergIntegrate{
 
 		$categories[] = array(
 			'slug' => GlobalsUnlimitedElements::PLUGIN_NAME,
-			'title' => GlobalsUnlimitedElements::PLUGIN_TITLE_GUTENBERG,
+			'title' => __('Elementor Widgets', 'unlimited-elements-for-elementor'),
 		);
-		
+
 		return $categories;
 	}
 
@@ -121,16 +122,16 @@ class UniteCreatorGutenbergIntegrate{
 	 * @return string
 	 */
 	public function renderBlock($attributes){
-
+		
 		GlobalsProviderUC::$renderPlatform = GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG;
-
+		
 		$data = array(
 			'id' => $attributes['_id'],
 			'root_id' => $attributes['_rootId'],
 			'settings' => json_decode($attributes['data'], true),
 			'selectors' => true,
 		);
-
+		
 		$addonsManager = new UniteCreatorAddons();
 		$addonData = $addonsManager->getAddonOutputData($data);
 
@@ -181,23 +182,25 @@ class UniteCreatorGutenbergIntegrate{
 		wp_add_inline_script($handle, HelperHtmlUC::getGlobalJsOutput(), 'before');
 	}
 
+	
 	/**
 	 * Get the Gutenberg blocks.
 	 *
 	 * @return array
 	 */
 	private function getBlocks(){
-
+	
 		if(empty(self::$blocks) === true){
 			$addonsOrder = '';
 			$addonsParams = array('filter_active' => 'active');
 			$addonsType = GlobalsUC::ADDON_TYPE_ELEMENTOR;
 			$addonsManager = new UniteCreatorAddons();
 			$addons = $addonsManager->getArrAddons($addonsOrder, $addonsParams, $addonsType);
-
+			
 			foreach($addons as $addon){
+				
 				$name = $addon->getBlockName();
-
+				
 				self::$blocks[$name] = array(
 					'name' => $name,
 					'title' => $addon->getTitle(),
@@ -245,124 +248,99 @@ class UniteCreatorGutenbergIntegrate{
 	/**
 	 * Get the parsed Gutenberg blocks.
 	 *
-	 * @param int|null $postId
-	 *
 	 * @return array
 	 */
-	public function getPostBlocks($postId = null){
-
-		$post = get_post($postId);
-		$blocks = parse_blocks($post->post_content);
-
-		return $blocks;
-	}
-
-	/**
-	 * Get the existing parsed Gutenberg blocks.
-	 *
-	 * @return array
-	 */
-	public function getParsedBlocks(){
-
-		$parsedBlocks = $this->getPostBlocks();
+	public function getParsedBlocks($postID = null){
+		
+		$post = get_post($postID);
+		
 		$existingBlocks = $this->getBlocks();
-		$blocks = $this->extractParsedBlocks($parsedBlocks, $existingBlocks);
-
-		return $blocks;
-	}
-
-	/**
-	 * Get block by root identifier.
-	 *
-	 * @param array $content
-	 * @param int $rootId
-	 *
-	 * @return array|null
-	 */
-	public function getBlockByRootId($content, $rootId){
-
-		if(empty($content) === true)
-			return null;
-
-		if(is_array($content) === false)
-			return null;
-
-		if(empty($rootId) === true)
-			return null;
-
-		foreach($content as $block){
-			if(isset($block['blockName']) === false)
-				continue;
-
-			$blockAttributes = UniteFunctionsUC::getVal($block, 'attrs');
-			$blockRootId = UniteFunctionsUC::getVal($blockAttributes, '_rootId');
-
-			if($rootId === $blockRootId)
-				return $block;
-
-			$innerBlocks = UniteFunctionsUC::getVal($block, 'innerBlocks');
-
-			if(empty($innerBlocks) === false && is_array($innerBlocks) === true){
-				$innerBlock = $this->getBlockByRootId($innerBlocks, $rootId);
-
-				if(empty($innerBlock) === false)
-					return $innerBlock;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Get settings from the given block.
-	 *
-	 * @param array $block
-	 *
-	 * @return array
-	 */
-	public function getSettingsFromBlock($block){
-
-		$attributes = UniteFunctionsUC::getVal($block, 'attrs', array());
-		$data = UniteFunctionsUC::getVal($attributes, 'data', null);
-
-		if(empty($data) === true)
-			return array();
-
-		$settings = UniteFunctionsUC::jsonDecode($data);
-
-		return $settings;
-	}
-
-	/**
-	 * Extract the existing parsed Gutenberg blocks.
-	 *
-	 * @param array $parsedBlocks
-	 * @param array $existingBlocks
-	 *
-	 * @return array
-	 */
-	private function extractParsedBlocks($parsedBlocks, $existingBlocks){
-
+		$parsedBlocks = parse_blocks($post->post_content);
 		$blocks = array();
-
+		
 		foreach($parsedBlocks as $block){
 			$name = $block['blockName'];
 
-			if(empty($existingBlocks[$name]) === false){
+			if(empty($existingBlocks[$name]) === false)
 				$blocks[] = array(
 					'name' => $name,
 					'html' => render_block($block),
 				);
-			}
-
-			$innerBlocks = UniteFunctionsUC::getVal($block, 'innerBlocks');
-
-			if(empty($innerBlocks) === false && is_array($innerBlocks) === true){
-				$blocks = array_merge($blocks, $this->extractParsedBlocks($innerBlocks, $existingBlocks));
-			}
 		}
 
 		return $blocks;
 	}
+	
+	/**
+	 * get post blocks
+	 */
+	public function getPostBlocks($postID){
+		
+		$post = get_post($postID);
+		
+		$arrBlocks = parse_blocks($post->post_content);
+		
+		return($arrBlocks);
+	}
+	
+	
+	/**
+	 * get block by root id
+	 */
+	public function getBlockByRootID($arrContent, $rootID){
+		
+		if(empty($arrContent))
+			return(null);
+		
+		if(is_array($arrContent) == false)
+			return(null);
+			
+		if(empty($rootID))
+			return(null);
+			
+		foreach($arrContent as $block){
+			
+			if(isset($block["blockName"]) == false)
+				continue;
+				
+			$attributes = UniteFunctionsUC::getVal($block, "attrs");
+			
+			$blockRootID = UniteFunctionsUC::getVal($attributes, "_rootId");
+			
+			if($rootID === $blockRootID)
+				return($block);
+			
+			$innerBlocks = UniteFunctionsUC::getVal($block, "innerBlocks");
+			
+			if(!empty($innerBlocks) && is_array($innerBlocks)){
+				
+				$innerBlock = $this->getBlockByRootID($innerBlocks, $rootID);
+				
+				if(!empty($innerBlock))
+					return($innerBlock);
+			}
+			
+		}
+		
+		return(null);
+	}
+	
+	/**
+	 * get settings from block
+	 */
+	public function getSettingsFromBlock($arrBlock){
+		
+		$attributes = UniteFunctionsUC::getVal($arrBlock, "attrs");
+		
+		if(empty($attributes))
+			return(array());
+		
+		$data = UniteFunctionsUC::getVal($attributes, "data");
+		
+		$arrSettings = UniteFunctionsUC::jsonDecode($data);
+		
+		return($arrSettings);
+	}
+	
 
 }

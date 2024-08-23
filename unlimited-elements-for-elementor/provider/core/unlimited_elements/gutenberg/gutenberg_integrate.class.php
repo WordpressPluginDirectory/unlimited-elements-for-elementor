@@ -56,7 +56,7 @@ class UniteCreatorGutenbergIntegrate{
 	public function init(){
 		
 		$shouldInitialize = $this->shouldInitialize();
-				
+		
 		if($shouldInitialize === false)
 			return;
 
@@ -77,15 +77,9 @@ class UniteCreatorGutenbergIntegrate{
 
 		if(GlobalsUnlimitedElements::$enableGutenbergSupport === false)
 			return false;
-	
+
 		if(function_exists('register_block_type') === false)
 			return false;
-		
-		//if inside ajax action output data - don't register any blocks
-		$isAjaxAction = HelperUC::isAjaxAction();
-				
-		if($isAjaxAction == true)
-			return(false);
 		
 		return true;
 	}
@@ -97,10 +91,7 @@ class UniteCreatorGutenbergIntegrate{
 	 */
 	private function registerHooks(){
 		
-		if(GlobalsUC::$is_admin == false)		
-			UniteProviderFunctionsUC::addAction('init', array($this, 'registerBlocks'));
-		else
-			UniteProviderFunctionsUC::addAction('enqueue_block_editor_assets', array($this, 'registerBlocks'));
+		UniteProviderFunctionsUC::addAction('init', array($this, 'registerBlocks'));
 		
 		UniteProviderFunctionsUC::addFilter('block_categories_all', array($this, 'registerCategories'));
 				

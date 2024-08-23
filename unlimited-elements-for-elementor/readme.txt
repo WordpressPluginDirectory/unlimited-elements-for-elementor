@@ -1,5 +1,5 @@
 === Unlimited Elements For Elementor (Free Widgets, Addons, Templates) ===
-Contributors: unitecms, valiano, iritmega, amitkeren, axmusic
+Contributors: unitecms, valiano, iritmega, amitkeren, axmusic, freemius
 Donate link: http://unlimited-elements.com/
 Tags: elementor, elements, addons, elementor addons, elementor widget, page builder, builder, visual editor, wordpress page builder, elementor
 Requires at least: 3.5
@@ -893,13 +893,32 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 
 == Changelog ==
 
-version 1.5.117: 2024-08-11
 
-* Fix: improved the manual sorting and debuging of authors list
-* Fix: fixed post selection in editor in new chrome version.
-* Fix: where there is no posts in id's from dynamic or id's from meta in posts selection - return no posts instead of all posts
-* Fix: fixed third party filters suppress filters for ajax search bug - they was always suppress, and wpml integration didn't worked.
-* Feature: improved callbacks debug in full posts query debug
+version 1.5.119: 2024-08-23
+
+Plugin Changes:
+
+* Fix: fixed backgrounds selector didn't saved bug
+* Fix: fixed load more and avoid duplicates bug
+
+Widgets Changes:
+
+* Feature: Card Carousel (Free) - Made Transition Speed option responsive for improved adaptability.
+* Feature: Loop Grid (Pro) - Added 'Empty Message Type' and 'Empty Message Template' options to display an Elementor Template when no items are found in the Loop Grid widget.
+* Feature: Slider Gallery (Free) - Introduced a new option for selecting the video play button type. Added styling options to customize the appearance of the play button.
+* Feature: Material Carousel (Pro) - Added the features of Item Direction, Vertical Alignment, Horizontal Alignment in the style panel.
+* Feature: Slider Gallery (Free) - Added Custom Close Button Type option and styling option for it.
+* Change: Portfolio Carousel (Pro) - Made minor adjustments to how widgets behave after a filter selection. These changes improve the responsiveness and functionality of the widgets post-filter application.
+* Change: Quantity Increment Buttons (Pro) - Included the name=&quot;quantity&quot; attribute to the input element in the widget for improved form handling and data identification.
+* Change: Slider Gallery (Free) - Removed percentage and vh units from the Gallery Height option due to unsupported units.
+* Fix: vCard (Pro) - Fixed issue where images were not being added even when the &quot;Include Image in Contact&quot; option was set.
+* Fix: Checkboxes Filter (Pro) - Fixed issue where the Dropdown was opening after a filter selection.
+* Fix: Image Zoom Magnifier (Pro) - Added &quot;exclude-shortpixel&quot; class to simplify excluding widget images from optimization, as optimization was disrupting widget functionality.
+* Fix: Woo Category Grid (Pro) - Fixed issue where HTML tags were visible in the description text element.
+* Fix: Post Grid (Pro) - Resolved an issue where content was not aligning to the left when the corresponding alignment option was enabled.
+* Fix: Huge Shapes (Pro) - Removed all console.log statements from the widgets script to clean up the code.
+* Fix: Loop Accordion (Pro) - Added the 'raw' filter to the title to fix the issue of '&amp;' rendering as '&amp; amp;'
+* Fix: Portfolio Carousel (Pro) - Resolved the issue where the Dynamic Post Popup widget was not functioning correctly. This fix ensures that the widget now operates as intended, addressing the problems users experienced.
 
 
 version 1.5.116: 2024-08-08

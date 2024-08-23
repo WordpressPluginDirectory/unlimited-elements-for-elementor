@@ -420,7 +420,7 @@ class UniteCreatorElementorIntegrate{
 	 * on categories registered
 	 */
 	public function onCategoriesRegistered(){
-				
+		
 		$this->addUCCategories();
 				
 	}
@@ -494,10 +494,10 @@ class UniteCreatorElementorIntegrate{
 
 		if($this->isPluginFilesIncluded == true)
 			return(false);
-
+		
 		require_once $this->pathPlugin."elementor_widget.class.php";
 		require_once $this->pathPlugin."elementor_background_widget.class.php";
-
+		
 		$this->isPluginFilesIncluded = true;
 
 	}
@@ -830,7 +830,9 @@ class UniteCreatorElementorIntegrate{
 	 * from controls-stack.php
 	 */
 	public function onSectionStyleControlsAdd($objControls, $args){
-
+		
+		$this->preloadElementorDBData();
+		
 		$this->includePluginFiles();
 
 		//---- set background items
@@ -927,7 +929,7 @@ class UniteCreatorElementorIntegrate{
 	private function initBackgroundWidgets(){
 
 		$this->enableBackgroundWidgets = true;
-
+		
 		add_action("elementor/element/section/section_background_overlay/after_section_end", array($this, "onSectionStyleControlsAdd"),10, 2);
 		add_action("elementor/element/container/section_background_overlay/after_section_end", array($this, "onSectionStyleControlsAdd"),10, 2);
 
@@ -1750,7 +1752,7 @@ class UniteCreatorElementorIntegrate{
 
     	add_action('elementor/editor/init', array($this, 'onEditorInit'));
 		
-		add_action( 'elementor/elements/categories_registered', array($this, 'onCategoriesRegistered') );    	
+		add_action( 'elementor/elements/categories_registered', array($this, 'onCategoriesRegistered') );
     	
     	if($this->isOldElementorVersion == true)
     		add_action('elementor/widgets/widgets_registered', array($this, 'onWidgetsRegistered'));
@@ -1776,7 +1778,7 @@ class UniteCreatorElementorIntegrate{
 
     	//fix some frontend bug with double render
     	add_filter("elementor/frontend/the_content",array($this, "onTheContent"));
-
+		
 		add_filter( 'pre_handle_404', array($this, 'checkAllowWidgetPagination' ), 11, 2 );
 
 		//dynamic loop

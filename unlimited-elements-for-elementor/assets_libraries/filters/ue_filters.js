@@ -1,7 +1,6 @@
 
 //UE Filters Version 1.25
 
-
 function UEDynamicFilters(){
 
 	var g_objFilters, g_filtersData, g_urlBase;
@@ -1103,16 +1102,25 @@ function UEDynamicFilters(){
 	 * on ajax pagination click
 	 */
 	function onAjaxPaginationLinkClick(event){
-		
-		var objLink = jQuery(this);
 
+		var objLink = jQuery(this);
+		
+		//if no grid attached - act like a regular link
+		
+		var objPagination = objLink.parents(".uc-filter-pagination");
+		
+		var objGrid = objPagination.data("grid");
+				
+		if(!objGrid || objGrid.length == 0 || objPagination.hasClass("uc-no-ajax")){
+						
+			return(true);
+		}
+		
 		//run the ajax, prevent default
 		event.preventDefault();
 		
-		var objPagination = objLink.parents(".uc-filter-pagination");
-
 		var objLinkCurrent = objPagination.find(".current");
-
+		
 		
 		//on next button click
 
@@ -1146,10 +1154,6 @@ function UEDynamicFilters(){
 		objLink.addClass("current");
 
 		var objGrid = objPagination.data("grid");
-
-		if(!objGrid || objGrid.length == 0)
-			throw new Error("Grid not found!");
-
 		
 		objPagination.addClass(g_vars.CLASS_CLICKED);
 
@@ -1664,7 +1668,7 @@ function UEDynamicFilters(){
 
 		objTax[slug] = true;
 		arrTax1[taxonomy] = objTax;
-
+		
 		return(arrTax1);
 	}
 
@@ -2008,7 +2012,7 @@ function UEDynamicFilters(){
 		//add to old data
 
 		if(isLoadMore == true){
-
+			
 			var currentQueryData = objGrid.attr("querydata");
 
 			var objCurrentData = jQuery.parseJSON(currentQueryData);
@@ -2351,8 +2355,7 @@ function UEDynamicFilters(){
 	 * small ajax request
 	 */
 	function ajaxRequest(ajaxUrl, action, objData, onSuccess){
-
-
+		
 		if(g_debugInitMode === true){
 
 			trace("debug init mode - skip request");
@@ -2393,8 +2396,7 @@ function UEDynamicFilters(){
 			ajaxData["data"] = objData;
 			ajaxtype = "post";
 		}
-
-
+		
 		var ajaxOptions = {
 				type:ajaxtype,
 				url:ajaxUrl,
@@ -2572,9 +2574,9 @@ function UEDynamicFilters(){
 			params["filters_init_type"] = "children";
 
 		var objAjaxOptions = getGridAjaxOptions(objFilters, objGrid, isFiltersInit, isLoadMoreMode, params);
-				
+		
 		if(!objAjaxOptions){
-
+			
 			trace("ajax options are null");
 			return(false);
 		}
@@ -2957,6 +2959,8 @@ function UEDynamicFilters(){
 		var wasInitMode = objGrid.data("was_init_mode");
 
 		var arrFilterIDs = {};
+		
+		var isPagination = false;
 				
 		
 		//get ajax options
@@ -2999,7 +3003,9 @@ function UEDynamicFilters(){
 
 			switch(type){
 				case g_types.PAGINATION:
-						
+					
+						isPagination = true;
+					
 						//run pagination only if it's clicked, unless reset pagination
 						var isClicked = objFilter.hasClass(g_vars.CLASS_CLICKED);
 						if(isClicked == true || isFiltersInitMode == true){
@@ -3419,21 +3425,26 @@ function UEDynamicFilters(){
 			
 			urlReplace += "&ucs=" + search;
 		}
-
+		
 		//avoid duplicates - exclude, disable the offset
 		
-		
 		if(objGrid.hasClass("uc-avoid-duplicates") && isLoadMoreMode == true){
-		
-			var strExcludePostIDs = getExcludePostIDs(objGrid);
+			
+			var excludeGrid = null;
+			if(isPagination == true)
+				excludeGrid = objGrid;
+			
+			var strExcludePostIDs = getExcludePostIDs(excludeGrid);
 			
 			if(strExcludePostIDs){
 				urlAjax += "&ucexclude="+strExcludePostIDs;
-				offset = null;
-
+				
+				if(isPagination == false)
+					offset = null;
+				
 				urlFilterString = addUrlParam(urlFilterString, "ucexclude=" + strExcludePostIDs);
 			}
-
+			
 		}
 
 		if(offset){
@@ -3491,9 +3502,12 @@ function UEDynamicFilters(){
 	 * except of the current grid
 	 */
 	function getExcludePostIDs(objCurrentGrid){
-				
-		var objGrids = jQuery(".uc-avoid-duplicates").not(objCurrentGrid);
-				
+		
+		var objGrids = jQuery(".uc-avoid-duplicates");
+		
+		if(objCurrentGrid)
+			objGrids = objGrids.not(objCurrentGrid);
+		
 		if(objGrids.length == 0)
 			return("");
 		
@@ -3591,12 +3605,20 @@ function UEDynamicFilters(){
 	 * init filter and bing to grid
 	 */
 	function initFilter(objFilter, type){
-
+		
 		var objGrid = getClosestGrid(objFilter);
-
+		
 		var error = "Filter Parent not found! Please put the posts element on the page, and turn on 'Enable Post Filtering' option on it";
 
 		if(!objGrid){
+			
+			
+			//pagination can work without parent as regular link
+			
+			var type = getFilterType(objFilter);
+			if(type == g_types.PAGINATION)
+				return(false);
+			
 			showElementError(objFilter, error);
 			return(null);
 		}
@@ -3656,12 +3678,7 @@ function UEDynamicFilters(){
 
 			switch(type){
 				case g_types.PAGINATION:
-					
-					//avoid other services to run functions when click the link
-								
-					var objLinks = jQuery(".uc-filter-pagination a");
-					objLinks.off("click"); 
-					
+										
 					objParent.on("click",".uc-filter-pagination a", onAjaxPaginationLinkClick);
 					
 				break;
@@ -3813,7 +3830,7 @@ function UEDynamicFilters(){
 
 
 	/**
-	 * init pagination filter
+	 * init the filters
 	 */
 	function initFilters(objFilters){
 		
@@ -3836,7 +3853,7 @@ function UEDynamicFilters(){
 		var arrGeneralTypes = {};
 
 		var objParent = getFiltersParent(objFilters);
-
+		
 		jQuery.each(objFilters, function(index, filter){
 
 			var objFilter = jQuery(filter);
@@ -4136,7 +4153,6 @@ function UEDynamicFilters(){
 		//get the filters
 		var objFilters = jQuery(".uc-grid-filter, .uc-filter-pagination").not("." + g_vars.CLASS_FILTER_INITED);
 		
-		
 		//wait for load...
 
 		var objFiltersLoading = objFilters.filter(".uc-waitforload");
@@ -4160,7 +4176,7 @@ function UEDynamicFilters(){
 
 		//init for the next time
 		g_initFiltersCounter = 0;
-
+				
 		initFilters(objFilters);
 
 		//init all grids with several stuff like init filters, active modes and url's

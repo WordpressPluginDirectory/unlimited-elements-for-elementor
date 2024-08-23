@@ -2261,7 +2261,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * where filter, add the search query
 	 */
 	public static function getPosts_whereFilter($where, $wp_query){
-		
+
 		global $wpdb;
 
 		$arrQuery = $wp_query->query;
@@ -2306,10 +2306,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		}
 
 		$arrPosts = get_posts($query);
-		
+
 		if(!empty($titleFilter))
 			remove_filter("posts_where", array("UniteFunctionsWPUC", "getPosts_whereFilter"));
-		
+
 		if($returnPure == true)
 			return ($arrPosts);
 
@@ -4050,7 +4050,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		return($args);
 	}
 
-	public static function a___________WP_FILTERS__________(){}
+	public static function a___________OTHER_FUNCTIONS__________(){
+	}
 	
 	/**
 	 * clear all filters of wordpress
@@ -4060,110 +4061,6 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		global $wp_filter;
 		$wp_filter = array();
 	}
-	
-	/**
-	 * get all filters callbacks
-	 */
-	public static function getFilterCallbacks($tag){
-		
-		global $wp_filter;
-		if(isset($wp_filter[$tag]) == false)
-			return (array());
-
-		$objFilter = $wp_filter[$tag];
-
-		$arrCallbacks = $objFilter->callbacks;
-		if(empty($arrCallbacks))
-			return (array());
-
-		return ($arrCallbacks);
-	}
-
-	/**
-	 * get action functions of some tag
-	 */
-	public static function getActionFunctionsKeys($tag){
-
-		$arrCallbacks = self::getFilterCallbacks($tag);
-
-		if(empty($arrCallbacks))
-			return(array());
-
-		$arrFunctions = array();
-
-		foreach($arrCallbacks as $priority => $callbacks){
-			$arrKeys = array_keys($callbacks);
-
-			foreach($arrKeys as $key){
-				$arrFunctions[$key] = true;
-			}
-		}
-
-		return ($arrFunctions);
-	}
-
-	/**
-	 * show action functions
-	 */
-	public static function showActionFunctionsKeys($tag){
-
-		$arrActions = self::getActionFunctionsKeys($tag);
-
-		if(empty($arrActions))
-			return(false);
-
-		dmp($arrActions);
-
-	}
-
-	/**
-	 * clear some tag callbacks
-	 */
-	public static function clearFiltersFunctions($tag, $numCallback = null){
-		
-		global $wp_filter;
-		
-		dmp("clear filter functions: $tag");
-		
-		$arrTags = UniteFunctionsUC::getVal($wp_filter, $tag);
-		
-		if(empty($arrTags)){
-
-			dmp("functions for tag: $tag not found");
-			return(false);
-		}
-		
-		if(empty($numCallback)){
-			unset($wp_filter[$tag]);
-			return(false);
-		}
-			
-		
-		$count = 0;
-		
-		foreach($arrTags as $order => $arrCallbacks){
-			
-			if(is_array($arrCallbacks) == false)
-				continue;
-				
-			foreach($arrCallbacks as $funcName=>$callback){
-				
-				$count++;
-				if($count == $numCallback)
-					unset($wp_filter[$tag][$order][$funcName]);
-				
-			}
-			
-		}
-			
-		
-	}
-	
-	
-	
-	public static function a___________OTHER_FUNCTIONS__________(){}
-	
-	
 	
 	/**
 	 * print registered includes
@@ -4546,6 +4443,90 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		return ($admin_title);
 	}
 
+	/**
+	 * get all filters callbacks
+	 */
+	public static function getFilterCallbacks($tag){
+
+		global $wp_filter;
+		if(isset($wp_filter[$tag]) == false)
+			return (array());
+
+		$objFilter = $wp_filter[$tag];
+
+		$arrCallbacks = $objFilter->callbacks;
+		if(empty($arrCallbacks))
+			return (array());
+
+		return ($arrCallbacks);
+	}
+
+	/**
+	 * get action functions of some tag
+	 */
+	public static function getActionFunctionsKeys($tag){
+
+		$arrCallbacks = self::getFilterCallbacks($tag);
+
+		if(empty($arrCallbacks))
+			return(array());
+
+		$arrFunctions = array();
+
+		foreach($arrCallbacks as $priority => $callbacks){
+			$arrKeys = array_keys($callbacks);
+
+			foreach($arrKeys as $key){
+				$arrFunctions[$key] = true;
+			}
+		}
+
+		return ($arrFunctions);
+	}
+
+	/**
+	 * show action functions
+	 */
+	public static function showActionFunctionsKeys($tag){
+
+		$arrActions = self::getActionFunctionsKeys($tag);
+
+		if(empty($arrActions))
+			return(false);
+
+		dmp($arrActions);
+
+	}
+
+
+	/**
+	 * clear filters from functions
+	 */
+	public static function clearFiltersFromFunctions($tag, $arrFunctionsAssoc){
+
+		global $wp_filter;
+		if(isset($wp_filter[$tag]) == false)
+			return (false);
+
+		if(empty($arrFunctionsAssoc))
+			return (false);
+
+		$objFilter = $wp_filter[$tag];
+
+		$arrFunctions = array();
+		$arrCallbacks = $objFilter->callbacks;
+		if(empty($arrCallbacks))
+			return (array());
+
+		foreach($arrCallbacks as $priority => $callbacks){
+			$arrKeys = array_keys($callbacks);
+
+			foreach($arrKeys as $key){
+				if(isset($arrFunctionsAssoc[$key]))
+					unset($wp_filter[$tag]->callbacks[$priority][$key]);
+			}
+		}
+	}
 
 	/**
 	 * get blog url

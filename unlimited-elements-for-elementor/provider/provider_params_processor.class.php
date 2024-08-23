@@ -436,7 +436,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get post ids from post meta
 	 */
 	private function getPostListData_getIDsFromPostMeta($value, $name, $showDebugQuery){
-		
+
 		$postIDs = UniteFunctionsUC::getVal($value, $name."_includeby_postmeta_postid");
 
 		$metaName = UniteFunctionsUC::getVal($value, $name."_includeby_postmeta_metafield");
@@ -512,17 +512,14 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 				}
 			}
 
-			return(array(0));
+			return(null);
 		}
 
 		if($showDebugQuery == true){
 			$strPosts = implode(",", $arrPostIDs);
 			dmp("Found post ids : $strPosts");
 		}
-		
-		if(empty($arrPostIDs))
-			return(array(0));
-		
+
 		return($arrPostIDs);
 	}
 
@@ -1694,7 +1691,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 				break;
 				case "ids_from_dynamic":
-					
+
 					$arrExcludeIDsDynamic = UniteFunctionsUC::getVal($value, $name."_exclude_dynamic_field");
 					$arrExcludeIDsDynamic = UniteFunctionsUC::getIDsArray($arrExcludeIDsDynamic);
 
@@ -2139,27 +2136,21 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 				break;
 				case "php_function":
-					
+
 					$arrIDsPHPFunction = $this->getPostListData_getIDsFromPHPFunction($value, $name, $showDebugQuery);
-					
-					if(empty($arrIDsPHPFunction))
-						$arrIDsPHPFunction = array(0);
-					
+										
 				break;
 				case "ids_from_meta":
 
 					$arrIDsPostMeta = $this->getPostListData_getIDsFromPostMeta($value, $name, $showDebugQuery);
-					
+
 				break;
 				case "ids_from_dynamic":
 
 					$arrIDsDynamicField = UniteFunctionsUC::getVal($value, $name."_includeby_dynamic_field");
-					
+
 					$arrIDsDynamicField = UniteFunctionsUC::getIDsArray($arrIDsDynamicField);
-					
-					if(empty($arrIDsDynamicField))
-						$arrIDsDynamicField = array(0);
-										
+
 				break;
 				case "current_terms":
 
@@ -2410,9 +2401,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			return(array());
 		}
 		
-		//for debug
-		//UniteFunctionsWPUC::clearFiltersFunctions("posts_where");
-		
 		$query = new WP_Query();
 
 		do_action("ue_before_custom_posts_query", $query);
@@ -2423,7 +2411,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$args = apply_filters("ue_modify_posts_query_args", $args);
 		
 		$args = UniteCreatorPluginIntegrations::modifyPostQueryIntegrations($args);
-				
+		
 		$query->query($args);
 		
 		do_action("ue_after_custom_posts_query", $query);
@@ -2445,6 +2433,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		}
 
+
 		/*
 	 	dmp("request debug output");
 
@@ -2453,9 +2442,8 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		dmp($query->query);
 		dmp($query->post_count);
 		dmp($query->found_posts);
-		exit();
 		*/
-		
+
 		$arrPosts = $query->posts;
 
 		$numPosts = $query->found_posts;
@@ -2548,40 +2536,34 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 */
 	private function showPostsDebugCallbacks($isForWoo = false){
 		
-		$arrNames = array(
-				"posts_request",
-				"posts_pre_query",
-				"posts_where",
-				"posts_clauses",
-				"posts_join",
-				"pre_get_posts",
-				"posts_orderby",
-				"parse_tax_query",
-				"posts_selection",
-				"parse_term_query"
-		);
-		
-		foreach($arrNames as $name){
-			
-			$arrActions = UniteFunctionsWPUC::getFilterCallbacks($name);
-	
-			dmp("Query modify callbacks ( {$name} ):");
-			HelperProviderUC::printFilterCallbacks($arrActions);
-		}
-		
-		
+		$arrActions = UniteFunctionsWPUC::getFilterCallbacks("posts_pre_query");
+
+		dmp("Query modify callbacks ( posts_pre_query ):");
+		dmp($arrActions);
+
+		$arrActions = UniteFunctionsWPUC::getFilterCallbacks("pre_get_posts");
+
+		dmp("Query modify callbacks ( pre_get_posts ):");
+		dmp($arrActions);
+
+
+		$arrActions = UniteFunctionsWPUC::getFilterCallbacks("posts_orderby");
+
+		dmp("Query modify callbacks ( posts_orderby ):");
+		dmp($arrActions);
+
 		if($isForWoo == true){
 
 			$arrActions = UniteFunctionsWPUC::getFilterCallbacks("loop_shop_per_page");
 
 			dmp("Query modify callbacks ( loop_shop_per_page ):");
-			HelperProviderUC::printFilterCallbacks($arrActions);
-			
+			dmp($arrActions);
+
 			$arrActions = UniteFunctionsWPUC::getFilterCallbacks("loop_shop_columns");
 
 			dmp("Query modify callbacks ( loop_shop_columns ):");
-			HelperProviderUC::printFilterCallbacks($arrActions);
-			
+			dmp($arrActions);
+
 			//products change
 		}
 
@@ -2846,7 +2828,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			
 			dmp("The finals query vars:");
 			dmp($originalQueryVars);
-		
+
 			$this->showPostsDebugCallbacks($isForWoo);
 
 		}
@@ -4902,16 +4884,17 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			
 		if(count($arrUsers) == 1)
 			return($arrUsers);
-				
+		
 		$isIDsList = UniteFunctionsUC::isValidIDsList($manualOrder);
-				
+
 		if($isIDsList == false)
 			return($arrUsers);
 		
-		$this->arrUsersOrder = UniteFunctionsUC::csvToArray($manualOrder);
+		$this->arrUsersOrder = explode(",",$manualOrder);
 		
 		if(empty($this->arrUsersOrder))
 			return($arrUsers);
+		
 		
 		usort($arrUsers, array($this,'sortUsersByValues_compare'));		
 		
@@ -5043,6 +5026,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		
 		HelperUC::addDebug("Num Users fetched: ".count($arrUsers));
 
+
 		if($showDebug == true){
 			dmp("Num Users fetched: ".count($arrUsers));
 		}
@@ -5053,26 +5037,9 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$manualOrder = UniteFunctionsUC::getVal($value, $name."_order_manual");
 			
 			if(!empty($manualOrder)){
-								
-				if($showDebug == true){
-					
+				
+				if($showDebug == true)
 					dmp("sorting users by: $manualOrder");
-					
-					$arrOrderShow = array();
-					foreach($arrUsers as $index => $user){
-						
-						$name = $user->display_name;
-						$id = $user->ID;
-						
-						$arrOrderShow[] = "$name [$id]";
-					}
-					
-					$strShow = implode(",", $arrOrderShow);
-					
-					dmp("Selected Users Order: ".$strShow);
-					
-					dmp("sorting users by: $manualOrder");
-				}
 				
 				$arrUsers = $this->sortUsersByValues($arrUsers,$manualOrder );
 			}
