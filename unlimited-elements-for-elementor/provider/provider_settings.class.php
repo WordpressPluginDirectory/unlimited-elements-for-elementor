@@ -2184,11 +2184,11 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["elementor_condition"] = $arrCurrentElementorCondition;
 
 		$this->addSelect($name . "_posttype_current", $arrTypesCurrent, esc_html__("Post Type Override", "unlimited-elements-for-elementor"), "", $params);
-
+		
 		//------- max items for current --------
 		$params = array("unit" => "posts");
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
-		$params["description"] = sprintf(__("Override Number Of %s, leave empty for default. If you are using pagination widget, leave it empty", "unlimited-elements-for-elementor"), $textPosts);
+		$params["description"] = sprintf(__("Override Number Of %s, remain empty for default. If you are using pagination widget, leave it empty", "unlimited-elements-for-elementor"), $textPosts);
 		$params["add_dynamic"] = true;
 		$params["elementor_condition"] = $arrCurrentElementorCondition;
 

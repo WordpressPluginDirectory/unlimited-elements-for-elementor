@@ -1680,7 +1680,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		$argPost = UniteFunctionsUC::getPostGetVariable("post", "", UniteFunctionsUC::SANITIZE_KEY);
 		$argAction = UniteFunctionsUC::getPostGetVariable("action", "", UniteFunctionsUC::SANITIZE_KEY);
-
+		
 		if($argAction == "elementor_render_widget" || $argAction == "elementor_ajax" || $argAction == "unlimitedelements_ajax_action")
 			return (true);
 
@@ -1688,6 +1688,33 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			return (true);
 
 		return (false);
+	}
+	
+	/**
+	 * check if inside some ajax action
+	 * if empty parameter - return true if it's under ajax action.
+	 */
+	public static function isAjaxAction($actionVar = "",$actionVar2 = ""){
+		
+		if(is_admin() == false)
+			return(false);
+		
+		$action = UniteFunctionsUC::getPostGetVariable("action", "", UniteFunctionsUC::SANITIZE_KEY);
+		if($action != "unlimitedelements_ajax_action")
+			return(false);
+		
+		if(empty($actionVar) && empty($actionVar2))
+			return(true);
+			
+		$clientAction = UniteFunctionsUC::getPostGetVariable("client_action", "", UniteFunctionsUC::SANITIZE_KEY); 
+		
+		if($actionVar === $clientAction)
+			return(true);
+		
+		if(!empty($actionVar2) && $actionVar2 === $clientAction)
+			return(true);
+		
+		return(false);
 	}
 	
 	

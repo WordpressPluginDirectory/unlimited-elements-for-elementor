@@ -4,6 +4,7 @@ class HelperProviderUC{
 
 	private static $numQueriesStart = null;
 
+	
 	/**
 	 * is activated by freemius
 	 */
@@ -1002,6 +1003,65 @@ class HelperProviderUC{
 		$settings["google_connect_credentials"] = UniteFunctionsUC::encodeContent($credentials);
 
 		HelperUC::$operations->updateUnlimitedElementsGeneralSettings($settings);
+	}
+	
+	/**
+	 * print wordpress filter callbacks
+	 */
+	public static function printFilterCallbacks($arrActions){
+		
+		if(empty($arrActions)){
+			return(false);
+		}
+		
+		$count = 0;
+		foreach($arrActions as $order=>$arrCallbacks){
+			
+			if(is_array($arrCallbacks) == false){
+				dmp($arrCallbacks);
+				continue;
+			}
+			
+			foreach($arrCallbacks as $function=>$arrCallback){
+				
+				$count++;
+				
+				$function = UniteFunctionsUC::getVal($arrCallback, "function");
+				
+				if(is_array($function) == false){
+					
+					if(is_object($function)){
+						
+						$className = get_class($object);
+						
+						dmp("{$count}. ".$className);
+						
+						if(empty($className))
+							dmp($function);
+						
+						continue;
+					}
+					
+					dmp($function);
+					continue;
+				}
+				
+				if(count($function) == 1){
+					dmp($function);
+				}
+				else{
+					$object = $function[0];
+					$method = $function[1];
+					
+					$className = get_class($object);
+					
+					dmp("{$count}. "."{$className}->{$method}()");
+				}
+					
+			}
+			
+		} //order foreach
+				
 	}
 	
 	private function _______DEBUG_________(){}

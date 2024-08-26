@@ -904,10 +904,15 @@ class HelperProviderCoreUC_EL{
 
 		//get right template
 		if($isWpmlExists == true){
-
+			
 			$template = get_post($templateID);
-
-			$templateID = apply_filters( 'wpml_object_id', $templateID, $template->post_type, true);
+			
+			$postType = null;
+			
+			if(!empty($template))
+				$postType = $template->post_type;
+			
+			$templateID = apply_filters( 'wpml_object_id', $templateID, $postType, true);
 		}
 
 
@@ -1002,9 +1007,13 @@ class HelperProviderCoreUC_EL{
 		if($isWpmlExists == true && !empty($templateID)){
 
 			$template = get_post($templateID);
-
+			
+			$postType = "";
 			if(!empty($template))
-				$templateID = apply_filters( 'wpml_object_id', $templateID, $template->post_type, true);
+				$postType = $template->post_type;
+			
+			if(!empty($template))
+				$templateID = apply_filters( 'wpml_object_id', $templateID, $postType, true);
 		}
 
 

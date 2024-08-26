@@ -754,7 +754,7 @@ function UniteCreatorElementorEditorAdmin(){
 	function onSettingsPanelInit(){
 		
 		initSpecialSelects();
-				
+		
 		//init the post type selector if exists
 		postSelectOnLoad();
 		
@@ -768,14 +768,21 @@ function UniteCreatorElementorEditorAdmin(){
 	 */
 	function initEvents(){
 		
-		g_objSettingsPanel.bind("DOMSubtreeModified",function(){
+		
+		var observer = new MutationObserver(function(records){
+			
 			  if(g_handle)
 				  clearTimeout(g_handle);
 			  
 			  g_handle = setTimeout(onSettingsPanelInit, 50);
-			  
 		});
-				
+		
+		var config = { childList: true, subtree: true};
+		
+		var settingsPanelItem = g_objSettingsPanel[0];
+		
+		observer.observe(settingsPanelItem, config);
+						
 	}
 	
 	function a________LOAD_INCLUDES_________(){}

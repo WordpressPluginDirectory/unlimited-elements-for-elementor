@@ -765,10 +765,11 @@ class UniteCreatorElementorPagination{
 			break;
 		}
 		
+		
 		if($isArchivePage == true){
 			
 			$options = $this->getArchivePageOptions($options);
-
+						
 			$ucpage = $this->getUCPageFromGET();
 
 			if(!empty($ucpage))
@@ -849,9 +850,26 @@ class UniteCreatorElementorPagination{
 		}
 		
 		
+		$addArgs = "data-e-disable-page-transition=\"true\"";
+		
+		$pagination = $this->addHtmlArguments($pagination, $addArgs);
+		
 		echo $pagination;
 	}
 
+	/**
+	 * add some arguments to the html links
+	 */
+	private function addHtmlArguments($pagination, $addArgs){
+ 		
+	    if (empty($addArgs))
+	        return $pagination;
+	
+	    $paginationWithAttributes = preg_replace('/<a\s([^>]*)>/', '<a $1' . " ".$addArgs . '>', $pagination);
+		
+	    return $paginationWithAttributes;		
+	}
+	
 	/**
 	 * get load more data
 	 */

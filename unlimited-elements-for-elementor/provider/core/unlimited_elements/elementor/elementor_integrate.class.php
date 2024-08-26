@@ -286,57 +286,6 @@ class UniteCreatorElementorIntegrate{
 	}
 
 
-	/**
-	 * register consolidated widget
-	 */
-	private function registerWidgets_consolidated($objCat, $arrCat){
-
-		$title = $objCat->getTitle();
-		$alias = $objCat->getAlias();
-
-		$arrAddons = UniteFunctionsUC::getVal($arrCat, "addons");
-
-		if(empty($arrAddons))
-			return(false);
-
-		self::$arrCatsCache[$alias] = array("title"=>$title, "objcat"=>$objCat,"addons"=>$arrAddons);
-
-		$className = "UCAddon_uccat_".$alias;
-	    $this->registerWidgetByClassName($className);
-
-	}
-
-
-	/**
-	 * register consolidated category widgets
-	 */
-	private function registerWidgets_categories(){
-
-		$objAddons = new UniteCreatorAddons();
-
-		$arrCats = $objAddons->getAddonsWidthCategories(true, false, self::ADDONS_TYPE, array("get_cat_objects"=>true));
-
-		foreach($arrCats as $cat){
-			$id = UniteFunctionsUC::getVal($cat, "id");
-
-			//uncategorised
-			if($id == 0){
-				$addons = UniteFunctionsUC::getVal($cat, "addons");
-				if(!empty($addons))
-					$this->registerWidgets_addons($addons);
-
-				continue;
-			}
-
-			$objCat = UniteFunctionsUC::getVal($cat, "objcat");
-
-			//register consolidated widgets
-			$this->registerWidgets_consolidated($objCat, $cat);
-		}
-
-	}
-
-
 
 	/**
 	 * register elementor widgets from the library
@@ -350,12 +299,7 @@ class UniteCreatorElementorIntegrate{
 		
 		self::$numRegistered = 0;
 
-		if(self::$isConsolidated)
-			$this->registerWidgets_categories();
-		else{
-
-			$this->registerWidgets_addons(self::$arrAddonsRecords, true);
-		}
+		$this->registerWidgets_addons(self::$arrAddonsRecords, true);
 
 		self::logMemoryUsage("widgets registered: ".self::$numRegistered, true);
 
@@ -494,10 +438,10 @@ class UniteCreatorElementorIntegrate{
 
 		if($this->isPluginFilesIncluded == true)
 			return(false);
-		
+
 		require_once $this->pathPlugin."elementor_widget.class.php";
 		require_once $this->pathPlugin."elementor_background_widget.class.php";
-		
+
 		$this->isPluginFilesIncluded = true;
 
 	}
@@ -517,12 +461,14 @@ class UniteCreatorElementorIntegrate{
      * add all categories
      */
     private function addUCCategories(){
-		    	
+ 
+    	$this->preloadElementorDBData();
+    	
     	$objElementsManager = \Elementor\Plugin::instance()->elements_manager;
 
     	//add general category
     	$objElementsManager->add_category(self::ADDONS_CATEGORY_NAME, array("title"=>self::ADDONS_CATEGORY_TITLE,"icon"=>self::DEFAULT_ICON), 2);
-
+		    	
     	if(empty($this->arrCatsRecords))
     		return(false);
 
@@ -929,7 +875,7 @@ class UniteCreatorElementorIntegrate{
 	private function initBackgroundWidgets(){
 
 		$this->enableBackgroundWidgets = true;
-		
+
 		add_action("elementor/element/section/section_background_overlay/after_section_end", array($this, "onSectionStyleControlsAdd"),10, 2);
 		add_action("elementor/element/container/section_background_overlay/after_section_end", array($this, "onSectionStyleControlsAdd"),10, 2);
 
@@ -1486,11 +1432,11 @@ class UniteCreatorElementorIntegrate{
     	try{
 
     		$this->preloadElementorDBData();
-
+			
     		$objWpmlIntegrate = new UniteCreatorWpmlIntegrate();
 
     		$arrUEWidgets = $objWpmlIntegrate->getTranslatableElementorWidgetsFields(self::$arrAddonsRecords);
-
+			
     		if(!empty($arrUEWidgets))
     			$arrWidgets = array_merge($arrWidgets, $arrUEWidgets);
 
@@ -1752,7 +1698,7 @@ class UniteCreatorElementorIntegrate{
 
     	add_action('elementor/editor/init', array($this, 'onEditorInit'));
 		
-		add_action( 'elementor/elements/categories_registered', array($this, 'onCategoriesRegistered') );
+		add_action( 'elementor/elements/categories_registered', array($this, 'onCategoriesRegistered') );    	
     	
     	if($this->isOldElementorVersion == true)
     		add_action('elementor/widgets/widgets_registered', array($this, 'onWidgetsRegistered'));
@@ -1778,7 +1724,7 @@ class UniteCreatorElementorIntegrate{
 
     	//fix some frontend bug with double render
     	add_filter("elementor/frontend/the_content",array($this, "onTheContent"));
-		
+
 		add_filter( 'pre_handle_404', array($this, 'checkAllowWidgetPagination' ), 11, 2 );
 
 		//dynamic loop

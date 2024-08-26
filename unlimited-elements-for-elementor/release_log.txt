@@ -1,15 +1,33 @@
 
 
+version 1.5.220:
+
+* Fix: fixed small php bugs
+
 version 1.5.119:
 
 * Fix: fixed backgrounds selector didn't saved bug
 * Fix: fixed load more and avoid duplicates bug
 
 
+version 1.5.118:
+
+* Fix: categories was invisible in elementor editor free version
+* Fix: fixed pagination link click with elementor pro page transition bug
+
+
+version 1.5.117:
+
+* Fix: improved the manual sorting and debuging of authors list
+* Fix: fixed post selection in editor in new chrome version.
+* Fix: where there is no posts in id's from dynamic or id's from meta in posts selection - return no posts instead of all posts
+* Fix: fixed third party filters suppress filters for ajax search bug - they was always suppress, and wpml integration didn't worked.
+* Feature: improved callbacks debug in full posts query debug
+
+
 version 1.5.116:
 
 * Fix: fixed some editor select2 bug
-
 
 version 1.5.115:
 
