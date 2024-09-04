@@ -666,8 +666,7 @@ class UniteCreatorFiltersProcess{
 
 		if(!empty($offset) && is_numeric($offset))
 			self::$filters["offset"] = $offset;
-
-
+		
 		//get num items
 		$numItems = UniteFunctionsUC::getVal($arrInputFilters, "num_items");
 
@@ -871,14 +870,14 @@ class UniteCreatorFiltersProcess{
 	 * process request filters
 	 */
 	public function processRequestFilters($args, $isFilterable, $isMainQuery = false){
-
+				
 		//allow all ajax, forbid under request and not filterable.
 
 		if($isFilterable == false)
 			return($args);
 
 		$arrFilters = $this->getRequestFilters();
-
+		
 		$arrMetaQuery = array();
 
 		//---- set offset and count ----

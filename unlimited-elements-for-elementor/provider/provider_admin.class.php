@@ -66,10 +66,11 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 		GlobalsUC::$defaultAddonType = $this->defaultAddonType;
 
 		parent::__construct();
-
+		
 		$this->init();
 	}
-
+	
+	
 	/**
 	 * get instance
 	 */
@@ -83,7 +84,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 * process activate event - install the db (with delta).
 	 */
 	public function onActivate(){
-
+		
 		$this->createTables();
 
 		$this->importCurrentThemeAddons();
@@ -111,7 +112,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 * create the tables if not exists
 	 */
 	public function createTables($isForce = false){
-
+		
 		$response1 = $this->createTable(GlobalsUC::TABLE_ADDONS_NAME, $isForce);
 
 		$response2 = $this->createTable(GlobalsUC::TABLE_CATEGORIES_NAME, $isForce);
@@ -1070,7 +1071,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 		$this->addAction(self::ACTION_PRINT_SCRIPT, "onPrintFooterScripts");
 
 		$this->addAction(self::ACTION_AFTER_SWITCH_THEME, "afterSwitchTheme");
-
+		
 		$this->addEvent_onActivate();
 
 		$this->addActionAjax("ajax_action", "onAjaxAction");

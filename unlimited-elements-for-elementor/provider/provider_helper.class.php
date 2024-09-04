@@ -349,9 +349,9 @@ class HelperProviderUC{
     	$name = UniteFunctionsUC::getVal($paramImage, "name");
 
     	$copyKeys = array("enable_condition","condition_attribute","condition_operator","condition_value");
-
+		
     	$arrSizes = UniteFunctionsWPUC::getArrThumbSizes();
-
+		    	
     	$arrSizes = array_flip($arrSizes);
 
     	$param = array();
@@ -372,7 +372,7 @@ class HelperProviderUC{
     	//duplicate all keys
     	foreach($copyKeys as $key)
     		$param[$key] = UniteFunctionsUC::getVal($paramImage, $key);
-		
+		    		
 		return($param);
 	}
 	

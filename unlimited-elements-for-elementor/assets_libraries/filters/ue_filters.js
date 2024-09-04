@@ -1,6 +1,5 @@
 
-//UE Filters Version 1.25
-
+//UE Filters Version 1.26
 
 function UEDynamicFilters(){
 
@@ -1105,12 +1104,21 @@ function UEDynamicFilters(){
 	function onAjaxPaginationLinkClick(event){
 		
 		var objLink = jQuery(this);
-
+		
+		//if no grid attached - act like a regular link
+		
+		var objPagination = objLink.parents(".uc-filter-pagination");
+		
+		var objGrid = objPagination.data("grid");
+		
+		if(!objGrid || objGrid.length == 0 || objPagination.hasClass("uc-no-ajax")){
+						
+			return(true);
+		}
+		
 		//run the ajax, prevent default
 		event.preventDefault();
 		
-		var objPagination = objLink.parents(".uc-filter-pagination");
-
 		var objLinkCurrent = objPagination.find(".current");
 
 		
@@ -1146,10 +1154,6 @@ function UEDynamicFilters(){
 		objLink.addClass("current");
 
 		var objGrid = objPagination.data("grid");
-
-		if(!objGrid || objGrid.length == 0)
-			throw new Error("Grid not found!");
-
 		
 		objPagination.addClass(g_vars.CLASS_CLICKED);
 
@@ -3597,6 +3601,14 @@ function UEDynamicFilters(){
 		var error = "Filter Parent not found! Please put the posts element on the page, and turn on 'Enable Post Filtering' option on it";
 
 		if(!objGrid){
+			
+			
+			//pagination can work without parent as regular link
+			
+			var type = getFilterType(objFilter);
+			if(type == g_types.PAGINATION)
+				return(false);
+			
 			showElementError(objFilter, error);
 			return(null);
 		}
@@ -3656,12 +3668,7 @@ function UEDynamicFilters(){
 
 			switch(type){
 				case g_types.PAGINATION:
-					
-					//avoid other services to run functions when click the link
-								
-					var objLinks = jQuery(".uc-filter-pagination a");
-					objLinks.off("click"); 
-					
+										
 					objParent.on("click",".uc-filter-pagination a", onAjaxPaginationLinkClick);
 					
 				break;

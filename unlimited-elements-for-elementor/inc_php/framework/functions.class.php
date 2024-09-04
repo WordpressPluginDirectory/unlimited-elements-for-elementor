@@ -2953,7 +2953,6 @@ class UniteFunctionsUC{
 	 */
 	public static function obStart(){
 		
-		//dmp("ob start!!!");
 		ob_start();
 	}
 	

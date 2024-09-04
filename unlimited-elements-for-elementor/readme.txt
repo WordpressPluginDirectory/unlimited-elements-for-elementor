@@ -894,6 +894,17 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 == Changelog ==
 
 
+version 1.5.121: 2024-09-04
+
+* Fix: make work the pagination widget without ajax again
+* Fix: enabled post ordering when selecting by post id's from dynamic fields
+* Fix: fixed some safary bug in the galleries and autoplay
+* Fix: dome some db queries optimization to post list field
+* Feature: added general setting for showing remote error messages only to admins
+* Feature: added option for "max posts" for manual posts selection in post widgets
+* Fix: added support for web-cli on installing and activating plugin with the additional db tables
+
+
 version 1.5.220: 2024-08-25
 
 * Fix: fixed small php bugs

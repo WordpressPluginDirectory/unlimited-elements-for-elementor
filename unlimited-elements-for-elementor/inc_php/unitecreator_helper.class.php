@@ -1407,16 +1407,36 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	public static function addRemoteControlsScript(){
 
 		UniteProviderFunctionsUC::addAdminJQueryInclude();
-
+		
 		$urlFiltersJS = GlobalsUC::$url_assets_libraries . "remote/ue-remote-controls.js";
 		HelperUC::addScriptAbsoluteUrl($urlFiltersJS, "ue_remote_controls");
 
 		$isDebug = HelperUC::hasPermissionsFromQuery("ucremotedebug");
-
-		if($isDebug == true){
-			HelperUC::putCustomScript("var ucRemoteDebugEnabled=true;", false, "remote_controls_debug");
+		
+		//check if hide remote errors or not
+		
+		$isErrorsToAdmins = HelperProviderCoreUC_EL::getGeneralSetting("remote_error_admins");
+		$isErrorsToAdmins = UniteFunctionsUC::strToBool($isErrorsToAdmins);
+		
+		$isHideErrors = false;
+		
+		if($isErrorsToAdmins == true){
+			
+			$hasPermissions = UniteFunctionsWPUC::isCurrentUserHasPermissions();
+			
+			//show only to regular users, not to admins
+			
+			$isHideErrors = ($hasPermissions == false);
 		}
+		
+		if($isDebug == true)
+			HelperUC::putCustomScript("var ucRemoteDebugEnabled=true;", false, "remote_controls_debug");
+		
+		if($isHideErrors == true)
+			HelperUC::putCustomScript("var g_ucRemoteHideErrors=true;", false, "remote_controls_hide_errors");
+		
 	}
+	
 
 	/**
 	 *

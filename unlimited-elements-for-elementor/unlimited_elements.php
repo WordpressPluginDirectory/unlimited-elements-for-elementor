@@ -4,7 +4,7 @@
 * Plugin URI: http://unlimited-elements.com
 * Description: Unlimited Elements - Huge Widgets Pack for Elementor Website Builder, with html/css/js widget creator and editor
 * Author: Unlimited Elements
-* Version: 1.5.120
+* Version: 1.5.121
 * Author URI: http://unlimited-elements.com
 * Text Domain: unlimited-elements-for-elementor
 * Domain Path: /languages
@@ -63,6 +63,7 @@ $pathProvider = $currentFolder."/provider/";
 
 try{
 	
+	
 	if(class_exists("GlobalsUC"))
 		define("UC_BOTH_VERSIONS_ACTIVE", true);
 	else{
@@ -71,6 +72,7 @@ try{
 		if(file_exists($pathAltLoader)){
 			
 			require $pathAltLoader;
+		
 		}else{
 			require_once $currentFolder.'/includes.php';
 			

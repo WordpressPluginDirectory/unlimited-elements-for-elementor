@@ -33,7 +33,8 @@ class UniteCreatorElementorIntegrate{
 	public static $arrAddonsRecords = array();
 	public static $arrBGAddonsRecords = array();
 
-	private $arrBGAddonsOutput = array();
+	private $isBGRendered = false;
+	
 	public static $isLogMemory;
 	public static $counterWidgets=0;
 	public static $counterControls=0;
@@ -378,7 +379,7 @@ class UniteCreatorElementorIntegrate{
     	//preload db data
     	
     	try{
-
+			
     		$this->preloadElementorDBData();
 					
     	}catch(Exception $e){
@@ -573,14 +574,13 @@ class UniteCreatorElementorIntegrate{
 	 * add front end html render
 	 */
 	private function addFrontRenderBackground($backgroundType, $settings, $objElement){
-
+				
 		$sectionName = $objElement->get_name();
 
 		$rawData = $objElement->get_raw_data();
 
 		$elementID = UniteFunctionsUC::getVal($rawData, "id");
-
-
+		
 		try{
 
 			$objAddon = new UniteCreatorAddon();
@@ -597,15 +597,15 @@ class UniteCreatorElementorIntegrate{
 
 			if(empty(self::$objAddons))
 				self::$objAddons = new UniteCreatorAddons();
-
+		
 			$output = self::$objAddons->getAddonOutput($objAddon);
 
 			if(empty($output))
 				return(false);
-
-			if(empty($this->arrBGAddonsOutput))
+			
+			if($this->isBGRendered == false)
 				UniteProviderFunctionsUC::addjQueryInclude();
-
+			
 			//put includes
 			$this->outputBGIncludes($output);
 
@@ -614,9 +614,10 @@ class UniteCreatorElementorIntegrate{
 
 			if(is_array($output))
 				$output["location"] = $location;
-
-			$this->arrBGAddonsOutput[$elementID] = $output;
-
+			
+			$this->renderBGOutput($elementID, $output);
+			
+			
 		}catch(Exception $e){
 			//just skip
 		}
@@ -628,23 +629,82 @@ class UniteCreatorElementorIntegrate{
 	 */
 	public function onFrontAfterRender($objElement){
 
+		//dmp("after render ".UniteFunctionsUC::getRandomString());
+		
 		$settings = $objElement->get_settings_for_display();
 
 		$backgroundType = UniteFunctionsUC::getVal($settings, self::CONTROL_BACKGROUND_TYPE);
-
+		
 		if(!empty($backgroundType) && $backgroundType != "__none__")
 			$this->addFrontRenderBackground($backgroundType, $settings, $objElement);
-
+		
 	}
+	
+	
+	/**
+	 * render bg output
+	 */
+	private function renderBGOutput($elementID, $bgOutput){
+		
+		if(empty($bgOutput))
+			return(false);
+		
+		if(is_array($bgOutput) == false)
+			return(false);
+					
+		$this->isBGRendered = true;
+		
+		$html = UniteFunctionsUC::getVal($bgOutput, "html");
+		$location = UniteFunctionsUC::getVal($bgOutput, "location");
 
+		$addClass = "";
+		if($location === "front" || $location === "body_front" || $location === "layout_front")
+			$addClass = " uc-bg-front";
 
+		$addData = "data-location=\"$location\"";
+
+		?>
+		<div class="unlimited-elements-background-overlay<?php echo $addClass?>" data-forid="<?php echo $elementID?>" <?php echo $addData?> style="display:none">
+			<template>
+			<?php echo $html?>
+			</template>
+		</div>
+		
+		<?php
+	}
+	
+	
+	
+	/**
+	 * check if BG exists in page
+	 */
+	private function isBGExistsInPage(){
+		
+		$isCachingActive = \Elementor\Plugin::$instance->experiments->is_feature_active( 'e_element_cache' );
+		
+		if($isCachingActive == false)
+			return($this->isBGRendered);
+			
+		//if caching active - assume there is background. no other option to check meanwhile.
+		//TODO: find a way to check if there is background in all the cached contents or not. by some hook.
+			
+		//apply this: $data = apply_filters( 'elementor/frontend/builder_content_data', $data, $post_id );
+		
+			
+		return(true);
+	}
+	
+	
 	/**
 	 * print footer html
 	 */
 	public function onPrintFooterHtml(){
-
-		if(empty($this->arrBGAddonsOutput))
-			return(true);
+		
+		$isBGExists = $this->isBGExistsInPage();
+		
+		if($isBGExists == false)
+			return(false);
+		
 		?>
 		<style>
 			.unlimited-elements-background-overlay{
@@ -661,29 +721,6 @@ class UniteCreatorElementorIntegrate{
 			}
 		</style>
 
-		<?php
-
-		foreach($this->arrBGAddonsOutput as $elementID => $bgOutput){
-
-			$html = UniteFunctionsUC::getVal($bgOutput, "html");
-			$location = UniteFunctionsUC::getVal($bgOutput, "location");
-
-			$addClass = "";
-			if($location === "front" || $location === "body_front" || $location === "layout_front")
-				$addClass = " uc-bg-front";
-
-			$addData = "data-location=\"$location\"";
-
-			?>
-			<div class="unlimited-elements-background-overlay<?php echo $addClass?>" data-forid="<?php echo $elementID?>" <?php echo $addData?> style="display:none">
-				<template>
-				<?php echo $html?>
-				</template>
-			</div>
-			<?php
-		}
-
-		?>
 		<script type='text/javascript'>
 
 			jQuery(document).ready(function(){
@@ -763,10 +800,6 @@ class UniteCreatorElementorIntegrate{
 
 		</script>
 		<?php
-
-		//empty the bg output
-
-		$this->arrBGAddonsOutput = array();
 
 	}
 
@@ -873,14 +906,14 @@ class UniteCreatorElementorIntegrate{
 	 * test background
 	 */
 	private function initBackgroundWidgets(){
-
+		
 		$this->enableBackgroundWidgets = true;
 
 		add_action("elementor/element/section/section_background_overlay/after_section_end", array($this, "onSectionStyleControlsAdd"),10, 2);
 		add_action("elementor/element/container/section_background_overlay/after_section_end", array($this, "onSectionStyleControlsAdd"),10, 2);
-
+		
 		if(self::$isOutputPage == true){
-
+						
 			add_action('elementor/frontend/section/after_render', array($this, 'onFrontAfterRender'));
 			add_action('elementor/frontend/container/after_render', array($this, 'onFrontAfterRender'));
 	    	add_action('wp_print_footer_scripts', array($this, 'onPrintFooterHtml'));
@@ -1639,17 +1672,16 @@ class UniteCreatorElementorIntegrate{
     	if($isEnabled == false)
     		return(false);
 		
-    		
     	$isPreviewOption = UniteFunctionsUC::getGetVar("elementor-preview", "", UniteFunctionsUC::SANITIZE_KEY);
-
+		
     	if(!empty($isPreviewOption))
     		self::$isFrontendEditorMode = true;
-
+		    		
     	self::$isOutputPage = (GlobalsUC::$is_admin == false);
 
     	if(self::$isFrontendEditorMode == true)
     		self::$isOutputPage = false;
-
+		
     	//set if edit mode for widget output
     	self::$isEditMode = HelperUC::isEditMode();
 		
@@ -1721,7 +1753,7 @@ class UniteCreatorElementorIntegrate{
     		$this->initBackgroundWidgets();
 
     	add_action('elementor/init', array($this, 'onElementorInit'));
-
+		
     	//fix some frontend bug with double render
     	add_filter("elementor/frontend/the_content",array($this, "onTheContent"));
 

@@ -1623,7 +1623,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$arr[self::SORTBY_PARENT] = __("Parent Post", "unlimited-elements-for-elementor");
 
 			if($forFilter !== true){
-
+				
 				$arr["post__in"] = __("Preserve Posts In Order", "unlimited-elements-for-elementor");
 
 				$arr[self::SORTBY_META_VALUE] = __("Meta Field Value", "unlimited-elements-for-elementor");
@@ -3329,20 +3329,31 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 	/**
 	 * get thumbnail sizes array
+	 * noSizes - avoid extra sizes text
 	 */
 	public static function getArrThumbSizes(){
-
+		
 		if(!empty(self::$arrThumbSizesCache))
 			return (self::$arrThumbSizesCache);
 
+    	$noSizesText = false;
+    	if(GlobalsUC::$is_admin == false)
+    		$noSizesText = true;
+						
 		global $_wp_additional_image_sizes;
 
 		$arrWPSizes = get_intermediate_image_sizes();
 		$arrSizes = array();
-
+		
 		foreach($arrWPSizes as $size){
 			
 			$title = UniteFunctionsUC::convertHandleToTitle($size);
+			
+			if($noSizesText === true){
+				$arrSizes[$size] = $title;
+				continue;
+			}
+			
 			
 			$maxWidth = null;
 			$maxHeight = null;
@@ -3380,7 +3391,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			$arrSizes[$size] = $title;
 		}
-
+		
 		$arrSizes["full"] = __("Full", "unlimited-elements-for-elementor");
 
 		//sort
@@ -3656,18 +3667,20 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	/**
 	 * get user data by object
 	 */
-	public static function getUserData($objUser, $getMeta = false, $getAvatar = false, $arrMetaKeys = null){
-
+	public static function getUserData($objUser, $getMeta = false, $getAvatar = false, $arrMetaKeys = null, $getNumPosts = false){
+		
 		if(is_numeric($objUser))
 			$objUser = get_user_by("id", $objUser);
 
 		$userID = $objUser->ID;
 
 		$urlPosts = get_author_posts_url($userID);
-
-		if($getMeta == true)
+		
+		$numPosts = null;
+		
+		if($$getNumPosts == true)
 			$numPosts = count_user_posts($userID);
-
+		
 		$userData = $objUser->data;
 
 		
@@ -3695,8 +3708,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		$arrData["email"] = UniteFunctionsUC::getVal($userData, "user_email");
 
 		$arrData["url_posts"] = $urlPosts;
-
-		if($getMeta == true)
+		
+		if($getNumPosts == true)
 			$arrData["num_posts"] = $numPosts;
 
 		if($getAvatar == true){

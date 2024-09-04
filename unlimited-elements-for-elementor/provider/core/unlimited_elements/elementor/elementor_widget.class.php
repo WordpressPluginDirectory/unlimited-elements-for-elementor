@@ -2036,7 +2036,7 @@ class UniteCreatorElementorWidget extends Widget_Base {
     private function addImageSizesControl($paramImage, $objControls){
 
     	$param = HelperProviderUC::getImageSizesParamFromPostListParam($paramImage);
-
+		
     	$this->addElementorParamUC($param, $objControls);
     }
 

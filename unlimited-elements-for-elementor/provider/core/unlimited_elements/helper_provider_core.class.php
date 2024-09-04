@@ -95,7 +95,7 @@ class HelperProviderCoreUC_EL{
 		$pathFiles = GlobalsUC::$path_images."elementor/css/";
 
 		$filepath = $pathFiles."post-{$postID}.css";
-
+		
 		$fileExists = file_exists($filepath);
 
 		if($fileExists == false)
@@ -353,18 +353,19 @@ class HelperProviderCoreUC_EL{
 	/**
 	 * get addons list from elementor content
 	 */
-	private static function getWidgetNamesFromElementorContent_iterate($arrContent){
-
+	private static function getWidgetNamesFromElementorContent_iterate($arrContent, $withBG){
+		
 		if(is_array($arrContent) == false)
 			return(false);
-
+			
+			
 		foreach($arrContent as $item){
 
 			if(is_array($item) == false)
 				continue;
 
 			$type = UniteFunctionsUC::getVal($item, "elType");
-
+			
 			if($type == "widget"){
 
 				$widgetName = UniteFunctionsUC::getVal($item, "widgetType");
@@ -377,8 +378,23 @@ class HelperProviderCoreUC_EL{
 				}
 
 			}
+		
+			//fetch background widgets
+			
+			if($withBG == true){
+				
+				$backgroundType = UniteFunctionsUC::getVal($item, "uc_background_type");
+				
+				if(!empty($backgroundType)){
+					 
+					self::$arrWidgetNames["bg__".$backgroundType] = true;
+					
+				}
+				
+				
+			}
 
-			self::getWidgetNamesFromElementorContent_iterate($item);
+			self::getWidgetNamesFromElementorContent_iterate($item, $withBG);
 
 		}
 
@@ -387,14 +403,14 @@ class HelperProviderCoreUC_EL{
 	/**
 	 * get addons names from elementor content
 	 */
-	public static function getWidgetNamesFromElementorContent($arrContent){
+	public static function getWidgetNamesFromElementorContent($arrContent, $withBG = false){
 
 		self::$arrWidgetNames = array();
 
 		if(is_array($arrContent) == false)
 			return(self::$arrWidgetNames);
-
-		self::getWidgetNamesFromElementorContent_iterate($arrContent);
+		
+		self::getWidgetNamesFromElementorContent_iterate($arrContent, $withBG);
 
 		return(self::$arrWidgetNames);
 	}

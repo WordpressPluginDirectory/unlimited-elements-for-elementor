@@ -2049,9 +2049,14 @@ function UERemoteWidgets(){
 	 */
 	function displayErrorMessage(message){
 
-		//trace(message);
-		//console.trace();
-
+		if(typeof g_ucRemoteHideErrors !== "undefined" && g_ucRemoteHideErrors === true){
+		
+			trace("UE Remote Error: "+message);
+			
+			return(false);
+		}
+		
+	
 		if(g_vars.is_parent_mode == false){
 
 			if(g_objWidget && g_objWidget.length)
@@ -2062,7 +2067,7 @@ function UERemoteWidgets(){
 			displayTextOnWidget(g_objParent, message, "error");
 
 		}
-
+		
 		//console.log("UE Remote Error: "+message);
 		//console.log(message);
 

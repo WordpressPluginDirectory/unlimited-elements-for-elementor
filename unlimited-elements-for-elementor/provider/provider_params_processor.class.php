@@ -1457,7 +1457,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 
 		//enable filters
-		//enable filters
+		
 		$nameForFilter = $name;
 		if(!empty($nameListing))
 			$nameForFilter = $nameListing;
@@ -1670,7 +1670,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 						$post = get_post();
 
 					$arrCatIDs = UniteFunctionsWPUC::getPostCategoriesIDs($post);
-
+	
 					$arrExcludeTerms = UniteFunctionsUC::mergeArraysUnique($arrExcludeTerms, $arrCatIDs);
 				break;
 				case "current_tag":
@@ -1773,7 +1773,10 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$filters["limit"] = $limit;
 
 		$filters = $this->getPostListData_addOrderBy($filters, $value, $name);
-
+		
+		$orderBy = UniteFunctionsUC::getVal($filters, "orderby");
+		
+		
 		//add debug for further use
 		HelperUC::addDebug("Post Filters", $filters);
 
@@ -2223,12 +2226,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		
 		
 		//make order as "post__id"
-
-		if($makePostINOrder == true){
-
+		
+		if($makePostINOrder == true && empty($orderBy)){
+						
 			//set order
 			$args["orderby"] = "post__in";
-
+			
 			$orderDir = UniteFunctionsUC::getVal($args, "order");
 			if($orderDir == "ASC")
 				$arrIDsPopular = array_reverse($arrIDsPopular);
@@ -2423,7 +2426,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$args = apply_filters("ue_modify_posts_query_args", $args);
 		
 		$args = UniteCreatorPluginIntegrations::modifyPostQueryIntegrations($args);
-				
+		
 		$query->query($args);
 		
 		do_action("ue_after_custom_posts_query", $query);
@@ -2868,8 +2871,8 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	/**
 	 * get manual selection
 	 */
-	private function getPostListData_manualSelection($value, $name, $data){
-
+	private function getPostListData_manualSelection($value, $name, $data, $nameListing){
+		
 		$args = array();
 
 		$postIDs = UniteFunctionsUC::getVal($value, $name."_manual_select_post_ids");
@@ -2889,11 +2892,28 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		if(!empty($arrDynamicIDs))
 			$postIDs = array_merge($postIDs, $arrDynamicIDs);
-
+		
+		//set posts per page
+		
 		$postsPerPage = count($postIDs);
 
 		if($postsPerPage < 1000)
 			$postsPerPage = 1000;
+
+		$limit = UniteFunctionsUC::getVal($value, "{$name}_maxitems_manual");
+			
+		if(!empty($limit) && is_numeric($limit) == true){
+			
+			$limit = (int)$limit;
+			if($limit <= 0)
+				$limit = 100;
+	
+			if($limit > 1000)
+				$limit = 1000;
+			
+			$postsPerPage = $limit;
+		}
+			
 
 		$showDebugQuery = UniteFunctionsUC::getVal($value, "{$name}_show_query_debug");
 		$showDebugQuery = UniteFunctionsUC::strToBool($showDebugQuery);
@@ -2902,8 +2922,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		if(self::SHOW_DEBUG_QUERY == true)
 			$debugType = "show_query";
-
-
+		
 		if(empty($postIDs)){
 
 			if($showDebugQuery == true){
@@ -2933,6 +2952,18 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		$args = $this->getPostListData_addOrderBy($args, $value, $name, true);
 
+		//enable filters
+		
+		$nameForFilter = $name;
+		if(!empty($nameListing))
+			$nameForFilter = $nameListing;
+
+		$isFilterable = $this->getIsFilterable($value, $nameForFilter);
+		
+		//update by post and get filters
+		$objFiltersProcess = new UniteCreatorFiltersProcess();
+		$args = $objFiltersProcess->processRequestFilters($args, $isFilterable);
+		
 
 		if($showDebugQuery == true){
 			dmp("Manual Selection. The Query Is:");
@@ -2963,7 +2994,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		if(empty($arrPosts))
 			$arrPosts = array();
-
+		
 		//keep original order if no orderby
 		$orderby = UniteFunctionsUC::getVal($args, "orderby");
 		if(empty($orderby))
@@ -3090,7 +3121,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			break;
 			case "manual":
 
-				$arrPosts = $this->getPostListData_manualSelection($value, $name, $data);
+				$arrPosts = $this->getPostListData_manualSelection($value, $name, $data, $nameListing);
 
 			break;
 			case "current":

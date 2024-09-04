@@ -14,7 +14,7 @@ try{
 	$pathCreateAddonsPlugin = $pathCorePlugins."create_addons/plugin.php";
 		require_once $pathCreateAddonsPlugin;
 	
-	if(is_admin()){		//load admin part
+	if(is_admin() || (defined('WP_CLI') && WP_CLI) ){		//load admin part
 		
 		do_action(GlobalsProviderUC::ACTION_RUN_ADMIN);
 		

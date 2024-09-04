@@ -97,7 +97,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$arrAllCats[__("All Categories", "unlimited-elements-for-elementor")] = "all";
 
 		foreach($arrPostTypes as $name => $arrType){
-
+		
 			if($name == "page")
 				continue;
 
@@ -277,7 +277,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		$this->addHr($name."_hr_before_max", $params);
 
-		//---- max items -----
+		//---- max users -----
 
 		$params = array("unit"=>"users");
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
@@ -1360,7 +1360,10 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 	 * add post list picker
 	 */
 	protected function addPostsListPicker($name, $value, $title, $extra){
-
+		
+		$isAdmin = GlobalsUC::$is_admin;
+		
+		
 		$simpleMode = UniteFunctionsUC::getVal($extra, "simple_mode");
 		$simpleMode = UniteFunctionsUC::strToBool($simpleMode);
 
@@ -1378,10 +1381,13 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		$arrPostTypes = array();
 
-		//if(GlobalsUC::$is_admin == true){
+		if($isAdmin == false){
+			$simpleMode = true;
+			$arrPostTypes = array("post"=>array("cats"=>array()));
+		}
+		else
 			$arrPostTypes = UniteFunctionsWPUC::getPostTypesWithCats(GlobalsProviderUC::$arrFilterPostTypes);
-		//}
-
+		
 		$textPosts = __("Posts", "unlimited-elements-for-elementor");
 		$textPost = __("Post", "unlimited-elements-for-elementor");
 
@@ -1389,18 +1395,6 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$textPosts = __("Products", "unlimited-elements-for-elementor");
 			$textPost = __("Product", "unlimited-elements-for-elementor");
 		}
-
-		/*
-		$isWpmlExists = UniteCreatorWpmlIntegrate::isWpmlExists();
-
-		if($isWpmlExists == true){
-
-			$objWpmlIntegrate = new UniteCreatorWpmlIntegrate();
-
-			$arrLanguages = $objWpmlIntegrate->getLanguagesShort(true);
-			$activeLanguege = $objWpmlIntegrate->getActiveLanguage();
-		}
-		*/
 
 		//fill simple types
 		$arrTypesSimple = array();
@@ -1443,7 +1437,8 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$arrNotInRelatedCondition = array($name . "_source!" => "related");
 			$arrNotManualElementorCondition = array($name . "_source!" => "manual");
 			$arrManualElementorCondition = array($name . "_source" => "manual");
-
+			
+			
 			$arrSourceOptions = array_flip(array(
 				"custom" => sprintf(__("Custom %s", "unlimited-elements-for-elementor"), $textPosts),
 				"current" => sprintf(__("Current Query %s", "unlimited-elements-for-elementor"), $textPosts),
@@ -1585,10 +1580,14 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		
 		//---- Include By Author -----
-		//optimize requests for front
-		$arrAuthors = UniteFunctionsWPUC::getArrAuthorsShort(true);
-		$arrAuthors = array_flip($arrAuthors);
-
+		
+		if($isAdmin == false)
+			$arrAuthors = array();
+		else{
+			$arrAuthors = UniteFunctionsWPUC::getArrAuthorsShort(true);
+			$arrAuthors = array_flip($arrAuthors);
+		}
+		
 		$arrConditionIncludeAuthor = $arrConditionIncludeBy;
 		$arrConditionIncludeAuthor[$name . "_includeby"] = "author";
 
@@ -1930,7 +1929,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		//----- add categories -------
 		$arrCats = array();
-
+		
 		if($simpleMode === true){
 			$arrCats = $arrPostTypes["post"]["cats"];
 			$arrCats = array_flip($arrCats);
@@ -2161,21 +2160,32 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$this->addMultiSelect($name . "_status", $arrStatuses, __("Post Status", "unlimited-elements-for-elementor"), array("publish"), $params);
 
 		//------- max items --------
+		
 		$params = array("unit" => "posts");
 
 		if(empty($defaultMaxPosts))
 			$defaultMaxPosts = 10;
 
 		$maxItems = UniteFunctionsUC::getVal($value, $name . "_maxitems", $defaultMaxPosts);
-
+		
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
 		$params["placeholder"] = __("100 posts if empty", "unlimited-elements-for-elementor");
-		//$params["description"] = "Enter how many Posts you wish to display, -1 for unlimited";
 		$params["add_dynamic"] = true;
 		$params["elementor_condition"] = $arrCustomAndRelatedElementorCondition;
 
 		$this->addTextBox($name . "_maxitems", $maxItems, sprintf(esc_html__("Max %s", "unlimited-elements-for-elementor"), $textPosts), $params);
-
+		
+		//------- manual max items --------
+				
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
+		$params["placeholder"] = __("All Selected", "unlimited-elements-for-elementor");
+		$params["description"] = __("Limit the max posts if you want to use load more or pagination filters. Keep empty for all selected.", "unlimited-elements-for-elementor");
+		$params["add_dynamic"] = true;
+		$params["elementor_condition"] = $arrManualElementorCondition;
+		
+		$this->addTextBox($name . "_maxitems_manual", "", sprintf(esc_html__("Max %s", "unlimited-elements-for-elementor"), $textPosts), $params);
+		
+		
 		//------- override post type --------
 		$arrTypesCurrent = UniteFunctionsUC::addArrFirstValue($arrTypesSimple, "", "[Original Post Type]");
 
@@ -2419,7 +2429,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
 		$params["elementor_condition"] = array($prefix."name"=>"custom");
-				
+		
 		$this->addTextBox($prefix."custom_name", "", __("Custom Parent Name","unlimited-elements-for-elementor"), $params);
 
 
