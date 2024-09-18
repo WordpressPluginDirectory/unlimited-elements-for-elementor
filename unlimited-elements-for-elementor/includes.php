@@ -12,8 +12,12 @@ if(!defined('UNLIMITED_ELEMENTS_INC'))
 defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 if(!defined("UNLIMITED_ELEMENTS_VERSION"))
-	define("UNLIMITED_ELEMENTS_VERSION", "1.5.121");
+	define("UNLIMITED_ELEMENTS_VERSION", "1.5.122");
 
+//disable elementor support for debugging purposes. keep it commented
+//define("UE_DISABLE_ELEMENTOR_SUPPORT", true);
+	
+	
 $currentFile = __FILE__;
 $currentFolder = dirname($currentFile);
 $folderIncludesMain = $currentFolder."/inc_php/";
@@ -52,6 +56,7 @@ require_once $folderIncludesMain . 'unitecreator_params_processor.class.php';
 require_once GlobalsUC::$pathProvider . 'provider_params_processor.class.php';
 require_once GlobalsUC::$pathProvider . 'provider_params_processor_multisource.class.php';
 require_once $folderIncludesMain . 'unitecreator_addons.class.php';
+require_once $folderIncludesMain . 'unitecreator_base_widgets.class.php';
 require_once $folderIncludesMain . 'unitecreator_helper.class.php';
 require_once $folderIncludesMain . 'unitecreator_helperhtml.class.php';
 require_once $folderIncludesMain . 'unitecreator_output.class.php';

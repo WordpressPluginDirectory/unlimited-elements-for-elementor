@@ -905,6 +905,9 @@ class UniteCreatorDialogParamElementor extends UniteCreatorDialogParam{
 		$arrTypes["sort_filter_fields"] = __("Sort Filter Fields","unlimited-elements-for-elementor");
 		$arrTypes["currency_api"] = __("Currency API Fields","unlimited-elements-for-elementor");
 		$arrTypes["weather_api"] = __("Weather API Fields","unlimited-elements-for-elementor");
+		
+		if(GlobalsUC::$inDev == true)
+			$arrTypes["base_widget"] = __("Base Widget","unlimited-elements-for-elementor");
 
 		$optionsClass = "uc-special-attribute-options";
 

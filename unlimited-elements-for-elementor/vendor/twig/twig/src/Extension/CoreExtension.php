@@ -903,7 +903,7 @@ function twig_sort_filter(Environment $env, $array, $arrow = null)
 
     if (null !== $arrow) {
         twig_check_arrow_in_sandbox($env, $arrow, 'sort', 'filter');
-
+	
         uasort($array, $arrow);
     } else {
         asort($array);

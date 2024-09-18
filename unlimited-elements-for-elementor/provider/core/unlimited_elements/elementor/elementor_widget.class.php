@@ -3915,9 +3915,9 @@ class UniteCreatorElementorWidget extends Widget_Base {
 
 	        if($isEditMode == true){
 				$arrIncludes = $output->getProcessedIncludes(true, false, "js");
-
+				
 	        	$jsonIncludes = UniteFunctionsUC::jsonEncodeForClientSide($arrIncludes);
-
+				
 	        	if(empty($arrIncludes))
 	        		$params["wrap_js_timeout"] = true;
 	        	else{
@@ -3927,11 +3927,11 @@ class UniteCreatorElementorWidget extends Widget_Base {
 
 	        }else{
 
-	        	$output->processIncludes("js");
+	        	$output->processIncludes("js");	        	
 	        }
 
 	        $htmlOutput = $output->getHtmlBody($scriptsHardCoded, $putCssIncludesInBody,true,$params);
-
+			
         	echo UniteProviderFunctionsUC::escCombinedHtml($htmlOutput);
 
 	        $htmlExtra = $this->getExtraWidgetHTML($arrValues, $objAddon);

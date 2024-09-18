@@ -295,16 +295,23 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public function setArrSettings($arrSettings){
 			$this->arrSettings = $arrSettings;
 		}
-
+				
 		/**
 		 * get setting index by name
 		 */
-		private function getIndexByName($name){
-
+		private function getIndexByName($name, $throwError = true){
+			
 			//if index present
 			if(!empty($this->arrIndex)){
-				if(array_key_exists($name, $this->arrIndex) == false)
-					UniteFunctionsUC::throwError("setting $name not found");
+				
+				if(array_key_exists($name, $this->arrIndex) == false){
+					
+					if($throwError == true)
+						UniteFunctionsUC::throwError("getIndexByName: setting with name: $name not found");
+					else 
+						return(null);
+				}
+				
 				$index = $this->arrIndex[$name];
 				return($index);
 			}
@@ -316,21 +323,40 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 					return($index);
 			}
 
-			UniteFunctionsUC::throwError("Setting with name: $name don't exists");
+			if($throwError == true)
+				UniteFunctionsUC::throwError("Setting with name: $name don't exists");
+			else
+				return(null);
+			
 		}
-
-
+		
+		/**
+		 * check if some setting exists
+		 */
+		public function isSettingExist($name){
+			
+			$index = $this->getIndexByName($name, false);
+			
+			if($index === null)
+				return(false);
+			
+			return(true);
+		}
+		
+		
 		/**
 		 *
 		 * get setting array by name
 		 */
 		public function getSettingByName($name){
-
+			
 			$index = $this->getIndexByName($name);
 			$setting = $this->arrSettings[$index];
 			return($setting);
 		}
-
+		
+		
+		
 		/**
 		 * get arr settings by saps
 		 */
@@ -443,6 +469,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * @param $name
 		 */
 		public function getSettingValue($name,$default=""){
+			
 			$setting = $this->getSettingByName($name);
 			$value = UniteFunctionsUC::getVal($setting, "value",$default);
 
@@ -1209,15 +1236,15 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * get control action
 		 */
 		private function getControlAction($parentName, $arrControl){
-
+			
 			$value = UniteFunctionsUC::getVal($arrControl, "value");
 			$type = UniteFunctionsUC::getVal($arrControl, "type");
 
 			if(empty($type))
 				return(null);
-
+				
 			$parentValue = $this->getSettingValue($parentName);
-
+			
 			switch($type){
 				case self::CONTROL_TYPE_ENABLE:
 					if($this->isControlValuesEqual($parentValue, $value) == false)
@@ -1249,17 +1276,43 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			if(empty($this->arrControls))
 				return(false);
 
+				
 			foreach($this->arrControlChildren as $childName => $arrParents){
 
 				foreach($arrParents as $parentName){
 
 					$arrControl = $this->arrControls[$parentName][$childName];
-					$action = $this->getControlAction($parentName, $arrControl);
-
+					
 					$isSap = UniteFunctionsUC::getVal($arrControl, "forsap");
 					$isSap = UniteFunctionsUC::strToBool($isSap);
-
-
+					
+					//get action from the parent setting (control)
+					
+					//check that exists, if not - throw error
+					
+					
+					$isParentExists = $this->isSettingExist($parentName);
+					
+					if($isParentExists == false){
+						
+						$childType = ($isSap == true)?"category":"attribute";
+						
+						if($isSap == true){
+							
+							$sap = $this->getSapByName($childName);
+							$tabTitle = UniteFunctionsUC::getVal($sap, "text");
+							
+							$childName .= " - ".$tabTitle;
+						}
+						
+						UniteFunctionsUC::throwError("Control attribute (<b>$parentName</b>) not exists in $childType: <b>$childName</b>");
+						
+					}
+					
+					$action = $this->getControlAction($parentName, $arrControl);
+					
+					$action = "";
+					
 					if($action == "disable"){
 
 						if($isSap == true)

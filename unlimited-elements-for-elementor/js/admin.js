@@ -2164,14 +2164,16 @@ function UniteAdminUC(){
 					var readyState = jqXHR.readyState;
 
 					var showError = true;
-
+					
 					switch(textStatus){
 						case "parsererror":
 						case "error":
 							var responseText = jqXHR.responseText;
-
-							if(responseText !== undefined)
+							
+							if(responseText !== undefined){
+								
 								t.debug(jqXHR.responseText);
+							}
 							else{
 
 								if(readyState == 0)

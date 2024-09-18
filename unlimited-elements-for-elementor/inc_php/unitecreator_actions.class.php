@@ -351,9 +351,9 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_addon_settings_html":    //from elementor/gutenberg
-
+					
 					$html = $addons->getAddonSettingsHTMLFromData($data);
-										
+					
 					HelperUC::ajaxResponseData(array("html" => $html));
 				break;
 				case "get_addon_item_settings_html":  //from elementor

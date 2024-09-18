@@ -3964,7 +3964,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 		if(empty($wp_query))
 			return(array());
-
+		
 		$currentQueryVars = $wp_query->query_vars;
 
 		return($currentQueryVars);
@@ -4211,7 +4211,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	}
 
 	/**
-	 * include some dependency in some script
+	 * remove some dependency in some script
 	 */
 	public static function removeIncludeScriptDep($depName){
 		

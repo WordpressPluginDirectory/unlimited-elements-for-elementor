@@ -646,7 +646,8 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 
 	}
 
-
+	
+	
 	/**
 	 * add special param
 	 */
@@ -808,6 +809,8 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			break;
 			case "weather_api":
 				UniteCreatorAPIIntegrations::getInstance()->addServiceSettingsFields($this, UniteCreatorAPIIntegrations::TYPE_WEATHER_FORECAST, $name, $condition);
+			break;
+			case "base_widget":	//operate base widget addon object
 			break;
 			default:
 				UniteFunctionsUC::throwError("Add special param error: wrong attribute type: $attributeType, please check that the plugin version is up to date");

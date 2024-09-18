@@ -316,15 +316,24 @@ class UniteCreatorFiltersProcess{
 	 * get request array
 	 */
 	private function getArrRequest(){
-
+		
 		$request = $_GET;
 		if(!empty($_POST))
 			$request = array_merge($request, $_POST);
-
+		
+		//add from query vars:
+		
+		$queryVars = UniteFunctionsWPUC::getCurrentQueryVars();
+		
+		$keys = array("ucterms");
+		
+		foreach($keys as $key)
+			if(!isset($request[$key]) && isset($queryVars[$key]))
+				$request[$key] = $queryVars[$key];
+		
 		return($request);
 	}
-
-
+	
 
 	/**
 	 * parse the values groups
@@ -545,9 +554,9 @@ class UniteCreatorFiltersProcess{
 			return(self::$arrInputFiltersCache);
 
 		$request = $this->getArrRequest();
-
+		
 		$strTerms = UniteFunctionsUC::getVal($request, "ucterms");
-
+				
 		$arrOutput = array();
 
 		//parse filters

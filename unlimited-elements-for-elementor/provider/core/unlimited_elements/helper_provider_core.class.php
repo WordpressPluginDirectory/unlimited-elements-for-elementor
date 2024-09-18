@@ -881,6 +881,46 @@ class HelperProviderCoreUC_EL{
     	return($data);
 	}
 	
+	private static function ______CACHING________(){}
+	
+	/**
+	 * get frame cache key
+	 */
+	public static function getFrameCacheKey($arrTemplates){
+		
+		if(empty($arrTemplates))
+			return(null);
+		
+		$cacheKey =  "uc_frame_cache_".implode("_",$arrTemplates);
+			
+		
+		return($cacheKey);
+	}
+	
+	/**
+	 * get cached frame content
+	 * output just once
+	 */
+	public static function getCachedFrameContent($strTemplateIDs){
+		
+		$arrTemplates = explode(",", $strTemplateIDs);
+		UniteFunctionsUC::validateIDsList($strTemplateIDs,"template ids");
+		
+		if(empty($arrTemplates))
+			return(null);
+		
+		$cacheKey =  self::getFrameCacheKey($arrTemplates);
+						
+		$content = wp_cache_get( $cacheKey );
+						
+		if(!empty($content))
+			$content .= "\n<!-- Output from Cache -->";
+		
+		return($content);
+	}
+	
+	
+	
 	private static function ______LISTING________(){}
 
 	/**

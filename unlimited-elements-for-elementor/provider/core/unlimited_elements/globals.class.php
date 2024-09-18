@@ -85,6 +85,8 @@ class GlobalsUnlimitedElements{
 	const PREFIX_ANIMATION_CLASS = "ue-animation-";
 	const PREFIX_TEMPLATE_PERMALINK = "unlimited-";
 
+	const FRAME_CACHE_EXPIRE_SECONDS = 28800;	//8 hours
+	
 	public static $enableCPT = false;
 	public static $urlTemplatesList;
 	public static $urlAccount;
@@ -99,6 +101,8 @@ class GlobalsUnlimitedElements{
 	
 	public static $pathPlugin;
 	public static $pathPluginSettings;
+	
+	public static $isCachedContentOutput;
 	
 	
 	/**
@@ -140,8 +144,7 @@ class GlobalsUnlimitedElements{
 			self::$enableGutenbergSupport = true;
 		}
 
-		
-		if(GlobalsUC::$inDev == true && defined("UE_DISABLE_ELEMENTOR_SUPPORT")){
+		if(defined("UE_DISABLE_ELEMENTOR_SUPPORT")){
 			self::$enableElementorSupport = false;
 			
 			if(self::$enableElementorSupport == false && self::$enableGutenbergSupport == true)

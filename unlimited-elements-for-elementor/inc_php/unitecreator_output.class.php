@@ -359,6 +359,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			HelperUC::$arrWidgetScripts = array();
 		}
 
+		
 		return $arrProcessedIncludes;
 	}
 
@@ -457,7 +458,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$arrDep = $this->addon->getIncludesJsDependancies();
 
 		foreach($arrIncludes as $include){
-
+						
 			$type = $include["type"];
 			$url = $include["url"];
 			$handle = UniteFunctionsUC::getVal($include, "handle");
@@ -479,12 +480,17 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			switch($type){
 				case "js":
-
+					
+					//deregister script first if exists
+					wp_deregister_script( $handle );
+					
 					UniteProviderFunctionsUC::addScript($handle, $url, false, $arrIncludeDep);
 				break;
 				case "css":
-
-						UniteProviderFunctionsUC::addStyle($handle, $url);
+					
+					wp_deregister_style($handle);
+					
+					UniteProviderFunctionsUC::addStyle($handle, $url);
 				break;
 				default:
 					UniteFunctionsUC::throwError("Wrong include type: {$type} ");

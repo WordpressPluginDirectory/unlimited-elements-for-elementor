@@ -875,12 +875,15 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			}
 
 			//get intro, intro from excerpt - tags not stripped
-
 			$exceprt = UniteFunctionsUC::getVal($arrPost, "post_excerpt");
 			
+			//sometimes the tags are coming decoded
+			
+			$exceprt = htmlspecialchars_decode($exceprt);
+
 			$intro = $exceprt;
 			$introFull = "";
-
+			
 			if(empty($intro)){
 				$intro = UniteFunctionsUC::getVal($arrData, "content");
 				$intro = wp_strip_all_tags($intro);
@@ -889,11 +892,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			if(!empty($intro)){
 				$introFull = $intro;
 
-				$intro = wp_strip_all_tags($intro, true);
-
+				//$intro = wp_strip_all_tags($intro, true);
+				//may make some errors
+				
 				$intro = UniteFunctionsUC::truncateString($intro, 100);
 			}
-
+			
 			$arrData["excerpt"] = $exceprt;
 			$arrData["intro"] = $intro;
 			$arrData["intro_full"] = $introFull;
@@ -3225,7 +3229,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			//protection in case that post is id
 			if(is_numeric($post))
 				$post = get_post($post);
-
+			
 			$postData = $this->getPostDataByObj($post, $arrPostAdditions, $arrImageSizes);
 
 			$postID = UniteFunctionsUC::getVal($postData, "id");
@@ -3239,6 +3243,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		$data[$name] = $arrData;
 
+		
 		//add post output id's variable
 
 		$keyIDs = $name."_output_ids";

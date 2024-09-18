@@ -37,7 +37,76 @@ class UniteCreatorTemplateEngineWork{
 
 	}
 
+	public function a_____PROTECTIONS____(){}
+	
+	/**
+	 * check the callable for a forbidden function
+	 */
+	private function validateFilterCallable($filter, $callable){	//Security Update 2
+		
+		$isClosure = $callable instanceof Closure;
+		
+		//if(empty($callable))
+		if($callable === null)
+			return(false);
+		
+		if($isClosure == false){
+			
+			if(is_string($callable) == false)
+				$callable = "";
+			
+			UniteFunctionsUC::throwError("Function <b>{$filter}</b> can execute only arrow functions. PHP functions like this: \"" . esc_html($callable) . "\" is forbidden.");
+		}
+		
+		$forbiddenFunctions = array("exec", "eval", "system", "shell_exec", "show_source", "passthru", "pcntl_exec", "proc_open");
+		
+		if(is_string($callable) === true && in_array($callable, $forbiddenFunctions) === true)
+			UniteFunctionsUC::throwError("Function \"" . $callable . "\" is forbidden for the \"" . $filter . "\" filter.");
+		
+	}
+	
+	
+	/**
+	 * "filter" filter
+	 */
+	public function filter($env, $array, $arrow){
 
+		$this->validateFilterCallable("filter", $arrow);
+		
+		return twig_array_filter($env, $array, $arrow);
+	}
+
+	/**
+	 * "map" filter
+	 */
+	public function map($env, $array, $arrow){
+
+		$this->validateFilterCallable("map", $arrow);
+
+		return twig_array_map($env, $array, $arrow);
+	}
+	
+	/**
+	 * "map" filter
+	 */
+	public function sort($env, $array, $arrow=null){
+		
+		$this->validateFilterCallable("sort", $arrow);
+		
+		return twig_sort_filter($env, $array, $arrow);
+	}
+	
+	/**
+	 * "reduce" filter
+	 */
+	public function reduce($env, $array, $arrow){
+		
+		$this->validateFilterCallable("reduce", $arrow);
+		
+		return twig_array_reduce($env, $array, $arrow);
+	}
+	
+	
 	public function a_____CUSTOM_FUNCTIONS____(){}
 
 
@@ -180,46 +249,6 @@ class UniteCreatorTemplateEngineWork{
 		}
 	}
 
-	/**
-	 * check the callable for a forbidden function
-	 */
-	private function validateFilterCallable($filter, $callable){	//Security Update 2
-		
-		$isClosure = $callable instanceof Closure;
-		
-		if($isClosure == false){
-			
-			if(is_string($callable) == false)
-				$callable = "";
-			
-			UniteFunctionsUC::throwError("Function {$filter} can execute only arrow functions. Not php functions like this: \"" . $callable . "\" is forbidden for the.");
-		}
-		
-		$forbiddenFunctions = array("exec", "eval", "system", "shell_exec", "show_source", "passthru", "pcntl_exec", "proc_open");
-		
-		if(is_string($callable) === true && in_array($callable, $forbiddenFunctions) === true)
-			UniteFunctionsUC::throwError("Function \"" . $callable . "\" is forbidden for the \"" . $filter . "\" filter.");
-	}
-
-	/**
-	 * "filter" filter
-	 */
-	public function filter($env, $array, $arrow){
-
-		$this->validateFilterCallable("filter", $arrow);
-		
-		return twig_array_filter($env, $array, $arrow);
-	}
-
-	/**
-	 * "map" filter
-	 */
-	public function map($env, $array, $arrow){
-
-		$this->validateFilterCallable("map", $arrow);
-
-		return twig_array_map($env, $array, $arrow);
-	}
 
 	/**
 	 * put items. input can be saporator or number of item, or null
@@ -1551,7 +1580,8 @@ class UniteCreatorTemplateEngineWork{
 		//override filters - disable those functions
 		$filterFilter = new Twig\TwigFilter("filter", array($this, "filter"), array("needs_environment" => true));
 		$filterMap = new Twig\TwigFilter("map", array($this, "map"), array("needs_environment" => true));
-
+		$filterSort = new Twig\TwigFilter("sort", array($this, "sort"), array("needs_environment" => true));
+		
 		//add extra functions
 		$putItemsFunction = new Twig\TwigFunction('put_items', array($this,"putItems"));
 		$putItemsFunction2 = new Twig\TwigFunction('put_items2', array($this,"putItems2"));
@@ -1620,6 +1650,7 @@ class UniteCreatorTemplateEngineWork{
 		//override filters
 		$this->twig->addFilter($filterFilter);
 		$this->twig->addFilter($filterMap);
+		$this->twig->addFilter($filterSort);
 
 		//add extra functions
 		$this->twig->addFunction($putItemsFunction);

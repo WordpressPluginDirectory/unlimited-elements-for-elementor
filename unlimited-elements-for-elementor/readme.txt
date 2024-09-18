@@ -894,6 +894,13 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 == Changelog ==
 
 
+version 1.5.122: 2024-09-17
+
+* Change: allow tags in post intros again
+* Fix: fixed some small php security issues from pachstack
+* Feature: improve protection against scripts and styles collision between themes and plugins
+
+
 version 1.5.121: 2024-09-04
 
 * Fix: make work the pagination widget without ajax again

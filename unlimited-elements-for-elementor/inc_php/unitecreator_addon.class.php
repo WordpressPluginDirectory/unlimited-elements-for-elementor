@@ -336,7 +336,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		else
 			$this->initByAlias($name, $type);
 	}
-
+	
 	/**
 	 * normalize includes array
 	 */
@@ -626,12 +626,13 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		$arrIncludes = array();
 
 		$arrConfig = $this->parseJsonFromRecord($record, "config");
-
+		
 		$this->config = $arrConfig;
 
 		if(!empty($arrConfig)){
+			
 			$this->params = $this->parseJsonFromRecord($arrConfig, "params");
-
+			
 			$this->paramsItems = $this->parseJsonFromRecord($arrConfig, "params_items");
 
 			$this->options = UniteFunctionsUC::getVal($arrConfig, "options");
@@ -645,7 +646,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			$this->variablesMain = UniteFunctionsUC::getVal($arrConfig, "variables_main");
 			if(empty($this->variablesMain))
 				$this->variablesMain = array();
-
+			
 			$this->paramsCats = UniteFunctionsUC::getVal($arrConfig, "params_cats");
 			if(empty($this->paramsCats))
 				$this->paramsCats = array();
@@ -703,11 +704,20 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		$this->includesJSLib = $this->normalizeIncludeArray($this->includesJSLib);
 
 		$this->modifyAfterInit();
-
+		
 		//set default data
 		$this->setValuesFromDefaultData();
 	}
 
+	/**
+	 * init base widgets, for output or config output
+	 */
+	public function initBaseWidgets(){
+		
+		$objBaseWidgets = new UniteCreatorBaseWidgets();
+		$objBaseWidgets->initAddon($this);
+	}
+	
 	protected function a_________GETTERS_________(){
 	}
 
@@ -1265,7 +1275,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get categories array
 	 */
 	private function getArrCats(){
-
+		
 		$this->validateInited();
 
 		if(self::$arrCacheCats !== null)
@@ -1274,7 +1284,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		$objCats = new UniteCreatorCategories();
 
 		self::$arrCacheCats = $objCats->getCatsShort("", "all");
-
+		
 		return (self::$arrCacheCats);
 	}
 
@@ -1842,12 +1852,12 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * check if the addon has sequence animation special param
 	 */
 	public function hasSequenceAnimation(){
-
+		
 		$arrParams = $this->getParams(UniteCreatorDialogParam::PARAM_SPECIAL);
-
+		
 		if(empty($arrParams))
 			return(false);
-
+		
 		foreach($arrParams as $param){
 
 			$type = UniteFunctionsUC::getVal($param, "attribute_type");
@@ -1855,7 +1865,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			if($type == "entrance_animation")
 				return(true);
 		}
-
+		
 		return(false);
 	}
 
@@ -1986,7 +1996,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 				if($isProcessed == true)
 					continue;
 			}
-
+			
 			$response = $objLibrary->getLibraryIncludes($libName);
 
 			$arrJs = $response["js"];
@@ -1999,6 +2009,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		$output["js"] = $arrJsIncludes;
 		$output["css"] = $arrCssIncludes;
 
+		
 		return ($output);
 	}
 
@@ -2060,6 +2071,8 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		
 		$this->validateInited();
 		
+		$this->initBaseWidgets();
+		
 		//check if need to add background extra settings for gutenberg editor
 		
 		$isGutenbergEditorBG = $this->isBGForGutenbergEditor();
@@ -2109,6 +2122,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			$objSettings->initByCreatorParams($arrParams, $this->paramsCats);
 		}
 
+		
 		//add items repeater
 
 		if($this->hasItems == true && $isOutputSidebar == true){
@@ -2166,10 +2180,22 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		if($putMode == true){
 			$objOutput->draw("uc_form_settings_addon", false);
 		}else{
-			UniteFunctionsUC::obStart();
-			$objOutput->draw("uc_form_settings_addon", false);
-			$html = ob_get_contents();
-			ob_clean();
+			
+			try{
+			
+				UniteFunctionsUC::obStart();
+						
+				$objOutput->draw("uc_form_settings_addon", false);
+				
+				$html = ob_get_contents();
+				ob_clean();
+				return ($html);
+				
+			}catch(Exception $e){
+				ob_clean();
+
+				throw $e;
+			}
 			
 			return ($html);
 		}
@@ -2261,7 +2287,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 		$objOutput->init($objSettings);
 		$objOutput->setShowSaps(false);
-
+		
 		if($putMode == true){
 			$objOutput->draw("uc_form_addon_item_settings", false);
 		}else{
@@ -2707,7 +2733,16 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 		$this->arrStoredData[$key] = $data;
 	}
-
+	
+	/**
+	 * set params cats
+	 */
+	public function setParamsCats($newCats){
+		
+		$this->paramsCats = $newCats;
+		
+	}
+	
 	private function a____________UPDATERS________________(){
 	}
 
@@ -2783,7 +2818,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		$includes = UniteFunctionsUC::getVal($data, "includes");
 
 		$paramsCats = UniteFunctionsUC::getVal($data, "params_cats");
-
+		
 		if(empty($includes)){
 			$arrJsIncludes = UniteFunctionsUC::getVal($data, "includes_js");
 			$arrJsLib = UniteFunctionsUC::getVal($data, "includes_jslib");

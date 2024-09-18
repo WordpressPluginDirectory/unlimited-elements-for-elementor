@@ -3371,9 +3371,9 @@ function UEDynamicFilters(){
 			var strTerms = buildTermsQuery(arrTerms);
 			if(strTerms)
 				urlAjax += "&ucterms="+strTerms;
-
+			
 			//set the url params as well
-
+			
 			urlReplace = addUrlParam(urlReplace, "ucterms="+strTerms);
 
 			urlFilterString = addUrlParam(urlFilterString, "ucterms="+strTerms);

@@ -104,7 +104,7 @@ function UniteAddonPreviewAdmin() {
 	function loadSettings(onSuccess) {
 		
 		g_ucAdmin.setAjaxLoaderID("uc_settings_loader");
-		
+				
 		g_ucAdmin.ajaxRequest("get_addon_settings_html", { id: g_addonID }, function (response) {
 			
 			trace("initializing settings");

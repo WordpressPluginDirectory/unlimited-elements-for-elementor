@@ -69,7 +69,16 @@
       label="Show Remote Errors to Admins Only"
       description="Show remote widgets errors only to logged in users">
     </field>
-
+    
+    <!-- 
+    <field name="single_term_filter_rewrite"
+      type="text"
+      default=""
+      label="Single Term Filter Url Rewrite"
+      placeholder="category- -mycat"
+      description="Add rule to rewrite single term url filter from url?ucterms=term:value to url?yourname:value. It will apply only for this single term filter. Example 'category- -mycat' will allow to have url: url?mycat:value">
+    </field>
+	-->
   		
   </fieldset>
 

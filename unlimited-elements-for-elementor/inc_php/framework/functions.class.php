@@ -261,6 +261,31 @@ class UniteFunctionsUC{
 	}
 
 	/**
+	 * filter some array items by key / value
+	 * leave only fields that has field that equal to this value
+	 */
+	public static function filterArrayByKeyValue($arr,$key,$val){
+		
+		if(empty($arr))
+			return($arr);
+			
+		$newArr = array();
+		
+		foreach($arr as $item){
+			if(is_array($item) == false)
+				return($arr);
+			
+			$itemVal = UniteFunctionsUC::getVal($item, $key);
+			
+			if($itemVal === $val)
+				$newArr[] = $item;
+		}
+
+		return($newArr);
+	}
+	
+	
+	/**
 	 * remove some of the assoc array fields
 	 * fields is simple array - field1, field2, field3
 	 */
@@ -1041,64 +1066,101 @@ class UniteFunctionsUC{
 
 		return($str);
 	}
-
+	
+	/**
+	 * get tags length in a string
+	 */
+	public static function getHtmlTagsLength($str, $charset, $length){
+		
+		if(function_exists("mb_substr"))
+			$str = rtrim(mb_substr($str, 0, $length, $charset));
+		else
+			$str = rtrim(substr($str, 0, $length));
+		
+		
+		$strNoTags = strip_tags($str);
+		
+		$len = mb_strlen($str,$charset) - mb_strlen($strNoTags,$charset);
+		
+		
+		return($len);
+				
+	}
+	
+	
 	/**
 	 * truncate string
 	 * preserve - preserve word
 	 * separator - is the ending
 	 */
 	public static function truncateString($value, $length = 100, $preserve = true, $separator = '...', $charset="utf-8"){
-
+		
 		if(empty($length))
 			$length = 100;
-
+					
 		$originalValue = $value;
-
+				
 		$value = strip_tags($value,"<br><em><b><strong>");
-
-		if (mb_strlen($value, $charset) <= $length)
+		
+		$stringLen = mb_strlen($value, $charset);
+		
+		if ($stringLen <= $length)
 			return($originalValue);
+				
+			
+		//preserve words - trim to breakpoint (' ') - fix the length
+			
+		if ($preserve) {
+			
+			if(function_exists("mb_strpos"))
+				$breakpoint = mb_strpos($value, ' ', $length, $charset);
+			else{
+				$breakpoint = strpos($value, ' ', $length);
+			}
+			
+			if($breakpoint !== false)
+				$length = $breakpoint;
+		}
+		
+		//fix the length of the string a bit in case of tags
+				
+		$tagsLen = self::getHtmlTagsLength($value, $charset, $length);
+		
+		if($tagsLen > 0)
+			$length += $tagsLen;
+		
+		
+		//trim the content
+		
+		if(function_exists("mb_substr"))
+			$value = rtrim(mb_substr($value, 0, $length, $charset));
+		else
+			$value = rtrim(substr($value, 0, $length));
 
-		//preserve words
-					if ($preserve) {
-
-						if(function_exists("mb_strpos")){
-								// If breakpoint is on the last word, return the value without separator.
-								if (false === ($breakpoint = mb_strpos($value, ' ', $length, $charset))) {
-									return $value;
-								}
-						}else{
-
-							if (false === ($breakpoint = strpos($value, ' ', $length))) {
-										return $value;
-								}
-
-						}
-
-							$length = $breakpoint;
-					}
-
-					if(function_exists("mb_substr"))
-						$value = rtrim(mb_substr($value, 0, $length, $charset)).$separator;
-					else
-						$value = rtrim(substr($value, 0, $length)).$separator;
-
-
-					//if html errors - strip tags and trim again
-
-				$arrErrors = UniteFunctionsUC::validateHTML($value);
-
-				if(!empty($arrErrors)){
-					$value = strip_tags($originalValue);
-
-						if(function_exists("mb_substr"))
-							$value = rtrim(mb_substr($value, 0, $length, $charset)).$separator;
-						else
-							$value = rtrim(substr($value, 0, $length)).$separator;
-
-				}
-
-				return $value;
+										
+		//if html errors - strip tags and trim again
+		
+		$arrErrors = UniteFunctionsUC::validateHTML($value);
+		
+		if(!empty($arrErrors)){
+			
+			$value = wp_strip_all_tags($originalValue);
+			
+			if(function_exists("mb_substr"))
+				$value = rtrim(mb_substr($value, 0, $length, $charset));
+			else
+				$value = rtrim(substr($value, 0, $length));
+			
+		}
+		
+		
+		//add the suffix if exists - ...
+		
+		if(!empty($separator))
+			$value .= $separator;
+		
+		return $value;
+		
 	}
 
 

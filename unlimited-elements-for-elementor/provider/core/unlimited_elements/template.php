@@ -23,12 +23,16 @@ class UCEmptyTemplate{
 	 */
 	private function putErrorMessage($message = null){
 		
-		if(self::SHOW_DEBUG == true)
-			dmp($message);
-		
-		dmp("no output");
-		
+		if(self::SHOW_DEBUG == true){
+			
+			//escape html for the error message
+			
+			esc_html_e($message);
+		}
+				
+		dmp("no output");		
 	}
+	
 	
 	/**
 	 * render header debug
@@ -155,14 +159,8 @@ class UCEmptyTemplate{
 	/**
 	 * check and output debug
 	 */
-	private function checkOutputDebug(){
+	private function outputDebugScript(){
 		
-		$isDebug = UniteFunctionsUC::getGetVar("framedebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
-		$isDebug = UniteFunctionsUC::strToBool($isDebug);
-		
-		if($isDebug == false)
-			return(false);
-
 		?>
 		
 		<style>
@@ -305,12 +303,11 @@ class UCEmptyTemplate{
 	 * render dynamic popup templates
 	 */
 	private function renderDynamicPopupTemplates(){
-				
+		
 		$postIDs = UniteFunctionsUC::getGetVar("postids","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		
 		$isDebug = UniteFunctionsUC::getGetVar("debug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 		$isDebug = UniteFunctionsUC::strToBool($isDebug);
-		
 		
 		UniteFunctionsUC::validateNotEmpty($postIDs,"post ids");
 		
@@ -319,7 +316,13 @@ class UCEmptyTemplate{
 		$arrPostIDs = explode(",",$postIDs);
 		
 		$templateID = $this->templateID;
-				
+		
+		//sanitize and check the template ID
+		
+		UniteFunctionsUC::validateNumeric($templateID,"template");
+		
+		$templateID = (int)$templateID;
+		
 		$content = "";
 		
 		foreach($arrPostIDs as $postID){
@@ -371,6 +374,7 @@ class UCEmptyTemplate{
 				
 	}
 	
+	
 	/**
 	 * render multiple template for templates widget output
 	 */
@@ -382,9 +386,27 @@ class UCEmptyTemplate{
 		
 		UniteFunctionsUC::validateIDsList($this->templateID,"template ids");
 		
+		$cacheContent = true;
+		
+		//check debug
+		
+		$isDebug = UniteFunctionsUC::getGetVar("framedebug","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
+		$isDebug = UniteFunctionsUC::strToBool($isDebug);
+				
+		if($isDebug == true)
+			$cacheContent = false;
+		
+		//set the content
 		$content = "";
 		
 		foreach($arrTemplates as $index => $templateID){
+			
+			
+			//sanitize and check template ID
+			
+			UniteFunctionsUC::validateNumeric($templateID,"template id");
+			
+			$templateID = (int)$templateID;
 			
 			$urlTemplate = UniteFunctionsWPUC::getPermalink($templateID);
 			
@@ -428,12 +450,10 @@ class UCEmptyTemplate{
 		//don't know why, but it's not working. need to remove this dependency
 		
 		UniteFunctionsWPUC::removeIncludeScriptDep("elementor-frontend");
-
+		
+		ob_start();
+		
 		$this->renderHeaderPart();
-		
-		//check debug
-		
-		$isDebug = $this->checkOutputDebug();
 		
 		//$this->renderRegularBody();
 		if($isDebug == true)
@@ -444,9 +464,19 @@ class UCEmptyTemplate{
 		if($isDebug == true)
 			echo "</div>";
 		
+		if($isDebug == true)
+			$this->outputDebugScript();
 		
 		$this->renderFooter();
 		
+		$content = ob_get_contents();
+		ob_end_clean();
+		
+		if($cacheContent == true){
+			$success = wp_cache_set( $cacheKey, $content, '', GlobalsUnlimitedElements::FRAME_CACHE_EXPIRE_SECONDS );
+		}
+		
+		echo $content;
 	}
 	
 	
@@ -466,6 +496,7 @@ class UCEmptyTemplate{
 			
 			$isDynamicPopup = UniteFunctionsUC::getGetVar("dynamicpopup","",UniteFunctionsUC::SANITIZE_TEXT_FIELD);
 			$isDynamicPopup = UniteFunctionsUC::strToBool($isDynamicPopup);
+			
 			
 			$type = "single";
 			if($isMultiple == true)
@@ -487,6 +518,7 @@ class UCEmptyTemplate{
 					$this->renderMultipleTemplates();
 				break;
 				case "dynamic_popup":
+					
 					$this->renderDynamicPopupTemplates();
 				break;
 			}
