@@ -369,7 +369,7 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_addon_output_data":  //from elementor editor bg/gutenberg
-										
+					
 					$response = $addons->getAddonOutputData($data, true);
 					
 					HelperUC::ajaxResponseData($response);

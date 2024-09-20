@@ -1653,7 +1653,7 @@ function UniteCreatorAdmin(){
 	 * on update addon button click
 	 */
 	function onUpdateAddonClick(){
-
+		
 		var data = getDataFromAddonView();
 		var strData = g_ucAdmin.encodeObjectForSave(data);
 		var passData = {addon_data:strData};

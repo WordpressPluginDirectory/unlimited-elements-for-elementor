@@ -2804,10 +2804,19 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		if($isForGallery == true)
 			$textPrefix = __("Gallery Items ","unlimited-elements-for-elementor");
 
+		//loop item
 		if($isForGallery == false){
+			
 			$params = array();
 			$params["origtype"] = UniteCreatorDialogParam::PARAM_TEMPLATE;
 			$this->addTextBox($name."_template", "", $textPrefix.__(" Item Template","unlimited-elements-for-elementor"), $params);
+			
+			$params = array();
+			$params["origtype"] = UniteCreatorDialogParam::PARAM_TEMPLATE;
+			$params["description"] = __("Optional. Alternate template for the grid","unlimited-elements-for-elementor");
+			
+			$this->addTextBox($name."_template2", "", $textPrefix.__(" Item Alternate Template","unlimited-elements-for-elementor"), $params);
+			
 		}
 
 		//-------------------

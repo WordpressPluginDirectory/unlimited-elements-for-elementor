@@ -192,7 +192,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static function getPostTypeTaxomonies($postType){
 
 			$arrTaxonomies = get_object_taxonomies(array( 'post_type' => $postType ), 'objects');
-
+			
 			$arrNames = array();
 			foreach($arrTaxonomies as $key=>$objTax){
 				$name = $objTax->labels->singular_name;
@@ -1457,8 +1457,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			$args = array("taxonomy"=>$taxonomy);
 			$args["hide_empty"] = false;
-			$args["number"] = 5000;
-
+			$args["number"] = 7000;
+		
 			$cats = get_categories($args);
 
 			foreach($cats as $cat){

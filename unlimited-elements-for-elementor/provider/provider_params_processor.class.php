@@ -3987,26 +3987,29 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		if(empty($source) && $isForGallery == true)
 			$source = "gallery";
-
+		
+		
 		$templateID = UniteFunctionsUC::getVal($value, $name."_template_templateid");
-
+		$alternate_templateID = UniteFunctionsUC::getVal($value, $name."_template2_templateid");
+				
 		$data[$name."_source"] = $source;
+		$data["listing_setting_name"] = $name;
 		$data[$name."_templateid"] = $templateID;
-
+		$data[$name."_alt_templateid"] = $alternate_templateID;
+		
 		unset($data[$name]);
 
 		switch($source){
 			case "posts":
 
 				$paramPosts = $param;
-
+				
 				$paramPosts["name"] = $paramPosts["name"]."_posts";
 				$paramPosts["name_listing"] = $name;
 				$paramPosts["use_for_listing"] = true;
-
+				
 				$data = $this->getPostListData($value, $paramPosts["name"], $processType, $paramPosts, $data);
-
-
+				
 			break;
 			case "products":
 
@@ -5198,7 +5201,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get template data
 	 */
 	private function getElementorTemplateData($value, $name, $processType, $param, $data){
-
+		
 		$templateID = UniteFunctionsUC::getVal($value, $name."_templateid");
 
 		if(empty($templateID))

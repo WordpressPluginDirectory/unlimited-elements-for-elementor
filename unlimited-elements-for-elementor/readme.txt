@@ -894,6 +894,13 @@ Note : This plugin works with Elementor. Make sure you have [Elementor](https://
 == Changelog ==
 
 
+version 1.5.123: 2024-09-19
+
+* Feature: alternate template for loop builder
+* Fix: make the active filters appear inside off canvas filters widget
+* Fix: avoid php errors when no db installed for some reason
+
+
 version 1.5.122: 2024-09-17
 
 * Change: allow tags in post intros again

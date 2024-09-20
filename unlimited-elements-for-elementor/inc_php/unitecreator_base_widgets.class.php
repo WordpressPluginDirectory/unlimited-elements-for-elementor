@@ -27,6 +27,7 @@ class UniteCreatorBaseWidgets{
 		
 		$baseCatsAssoc = UniteFunctionsUC::arrayToAssoc($baseCats,"id");
 		
+		
 		//modify base cats id's
 		
 		foreach($baseCatsAssoc as $id=>$cat){
@@ -47,7 +48,36 @@ class UniteCreatorBaseWidgets{
 		
 		$newCats = UniteFunctionsUC::assocToArray($newCats);
 		
+				
 		return($newCats);
+	}
+	
+	
+	/**
+	 * merge params
+	 */
+	private function mergeBase_params(){
+		
+		$baseParams = $this->baseAddon->getParams();
+		
+		$params = $this->addon->getParams();
+		
+		//modify the ID
+		
+		foreach($baseParams as $key=>$param){
+			
+			$catID = UniteFunctionsUC::getVal($param, "__attr_catid__");
+			
+			$catID = "base_".$catID;
+			
+			$param["__attr_catid__"] = $catID;
+			
+			$baseParams[$key] = $param;
+		}
+		
+		$params = array_merge($baseParams, $params);
+
+		return($params);
 	}
 	
 	
@@ -65,12 +95,16 @@ class UniteCreatorBaseWidgets{
 		
 		$this->baseAddon->initByAlias($alias, GlobalsUC::ADDON_TYPE_ELEMENTOR);
 		
-		//set cats params
+		//merge cats params
 		
 		$newParamCats = $this->mergeBase_cats();
 		$this->addon->setParamsCats($newParamCats);
 		
+		//merge params
 		
+		$newParams = $this->mergeBase_params();
+		
+		$this->addon->setParams($newParams);
 		
 	}
 	

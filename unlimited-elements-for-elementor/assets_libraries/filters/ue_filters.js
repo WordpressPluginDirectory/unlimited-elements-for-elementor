@@ -860,7 +860,7 @@ function UEDynamicFilters(){
 	 * hide children and just clear the main filters
 	 */
 	function clearChildFilters(objGrid, objCurrentFilter, isHideChildren, termID, isClearAll){
-				
+			
 		var objFilters = getGridFilters(objGrid);
 		
 		if(!objFilters)
@@ -965,10 +965,16 @@ function UEDynamicFilters(){
 
 			break;
 			case g_types.SELECT:
-
+				
 				var objSelect = objFilter.find("select");
 				objSelect.val("");
-
+				
+				//must leave one selected
+				var objSelected = objFilter.find("option:selected");
+				
+				if(objSelected.length == 0)
+					objFilter.find("option:first-child").prop("selected","selected");
+				
 			break;
 			default:
 			case g_types.SEARCH:
@@ -1036,7 +1042,7 @@ function UEDynamicFilters(){
 	/**
 	 * check and trigger skip action to the grid if needed 
 	 * run before the refresh on some filter click
-	 * for the mobile drawer
+	 * for the mobile drawer (off canvas)
 	 */
 	function checkTriggerSkipAction(objFilter, objGrid){
 		
@@ -1050,6 +1056,8 @@ function UEDynamicFilters(){
 		var filterRole = objFilter.data("role");
 		
 		objGrid.trigger(g_vars.EVENT_SILENT_FILTER_CHANGE);
+		
+		initGrid_setActiveFiltersData(objGrid);
 		
 		//refresh children only main / children available
 		if(filterRole == "main" && hasChildFilters(objGrid)){
@@ -1307,7 +1315,6 @@ function UEDynamicFilters(){
 		if(filterType == g_types.SELECT){
 
 			var objLink = objTermsFilter.find("option:selected");
-
 		}
 
 		if(filterType == g_types.TERMS_LIST){
@@ -2552,7 +2559,7 @@ function UEDynamicFilters(){
 	 * refresh ajax grid
 	 */
 	function refreshAjaxGrid(objGrid, refreshType){
-
+				
 		var isLoadMore = (refreshType == g_vars.REFRESH_MODE_LOADMORE);	 //for the output
 		var isFiltersInit = (refreshType == "filters" || refreshType == "filters_children");
 		
@@ -2627,9 +2634,9 @@ function UEDynamicFilters(){
 			else
 				history.replaceState({}, null, urlReplace);		//without back
 		}
-
+		
 		initGrid_setActiveFiltersData(objGrid, objAjaxOptions);
-
+		
 		doGridAjaxRequest(ajaxUrl, objGrid, objFilters, isLoadMore, isFiltersInit);
 
 	}
@@ -3914,7 +3921,7 @@ function UEDynamicFilters(){
 	 * set active filters data - for third party connections, active filters and clear button
 	 */
 	function initGrid_setActiveFiltersData(objGrid, objAjaxOptions){
-
+		
 		if(!objAjaxOptions)
 			var objAjaxOptions = getGridAjaxOptions_simple(objGrid);
 
@@ -3940,12 +3947,10 @@ function UEDynamicFilters(){
 
 			arrTerms.push(objSearch);
 		}
-
-
-
+		
 		objGrid.data("active_filters_items", arrTerms);
 		objGrid.trigger(g_vars.EVENT_UPDATE_ACTIVE_FILTER_ITEMS, [arrTerms]);
-
+		
 	}
 
 
@@ -4045,7 +4050,7 @@ function UEDynamicFilters(){
 				trace("Refresh grid - by event:" + g_vars.ACTION_REFRESH_GRID);
 				console.trace();
 			}
-
+			
 			refreshAjaxGrid(objGrid);
 		});
 
@@ -4070,7 +4075,7 @@ function UEDynamicFilters(){
 			//if already cleared - no need
 			if(!arrActiveFilterItems)
 				return(null);
-						
+			
 			clearAllFilters(objGrid, null, true);
 			
 			objGrid.trigger(g_vars.ACTION_REFRESH_GRID);

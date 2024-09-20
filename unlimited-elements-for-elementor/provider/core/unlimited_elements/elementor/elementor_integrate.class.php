@@ -378,15 +378,7 @@ class UniteCreatorElementorIntegrate{
 		
     	//preload db data
     	
-    	try{
-			
-    		$this->preloadElementorDBData();
-					
-    	}catch(Exception $e){
-
-    		$this->isSystemErrorOccured = true;
-    	}
-    	
+    	$this->preloadElementorDBData();
 		
     	//$this->initTemplateTypeVars();
     	$this->initOtherVars();
@@ -514,21 +506,27 @@ class UniteCreatorElementorIntegrate{
      * preload all the elementor data
      */
     private function preloadElementorDBData(){
-		 		
+		 
     	//don't let run the function twice
     	if(!empty(self::$arrAddonsRecords))
 			return(false);
 		
-		$arrData = HelperProviderCoreUC_EL::getPreloadDBData(self::$isOutputPage);
-		
-		if(empty($arrData))
-			return(false);
-		
-		self::$arrBGAddonsRecords = UniteFunctionsUC::getVal($arrData, "bg_addons");
-		self::$arrAddonsRecords = UniteFunctionsUC::getVal($arrData, "addons");
-		$this->arrCatsRecords = UniteFunctionsUC::getVal($arrData, "cats");
-		self::$arrPostsWidgetNames = UniteFunctionsUC::getVal($arrData, "posts_widgets_names");
-		
+    	try{
+    		
+			$arrData = HelperProviderCoreUC_EL::getPreloadDBData(self::$isOutputPage);
+			
+			if(empty($arrData))
+				return(false);
+			
+			self::$arrBGAddonsRecords = UniteFunctionsUC::getVal($arrData, "bg_addons");
+			self::$arrAddonsRecords = UniteFunctionsUC::getVal($arrData, "addons");
+			$this->arrCatsRecords = UniteFunctionsUC::getVal($arrData, "cats");
+			self::$arrPostsWidgetNames = UniteFunctionsUC::getVal($arrData, "posts_widgets_names");
+    		
+    	}catch(Exception $e){
+
+    		$this->isSystemErrorOccured = true;
+    	}
     	
     }
 

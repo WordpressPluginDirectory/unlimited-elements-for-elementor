@@ -2743,8 +2743,16 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		
 	}
 	
-	private function a____________UPDATERS________________(){
+	/**
+	 * set params
+	 */
+	public function setParams($newParams){
+		
+		$this->params = $newParams;
 	}
+	
+	
+	private function a____________UPDATERS________________(){}
 
 	/**
 	 * update addon in db

@@ -804,7 +804,7 @@ class HelperProviderCoreUC_EL{
     	$tableAddons = GlobalsUC::$table_addons;
     	$addonType = GlobalsUnlimitedElements::ADDONSTYPE_ELEMENTOR;
     	$addonTypeBG = GlobalsUC::ADDON_TYPE_BGADDON;
-
+    	
     	$whereAddonType = "addons.addontype in('{$addonType}','{$addonTypeBG}')";
 		
     	//for output - get without cats

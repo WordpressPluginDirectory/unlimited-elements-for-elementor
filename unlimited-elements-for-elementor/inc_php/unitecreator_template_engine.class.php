@@ -170,10 +170,10 @@ class UniteCreatorTemplateEngineWork{
 
 		// handle params and html
 		$params = array_merge($this->arrParams, $itemParams);
-
+		
 		if(!empty($arrDynamicSettings) && is_array($arrDynamicSettings))
 			$params = array_merge($params, $arrDynamicSettings);
-
+		
 		GlobalsProviderUC::$lastItemParams = $params;
 
 		$htmlItem = $this->twig->render($templateName, $params);
@@ -956,15 +956,80 @@ class UniteCreatorTemplateEngineWork{
 	 * put listing loop
 	 */
 	public function putListingItemTemplate($item, $templateID){
-
+		
 		$this->putDynamicLoopTemplate($item, $templateID);
 	}
 
+		
+	/**
+	 * get alternate template from the params
+	 * compare that the template id is from params too before
+	 */
+	private function getAlternateTemplate($templateID){
+		
+		$listingName = UniteFunctionsUC::getVal($this->arrParams, "listing_setting_name");
+		
+		if(empty($listingName))
+			return(false);
+		
+		$altTemplateID = UniteFunctionsUC::getVal($this->arrParams, $listingName."_alt_templateid");
+
+		if(empty($altTemplateID))
+			return(false);
+			
+		//check for sure
+		$templateIDFromSettings = UniteFunctionsUC::getVal($this->arrParams, $listingName."_templateid");
+		
+		if($templateIDFromSettings != $templateID)
+			return(false);
+			
+		return($altTemplateID);
+	}
+	
+	
+	/**
+	 * get current item template id
+	 */
+	private function getCurrentItemTemplateID($templateID, $altTemplateID, $item){
+		
+		if(empty($altTemplateID))
+			return($templateID);
+			
+		if(empty($templateID))
+			return($altTemplateID);
+
+		//both exists
+		$itemParams = UniteFunctionsUC::getVal(GlobalsProviderUC::$lastItemParams, "item");
+		
+		$itemIndex = UniteFunctionsUC::getVal($itemParams, "item_index");
+		
+		if(is_numeric($itemIndex) == false)
+			return($templateID);
+		
+		$isOdd = ($itemIndex%2 == 0);
+		
+		//starts from 1 (first template) and 2,4,6 - second template
+		
+		if($isOdd == false)
+			return($templateID);
+		else
+			return($altTemplateID);
+			
+	}
+	
 	/**
 	 * put dynamic loop template, similar to put listing template
 	 */
 	public function putDynamicLoopTemplate($item, $templateID){
-
+		
+		//get alternate template
+		
+		$altTemplateID = $this->getAlternateTemplate($templateID);
+					
+		if(!empty($altTemplateID))
+			$templateID = $this->getCurrentItemTemplateID($templateID, $altTemplateID, $item);
+		
+			
 		$widgetID = UniteFunctionsUC::getVal($this->arrParams, "uc_id");
 
 		$objFilters = new UniteCreatorFiltersProcess();

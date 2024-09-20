@@ -551,8 +551,8 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	public function getAddonOutputData($addonData, $isWrap = false){
 		
 		$this->checkInitAddonGlobalVars($addonData);
-					
-		$objAddon = $this->prepareAddonByData($addonData);
+		
+		$objAddon = $this->prepareAddonByData($addonData, true);
 		
 		$rootId = UniteFunctionsUC::getVal($addonData, "root_id");
 		$includeSelectors = UniteFunctionsUC::getVal($addonData, "selectors");
@@ -690,7 +690,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	/**
 	 * prepare addon by data
 	 */
-	public function prepareAddonByData($addonData){
+	public function prepareAddonByData($addonData, $isForOutput = false){
 		
 		$addonName = UniteFunctionsUC::getVal($addonData, "name");
 		$addonType = UniteFunctionsUC::getVal($addonData, "addontype");
@@ -713,6 +713,10 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 				$objAddon->initByAlias($addonName, $addonType);
 		}
 
+		//init base widget if for output
+		if($isForOutput == true)
+			$objAddon->initBaseWidgets();
+		
 		$elementorSettings = UniteFunctionsUC::getVal($addonData, "elementor_settings");
 
 		//init by elementor settings
@@ -726,18 +730,23 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		}else{    //init by blox settings
 
 			$arrSettings = UniteFunctionsUC::getVal($addonData, "settings");
+			
+			if(is_string($arrSettings))
+				$arrSettings = UniteFunctionsUC::decodeContent($arrSettings);
 
 			if(!empty($arrSettings)){
+				
 				if(isset($arrSettings["uc_items"])){
+										
 					$arrItems = UniteFunctionsUC::getVal($arrSettings, "uc_items");
 					if(empty($arrItems))
 						$arrItems = array();
-
+					
 					$objAddon->setArrItems($arrItems);
 
 					unset($arrSettings["uc_items"]);
 				}
-
+				
 				$objAddon->setParamsValues($arrSettings);
 			}else{
 				//set addon data

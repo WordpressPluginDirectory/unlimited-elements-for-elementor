@@ -107,8 +107,6 @@ function UniteAddonPreviewAdmin() {
 				
 		g_ucAdmin.ajaxRequest("get_addon_settings_html", { id: g_addonID }, function (response) {
 			
-			trace("initializing settings");
-			
 			initSettingsByHtml(response.html);
 
 			if (typeof onSuccess === "function")
@@ -160,19 +158,22 @@ function UniteAddonPreviewAdmin() {
 	 * refresh preview
 	 */
 	function refreshPreview() {
+		
 		var values = g_settings.getSettingsValues();
-
+		
+		var valuesStr = g_ucAdmin.encodeObjectForSave(values);
+				
 		var data = {
 			id: g_addonID,
-			settings: values,
+			settings: valuesStr,
 			selectors: true,
 		};
-
+		
 		g_ucAdmin.setAjaxLoaderID("uc_preview_loader");
 
 		if (g_requestPreview)
 			g_requestPreview.abort();
-
+		
 		g_requestPreview = g_ucAdmin.ajaxRequest("get_addon_output_data", data, function (response) {
 			var html = g_ucAdmin.getVal(response, "html");
 			var includes = g_ucAdmin.getVal(response, "includes");
