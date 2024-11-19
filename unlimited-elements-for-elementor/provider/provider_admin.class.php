@@ -320,7 +320,7 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 	 * in the admin side.
 	 */
 	protected function isInsidePlugin(){
-
+		
 		$page = UniteFunctionsUC::getGetVar("page", "", UniteFunctionsUC::SANITIZE_KEY);
 
 		$isPageMaster = (strpos($page, "unlimited-elements-master") !== false);
@@ -1054,23 +1054,27 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 		$this->modifyPluginVariables();
 
 		$this->addAdminMenuLinks();
-
+		
 		//add internal hook for adding a menu in arrMenus
 		$this->addAction(self::ACTION_ADMIN_MENU, "addAdminMenu");
 
 		//if not inside plugin don't continue
 		if($this->isInsidePlugin() == true){
-
+			
+			GlobalsUC::$isInsidePlugin = true;
+			
 			$this->addAction(self::ACTION_ADD_SCRIPTS, "onAddScripts", true, 1, 9999);
 			$this->addLocalFilter("admin_body_class", "addAdminBodyClass");
 			$this->addLocalFilter("admin_title", "modifyAdminTitle");
 		}else{
 			$this->addAction(self::ACTION_ADD_SCRIPTS, "onAddOutsideScripts");
 		}
-
+		
 		$this->addAction(self::ACTION_PRINT_SCRIPT, "onPrintFooterScripts");
 
 		$this->addAction(self::ACTION_AFTER_SWITCH_THEME, "afterSwitchTheme");
+				
+		UniteFunctionsWPUC::onAdminInit();
 		
 		$this->addEvent_onActivate();
 
@@ -1081,9 +1085,9 @@ class UniteProviderAdminUC extends UniteCreatorAdmin{
 			$this->runProviderAction();
 
 		//start the external plugin api integration
-
+		
 		add_action("init", array($this, "checkRankmathAjaxCollision"));
-
+		
 		$this->addAction("admin_init", "onAdminInit");
 	}
 

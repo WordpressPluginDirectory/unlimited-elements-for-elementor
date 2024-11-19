@@ -465,7 +465,7 @@ class UniteCreatorTemplateEngineWork{
 	 * put font override
 	 */
 	public function putFontOverride($name, $selector, $useID = false){
-
+	
 		$arrFonts = $this->addon->getArrFonts();
 
 		if(empty($arrFonts))
@@ -621,7 +621,7 @@ class UniteCreatorTemplateEngineWork{
 		if(is_numeric($stamp) == false){
 
 			$hasTags = false;
-
+            
 			$objDate = DateTime::createFromFormat($formatDateFrom, $stamp);
 
 			if(!empty($objDate))
@@ -1614,6 +1614,22 @@ class UniteCreatorTemplateEngineWork{
 				$count = UniteCreatorPluginIntegrations::WPP_getPostViews($arg1);
 				
 				return($count);
+			break;
+			case "get_alphabet":
+
+				require_once GlobalsUC::$pathFramework."alphabet.class.php";
+				
+				$objAlphabet = new UELanguageAlphabets();
+				$arrAlphabet = $objAlphabet->getAlphabet($arg1);
+				
+				if(empty($arrAlphabet)){
+					dmp("$arg1 language not exists. Please choose one of those: ");
+					$arrLanguages = $objAlphabet->getLanguages();
+					
+					dmp($arrLanguages);
+				}
+				
+				return($arrAlphabet);
 			break;
 			default:
 

@@ -54,6 +54,14 @@ $version = UNLIMITED_ELEMENTS_VERSION;
 
 HelperHtmlUC::putHtmlAdminNotices();
 
+$isBFMode = GlobalsUnlimitedElements::$blackFridayMode && $isProVersion == false;
+
+$showBFBanner = (GlobalsUnlimitedElements::$blackFridayMode == true);
+
+if($showBFBanner == true){
+	$urlBannerImage = GlobalsUC::$urlPluginImages."banners/ue-dashboard-bf-banner.png";	
+}
+
 ?>
 
 <div class="ue-root ue-dash-content">
@@ -214,8 +222,17 @@ HelperHtmlUC::putHtmlAdminNotices();
 	<!-- Sidebar start -->
 	<div class="ue-sidebar">
 		<div class="ue-cta-post-wrapper">
-
+		
+			<?php if($showBFBanner == true):?>
+			<div class="ue-content-card ue-dashboard-banner">
+				<a class="ue-dashboard-banner__link" href="<?php echo GlobalsUC::URL_BUY?>">
+					<img class="ue-dashboard-banner__image" src="<?php echo $urlBannerImage?>" target="_blank">
+				</a>
+			</div>
+			<?php endif?>
+	
 			<?php if($isProVersion === false): ?>
+				
 				<div class="ue-content-card ue-get-pro-cta">
 					<div class="ue-cta-bg-overlay"></div>
 					<div class="ue-content-icon ue-flex-center">
@@ -225,7 +242,7 @@ HelperHtmlUC::putHtmlAdminNotices();
 					</div>
 					<div class="ue-content-title ue-cta-title">Get Unlimited Elements Pro</div>
 					<div class="ue-cta-desc">Unlock access to all our premium widgets and features.</div>
-					<a href="https://unlimited-elements.com/pricing/"
+					<a href="<?php echo GlobalsUC::URL_BUY?>"
 						target="_blank"
 						class="ue-content-btn ue-flex-center ue-pro-cta-btn">Get Unlimited Elements Pro</a>
 					<ul class="ue-cta-features-list">
