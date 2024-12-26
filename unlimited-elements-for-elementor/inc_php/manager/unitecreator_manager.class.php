@@ -201,7 +201,13 @@ class UniteCreatorManager{
 			<div id="cats_section" class="cats_section">
 				<div class="cat_list_wrapper">			 
 					<ul id="list_cats" class="list_cats">
-						<?php echo UniteProviderFunctionsUC::escCombinedHtml($htmlCatList)?>
+						<?php 
+						$verFlags = HelperUC::getActivePluginVersions();
+						if($verFlags[GlobalsUC::VERSION_GUTENBERG] && !$verFlags[GlobalsUC::VERSION_ELEMENTOR]) { 
+							$htmlCatList = str_replace('Widgets', 'Blocks', $htmlCatList);
+						}
+						echo UniteProviderFunctionsUC::escCombinedHtml($htmlCatList);
+						?>
 					</ul>					
 				</div>
 			</div>			 	
@@ -276,11 +282,11 @@ class UniteCreatorManager{
 			
 				<div class="unite-dialog-top"></div>
 			
-				<?php esc_html_e("Are you sure you want to delete the: ")?>
+				<?php esc_html_e("Are you sure you want to delete the: ", "unlimited-elements-for-elementor")?>
 				
 				<b><span id="uc_dialog_delete_category_catname"></span></b>
 				
-				<?php esc_html_e(" category and all it's widgets?")?>
+				<?php esc_html_e(" category and all it's widgets?", "unlimited-elements-for-elementor")?>
 				
 			<?php 
 				$prefix = "uc_dialog_delete_category";

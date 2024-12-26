@@ -87,8 +87,9 @@ class UniteCreatorDialogParamWork{
 	protected  $option_putDecsription = true;
 	protected  $option_allowFontEditCheckbox = true;
 	protected  $option_putCondition = true;
-
-
+	protected  $isDialogDebug = false;
+	
+	
 	/**
 	 * get instance of this object by addon type
 	 */
@@ -246,10 +247,7 @@ class UniteCreatorDialogParamWork{
 	 * return if some param is pro
 	 */
 	protected function isProParam($paramType){
-
-		if(GlobalsUC::$isProVersion == true)
-			return(false);
-
+		
 		if(isset($this->arrProParams[$paramType]) == true)
 			return(true);
 
@@ -315,11 +313,11 @@ class UniteCreatorDialogParamWork{
 	/**
 	 * put checkbox input
 	 */
-	private function putCheckbox($name, $text){
+	protected function putCheckbox($name, $text){
 		?>
 			<label class="unite-inputs-label-inline-free">
 					<?php echo esc_html($text)?>:
-				 	<input type="checkbox" onfocus="this.blur()" name="<?php echo $name?>">
+				 	<input type="checkbox" onfocus="this.blur()" name="<?php echo esc_attr($name)?>">
 			</label>
 
 		<?php
@@ -403,7 +401,7 @@ class UniteCreatorDialogParamWork{
 
 		?>
 				<div class="unite-inputs-label">
-					<?php echo $text?>:
+					<?php echo esc_html($text)?>:
 				</div>
 
 				<?php if($isTextarea == false):?>
@@ -451,7 +449,7 @@ class UniteCreatorDialogParamWork{
 					<?php _e("Placeholder Text","unlimited-elements-for-elementor")?>:
 				</div>
 
-				<input type="text" name="placeholder" <?php echo $strClass?> value="">
+				<input type="text" name="placeholder" <?php echo esc_attr($strClass)?> value="">
 
 			<?php endif?>
 
@@ -550,7 +548,7 @@ class UniteCreatorDialogParamWork{
 	 * put radio boolean param
 	 */
 	protected function putRadioBooleanParam(){
-
+		
 		dmp("function for override");
 
 	}
@@ -1384,9 +1382,9 @@ class UniteCreatorDialogParamWork{
 
 		$tabPrefix = "uc_tabparam_".$this->type."_";
 		$contentID = $tabPrefix.$paramType;
-
+		
 		$isProParam = $this->isProParam($paramType);
-
+		
 		//check for duplicates
 		if(isset($this->arrContentIDs[$paramType]))
 			UniteFunctionsUC::throwError("dialog param error: duplicate tab type: $paramType");
@@ -1399,7 +1397,7 @@ class UniteCreatorDialogParamWork{
 			UniteFunctionsUC::throwError("Attribute: {$paramType} is not found in param list.");
 
 		$addHtml = "";
-		if($isProParam == true){
+		if($isProParam == true && GlobalsUC::$isProVersion == false){
 			$title .= " (pro)";
 			$addHtml .= " data-ispro='true'";
 		}
@@ -1718,18 +1716,32 @@ class UniteCreatorDialogParamWork{
 
 		$linkDownloadPro = HelperHtmlUC::getHtmlLink(GlobalsUC::URL_DOWNLOAD_PRO, __("client panel","unlimited-elements-for-elementor"),"","",true);
 		$linkBuyPro = HelperHtmlUC::getHtmlLink(GlobalsUC::URL_BUY, __("PRO version","unlimited-elements-for-elementor"),"","",true);
-
+		
 		//put items param types
 		$addParams = "";
 		
 		$checkboxBlockLabelID = "uc_dialog_left_blocklabel_".$this->type;
-
+		
+		$debugDialog = HelperUC::hasPermissionsFromQuery("ucdebugdialog");
+		
+		$style = "display:none";
+		
+		if($debugDialog == true){
+			$style = "";
+			$this->isDialogDebug = true;
+		}
+		
 		?>
 
 			<!-- Dialog Param: <?php echo esc_html($type)?> -->
 
-			<div id="<?php echo esc_attr($dialogID)?>" class="uc-dialog-param uc-dialog-param-<?php echo esc_attr($type)?>" data-texts="<?php echo esc_attr($dataTexts)?>" data-type="<?php echo esc_attr($type)?>" <?php echo $addParams?> style="display:none">
-
+			<div id="<?php echo esc_attr($dialogID)?>" class="uc-dialog-param uc-dialog-param-<?php echo esc_attr($type)?>" data-texts="<?php echo esc_attr($dataTexts)?>" data-type="<?php echo esc_attr($type)?>" <?php echo $addParams?> style="<?php echo esc_attr($style)?>">
+				
+				<?php 
+					if($debugDialog == true)	
+						echo "<h2 style='color:red;'>Params Dialog Debug</h2>"; 
+				?>
+				
 				<div class="dialog-param-wrapper unite-inputs">
 
 					<?php
@@ -1743,7 +1755,7 @@ class UniteCreatorDialogParamWork{
 							<?php if($this->option_putTitle == true): ?>
 
 								<div class="unite-inputs-label">
-								<?php esc_html_e("Title")?>:
+								<?php esc_html_e("Title", "unlimited-elements-for-elementor")?>:
 								</div>
 
 								<input type="text" class="uc-param-title" name="title" value="">
@@ -1803,7 +1815,7 @@ class UniteCreatorDialogParamWork{
 							<?php endif?>
 
 							<?php if(GlobalsUC::$isProVersion == false):?>
-
+	
 							<div class='uc-dialog-param-pro-message'>
 								<?php _e("This attribute is available only in the .","unlimited-elements-for-elementor");
 								echo $linkBuyPro;
@@ -1817,7 +1829,6 @@ class UniteCreatorDialogParamWork{
 							<?php endif?>
 
 						</div>
-
 
 						<div class="dialog-param-right">
 
@@ -1836,15 +1847,18 @@ class UniteCreatorDialogParamWork{
 									$addHTML = " style='display:none'";
 									$addClass = "";
 								}
-
+								
+								if($this->isDialogDebug == true)
+									$addHTML = "";
+								
 								$firstParam = false;
-
+								
 								//is pro param
 								$isProParam = $this->isProParam($paramType);
-
-								if($isProParam == true)
+								
+								if($isProParam == true && GlobalsUC::$isProVersion == false)
 									$addClass .= " uc-pro-param";
-
+							
 								?>
 
 								<!-- <?php echo esc_html($paramType)?> fields -->
@@ -1852,9 +1866,9 @@ class UniteCreatorDialogParamWork{
 								<div id="<?php echo esc_attr($tabContentID)?>" class="uc-tab-content <?php echo esc_attr($addClass)?>" <?php echo UniteProviderFunctionsUC::escAddParam($addHTML)?> >
 
 									<?php
-
+									
 										$this->putParamFields($paramType);
-
+										
 									?>
 
 								</div>
@@ -1862,6 +1876,7 @@ class UniteCreatorDialogParamWork{
 								<?php
 
 							endforeach;
+							
 							?>
 
 

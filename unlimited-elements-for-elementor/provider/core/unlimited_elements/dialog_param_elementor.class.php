@@ -484,7 +484,26 @@ class UniteCreatorDialogParamElementor extends UniteCreatorDialogParam{
 
 		<?php
 	}
+	
+	/**
+	 * put pro setting checkbox
+	 */
+	protected function putProSettingCheckbox(){
+		
+		?>
+			<div class="vert_sap10"></div>
+			<hr>
+			<div class="vert_sap10"></div>
 
+             <div class="pro-settings-checkbox">
+                 <?php $this->putCheckbox("is_pro", __("Pro Setting", "unlimited-elements-for-elementor")); ?>
+             </div>
+			
+		    <div class="vert_sap10"></div>
+		
+		<?php 
+	}
+	
 	/**
 	 * put radio boolean param
 	 */
@@ -515,10 +534,13 @@ class UniteCreatorDialogParamElementor extends UniteCreatorDialogParam{
 
 				</tbody>
 			</table>
+
 		<?php
-
-		$this->addResponsiveInputs("radio_boolean");
-
+				
+		if(GlobalsUnlimitedElements::$enableEditProOptions == true)
+			$this->putProSettingCheckbox();
+		
+        $this->addResponsiveInputs("radio_boolean");
 
 	}
 
@@ -905,12 +927,11 @@ class UniteCreatorDialogParamElementor extends UniteCreatorDialogParam{
 		$arrTypes["sort_filter_fields"] = __("Sort Filter Fields","unlimited-elements-for-elementor");
 		$arrTypes["currency_api"] = __("Currency API Fields","unlimited-elements-for-elementor");
 		$arrTypes["weather_api"] = __("Weather API Fields","unlimited-elements-for-elementor");
+		$arrTypes["rss_feed"] = __("Rss Feed Fields","unlimited-elements-for-elementor");
+		$arrTypes["repeater"] = __("Repeater","unlimited-elements-for-elementor");
 		
-		if(GlobalsUC::$inDev == true)
-			$arrTypes["base_widget"] = __("Base Widget","unlimited-elements-for-elementor");
-
 		$optionsClass = "uc-special-attribute-options";
-
+		
 		$htmlSelectTypes = HelperHtmlUC::getHTMLSelect($arrTypes, "", "name='attribute_type' class='uc-control' data-controlled-selector='.{$optionsClass}'", true, "refresh");
 
 		?>
@@ -1057,9 +1078,9 @@ class UniteCreatorDialogParamElementor extends UniteCreatorDialogParam{
 		$this->putNoDefaultValueText();
 	}
 
-
 	private function ____NUMBER____(){}
-
+	
+	
 	/**
 	 * put number unit select
 	 */

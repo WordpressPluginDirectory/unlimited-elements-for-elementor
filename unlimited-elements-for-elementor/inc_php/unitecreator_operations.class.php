@@ -255,7 +255,7 @@ class UCOperations extends UniteElementsBaseUC{
 	 * the image must be relative path to the platform base
 	 */
 	public function createThumbs($urlImage, $thumbSize = null){
-
+		global $wp_filesystem;
 		if(empty($urlImage))
 			UniteFunctionsUC::throwError("empty image url");
 
@@ -269,7 +269,7 @@ class UCOperations extends UniteElementsBaseUC{
 		$pathThumbs = $info["path_thumbs"];
 
 		if(!is_dir($pathThumbs))
-			@mkdir($pathThumbs);
+			@$wp_filesystem->mkdir($pathThumbs);
 
 		if(!is_dir($pathThumbs))
 			UniteFunctionsUC::throwError("Can't make thumb folder: {$pathThumbs}. Please check php and folder permissions");
@@ -302,12 +302,12 @@ class UCOperations extends UniteElementsBaseUC{
 		$arr = array();
 
 		$arr["type"] = "uc_textfield";
-		$arr["title"] = "Title";
+		$arr["title"] = __("Title","unlimited-elements-for-elementor");
 		$arr["name"] = "title";
 		$arr["description"] = "";
 		$arr["default_value"] = "";
 		$arr["limited_edit"] = true;
-
+		
 		return ($arr);
 	}
 
@@ -468,17 +468,7 @@ class UCOperations extends UniteElementsBaseUC{
 		return ($arrItems);
 	}
 	
-	private function a____________RSS____________(){}
 	
-	/**
-	 * modify rss array to simplify the use
-	 */
-	public function simplifyRssDataArray($arrRss){
-		
-		
-		
-		return($arrRss);
-	}
 	
 	private function a____________DEBUG____________(){}
 		
@@ -577,15 +567,14 @@ class UCOperations extends UniteElementsBaseUC{
 		}
 
 		$htmlFields = HelperHtmlUC::getHtmlArrayTable($arrCustomFields, "No Meta Fields Found");
-		
+
 		$fieldsTitle = "Meta";
 
 		echo "<br>{$fieldsTitle} fields for term: <b>$name </b>, term id: $termID <br>";
 
 		dmp($htmlFields);
 	}
-	
-	
+
 	/**
 	 * terms custom fields debug
 	 */
@@ -671,14 +660,34 @@ class UCOperations extends UniteElementsBaseUC{
 		echo $strTerms;
 	}
 	
+	/**
+	 * put post object debug
+	 */
+	public function putPostObjectDebug($post){
+		
+		$post = (array)$post;
+		
+		$arrPostForShow = UniteFunctionsUC::modifyDataArrayForShow($post);
+		
+		dmp($arrPostForShow);
+	}
 	
 	/**
 	 * put posts full debug - show all info about each post
 	 */
-	public function putPostsFullDebug($arrPosts){
+	public function putPostsFullDebug($arrPosts, $includePostObject = false){
 		
 		foreach($arrPosts as $post){
 			$postID = $post->ID;
+			
+			$postTitle = $post->post_title;
+			
+			echo "<br><hr>";
+			
+			dmp("Post: <b>$postTitle</b>");
+			
+			if($includePostObject == true)
+				$this->putPostObjectDebug($post, $includePostObject);
 			
 			$this->putPostCustomFieldsDebug($postID);
 			$this->putPostTermsDebug($postID);

@@ -93,7 +93,6 @@ function UniteCreatorElementorEditorAdmin(){
 		
 	}
 	
-	
 	/**
 	 * get object property
 	 */
@@ -769,6 +768,9 @@ function UniteCreatorElementorEditorAdmin(){
 		//init the post type selector if exists
 		postSelectOnLoad();
 		
+		if(g_ucEnableLimitProFunctionality == true)
+			protectControls()
+		
 		g_objBody.trigger("uc_settings_panel_change");
 		
 	}
@@ -794,6 +796,31 @@ function UniteCreatorElementorEditorAdmin(){
 		
 		observer.observe(settingsPanelItem, config);
 						
+	}
+	
+	function a________PRO_CONTROLS_________(){}
+	
+	/**
+	 * protect pro controls in free version
+	 */
+	function protectControls(){
+		
+		var objPanel = getObjElementorPanel();
+		
+		objPanel.find('.uc-has-pro-option').each(function() {
+			jQuery(this).css({ 'pointer-events': 'none', 'opacity': 0.5, 'user-select': 'none' })
+		});
+
+		objPanel.find('.uc-has-pro-dropdown-options select').each(function () {
+			
+			jQuery(this).find('option').each(function () {
+				if (jQuery(this).val().includes('is-pro')) {
+					jQuery(this).prop('disabled', true);
+				}
+			});
+			
+		});
+		
 	}
 	
 	function a________LOAD_INCLUDES_________(){}
@@ -1206,8 +1233,8 @@ function UniteCreatorElementorEditorAdmin(){
 		
 		if(g_searchData && jQuery.isArray(g_searchData) == false)
 			settingsOutput = jQuery.extend({}, g_searchData);
-		
-		
+
+
 		return(settingsOutput);
 	}
 	
@@ -1681,13 +1708,17 @@ function UniteCreatorElementorEditorAdmin(){
 		
 		g_objSettingsPanel = jQuery("#elementor-panel");
 		
-		//initPreviewThumbs();
+		if(typeof g_ucEnableLimitProFunctionality !== "undefined" && g_ucEnableLimitProFunctionality === true)
+			g_ucEnableLimitProFunctionality = true;
+		else
+			g_ucEnableLimitProFunctionality = false;
 		
 		initAudioControl();
 		
 		initPostTypeSelectControl();
 		
 		initEvents();
+
 		
 	}
 	
@@ -1748,4 +1779,3 @@ jQuery(document).ready(function(){
 	g_objUCElementorEditorAdmin.init();
 	
 });
-

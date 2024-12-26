@@ -139,8 +139,10 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 		$response = $this->db->fetch(GlobalsUc::$table_addons, $where, $order);
 
+
 		return ($response);
 	}
+
 
 	/**
 	 * get addons list with name / title
@@ -712,10 +714,6 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 			else
 				$objAddon->initByAlias($addonName, $addonType);
 		}
-
-		//init base widget if for output
-		if($isForOutput == true)
-			$objAddon->initBaseWidgets();
 		
 		$elementorSettings = UniteFunctionsUC::getVal($addonData, "elementor_settings");
 

@@ -3535,7 +3535,10 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	 * check if current user has some permissions
 	 */
 	public static function isCurrentUserHasPermissions(){
-
+		
+		if(function_exists("current_user_can") == false)
+			return(false);
+		
 		$canEdit = current_user_can("manage_options");
 
 		return ($canEdit);
@@ -3805,27 +3808,15 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	}
 
 	/**
-	 * get menus list short - id / title
+	 * get all admin users
 	 */
-	public static function getMenusListShort(){
-
-		$arrShort = array();
-
-		$arrMenus = get_terms("nav_menu");
-
-		if(empty($arrMenus))
-			return (array());
-
-		foreach($arrMenus as $menu){
-			$menuID = $menu->term_id;
-			$name = $menu->name;
-
-			$arrShort[$menuID] = $name;
-		}
-
-		return ($arrShort);
+	public static function getAdminUsers(){
+		
+		$arrAdminUsers = get_users( array( 'role' => 'Administrator' ) );
+		
+		return($arrAdminUsers);
 	}
-
+	
 	/**
 	 * get users array short
 	 */
@@ -3893,6 +3884,29 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 	public static function a___________MENU__________(){
 	}
 
+	/**
+	 * get menus list short - id / title
+	 */
+	public static function getMenusListShort(){
+
+		$arrShort = array();
+
+		$arrMenus = get_terms("nav_menu");
+
+		if(empty($arrMenus))
+			return (array());
+
+		foreach($arrMenus as $menu){
+			$menuID = $menu->term_id;
+			$name = $menu->name;
+
+			$arrShort[$menuID] = $name;
+		}
+
+		return ($arrShort);
+	}
+	
+	
 	/**
 	 * get menu items
 	 */
@@ -4621,10 +4635,48 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 	/**
 	 * get permalist with check of https
+	 * $post - is post object or post id
 	 */
 	public static function getPermalink($post){
-
+		
+		$debugMultisite = false;
+		
 		$url = get_permalink($post);
+		
+		//fix for multisource
+		
+		$isMultisite = is_multisite();
+		
+		if($debugMultisite)
+			dmp("multisite: $isMultisite");
+		
+		if($isMultisite){
+			
+			$arrPost = (array)$post;
+			
+			$blogID = UniteFunctionsUC::getVal($arrPost, "blog_id");
+			
+			$currentBlogID = get_current_blog_id();
+			
+			if($currentBlogID != $blogID){
+				
+			   $blogDetails = get_blog_details($blogID);
+				
+			   switch_to_blog($blogID);
+        	
+        	   $url = get_permalink($post);
+      
+          	   restore_current_blog();				
+			}
+			
+			if($debugMultisite){
+				dmp("multisite");
+				dmp("current: $currentBlogID");
+				dmp("blogid: $blogID");
+				dmp("url: $url");
+			}			
+			
+		}
 		
 		if(GlobalsUC::$is_ssl == true)
 			$url = UniteFunctionsUC::urlToSsl($url);

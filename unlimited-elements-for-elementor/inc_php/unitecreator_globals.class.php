@@ -98,6 +98,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		const ENABLE_CATALOG_SHORTPIXEL = true;
 		const SHORTPIXEL_PREFIX = "https://cdn.shortpixel.ai/spai/q_glossy+w_323+to_auto+ret_img/";
 
+		const VERSION_ELEMENTOR = "elementor";
+		const VERSION_GUTENBERG = "gutenberg";
+		
 		public static $permisison_add = false;
 		public static $blankWindowMode = false;
 
@@ -189,7 +192,7 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		public static $colorPickerType = "spectrum";
 		public static $showQueryDebugByUrl = false;
 		public static $isInsidePlugin = false;	//set in provider_admin
-		
+		public static $active_plugins_versions = [];
 		
 		/**
 		 * init globals
@@ -233,6 +236,8 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 
 			if(defined("UC_TEST_FREE_VERSION"))
 				self::$isProVersion = false;
+				
+			
 
 			Global $mainFilepath;		//defined at plugin start
 			self::$pathPluginFile = $mainFilepath;
@@ -311,8 +316,9 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 				GlobalsUC::$SHOW_TRACE_FRONT = true;
 				GlobalsUC::$SHOW_TRACE = true;
 			}
-						
+			
 		}
+		
 		
 		/**
 		 * init after plugins loaded
@@ -330,6 +336,13 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 			$showQueryDebugByUrl = HelperUC::hasPermissionsFromQuery("ucquerydebug");
 			if($showQueryDebugByUrl == true)
 				self::$showQueryDebugByUrl = true;
+
+			
+			//test free version
+			
+			$isTestFree = HelperUC::hasPermissionsFromQuery("testfreeversion");
+			if($isTestFree == true)
+				GlobalsUC::$isProVersion = false;
 			
 		}
 
