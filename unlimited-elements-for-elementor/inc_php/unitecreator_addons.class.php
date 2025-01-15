@@ -1255,8 +1255,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	public function initAddonByData($data){
 				
 		if(is_string($data)){
-			$data = json_decode($data);
-			$data = UniteFunctionsUC::convertStdClassToArray($data);
+			$data = json_decode($data, true);
 		}
 
 		$addonID = UniteFunctionsUC::getVal($data, "id");
@@ -1313,7 +1312,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 
 			$errorMessage = HelperUC::getHtmlErrorMessage($message, GlobalsUC::$SHOW_TRACE_FRONT);
 
-			echo UniteProviderFunctionsUC::escCombinedHtml($errorMessage);
+			s_echo ($errorMessage);
 		}
 
 		exit();

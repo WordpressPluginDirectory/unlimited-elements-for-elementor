@@ -277,13 +277,11 @@ defined('UNLIMITED_ELEMENTS_INC') or die('Restricted access');
 		 * 
 		 * fetch rows from sql query
 		 */
-		public function fetchSql($query, $supressErrors = false){
+		public function fetchSql($query, $supressErrors = false, $typeResult = ARRAY_A){
 			
-			$rows = $this->pdb->fetchSql($query, $supressErrors);
+			$rows = $this->pdb->fetchSql($query, $supressErrors, $typeResult);
 			
 			$this->checkForErrors("fetch");
-			
-			$rows = UniteFunctionsUC::convertStdClassToArray($rows);
 			
 			return($rows);
 		}

@@ -407,12 +407,12 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		if(is_object($data))
 			return UniteFunctionsUC::convertStdClassToArray($data);
 
-		$content = @json_decode($data);
-
+		$content = @json_decode($data, true);
+		
 		if(empty($content))
 			return ($data);
-
-		return UniteFunctionsUC::convertStdClassToArray($content);
+		
+		return $content;
 	}
 
 	/**
@@ -658,7 +658,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 			$jsonIncludes = UniteFunctionsUC::getVal($record, "includes");
 			if(!empty($jsonIncludes))
-				$arrIncludes = json_decode($jsonIncludes);
+				$arrIncludes = json_decode($jsonIncludes, true);
 		}
 
 		$this->options = $this->initAddonOptions($this->options);
@@ -689,8 +689,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 		//parse includes
 		if(!empty($arrIncludes)){
-			$arrIncludes = UniteFunctionsUC::convertStdClassToArray($arrIncludes);
-
+			
 			$this->includesJS = UniteFunctionsUC::getVal($arrIncludes, "js", array());
 			$this->includesJSLib = UniteFunctionsUC::getVal($arrIncludes, "jslib", array());
 			$this->includesCSS = UniteFunctionsUC::getVal($arrIncludes, "css", array());
@@ -1053,7 +1052,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		if(empty($iconPath) === true)
 			return null;
 
-		$iconContents = file_get_contents($iconPath);
+		$iconContents = UniteFunctionsUC::fileGetContents($iconPath);
 
 		return $iconContents;
 	}
@@ -1934,6 +1933,19 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		return(false);
 	}
 
+	
+	/**
+	 * return if the addon is ajax search
+	 */
+	public function isAjaxSearch(){
+		
+		$options = $this->getOptions();
+		$special = UniteFunctionsUC::getVal($options, "special");
+		
+		$isAjaxSearch = ($special === "ajax_search");
+		
+		return $isAjaxSearch;
+	}
 	
 	private function a_______GET__INCLUDES_____(){
 	}
@@ -3418,13 +3430,11 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			return (null);
 
 		if(!empty($jsonData)){
-			$arrData = @json_decode($jsonData);
+			$arrData = @json_decode($jsonData, true);
 			if(empty($arrData))
 				$arrData = array();
 		}
-
-		$arrData = UniteFunctionsUC::convertStdClassToArray($arrData);
-
+		
 		return ($arrData);
 	}
 

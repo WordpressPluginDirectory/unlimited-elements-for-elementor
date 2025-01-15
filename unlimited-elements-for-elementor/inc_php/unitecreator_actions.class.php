@@ -44,11 +44,11 @@ class UniteCreatorActions{
 			$data = $_REQUEST;
 
 		if(is_string($data)){
-			$arrData = (array)json_decode($data);
+			$arrData = json_decode($data,true);
 
 			if(empty($arrData)){
 				$arrData = stripslashes(trim($data));
-				$arrData = (array)json_decode($arrData);
+				$arrData = json_decode($arrData, true);
 			}
 
 			$data = $arrData;
@@ -98,7 +98,6 @@ class UniteCreatorActions{
 		$data = $this->getDataFromRequest();
 		$addonType = $addons->getAddonTypeFromData($data);
 
-		$data = UniteFunctionsUC::convertStdClassToArray($data);
 		$data = UniteProviderFunctionsUC::normalizeAjaxInputData($data);
 
 		try{
@@ -145,11 +144,6 @@ class UniteCreatorActions{
 
 					$manager = UniteCreatorManager::getObjManagerByAddonType($addonType, $data);
 					$response = $manager->getCatAddonsHtmlFromData($data);
-					
-					$verFlags = HelperUC::getActivePluginVersions();
-					if($verFlags[GlobalsUC::VERSION_GUTENBERG] && !$verFlags[GlobalsUC::VERSION_ELEMENTOR]) { 
-						$response = str_replace('Widgets', 'Blocks', $response);
-					}
 
 					HelperUC::ajaxResponseData($response);
 				break;
@@ -460,7 +454,7 @@ class UniteCreatorActions{
 				case "get_version_text":
 
 					$content = HelperHtmlUC::getVersionText();
-					
+
 					HelperUC::ajaxResponseData(array("text" => $content));
 				break;
 				case "update_plugin":

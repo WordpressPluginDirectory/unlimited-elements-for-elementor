@@ -132,7 +132,6 @@ class UniteZipUC{
 	 * check if dir exists, if not, create it recursively
 	 */
 	private function checkCreateDir($filepath){
-		global $wp_filesystem;
 		$dir = dirname($filepath);
 
 		if(is_dir($dir) == false)
@@ -142,7 +141,7 @@ class UniteZipUC{
 
 		//this dir is not exists, and all parent dirs exists
 
-		@$wp_filesystem->mkdir($dir);
+		UniteFunctionsUC::mkdir($dir);
 		if(is_dir($dir) == false)
 			UniteFunctionsUC::throwError("Can't create directory: {$dir} maybe zip file is brocken");
 	}
@@ -151,17 +150,13 @@ class UniteZipUC{
 	 * write some file
 	 */
 	private function writeFile($str, $filepath){
-		
-		global $wp_filesystem;
-		
 		//create folder if not exists
 		$this->checkCreateDir($filepath);
-		
-		$wp_filesystem->put_contents($filepath, $str);
-	
-		if($wp_filesystem->exists($filepath) == false)
+
+		UniteFunctionsUC::filePutContents($filepath, $str);
+
+		if(UniteFunctionsUC::fileExists($filepath) == false)
 			UniteFunctionsUC::throwError("can't write file: $filepath");
-		
 	}
 
 	/**
@@ -224,7 +219,7 @@ class UniteZipUC{
 		if(is_file($path) == false)
 			UniteFunctionsUC::throwError("can't add to zip file: $path");
 
-		$content = file_get_contents($path);
+		$content = UniteFunctionsUC::fileGetContents($path);
 		$time = filemtime($path);
 
 		$file = array();
@@ -416,7 +411,7 @@ class UniteZipUC{
 		if(!extension_loaded('zlib'))
 			UniteFunctionsUC::throwError('Zlib not supported, please enable in php.ini');
 
-		$this->_data = file_get_contents($src);
+		$this->_data = UniteFunctionsUC::fileGetContents($src);
 		if(!$this->_data)
 			UniteFunctionsUC::throwError('Get ZIP Data failed');
 
