@@ -14,6 +14,8 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	
 	private static $arrPostTypeTaxCache = array();
 	private $arrCurrentPostIDs = array();
+
+	private $arrIncludeDirectChildrenOfSelectedTermsIDs = array();
 	private $itemsImageSize = null;
 	private $advancedQueryDebug = false;
 	private $arrUsersOrder;
@@ -315,7 +317,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	/**
 	 * check and if needed start the query clauses modify
 	 */
-	private function checkModifyQueryClauses($args,$showDebug){
+	private function checkModifyQueryClauses($args, $excludeOutofStockVariation, $showDebug){
 
 		$postType = UniteFunctionsUC::getVal($args, "post_type");
 
@@ -324,7 +326,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			
 		$objWoo = new UniteCreatorWooIntegrate();
 		
-		$objWoo->checkModifyQueryClauses($args, $showDebug);
+		$objWoo->checkModifyQueryClauses($args, $excludeOutofStockVariation, $showDebug);
 		
 	}
 
@@ -803,7 +805,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 				}
 
 			}
-
+			
 			//get intro, intro from excerpt - tags not stripped
 			$exceprt = UniteFunctionsUC::getVal($arrPost, "post_excerpt");
 			
@@ -939,7 +941,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			return($arrData);
 		}
-		
+				
 		$arrData = apply_filters("ue_modify_post_data", $arrData);
 		
 		return($arrData);
@@ -949,8 +951,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * run custom query
 	 */
 	private function getPostListData_getCustomQueryFilters($args, $value, $name, $data, $checkPro = true){
-
-
+		
 		if($checkPro == true){
 		if(GlobalsUC::$isProVersion == false)
 			return($args);
@@ -1403,7 +1404,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		if(empty($arrIncludeBy))
 			$arrIncludeBy = array();
 
-
+		
 		//enable filters
 		
 		$nameForFilter = $name;
@@ -1556,7 +1557,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$isAvoidDuplicates = false;
 		$arrExcludeIDsDynamic = null;
 		$excludeOutofStockVariation = false;
-
+		
 		foreach($arrExcludeBy as $excludeBy){
 
 			switch($excludeBy){
@@ -2328,21 +2329,28 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$arrStatuses = $arrStatuses[0];
 
 		$args["post_status"] = $arrStatuses;
-
+				
 		//add sticky posts only
 		$arrStickyPosts = array();
-
 		if($getOnlySticky == true){
-
-			$arrStickyPosts = get_option("sticky_posts");
-
+			
+			$stickyPostsArray =  $this->getStickyPosts($value, $name);
+			
+			$stickyPosts =  UniteFunctionsUC::getVal($stickyPostsArray, "posts");
+			$stickyPostsArgs = UniteFunctionsUC::getVal($stickyPostsArray, "args");
+			
+			if(!empty($stickyPostsArgs)){
+				$args["lang"] = UniteFunctionsUC::getVal($stickyPostsArgs, "lang");
+			}
+			
 			$args["ignore_sticky_posts"] = true;
-
-			if(!empty($arrStickyPosts) && is_array($arrStickyPosts)){
-				$args["post__in"] = $arrStickyPosts;
+			
+			if(!empty($stickyPosts) && is_array($stickyPosts)){
+				$args["post__in"] = $stickyPosts;
 			}else{
 				$args["post__in"] = array("0");		//no posts at all
 			}
+			
 		}
 
 
@@ -2387,16 +2395,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		//update by post and get filters
 		$objFiltersProcess = new UniteCreatorFiltersProcess();
 		$args = $objFiltersProcess->processRequestFilters($args, $isFilterable);
-		
-		// process out of stock variation
 
-		if($excludeOutofStockVariation == true){
-
-			$objWoo = UniteCreatorWooIntegrate::getInstance();
-
-			$arrVariationTerms = $objWoo->getVariationTermsFromQueryQrgs($args);
-		}
-		
 		$args = $this->getPostListData_getCustomQueryFilters($args, $value, $name, $data);
 		
 		HelperUC::addDebug("Posts Query", $args);
@@ -2415,13 +2414,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		}
 		
 		
-		
 		//clear some hook by url - for debug
-		
+				
 		if(GlobalsUC::$showQueryDebugByUrl == true){
-			
+					
 			$filterToDisable = HelperUC::getQueryVarWithPermission("uctestquery_clearhook");
-			
+						
 			if(!empty($filterToDisable)){
 				
 				dmp("<b>Debug: clear filter:  $filterToDisable </b>");
@@ -2432,12 +2430,11 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			
 		}
 		
-
 		//remember last args
 		GlobalsProviderUC::$lastQueryArgs = $args;
 		
 		//check for modify orderby query clauses (for woo)
-		$this->checkModifyQueryClauses($args, $showDebugQuery);
+		$this->checkModifyQueryClauses($args, $excludeOutofStockVariation, $showDebugQuery);
 		
 		//for debug
 		//UniteFunctionsWPUC::clearFiltersFunctions("posts_where");
@@ -2449,9 +2446,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$args["cache_results"] = true;
 		$args["update_post_meta_cache"] = true;
 		
-		$args = apply_filters("ue_modify_posts_query_args", $args);
-		
-		$args = UniteCreatorPluginIntegrations::modifyPostQueryIntegrations($args);
+		$args = apply_filters("ue_modify_posts_query_args", $args, $value, $name);
 		
 		//set debug errors
 		if($showDebugQuery == true && $debugType == "show_query"){
@@ -2473,9 +2468,11 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		}
 					
 		$wasSkipRun = false;
-				
+
 		if($this->skipPostListQueryRun == false){
+			
 			$query->query($args);
+			
 			GlobalsProviderUC::$lastQueryRequest = $query->request;
 		}
 		else{
@@ -2492,7 +2489,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$objFiltersProcess->afterQueryRun();
 		
 		do_action("ue_after_custom_posts_query", $query);
-		
+				
 		//custom posts debug
 
 		if($showDebugQuery == true && $debugType == "show_query"){
@@ -2621,6 +2618,62 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$this->showPostsDebugMeta($arrPosts, $value, $name);
         
 		return($arrPosts);
+	}
+
+	/**
+	 * get Sticky Posts based on language
+	 */
+	private function getStickyPosts($value, $name){
+		
+		$args = array();
+		$stickyPosts = get_option('sticky_posts', array());
+		
+		$isWPMLExists = UniteCreatorWpmlIntegrate::isWpmlExists();
+		
+		if($isWPMLExists == false){
+			
+			return array(
+				'posts' => $stickyPosts,
+				'args' => $args,
+			);
+		}
+
+		$stickyPostDefaultLang = UniteFunctionsUC::getVal($value, "{$name}_sticky_post_default_lang");
+		$stickyPostDefaultLang = UniteFunctionsUC::strToBool($stickyPostDefaultLang);
+		
+		//get default langauge posts
+
+		if($stickyPostDefaultLang == false){
+			return array(
+				'posts' => $stickyPosts,
+				'args' => $args,
+			);
+		}
+		
+		if ($stickyPostDefaultLang == true) {
+			
+			$defaultLang = $this->getDefaultSiteLanguage();
+			$activeLang = $this->getActiveLanguage(); 
+			
+			if($defaultLang == $activeLang){
+				return array(
+					'posts' => $stickyPosts,
+					'args' => $args,
+				);
+			}
+
+			do_action('wpml_switch_language', $defaultLang);
+			$stickyPosts = get_option('sticky_posts', array());
+					
+			do_action('wpml_switch_language', $activeLang);
+			
+			$args["lang"] = $activeLang;
+		}
+		
+		return array(
+			'posts' => $stickyPosts,
+			'args' => $args,
+		);
 	}
 
 	/**
@@ -2778,7 +2831,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		//if it's not under ajax - then allow request only if ajax url is set to true
 			
 		$isAjaxSetUrl = UniteFunctionsUC::getVal($value, "{$name}_ajax_seturl");
-
+		
 		$isFilterable = $isAjax && ($isAjaxSetUrl != "ajax");
 		
 		if($isFilterable == true)
@@ -2872,8 +2925,10 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$showDebugQuery = true;
 			$this->advancedQueryDebug = true;
 		}
-
-
+		
+		$args = apply_filters("ue_modify_posts_query_args", $currentQueryVars, $value, $name);
+		
+		
 		$isForWoo = false;
 		if($showDebugQuery == true){
 
@@ -2902,13 +2957,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 		$objFilters = new UniteCreatorFiltersProcess();
 		$isFrontAjax = $objFilters->isFrontAjaxRequest();
-
-
+		
 		//remember last args
 		GlobalsProviderUC::$lastQueryArgs = $wp_query->query_vars;
 
 		//remake the query - not inside ajax
-
+				
 		if($currentQueryVars !== $wp_query->query_vars){
 
 			//dmp($currentQueryVars);exit();
@@ -3285,7 +3339,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			break;
 			default:		//custom
-			
+				
 				$arrPosts = $this->getPostListData_custom($value, $name, $processType, $param, $data, $nameListing);
 				
 			break;
@@ -4662,7 +4716,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 					$params["child_of"] = $parentID;
 				}
 
-
 				$isWpmlExists = UniteCreatorWpmlIntegrate::isWpmlExists();
 				if($isWpmlExists)
 					$params["suppress_filters"] = false;
@@ -5053,12 +5106,11 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 
 			if(!empty($arrExcludeIDs))
 				$arrIncludeDirectChildrenOfSelectedTermsIDs = array_diff($arrIncludeDirectChildrenOfSelectedTermsIDs, $arrExcludeIDs);
-	
-			if(!empty($arrIncludeDirectChildrenOfSelectedTermsIDs))
-				add_filter( 'terms_clauses', function( $clauses ) use ( $arrIncludeDirectChildrenOfSelectedTermsIDs ) {
-					return $this->getDirectChildrenOfSelectedTerms( $clauses, $arrIncludeDirectChildrenOfSelectedTermsIDs );
-				}, 1, 2 );
-
+			
+			if(!empty($arrIncludeDirectChildrenOfSelectedTermsIDs)){
+				$this->arrIncludeDirectChildrenOfSelectedTermsIDs = $arrIncludeDirectChildrenOfSelectedTermsIDs;
+				add_filter( 'terms_clauses', array($this, "getDirectChildrenOfSelectedTerms"), 1, 1);
+			}
 		}
 		
 			
@@ -5182,13 +5234,13 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	/**
 	 * filter get direct children of selected parent terms
 	 */
-	public function getDirectChildrenOfSelectedTerms($clauses, $arrIncludeDirectChildrenOfSelectedTermsIDs) {
-	
-		$termsIDs = implode(', ', $arrIncludeDirectChildrenOfSelectedTermsIDs);
+	public function getDirectChildrenOfSelectedTerms($clauses) {
+
+		$termsIDs = implode(', ', $this->arrIncludeDirectChildrenOfSelectedTermsIDs);
 
 		$clauses['where'] .= " AND tt.parent IN (" . $termsIDs . ")";
 
-		remove_filter('terms_clauses', array($this, "getDirectChildrenOfSelectedTerms"), 1, 2);
+		remove_filter('terms_clauses', array($this, "getDirectChildrenOfSelectedTerms"), 1, 1);
 
 		return $clauses;
 	}

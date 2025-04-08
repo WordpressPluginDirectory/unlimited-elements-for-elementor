@@ -526,7 +526,8 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
 
 		$this->addMultiSelect($name."_includeby", $arrIncludeBy, esc_html__("Include By", "unlimited-elements-for-elementor"), "", $params);
-		
+
+
 		// --------- include by meta key -------------
 
 		$params = array();
@@ -592,7 +593,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["placeholder"] = "all--parents";
 
 		$elementorCondition = array($name."_includeby"=>"parents");
-		
+
 		$exclude = UniteFunctionsUC::getVal($value, $name."_exclude");
 
 		$addAttrib = "data-taxonomyname='{$name}_taxonomy' data-issingle='true'";
@@ -1329,7 +1330,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$placeholder = __("All Products", "unlimited-elements-for-elementor");
 
 		$placeholder = str_replace(" ", "--", $placeholder);
-		
+
 		$loaderText = __("Loading Data...", "unlimited-elements-for-elementor");
 		$loaderText = UniteFunctionsUC::encodeContent($loaderText);
 
@@ -1550,9 +1551,9 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 			$this->addMultiSelect($name . "_posttype", $arrTypesSimple, esc_html__("Post Types", "unlimited-elements-for-elementor"), $postType, $params);
 
 		//----- hr -------
+		
 		$params = array();
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_HR;
-		$params["elementor_condition"] = $arrCustomOnlyCondition;
 
 		$this->addHr($name . "_post_before_include", $params);
 
@@ -1607,7 +1608,23 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		$this->addMultiSelect($name . "_includeby", $arrIncludeBy, esc_html__("Include By", "unlimited-elements-for-elementor"), $includeBy, $params);
 
+
+		//---- Display sticky posts from default language only -----
+		$isWpmlExists = UniteCreatorWpmlIntegrate::isWpmlExists();
 		
+		if($isWpmlExists == true){
+			
+			$arrConditionIncludeStickyPostOnly = $arrConditionIncludeBy;
+			$arrConditionIncludeStickyPostOnly[$name . "_includeby"] = "sticky_posts_only";
+			
+			$params = array();
+			$params["origtype"] = UniteCreatorDialogParam::PARAM_RADIOBOOLEAN;
+			$params["elementor_condition"] = $arrConditionIncludeStickyPostOnly;
+			
+			$this->addRadioBoolean($name . "_sticky_post_default_lang", __("Sticky Post - Default Language", "unlimited-elements-for-elementor"), false, "Yes", "No", $params);
+		}
+
+
 		//---- Include By Author -----
 		
 		if($isAdmin == false)
@@ -2102,10 +2119,8 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		if($isForWooProducts === true){
 			$arrExclude["out_of_stock"] = __("Out Of Stock Products (woo)", "unlimited-elements-for-elementor");
+			$arrExclude["out_of_stock_variation"] = __("Out Of Stock Variation Products (woo)", "unlimited-elements-for-elementor");
 			$arrExclude["products_on_sale"] = __("Products On Sale (woo)", "unlimited-elements-for-elementor");
-
-			//todo: finish this
-			//$arrExclude["out_of_stock_variation"] = __("Out Of Stock Variation (woo)", "unlimited-elements-for-elementor");
 		}
 
 		$arrExclude["terms"] = __("Terms", "unlimited-elements-for-elementor");

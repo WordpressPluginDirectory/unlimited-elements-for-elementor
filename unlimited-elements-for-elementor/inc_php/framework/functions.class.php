@@ -20,6 +20,7 @@ class UniteFunctionsUC{
 	const SANITIZE_WISTIA = "sanitize_wistia";
 	const SANITIZE_URL = "sanitize_url";
 	const SANITIZE_ATTR = "sanitize_attr";
+	const SANITIZE_HTML = "sanitize_html";
 	
 	
 	private static $serial = 0;
@@ -1864,12 +1865,12 @@ class UniteFunctionsUC{
 
 		if(is_string($str) == false)
 			return($str);
-
+		
 		//not allowed html tags
 
 		if($str != wp_strip_all_tags($str))
 			return($str);
-
+		
 		//try to csv decode
 
 		$arrLines = explode("\n", $str);
@@ -1880,20 +1881,33 @@ class UniteFunctionsUC{
 		$arrKeys = array();
 
 		$arrItems = array();
-
+		
+		$delimiter = null;
+		
 		foreach($arrLines as $line){
 
 			$line = trim($line);
 
 			if(empty($line))
 				continue;
-
-			$arrLine = str_getcsv($line);
+			
+			//set delimiter
+			if(empty($delimiter)) {
+				
+				$delimiter = ",";
+				
+				if(strpos($line, ';') !== false){
+				    $commaCount = substr_count($line, ',');
+				    $semicolonCount = substr_count($line, ';');
+				    $delimiter = ($commaCount >= $semicolonCount) ? ',' : ';';
+				}
+			}
+			
+			$arrLine = str_getcsv($line, $delimiter);
 
 			if(empty($arrLine))
 				continue;
-
-
+			
 			//get the keys
 			if(empty($arrKeys)){
 				$arrKeys = $arrLine;
@@ -1901,15 +1915,13 @@ class UniteFunctionsUC{
 				continue;
 			}
 
-			//get the item
-
-			if(count($arrLine) != count($arrKeys))
-				continue;
-
+			//if not equal - add to the line empty sells to the end
+			if (count($arrLine) != count($arrKeys))
+				$arrLine = array_pad($arrLine, count($arrKeys), "");
+			
 			//create the item
-
 			$item = array();
-
+			
 			foreach($arrKeys as $index=>$key){
 
 				$value = $arrLine[$index];
@@ -2188,7 +2200,26 @@ class UniteFunctionsUC{
 		return($arrLinks);
 	}
 
+	/**
+	 * do url decode
+	 */
+	public static function hexEntityDecode($matches) {
+	    return chr(hexdec($matches[1]));
+	}
 
+	/**
+	 * decode the url
+	 */
+	public static function urlDecode($url) {
+		
+	    $decoded = urldecode($url);
+	    
+	    $decoded = preg_replace_callback('/&#x([a-fA-F0-9]+);/i', array("UniteFunctionsUC","hexEntityDecode"), $decoded);
+		
+	    return trim($decoded);
+	}	
+	
+	
 	public static function z___________VALIDATIONS_________(){}
 
 	/**
@@ -2200,7 +2231,7 @@ class UniteFunctionsUC{
 			UniteFunctionsUC::throwError("Object: $objectName don't have method $strMethod");
 
 	}
-
+	
 
 	/**
 	 * validate that the value is in array
@@ -2549,7 +2580,12 @@ class UniteFunctionsUC{
 	 * sanitize some string
 	 */
 	public static function sanitize($str, $type){
-
+		
+		$showDebug = false;
+		
+		if($showDebug == true)
+			dmp("sanitize ($type): $str");
+		
 		switch($type){
 			case self::SANITIZE_ID:
 			case self::SANITIZE_KEY:
@@ -2572,10 +2608,16 @@ class UniteFunctionsUC{
 			case self::SANITIZE_ATTR:
 				$str = self::sanitizeSecuredAttribute($str);
 			break;
+			case self::SANITIZE_HTML:
+				$str = self::sanitizeHTMLRemoveJS($str);
+			break;
 			default:
 				self::throwError("Sanitize string error: wrong type: $type");
 			break;
 		}
+		
+		if($showDebug == true)
+			dmp("sanitize output: $str");
 		
 		return($str);
 	}
@@ -2619,8 +2661,33 @@ class UniteFunctionsUC{
         return false;
     }
 	
+    
     /**
-     * sanitize securd string
+     * remove all JS from HTML output
+     */
+	public static function sanitizeHTMLRemoveJS($html) {
+		
+	    // Remove <script> tags completely
+        $html = preg_replace('#<script[^>]*?>.*?</script>#is', '', $html);
+
+        // Remove all event handlers that start with 'javascript:'
+        $html = preg_replace('/\s*on\w+\s*=\s*["\']?\s*javascript\s*:[^"\'>]*["\']?/i', '', $html);
+
+		// Remove all event handlers, even if malformed (e.g., <iframe/onload=...>)
+        $html = preg_replace('/\s*\/?on\w+\s*=\s*["\']?[^"\'>]*["\']?/i', '', $html);
+        
+        // Remove javascript: URLs in href/src/xlink:href/etc.
+        $html = preg_replace('/\s*(href|src|xlink:href)\s*=\s*["\']?\s*javascript\s*:[^"\'>]*["\']?/i', '', $html);
+
+        // Remove potentially harmful attributes
+        $html = preg_replace('/\s*(autofocus|formaction|fscommand|seekSegmentTime|xmlns)\s*=\s*["\'][^"\']*["\']?/i', '', $html);
+        
+        return trim($html);		
+	}
+
+	
+	/*
+     * sanitize secured string
      */
     public static function sanitizeSecuredAttribute($str){
     	
@@ -2649,6 +2716,7 @@ class UniteFunctionsUC{
 		return($color);
 	}
 	
+	
 	/**
 	 * Sanitizes a URL by detecting malicious payloads.
 	 * Returns an empty string if the URL contains potential threats.
@@ -2657,31 +2725,28 @@ class UniteFunctionsUC{
 		
 		if(empty($url))
 			return($url);
-		
+	    			
 	    // Trim and decode the URL for better detection
-	    $decodedUrl = trim(urldecode($url));
-	
-	    // Define malicious patterns to detect
+	    $decodedUrl = self::urlDecode($url);
+	    
 	    $patterns = array(
 	        '/javascript:/i',         // Prevents JavaScript execution
 	        '/data:/i',               // Prevents data URI schemes
 	        '/vbscript:/i',           // Prevents VBScript execution
 	        '/expression\(/i',        // Prevents CSS expressions
-	        '/(on\w+\s?=)/i',         // Detects inline event handlers (onClick, onError, etc.)
+			'/(\bon\w+\s*=\s*["\']?.*["\']?)/i', // Detects inline event handlers (onClick, onError, etc.)
 	        '/<\/?(script|iframe|object|embed|svg|form|link|meta)[^>]*>/i', // Prevents script tags and dangerous elements
 	        '/\b(eval|alert|prompt|confirm|print)\s*\(/i', // Detects dangerous functions
 	        '/["\']\s*;\s*(?:base64|window|document|location)/i', // Prevents common injection attempts
 	        '/[\x00-\x1F\x7F]/',      // Detects control characters
 	    );
-			
-	    // Check if any pattern matches the URL
+		
 	    foreach ($patterns as $pattern) {
 	        if (preg_match($pattern, $decodedUrl)) {
 	            return ""; // Return empty string if a threat is found
 	        }
 	    }
 	
-	    // If no threats are found, sanitize using esc_url()
 	    return esc_url($url);
 	}	
 	

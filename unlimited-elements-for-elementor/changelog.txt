@@ -1,5 +1,78 @@
 
 
+version 1.5.144 - 2025-04-08 =
+
+Plugin Changes:
+
+* Feature: finished the breadcrumbs widget functionality
+* Feature: added get wpml current langauge sticky posts functionality
+* Feature: added option for ";" in csv input
+* Feature: added option for placeholders in url in form redirect
+* Fix: fixed some sanitize url pattern so it detect less false positive
+* Fix: fixed price range filter small bugs
+* Fix: fixed unite gallery small width issues
+
+
+Widgets Changes:
+
+* Feature: Calendar (Pro) - Added Event Background Color Override Source option to the Source settings. This new option allows users to define a custom source field for overriding the default event background color.
+* Feature: Gradient Button (Free) - Added &quot;Hover Transition Duration&quot;, and also added the &quot;aria-label&quot; option to enhance accessibility and SEO by allowing users to describe the button's purpose.
+* Feature: Gradient Hover Effect Button (Free) - Added new typography, button padding, text color, button border, border radius, box shadow, and text shadow options.
+* Feature: Liquid Button (Free) - Added &quot;Show Icon&quot; option with styling option to show button icon.
+* Feature: Gradient Button (Free) - Added &quot;Show Icon&quot; option with styling option to show button icon.
+* Feature: Border Button Effect (Free) - Added &quot;Show Icon&quot; option with styling option to show button icon.
+* Feature: Masonry Post Grid (Pro) - Added Show Empty Message option, allowing users to display a custom message when no posts are available.
+* Change: Border Button Effect (Free) - Moved button style options to side by side Normal and Hover tabs, and added additional styling options, Border Radius, Border, Box Shadow, and Text Shadow.
+* Change: Parallelogram Button (Free) - Moved the hover options from the separate tab to side-by-side &quot;Normal&quot; and &quot;Hover&quot; tabs for better accessibility and ease of use.
+* Fix: Dropdown Button (Pro) - Fixed issue when Dropdown Item Color was not working as expected in some cases.
+* Fix: Side Menu (Pro) - Fixed issue where the menu item icon was not changing to active when the current page link was expanded.
+* Fix: Remote Arrows (Free) - Fixed issue when Set Disable On First / Last option was not working correctly.
+* Fix: Testimonial Carousel (Free) - Fixed issue when the widget was not working in Safari with Layout Type Marquee.
+* Fix: Checkboxes Filter (Pro) - Fixed issue when Loader Type: Hidden Filter was not hiding the filter widget during the loading process.
+
+version 1.5.143 - 2025-03-19 =
+
+Plugin Changes:
+
+* Fix: fixed elementor animations file include
+* Fix: disable relevanssi plugin for our search filter work well.
+* Fix: fixed some url and content output security isuses
+* Feature: added the |ucsafe filter to twig for secure the html output
+* Feature: added the option out of stock variation for the product list
+* Feature: made form integration with mailpoet
+
+
+Widgets Changes:
+
+* Feature: Unlimited Timeline (Free) - Added Content Background Alternating option, allowing users to set alternating background colors for improved visual distinction between content sections.
+* Feature: Woo Product Carousel (Free) - Added an additional button that can accept values from custom fields, allowing for greater flexibility and dynamic content integration.
+* Feature: Stacking Cards (Pro) - Added a new option, &quot;Enable Lightbox,&quot; allowing users to enable or disable the lightbox feature for improved media viewing.
+* Feature: Event List (Pro) - Added Item Event Date Type option allowing to choose between Date Picket or Text Field option.
+* Feature: Stacking Cards (Pro) - Added Item Button Text option, allowing users to customize the text displayed on the button for better flexibility.
+* Feature: Fullscreen Menu (Free) - Added all the animations from Animated Hamburger Icons widget to Fullscreen Menu widget.
+* Feature: Woo Category Carousel (Free) - Added a new option, Category Characters Number, allowing users to set a specific character limit for category names
+* Feature: Quantity Increment Buttons (Pro) - Added support for using the Quantity Increment Buttons widget on Single Product Pages.
+* Feature: Icon Box Hover Effect (Pro) - Added Title Tag option, allowing users to set a specific HTML tag for titles to improve SEO and accessibility.
+* Feature: Woo Product Carousel (Free) - Added Show Comma Between Categories option, allowing categories to be separated by commas for better readability.
+* Feature: Vertical Curved Timeline (Free) - Added Title Tag option, allowing users to set a specific HTML tag for titles to improve SEO and accessibility.
+* Feature: Calendar (Pro) - Fixed issue where the Enable Link option was not functioning properly.
+* Feature: Thumbnail Gallery (Pro) - Added &quot;Gallery Height - Mobile&quot; option, allowing users to set a custom height for the gallery on mobile devices.
+* Feature: Post Grid (Free) - Added &quot;Show Grid / List Switcher&quot; option, providing a toggle icon that allows users to seamlessly switch between the current layout and a &quot;Side By Side&quot; layout, where each item is displayed in a separate row for improved readability and organization.
+* Feature: Gradient Underline Text Effect (Free) - Added Enable Hover Effect option, allowing users to disable the hover effect if needed.
+* Feature: Post Query Summary (Pro) - Added Enable Thousand Separator option, allowing numbers to be automatically formatted with thousand separators for better readability.
+* Change: Vertical Curved Timeline (Free) - Changed tag for Item Description from &lt;p&gt; to &lt;div&gt;.
+* Fix: WordPress Menu (Free) - Added CSS fix to prevent flex container items from overlapping other elements by enabling them to shrink when there isn’t enough space.
+* Fix: RSS Feed (Free) - Fixed issue where the Show Text option was missing, causing the description element to not appear.
+* Fix: Neon Glowing Button Effect (Pro) - Fixed issue when Glow effect was not working correctly in Safari browser.
+* Fix: Statistic Counter (Free) - Resolved vulnerability where scripts could be injected under certain widget attributes. This fix ensures that scripts are properly sanitized and prevented from being inserted into widget attributes, mitigating potential security risks.
+* Fix: Grid Gallery (Pro) - Fixed issue where the Gallery was not resizing properly after the Thumbpanel was hidden.
+* Fix: Logo Marquee (Free) - Fixed an issue related to Logo Marquee not working on mobile devices in certain scenarios.
+* Fix: Vertical Curved Timeline (Free) - Fixed issue when the Curved Timeline were not solid in some cases.
+* Fix: Interactive Circle Infographic (Pro) - Fixed issue where inner container was not perfectly stabilized in rotating animation, causing slight misalignment and angle distortion.
+* Fix: Calendar (Pro) - Fixed an issue where the &quot;Open Event Link In New Tab&quot; option was not working as expected.
+* Fix: Woo Product Carousel (Free) - Refactored and optimized widgets' HTML structure by cleaning up unnecessary elements and reorganizing the markup for better readability.
+* Other: Testimonial Box (Free) - Resolved vulnerability where scripts could be injected under certain widget attributes. This fix ensures that scripts are properly sanitized and prevented from being inserted into widget attributes, mitigating potential security risks.
+
 
 version 1.5.142 - 2025-03-05 =
 
@@ -12,6 +85,7 @@ Plugin Changes:
 * Fix: fixed some rss issues
 * Fix: improved the debug for rss feed
 * Fix: improved some security issues for images links and attributes
+
 
 Widgets Changes: 
 
