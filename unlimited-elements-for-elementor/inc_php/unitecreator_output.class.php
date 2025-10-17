@@ -8,7 +8,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class UniteCreatorOutputWork extends HtmlOutputBaseUC{
-
+	
 	private static $serial = 0;
 
 	const SELECTOR_VALUE_PLACEHOLDER = "{{value}}";
@@ -108,13 +108,33 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * clear includes cache, avoid double render bug
 	 */
 	public static function clearIncludesCache(){
-
-		self::$arrHandleCacheCss = array();
-		self::$arrHandleCacheJs = array();
-
-		self::$arrUrlCacheCss = array();
-		self::$arrUrlCacheJs = array();
-
+		
+		// define handles we want to keep
+	    $preserveHandles = array(
+	        "font-awesome",
+	        "font-awesome-4-shim"
+	    );
+	
+	    $keepHandles = array();
+	
+	    // save flags before clearing
+	    foreach ($preserveHandles as $handle) {
+	        if (isset(self::$arrHandleCacheCss[$handle])) {
+	            $keepHandles[$handle] = true;
+	        }
+	    }
+	
+	    // reset caches
+	    self::$arrHandleCacheCss = array();
+	    self::$arrHandleCacheJs  = array();
+	    self::$arrUrlCacheCss    = array();
+	    self::$arrUrlCacheJs     = array();
+	
+	    // restore preserved handles
+	    foreach ($keepHandles as $handle => $val) {
+	        self::$arrHandleCacheCss[$handle] = $val;
+	    }
+        
 	}
 
 
@@ -142,7 +162,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * check that the include located in cache
 	 */
 	private function isIncludeInCache($url, $handle, $type){
-
+		
 		if(empty($url) || empty($handle))
 			return(false);
 
@@ -1054,7 +1074,9 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		if(array_key_exists("size", $value) === true
 			&& array_key_exists("unit", $value) === true)
 			return $this->prepareCSSSelectorSliderCSS($selectorValue, $value);
-
+		
+		return "";
+		
 		UniteFunctionsUC::throwError(__FUNCTION__ . " Error: Value processing is not implemented (" . json_encode($value) . ")");
 	}
 
@@ -1973,6 +1995,7 @@ $css
 		
 		$css .= "/* Gutenberg Global */\n";
 		$css .= ".ue-widget-root {position:relative;}";
+		$css .= 'html .wp-block:has(.ue-widget-root) {margin-top: 0; margin-bottom:0;}';
 				
 		return($css);
 	}
@@ -1997,8 +2020,7 @@ $css
 				$arrItemsForShow[] = $item;
 				continue;
 			}
-
-
+			
 			$item = UniteFunctionsUC::getVal($item, "item");
 
 			$itemFirstValue = UniteFunctionsUC::getArrFirstValue($item);
@@ -2042,6 +2064,7 @@ $css
 	 * get items html
 	 */
 	public function getHtmlItems(){
+
 
 		$keyTemplate = "uc_template_items_special";
 		$htmlTemplate = "{{put_items()}}";
@@ -2105,8 +2128,7 @@ $css
 
 		return($outputHandle);
 	}
-	
-	
+
 	/**
 	 * place output by shortcode
 	 */
@@ -2119,7 +2141,7 @@ $css
 			$scriptHardCoded = true;
 
 		$title = $this->addon->getTitle(true);
-		
+
 		$isOutputComments = HelperProviderCoreUC_EL::getGeneralSetting("output_wrapping_comments");
 		$isOutputComments = UniteFunctionsUC::strToBool($isOutputComments);
 
@@ -2149,6 +2171,7 @@ $css
 				$css = $this->modifyGutenbergBGCSS($css);
 				
 			}
+
 			
 			//fetch selectors (add google font includes on the way)
 			$isAddSelectors = UniteFunctionsUC::getVal($params, "add_selectors_css");
@@ -2263,7 +2286,7 @@ $css
 				$addonName = $this->addon->getAlias();
 
 				$handle = $this->getScriptHandle("ue_script_" . $addonName);
-			
+
 				if($scriptHardCoded == false){
 					UniteProviderFunctionsUC::printCustomScript($js, false, $isJSAsModule, $handle);
 				}else{
@@ -2821,7 +2844,7 @@ $css
 	 * init by addon
 	 */
 	public function initByAddon(UniteCreatorAddon $addon){
-
+		
 		if(empty($addon))
 			UniteFunctionsUC::throwError("Wrong addon given");
 

@@ -382,10 +382,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		/**
 		 * get css include
 		 */
-		public static function getHtmlCssInclude($url){
+		public static function getHtmlCssInclude($url, $handle = null){
+			
+			$addHTML = "";
+			if(!empty($handle))
+				$addHTML = " id='{$handle}'";
+			
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedStylesheet
-			$html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$url}\">";
-
+			$html = "<link rel=\"stylesheet\" type=\"text/css\" href=\"{$url}\" {$addHTML} >";
+			
 			return($html);
 		}
 
@@ -393,9 +398,15 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		/**
 		 * get css include
 		 */
-		public static function getHtmlJsInclude($url){
+		public static function getHtmlJsInclude($url, $handle=null){
+			
+			$addHTML = "";
+			if(!empty($handle))
+				$addHTML = " id='{$handle}'";
+			
 			// phpcs:ignore WordPress.WP.EnqueuedResources.NonEnqueuedScript
-			$html = "<script type=\"text/javascript\" src=\"{$url}\"></script>";
+			
+			$html = "<script type=\"text/javascript\" src=\"{$url}\" $addHTML></script>";
 
 			return($html);
 		}
@@ -454,7 +465,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			foreach($arr as $key=>$value){
 
 				$isArray = is_array($value);
-
+				
 				if($isArray == true){
 					$html .= "$key:";
 					$html .= "<pre style='padding-left:60px;font-size:12px;'>";
@@ -483,7 +494,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		 * put debug box
 		 */
 		public static function putHtmlDataDebugBox($data){
-			
+						
 			self::putHtmlDataDebugBox_start();
 			
 			if(is_array($data))
@@ -1277,9 +1288,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 			UniteFunctionsUC::obStart();
 			HelperHtmlUC::putAddonTypesBrowserDialogs();
-
+			
+			//php info not available
 			phpinfo();
-
+			
 			$content = ob_get_contents();
 
 			ob_end_clean();
@@ -1371,11 +1383,10 @@ function <?php echo esc_attr($widgetID)?>_start(){
 			endif;
 			
 			?>
-}if(jQuery("#<?php echo esc_attr($widgetID)?>").length) <?php echo esc_attr($widgetID)?>_start();
+}if(jQuery("#<?php echo esc_attr($widgetID)?>").length && !jQuery("#<?php echo esc_attr($widgetID)?>").parents('[data-elementor-type="popup"]').length) <?php echo esc_attr($widgetID)?>_start();
 	jQuery( document ).on( 'elementor/popup/show', (event, id, objPopup) => {
-	if(objPopup.$element.has(jQuery("#<?php echo esc_attr($widgetID)?>")).length) <?php echo esc_attr($widgetID)?>_start();});
+	if(objPopup.$element.has(jQuery("#<?php echo esc_attr($widgetID)?>")).length) <?php echo esc_attr($widgetID)?>_start()});
 });
-
 			<?php
 
 		}
