@@ -1082,7 +1082,6 @@ class UniteCreatorParamsProcessorWork{
 
 				if($putAs == "svg")
 					$svgContent = HelperUC::getFileContentByUrl($value, "svg");
-				
 			}
 
 		}
@@ -1231,6 +1230,24 @@ class UniteCreatorParamsProcessorWork{
 	}
 
 	private function z___________PARAMS_OUTPUT____________(){}
+
+    protected function modifyDataBySpecialAddonBehaviour($data){
+
+        if (!is_array($data)) {
+            return $data;
+        }
+
+        $cssId = UniteFunctionsUC::getVal($data, 'advanced_css_id', '');
+        if ($cssId !== '') {
+            $cssId = preg_replace('/[^A-Za-z0-9\-_]/', '-', $cssId);
+
+            if ($cssId !== '') {
+                $data['_rootId'] = $cssId;
+            }
+        }
+
+        return $data;
+    }
 
 	/**
 	 * process params - add params by type (like image base)
@@ -2035,6 +2052,15 @@ class UniteCreatorParamsProcessorWork{
 		}
 
 		$arrParams = array_merge($arrParams, $arrVars);
+
+        $orig = $this->addon->getOriginalValues();
+        if (is_array($orig) && !empty($orig)) {
+            foreach ($orig as $k => $v) {
+                if (!array_key_exists($k, $arrParams)) {
+                    $arrParams[$k] = $v; 
+                }
+            }
+        }
 
 		return($arrParams);
 	}

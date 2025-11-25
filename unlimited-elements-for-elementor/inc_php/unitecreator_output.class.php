@@ -8,7 +8,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 class UniteCreatorOutputWork extends HtmlOutputBaseUC{
-	
+
 	private static $serial = 0;
 
 	const SELECTOR_VALUE_PLACEHOLDER = "{{value}}";
@@ -162,7 +162,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * check that the include located in cache
 	 */
 	private function isIncludeInCache($url, $handle, $type){
-		
+
 		if(empty($url) || empty($handle))
 			return(false);
 
@@ -416,6 +416,13 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			if(empty($handle))
 				$handle = HelperUC::getUrlHandle($url, $addonName);
+
+			if( $handle == 'jquery' ) {
+				if ( !wp_script_is( 'jquery', 'enqueued' ) ) {
+					wp_enqueue_script( 'jquery' );
+				}	
+				continue;
+			}
 			
 			$isInCache = $this->isIncludeInCache($url, $handle, $type);
 			
@@ -1211,46 +1218,304 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	/**
 	 * process params css selector
 	 */
-	private function processParamsCSSSelector($params, $paramsCats = array()){
+    private function processParamsCSSSelector($params, $paramsCats = array()){
 
-		$styles = '';
+        $styles = '';
 
-		$displayCats = array();
-		foreach($paramsCats as $cat) {
-			
-			$catID = UniteFunctionsUC::getVal($cat, "id");
-			
-			if(empty($catID))
-				continue;
-			
-			$displayCats[$catID] = UEParamsManager::isParamPassesConditions($params, $cat);
-		}
-		
-		foreach($params as $param){
-			
-			$passed = UEParamsManager::isParamPassesConditions($params, $param);
+        $displayCats = array();
+        foreach($paramsCats as $cat) {
+            $catID = UniteFunctionsUC::getVal($cat, "id");
+            if(empty($catID))
+                continue;
+            $displayCats[$catID] = UEParamsManager::isParamPassesConditions($params, $cat);
+        }
 
-			if($passed === false)
-				continue;
+        foreach($params as $param){
+            $passed = UEParamsManager::isParamPassesConditions($params, $param);
+            if($passed === false)
+                continue;
 
-			// param's cat disabled
-			$catID = UniteFunctionsUC::getVal($param, GlobalsUC::ATTR_CATID);
-			
-			$isDisplayCat = UniteFunctionsUC::getVal($displayCats, $catID);
-			$isDisplayCat == UniteFunctionsUC::strToBool($isDisplayCat);
-			
-			if(!empty($catID) && $isDisplayCat == false) {
-				continue;
-			}
+            // param's cat disabled
+            $catID = UniteFunctionsUC::getVal($param, GlobalsUC::ATTR_CATID);
+            $isDisplayCat = UniteFunctionsUC::getVal($displayCats, $catID);
+            $isDisplayCat == UniteFunctionsUC::strToBool($isDisplayCat);
 
-			$style = $this->processParamCSSSelector($param);
+            if(!empty($catID) && $isDisplayCat == false) {
+                continue;
+            }
 
-			if(empty($style) === false)
-				$styles .= $style;
-		}
+            $style = $this->processParamCSSSelector($param);
+            if(empty($style) === false)
+                $styles .= $style;
+        }
 
-		return $styles;
-	}
+        // -------------------- ADVANCED --------------------
+        $wrapperId = $this->getWidgetWrapperID();
+        $paramsTmp = $this->getAddonParams();
+        $advanced_styles = '';
+
+        // z-index
+        $zIndexVal = UniteFunctionsUC::getVal($paramsTmp, 'advanced_z_index');
+        if ($zIndexVal !== '' && $zIndexVal !== null) {
+            $zIndex = (int)$zIndexVal['size'];
+            $advanced_styles .= 'z-index: ' . $zIndex . '; ';
+        }
+
+        $sides = ['top', 'right', 'bottom', 'left'];
+
+        // padding
+        $padding = UniteFunctionsUC::getVal($paramsTmp, 'advanced_padding');
+        if (is_array($padding)) {
+            if(!empty($padding['is_linked']) && $padding['is_linked'] && $padding['top'] !== '' && $padding['top'] !== null) {
+                $val = (string)$padding['top'];
+                if($val !== '' && $val !== null) {
+                    $advanced_styles .= 'padding: ' . $val . $padding['unit'] . '; ';
+                }
+            } else {
+                foreach($sides as $side) {
+                    $val = UniteFunctionsUC::getVal($padding, $side);
+                    if($val !== '' && $val !== null && $val !== false) {
+                        $advanced_styles .= 'padding-' . $side . ': ' . (string)$val . $padding['unit'] . '; ';
+                    }
+                }
+            }
+        }
+
+        // margin
+        $margin = UniteFunctionsUC::getVal($paramsTmp, 'advanced_margin');
+        if (is_array($margin)) {
+            if(!empty($margin['is_linked']) && $margin['is_linked'] && $margin['top'] !== '' && $margin['top'] !== null) {
+                $val = (string)$margin['top'];
+                if($val !== '' && $val !== null) {
+                    $advanced_styles .= 'margin: ' . $val . $margin['unit'] . '; ';
+                }
+            } else {
+                foreach($sides as $side) {
+                    $val = UniteFunctionsUC::getVal($margin, $side);
+                    if($val !== '' && $val !== null && $val !== false) {
+                        $advanced_styles .= 'margin-' . $side . ': ' . (string)$val . $margin['unit'] . '; ';
+                    }
+                }
+            }
+        }
+
+        // background
+        $bgType = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_type'); 
+
+        if (!empty($bgType)) {
+
+            if ($bgType === 'solid') {
+                $bgColor = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_color');
+                if (empty($bgColor)) {
+                    $bgColor = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_solid_color');
+                }
+                if (!empty($bgColor)) {
+                    $advanced_styles .= 'background-color:' . $bgColor . '; ';
+                }
+
+                $bgImage = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_image');
+                if (empty($bgImage)) {
+                    $bgImage = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_solid_image');
+                }
+
+                $bgUrl = '';
+                if (is_array($bgImage)) {
+                    $attachment_id = UniteFunctionsUC::getVal($bgImage, 'id');
+                    if ($attachment_id) {
+                        $bgUrl = wp_get_attachment_url($attachment_id);
+                    } else {
+                        $bgUrl = UniteFunctionsUC::getVal($bgImage, 'url');
+                    }
+                } elseif (is_string($bgImage)) {
+                    $bgUrl = $bgImage;
+                }
+                if (!empty($bgUrl)) {
+                    if (strpos($bgUrl, 'http') !== 0) {
+                        $uploads = wp_upload_dir();
+                        $bgUrl = rtrim($uploads['baseurl'], '/') . '/' . ltrim($bgUrl, '/');
+                    }
+                }
+
+                if (!empty($bgUrl)) {
+                    if (stripos($bgUrl, 'url(') === false) {
+                        $advanced_styles .= "background-image:url('".$bgUrl."'); ";
+                    } else {
+                        $advanced_styles .= 'background-image:' . $bgUrl . '; ';
+                    }
+
+                    $bgRepeat = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_repeat');
+                    if (empty($bgRepeat)) {
+                        $bgRepeat = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_solid_image_repeat');
+                    }
+                    if (!empty($bgRepeat)) {
+                        $advanced_styles .= 'background-repeat:' . $bgRepeat . '; ';
+                    }
+
+                    $bgPos = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_position');
+                    if (empty($bgPos)) {
+                        $bgPos = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_solid_image_position');
+                    }
+                    if (!empty($bgPos)) {
+                        $advanced_styles .= 'background-position:' . $bgPos . '; ';
+                    }
+
+                    $bgSize = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_size');
+                    if (empty($bgSize)) {
+                        $bgSize = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_solid_image_size');
+                    }
+                    if (!empty($bgSize)) {
+                        $advanced_styles .= 'background-size:' . $bgSize . '; ';
+                    }
+
+                    $bgAttach = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_attachment');
+                    if (empty($bgAttach)) {
+                        $bgAttach = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_solid_image_attachment');
+                    }
+                    if (!empty($bgAttach)) {
+                        $advanced_styles .= 'background-attachment:' . $bgAttach . '; ';
+                    }
+                }
+
+            } elseif ($bgType === 'gradient') {
+
+                $c1 = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_gradient1_color');
+                $c2 = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_gradient2_color');
+
+                $stop1Raw = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_gradient1_stop');
+                $stop2Raw = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_gradient2_stop');
+
+                $stop1 = '';
+                if (is_array($stop1Raw)) {
+                    $s  = UniteFunctionsUC::getVal($stop1Raw, 'size', '');
+                    $u  = UniteFunctionsUC::getVal($stop1Raw, 'unit', '%');
+                    if ($s !== '' && $s !== null) $stop1 = trim($s) . (empty($u) ? '%' : $u);
+                } elseif (is_numeric($stop1Raw)) {
+                    $stop1 = $stop1Raw . '%';
+                }
+
+                $stop2 = '';
+                if (is_array($stop2Raw)) {
+                    $s  = UniteFunctionsUC::getVal($stop2Raw, 'size', '');
+                    $u  = UniteFunctionsUC::getVal($stop2Raw, 'unit', '%');
+                    if ($s !== '' && $s !== null) $stop2 = trim($s) . (empty($u) ? '%' : $u);
+                } elseif (is_numeric($stop2Raw)) {
+                    $stop2 = $stop2Raw . '%';
+                }
+
+                $gType = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_gradient_type', 'linear');
+                $gType = strtolower(trim((string)$gType));
+                if ($gType !== 'radial') {
+                    $gType = 'linear';
+                }
+
+                $angleRaw = UniteFunctionsUC::getVal($paramsTmp, 'advanced_background_gradient_angle');
+                $angle    = 180; 
+                if (is_array($angleRaw)) {
+                    $sz = UniteFunctionsUC::getVal($angleRaw, 'size');
+                    if ($sz !== '' && $sz !== null && is_numeric($sz)) {
+                        $angle = (int)$sz;
+                    }
+                } elseif ($angleRaw !== '' && $angleRaw !== null && is_numeric($angleRaw)) {
+                    $angle = (int)$angleRaw;
+                }
+
+                $angle = $angle % 360;
+                if ($angle < 0) $angle += 360;
+
+                if (!empty($c1)) {
+                    $advanced_styles .= 'background-color:' . $c1 . '; ';
+                }
+
+                if ($gType === 'linear') {
+                    $parts = [];
+                    $parts[] = $c1 . (!empty($stop1) ? ' ' . $stop1 : '');
+                    $parts[] = $c2 . (!empty($stop2) ? ' ' . $stop2 : '');
+                    $advanced_styles .= 'background-image: linear-gradient(' . $angle . 'deg, ' . implode(', ', $parts) . '); ';
+                } else {
+                    $parts = [];
+                    $parts[] = $c1 . (!empty($stop1) ? ' ' . $stop1 : '');
+                    $parts[] = $c2 . (!empty($stop2) ? ' ' . $stop2 : '');
+                    $advanced_styles .= 'background-image: radial-gradient(circle, ' . implode(', ', $parts) . '); ';
+                }
+
+            }
+        }
+
+        // border
+        $borderType = UniteFunctionsUC::getVal($paramsTmp, 'advanced_border_type'); 
+        $bw         = UniteFunctionsUC::getVal($paramsTmp, 'advanced_border_width'); 
+        $bColor     = UniteFunctionsUC::getVal($paramsTmp, 'advanced_border_color');
+
+        if (is_string($borderType)) {
+            $borderType = trim($borderType);
+        }
+
+        if (!empty($borderType) && $borderType !== 'none') {
+
+            if (empty($bColor)) {
+                $bColor = '#000';
+            }
+
+            if (is_array($bw) && !empty($bw['is_linked']) && $bw['is_linked'] && $bw['top'] !== '' && $bw['top'] !== null) {
+                $unit = !empty($bw['unit']) ? $bw['unit'] : 'px';
+                $w    = (string)$bw['top'];
+
+                $advanced_styles .= 'border:' . $w . $unit . ' ' . $borderType . ' ' . $bColor . '; ';
+
+            } else {
+                $unit = 'px';
+                if (is_array($bw) && !empty($bw['unit'])) {
+                    $unit = $bw['unit'];
+                }
+
+                $advanced_styles .= 'border-style:' . $borderType . '; border-color:' . $bColor . '; ';
+
+                if (is_array($bw)) {
+                    foreach (array('top','right','bottom','left') as $side) {
+                        $val = UniteFunctionsUC::getVal($bw, $side);
+                        if ($val !== '' && $val !== null && $val !== false) {
+                            $advanced_styles .= 'border-' . $side . '-width:' . (string)$val . $unit . '; ';
+                        }
+                    }
+                }
+            }
+        }
+
+        if($advanced_styles != '') {
+            $styles .= "\n#" . $wrapperId . " {" . $advanced_styles . "}";
+        }
+
+        // -------------------- RESPONSIVE VISIBILITY --------------------
+        $hideDesktop = UniteFunctionsUC::getVal($paramsTmp, 'advanced_hide_on_desktop');
+        $hideTablet  = UniteFunctionsUC::getVal($paramsTmp, 'advanced_hide_on_tablet');
+        $hideMobile  = UniteFunctionsUC::getVal($paramsTmp, 'advanced_hide_on_mobile');
+
+        $isAdmin = function_exists('is_admin') && is_admin();
+
+        if ($isAdmin) {
+            if ((int)$hideDesktop) {
+                $styles .= "\n@media (min-width:1025px){ #{$wrapperId}{ opacity:.55; filter:blur(1px) grayscale(1); pointer-events:none; } }";
+            }
+            if ((int)$hideTablet) {
+                $styles .= "\n@media (min-width:768px) and (max-width:1024px){ #{$wrapperId}{ opacity:.55; filter:blur(1px) grayscale(1); pointer-events:none; } }";
+            }
+            if ((int)$hideMobile) {
+                $styles .= "\n@media (max-width:767px){ #{$wrapperId}{ opacity:.55; filter:blur(1px) grayscale(1); pointer-events:none; } }";
+            }
+        } else {
+            if ((int)$hideDesktop) {
+                $styles .= "\n@media (min-width:1025px){ #{$wrapperId}{ display:none !important; } }";
+            }
+            if ((int)$hideTablet) {
+                $styles .= "\n@media (min-width:768px) and (max-width:1024px){ #{$wrapperId}{ display:none !important; } }";
+            }
+            if ((int)$hideMobile) {
+                $styles .= "\n@media (max-width:767px){ #{$wrapperId}{ display:none !important; } }";
+            }
+        }
+
+        return $styles;
+    }
 
 	/**
 	 * process param css selector
@@ -1655,9 +1920,9 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		return($html);
 	}
-
+	
 	/**
-	 * modify debug array
+	 * modify debug array - output for debug, fordebug
 	 */
 	private function modifyDebugArray($arrDebug){
 		
@@ -1722,8 +1987,8 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		$html .= dmpGet("<b> ----------Terms--------- </b>");
 
-		$terms = UniteFunctionsWPUC::getPostTerms($post);
-
+		$terms = UniteFunctionsWPUC::getPostTermsTitlesString($post, true);
+		
 		$html .= dmpGet($terms);
 		
 		return($html);
@@ -1734,7 +1999,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * put debug data - posts
 	 */
 	private function putDebugDataHtml_posts($arrItemData){
-
+		
 		$numPosts = count($arrItemData);
 
 		$html = "";
@@ -1743,21 +2008,36 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		if(empty($arrItemData))
 			return($html);
-
+		
 		$isShowMeta = ($this->debugDataType == "post_meta");
 
 		foreach($arrItemData as $index => $item){
-
+						
 			$isPost = false;
 			if($item instanceof WP_Post)
 				$isPost = true;
 
+			//check the multisource type
 			if($isPost == false){
+				
+				$itemTest = UniteFunctionsUC::getVal($item, "item");
+				
+				$objectType = UniteFunctionsUC::getVal($itemTest, "object_type");
+				$objectID = UniteFunctionsUC::getVal($itemTest, "object_id");
+				
+				if(!empty($objectID) && $objectType === "posts"){
+					$item = get_post($objectID);
+					$isPost = true;					
+				}
+			}
 
+			
+			if($isPost == false){
+				
 				$item = UniteFunctionsUC::getVal($item, "item");
-
+								
 				$postData = UniteFunctionsUC::getArrFirstValue($item);
-
+									
 				$title = UniteFunctionsUC::getVal($postData, "title");
 				$alias = UniteFunctionsUC::getVal($postData, "alias");
 				$id = UniteFunctionsUC::getVal($postData, "id");
@@ -1790,15 +2070,21 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 			if($isShowMeta == false)
 				continue;
-
+		
+			$html .= ("<b> ------- Post Meta ------- </b>");
+			
 			$postMeta = get_post_meta($id, "", false);
-
-			$postMeta = UniteFunctionsUC::modifyDataArrayForShow($postMeta, true);
-
+						
+			$postMeta = $this->modifyDebugArray($postMeta);
+			
 			$html .= dmpGet($postMeta);
 
-			//$postMeta = get_post_meta($post_id)
-
+			$html .= ("<b> ------- Post Terms ------- </b>");
+			
+			$terms = UniteFunctionsWPUC::getPostTermsTitlesString($post, true);
+			
+			$html .= dmpGet($terms);
+			
 		}
 
 
@@ -1845,19 +2131,20 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * put debug data
 	 */
 	private function putDebugDataHtml($arrData, $arrItemData){
-
+		
 		$html = "<div class='uc-debug-output' style='font-size:16px;color:black;text-decoration:none;background-color:white;padding:3px;'>";
-
+		
 		$html .= dmpGet("<b>Widget Debug Data</b> (turned on by setting in widget advanced section)<br>",true);
 
 		//get data from listing
 		$paramListing = $this->addon->getListingParamForOutput();
 		
 		if(!empty($paramListing) && $this->itemsType == "template"){
-
+			
 			$arrItemData = $this->putDebugDataHtml_getItemsFromListing($paramListing, $arrData);
 		}
-
+		
+		
 		switch($this->debugDataType){
 			case "post_titles":
 			case "post_meta":
@@ -2020,7 +2307,8 @@ $css
 				$arrItemsForShow[] = $item;
 				continue;
 			}
-			
+
+
 			$item = UniteFunctionsUC::getVal($item, "item");
 
 			$itemFirstValue = UniteFunctionsUC::getArrFirstValue($item);
@@ -2249,8 +2537,12 @@ $css
 
 				if(empty($rootId) === true)
 					$rootId = $this->getWidgetID();
+				
+             	$params = $this->addon->getProcessedMainParamsValues($this->processType);
 
-				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root\" data-id=\"" . esc_attr($rootId) . "\">";
+                $advancedAddClasses = UniteFunctionsUC::getVal($params, "advanced_css_classes");
+
+				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root " . esc_attr($advancedAddClasses) . "\" data-id=\"" . esc_attr($rootId) . "\">";
 			}
 			
 			
@@ -2356,6 +2648,17 @@ $css
 	 * get widget wrapper id
 	 */
 	private function getWidgetWrapperID(){
+
+        $params = $this->getAddonParams();
+
+        $cssId = UniteFunctionsUC::getVal($params, 'advanced_css_id');
+        if (!empty($cssId)) {
+            $cssId = preg_replace('/[^A-Za-z0-9\-_]/', '-', $cssId);
+            if (!empty($cssId)) return $cssId;
+        }
+
+        $rootId = UniteFunctionsUC::getVal($params, '_rootId');
+        if (!empty($rootId)) return $rootId;
 
 		return $this->getWidgetID() . "-root";
 	}
@@ -2601,10 +2904,23 @@ $css
 		$isModify = false;
 
 		$arrParams = $this->modifyTemplatesForOutput_getParamsForModify();
-
+		
+		$arrValues = $this->addon->getOriginalValues();
+		
+		$enableSchema = UniteFunctionsUC::getVal($arrValues, "ue_schema_enable");
+		$enableSchema = UniteFunctionsUC::strToBool($enableSchema);
+		
+		//add schema function
+		
+		if($enableSchema == true){
+			
+			$html .= "{{ucfunc(\"put_schema_items_json_global\")}}\n\n";
+			$isModify = true;
+		}
+		
 		if(empty($arrParams))
-			return(null);
-
+			$arrParams = array();
+		
 		foreach($arrParams as $param){
 
 			$name = UniteFunctionsUC::getVal($param, "name");
@@ -2844,7 +3160,7 @@ $css
 	 * init by addon
 	 */
 	public function initByAddon(UniteCreatorAddon $addon){
-		
+
 		if(empty($addon))
 			UniteFunctionsUC::throwError("Wrong addon given");
 

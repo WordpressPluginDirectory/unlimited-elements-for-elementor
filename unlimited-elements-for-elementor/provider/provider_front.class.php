@@ -118,11 +118,24 @@ class UniteProviderFrontUC{
 		if(empty($showMetaFields))
 			return(false);
 		
-		HelperProviderUC::showCurrentPostObjectDebug();
-			
-		HelperProviderUC::showCurrentPostMetaDebug();
+		$isSingle = is_singular();
 		
-		HelperProviderUC::showCurrentPostTermsDebug();
+		if($isSingle == true){
+			
+			HelperProviderUC::showCurrentPostObjectDebug();
+				
+			HelperProviderUC::showCurrentPostMetaDebug();
+			
+			HelperProviderUC::showCurrentPostTermsDebug();
+
+			return(false);
+		}
+
+		//if not single - show the main query
+			
+		HelperProviderUC::showLastQuery();
+		
+		
 		
 	}
 	
@@ -140,7 +153,7 @@ class UniteProviderFrontUC{
 	 * check schema
 	 */
 	public function onFooterCheckShowSchema(){
-		
+				
 		$objSchema = new UniteCreatorSchema();
 		$objSchema->showAddonSchema();
 		

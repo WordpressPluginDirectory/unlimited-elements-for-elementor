@@ -19,7 +19,7 @@ class UniteCreatorForm{
 
 	const FOLDER_NAME = "unlimited_elements_form";
 	const HOOK_NAMESPACE = "ue_form";
-	
+
 	const ERROR_CODE_VALIDATION = -1;
 	const ERROR_CODE_SPAM = -2;
 
@@ -1259,7 +1259,7 @@ class UniteCreatorForm{
 
 			// Upload form files
 			$filesErrors = $this->uploadFormFiles();
-			
+
 			if(empty($filesErrors) === false){
 				$errors = array_merge($errors, $filesErrors);
 

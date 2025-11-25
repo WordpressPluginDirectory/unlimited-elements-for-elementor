@@ -1,4 +1,36 @@
 
+== Changelog ==
+
+
+version 2.0: 2025-11-24 =
+
+Plugin Changes: 
+
+* Feature: added schema options to posts and multisource widget types
+* Feature: made options for ai visibility (the schema)
+
+Widgets Changes:
+
+* Feature: Background Switcher (Free) - Added Hover Blur Effect option, allowing a subtle blur to be applied when hovering over elements for enhanced visual interaction.
+* Feature: Post Grid (Free) - Added Meta Data One, Two, Three, Four, and Five Typography Override options, allowing full control over the styling of each individual metadata field.
+* Feature: Icon Bullets (Free) - Separated the Gap option into two independent controls: Column Gap and Row Gap, providing more precise spacing adjustments for grid layouts.
+* Feature: Icon Bullets (Free) - Added Item Justify Content option, allowing greater control over horizontal alignment within each item.
+* Fix: Justified Image Carousel (Pro) - Fixed issue where a hash name was incorrectly added to the URL after opening the lightbox, ensuring clean and consistent URL behavior.
+* Fix: Animated Border Icon Box (Free) - Fixed issue where the full-box link was not functioning correctly on hover, ensuring the entire item remains fully clickable as intended.
+* Fix: Content Accordion (Free) - Increased the priority of the Heading Text Typography option, ensuring it can successfully override conflicting CSS rules applied by various themes.
+* Fix: Fullscreen Menu (Free) - Rebuilt the option so the icon size now updates automatically in the editor, and adjusted the default styling to ensure the icon is vertically centered.
+* Fix: Content Tabs (Free) - Removed outdated and unnecessary code that was preventing widgets from functioning correctly when their parent container was hidden using Elementor’s responsive visibility options.
+
+
+version 1.5.152: 2025-11-17 =
+
+* Fix: disable short pixel plugin on ajax requests, because it's breaking the json response
+* Fix: fixed some wpml language with thumb id issues
+* Feature: added the schema for multisource and post list params authomatically
+* Fix: make sure that there are images url's in all of the schemas
+* Change: added black friday theme to the plugin
+
+
 
 version 1.5.151: 2025-10-16 =
 

@@ -3265,8 +3265,9 @@ s	 */
 		$this->checkSetErrorsReporting();
 
 		self::$isUnderAjax = true;
-				
-		try{
+		
+		
+		try{	
 
 			switch($frontAjaxAction){
 				case "getfiltersdata":
@@ -3321,6 +3322,19 @@ s	 */
 
 	}
 
+	/**
+	 * on plugins loaded - do some operations like disable plugins
+	 */
+	public function operateOnPluginsLoaded(){
+
+		$frontAjaxAction = UniteFunctionsUC::getPostGetVariable("ucfrontajaxaction","",UniteFunctionsUC::SANITIZE_KEY);
+		
+		if(empty($frontAjaxAction))
+			return(false);
+		
+		UniteCreatorPluginIntegrations::disableShortPixel();
+	}
+	
 
 	/**
 	 * init wordpress front filters
@@ -3330,6 +3344,8 @@ s	 */
 		if(is_admin() == true)
 			return(false);
 		
+		add_action("plugins_loaded", array($this, "operateOnPluginsLoaded"),4);
+			
 		add_action("wp", array($this, "operateAjaxResponse"));
 		
 		add_action("ue_before_custom_posts_query", array($this, "onBeforeCustomPostsQuery"));

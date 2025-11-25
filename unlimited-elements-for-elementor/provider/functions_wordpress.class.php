@@ -889,7 +889,31 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 			return(null);
 		}
+		
+		/**
+		 * get first post term name by taxonomy
+		 */
+		public static function getPostTerm_firstTermName($postID, $taxName){
+			
+			if(empty($taxName))
+				$taxName = "category";
+			
+			$arrTerms = wp_get_post_terms($postID, $taxName);
 
+			if(empty($arrTerms))
+				return(null);
+
+			foreach($arrTerms as $term){
+
+				$slug = $term->name;
+				
+				return($slug);
+			}
+
+			return("");
+		}
+		
+		
 		/**
 		 * get post terms title string
 		 */
@@ -3289,7 +3313,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 		if($isWPML)
 			$thumbID = UniteCreatorWpmlIntegrate::getTranslatedAttachmentID($thumbID);
-
+		
 		$arrImage = wp_get_attachment_image_src($thumbID, $size);
 		if(empty($arrImage))
 			return (false);

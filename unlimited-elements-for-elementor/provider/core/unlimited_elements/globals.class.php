@@ -22,10 +22,10 @@ class GlobalsUnlimitedElements{
 	
 	public static $gutenbergArrFilterCats = array("Loop Builder");
 	
-	public static $showAdminNotices = false;		//show the banner
+	public static $showAdminNotices = true;		//show the banner
 	public static $debugAdminNotices = false;
 	
-	public static $blackFridayMode = false;
+	public static $blackFridayMode = true;
 	
 	public static $enableApiIntegrations = true;
 
@@ -45,12 +45,15 @@ class GlobalsUnlimitedElements{
 	
 	public static $enableEditProOptions = false;	 //set to enable edit pro options
 	
-	//public static $insideNotificationText = "🖤 Black Friday Sale! <br> Don’t Miss Out on the <br> BIGGEST SALE of the Year! 🎉<br> <a style='text-decoration:underline;' href='https://unlimited-elements.com/pricing/' target='_blank'>Get Deal Now!</a> ";
-	public static $insideNotificationText = "Unlock Access To All Pro Widgets and Features.  <a href='https://unlimited-elements.com/pricing/' target='_blank'>Upgrade Now</a> ";
+	public static $enableSchema = true;	//enable the schema!
+	public static $enableCustomSchema = true;	//enable the custom schema
+	
+	public static $insideNotificationText = "<b>Black Friday Deal</b>! <br> Limited Time Offer for <b>Pro Version</b> <br> Best Deal Of The Year! <br> <a style='text-decoration:underline;' href='https://unlimited-elements.com/pricing/' target='_blank'>Get 50% Off Now</a> ";
+	
+	//public static $insideNotificationText = "Unlock Access To All Pro Widgets and Features.  <a href='https://unlimited-elements.com/pricing/' target='_blank'>Upgrade Now</a> ";
 	public static $insideNotificationUrl = "https://unlimited-elements.com/pricing/";
 	
 	
-
 	const PLUGIN_NAME = "unlimitedelements";
 	const VIEW_DASHBOARD = "dashboard";
 	const VIEW_ADDONS_ELEMENTOR = "addons_elementor";
@@ -212,7 +215,7 @@ class GlobalsUnlimitedElements{
 	 * init the admin notices
 	 */
 	public static function initAdminNotices(){
-
+		
 		if(GlobalsUnlimitedElements::$showAdminNotices === false)
 			return;
 		

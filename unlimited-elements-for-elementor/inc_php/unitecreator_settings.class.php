@@ -1615,7 +1615,7 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			$arrParams["class"] = "unite-button-secondary";	
 		}
 
-    	$this->addButton("html_button_gotoaddon", __("Edit Widget HTML","unlimited-elements-for-elementor"), self::PARAM_NOTEXT, $arrParams);
+    	$this->addButton("html_button_gotoaddon", __("Edit Block HTML","unlimited-elements-for-elementor"), self::PARAM_NOTEXT, $arrParams);
 
 	}
 
@@ -1680,7 +1680,7 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 	 * add the background section
 	 */
 	public function addGutenbergEditorBackgroundSection(){
-		
+
 		$this->addSap(esc_html__("Background", "unlimited-elements-for-elementor"), "uc_background");
 		
 		$params = array();
@@ -1723,7 +1723,15 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 		$objPagination = new UniteCreatorElementorPagination();
 		$objPagination->addUniteSettingsSection($this, $postListParam);
 	}
-
+	
+	/**
+	 * add schema section
+	 */
+	private function addSchemaSectionForPosts($postsListParam){
+		
+		
+	}
+	
 	/**
 	 * mark general tab
 	 */
@@ -1791,6 +1799,8 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 		$postsListParam = null;
 			
 		$addPagination = false;
+
+        $this->ensureAdvancedFields();
 				
 		foreach($arrParamsWithCats as $catID => $arrCat){
 			
@@ -1799,7 +1809,7 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			$arrParams = UniteFunctionsUC::getVal($arrCat, "params");
 			
 			$isGeneralCategory = UniteFunctionsUC::getVal($arrCat, "is_general");
-			
+
 			$this->addSap($title, $catID, $tab);
 
 			$sapParams = $arrCat;
@@ -1886,7 +1896,17 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			}
 			
 		}
-
+		
+		//---- add schema section
+		
+		if(GlobalsUnlimitedElements::$enableSchema == true){
+			
+			if(empty($postsListParam) === false)
+				$this->addSchemaSectionForPosts($postsListParam);
+			
+		}
+				
+		
 		// add control by elementor conditions - from posts list, terms list etc.
 		$this->addControls_byElementorConditions();
 	}
@@ -2021,6 +2041,9 @@ class UniteCreatorSettingsWork extends UniteSettingsAdvancedUC{
 			$this->addByCreatorParam($postParam);
 		}
 	}
-
+	
+    public function loadXMLFile($filepath, $loadedSettingsType = null){
+        parent::loadXMLFile($filepath, $loadedSettingsType);
+    }
 
 }

@@ -2051,6 +2051,26 @@ class HelperProviderUC{
 		
 	}
 	
+	/**
+	 * show current post meta debug
+	 */
+	public static function showLastQuery(){
+		
+		global $wp_query;
+		$queryVars = $wp_query->query;
+		
+		dmp("Last Posts Query:");
+		dmp($queryVars);
+		
+		//dmp("is main query: ".$wp_query->isMain());
+		
+		dmp("The Request: ");
+		
+		dmp($wp_query->request);
+		
+		
+	}
+	
 	
 
 }

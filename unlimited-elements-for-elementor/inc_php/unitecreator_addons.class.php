@@ -532,7 +532,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		$objOutput->initByAddon($objAddon);
 
         if($cssFilesPlace == "footer")
-        	$output->processIncludes("css");
+        	$objOutput->processIncludes("css");
 		
 		
 		$htmlBefore = null;
@@ -584,26 +584,53 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	/**
 	 * get addon output data
 	 */
-	public function getAddonOutputData($addonData, $isWrap = false){
-		
-		$this->checkInitAddonGlobalVars($addonData);
-		
-		$objAddon = $this->prepareAddonByData($addonData, true);
-		
-		$rootId = UniteFunctionsUC::getVal($addonData, "root_id");
-		$includeSelectors = UniteFunctionsUC::getVal($addonData, "selectors");
-		$includeSelectors = UniteFunctionsUC::strToBool($includeSelectors);
-		
-		$outputOptions = array(
-			"root_id" => $rootId,
-			"selectors" => $includeSelectors,
-			"wrap"=>$isWrap
-		);
-		 
-		$output = $this->getAddonOutput($objAddon, $outputOptions);
-		
-		return($output);
-	}
+    public function getAddonOutputData($addonData, $isWrap = false){
+
+        $this->checkInitAddonGlobalVars($addonData);
+
+        $hasSettings  = UniteFunctionsUC::getVal($addonData, "settings");
+        $hasConfig    = UniteFunctionsUC::getVal($addonData, "config");
+        $hasElSettings= UniteFunctionsUC::getVal($addonData, "elementor_settings");
+
+        if(empty($hasSettings) && empty($hasConfig) && empty($hasElSettings)){
+
+            $tmpAddon = $this->initAddonByData($addonData);
+
+            $td = $tmpAddon->getTestData(2);          
+            $defaults = UniteFunctionsUC::getVal($td, "config", array());
+            $defaultItems = UniteFunctionsUC::getVal($td, "items");
+
+            if(empty($defaults)){
+                if(method_exists($tmpAddon, "getParamsDefaults")){
+                    $defaults = $tmpAddon->getParamsDefaults();
+                } elseif(method_exists($tmpAddon, "getParamsManager")
+                    && method_exists($tmpAddon->getParamsManager(), "getDefaultsAssoc")) {
+                    $defaults = $tmpAddon->getParamsManager()->getDefaultsAssoc();
+                }
+            }
+
+            if(!empty($defaults))
+                $addonData["settings"] = $defaults;
+
+            if(!empty($defaultItems))
+                $addonData["items"] = $defaultItems;
+        }
+
+        $objAddon = $this->prepareAddonByData($addonData, true);
+
+        $rootId = UniteFunctionsUC::getVal($addonData, "root_id");
+        $includeSelectors = UniteFunctionsUC::getVal($addonData, "selectors");
+        $includeSelectors = UniteFunctionsUC::strToBool($includeSelectors);
+
+        $outputOptions = array(
+            "root_id"    => $rootId,
+            "selectors"  => $includeSelectors,
+            "wrap"       => $isWrap,
+        );
+
+        $output = $this->getAddonOutput($objAddon, $outputOptions);
+        return $output;
+    }
 	
 
 	/**
@@ -728,78 +755,110 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 	/**
 	 * prepare addon by data
 	 */
-	public function prepareAddonByData($addonData, $isForOutput = false){
+public function prepareAddonByData($addonData, $isForOutput = false){
 		
-		$addonName = UniteFunctionsUC::getVal($addonData, "name");
-		$addonType = UniteFunctionsUC::getVal($addonData, "addontype");
+	$addonName = UniteFunctionsUC::getVal($addonData, "name");
+	$addonType = UniteFunctionsUC::getVal($addonData, "addontype");
+	$addonID   = UniteFunctionsUC::getVal($addonData, "id");
 
-		$addonID = UniteFunctionsUC::getVal($addonData, "id");
+	// init addon
+	$objAddon = new UniteCreatorAddon();
 
-		//init addon
-		$objAddon = new UniteCreatorAddon();
-
-		if(empty($addonName) && !empty($addonID) && is_numeric($addonID)){
-			//  init by id
-			
-			$objAddon->initByID($addonID);
-		}else{
-			//  init by name or alias and type
-
-			if(empty($addonType))
-				$objAddon->initByName($addonName);
-			else
-				$objAddon->initByAlias($addonName, $addonType);
-		}
-		
-		$elementorSettings = UniteFunctionsUC::getVal($addonData, "elementor_settings");
-
-		//init by elementor settings
-		if(!empty($elementorSettings)){
-			$objIntegrate = new UniteCreatorElementorIntegrate();
-			$objIntegrate->includePluginFiles();
-
-			$objWidget = new UniteCreatorElementorBackgroundWidget();
-
-			$objAddon = $objWidget->setAddonSettingsFromElementorSettings($objAddon, $elementorSettings);
-		}else{    //init by blox settings
-
-			$arrSettings = UniteFunctionsUC::getVal($addonData, "settings");
-			
-			if(is_string($arrSettings))
-				$arrSettings = UniteFunctionsUC::decodeContent($arrSettings);
-
-			if(!empty($arrSettings)){
-				
-				if(isset($arrSettings["uc_items"])){
-										
-					$arrItems = UniteFunctionsUC::getVal($arrSettings, "uc_items");
-					if(empty($arrItems))
-						$arrItems = array();
-					
-					$objAddon->setArrItems($arrItems);
-
-					unset($arrSettings["uc_items"]);
-				}
-				
-				$objAddon->setParamsValues($arrSettings);
-			}else{
-				//set addon data
-				$arrConfig = UniteFunctionsUC::getVal($addonData, "config");
-				if(!empty($arrConfig))
-					$objAddon->setParamsValues($arrConfig);
-
-				$arrItems = UniteFunctionsUC::getVal($addonData, "items");
-				if(!empty($arrItems))
-					$objAddon->setArrItems($arrItems);
-
-				$arrFonts = UniteFunctionsUC::getVal($addonData, "fonts");
-				if(!empty($arrFonts))
-					$objAddon->setArrFonts($arrFonts);
-			}
-		}
-
-		return ($objAddon);
+	if (empty($addonName) && !empty($addonID) && is_numeric($addonID)) {
+		// init by id
+		$objAddon->initByID($addonID);
+	} else {
+		// init by name or alias and type
+		if (empty($addonType))
+			$objAddon->initByName($addonName);
+		else
+			$objAddon->initByAlias($addonName, $addonType);
 	}
+
+	// Elementor settings path
+	$elementorSettings = UniteFunctionsUC::getVal($addonData, "elementor_settings");
+	if (!empty($elementorSettings)) {
+
+		if (is_string($elementorSettings))
+			$elementorSettings = UniteFunctionsUC::decodeContent($elementorSettings);
+
+		$objIntegrate = new UniteCreatorElementorIntegrate();
+		$objIntegrate->includePluginFiles();
+
+		$objWidget = new UniteCreatorElementorBackgroundWidget();
+		$objAddon  = $objWidget->setAddonSettingsFromElementorSettings($objAddon, $elementorSettings);
+
+		return $objAddon;
+	}
+
+	// ---- Blox/UE settings path ----
+	// prefer: settings -> settings_values -> config
+	$arrSettings = UniteFunctionsUC::getVal($addonData, "settings");
+	if (empty($arrSettings))
+		$arrSettings = UniteFunctionsUC::getVal($addonData, "settings_values");
+	if (empty($arrSettings))
+		$arrSettings = UniteFunctionsUC::getVal($addonData, "config");
+
+	if (is_string($arrSettings))
+		$arrSettings = UniteFunctionsUC::decodeContent($arrSettings);
+
+	// items may be passed explicitly or inside settings as uc_items
+	$arrItems = UniteFunctionsUC::getVal($addonData, "items");
+	if (empty($arrItems) && is_array($arrSettings) && array_key_exists("uc_items", $arrSettings)) {
+		$arrItems = UniteFunctionsUC::getVal($arrSettings, "uc_items");
+		unset($arrSettings["uc_items"]);
+	}
+
+	if (!empty($arrItems)) {
+		if (is_string($arrItems))
+			$arrItems = UniteFunctionsUC::decodeContent($arrItems);
+		if (empty($arrItems))
+			$arrItems = array();
+		$objAddon->setArrItems($arrItems);
+	}
+
+	if (!empty($arrSettings) && is_array($arrSettings))
+		$objAddon->setParamsValues($arrSettings);
+
+	// optional fonts
+	$arrFonts = UniteFunctionsUC::getVal($addonData, "fonts");
+	if (!empty($arrFonts)) {
+		if (is_string($arrFonts))
+			$arrFonts = UniteFunctionsUC::decodeContent($arrFonts);
+		$objAddon->setArrFonts($arrFonts);
+	}
+
+	// ---- Defaults hydration for output (when nothing was provided) ----
+	if ($isForOutput === true) {
+		$noExplicitSettings = empty($arrSettings) && empty($arrItems);
+
+		if ($noExplicitSettings) {
+			// 1) try defaults slot #2 (saved via saveAddonDefaultsFromData)
+			$td           = $objAddon->getTestData(2); // ['config'=>..., 'items'=>...]
+			$defaults     = UniteFunctionsUC::getVal($td, "config", array());
+			$defaultItems = UniteFunctionsUC::getVal($td, "items");
+
+			// 2) if slot empty — take schema defaults
+			if (empty($defaults)) {
+				if (method_exists($objAddon, "getParamsDefaults")) {
+					$defaults = $objAddon->getParamsDefaults();
+				} else {
+					$pm = method_exists($objAddon, "getParamsManager") ? $objAddon->getParamsManager() : null;
+					if ($pm && method_exists($pm, "getDefaultsAssoc"))
+						$defaults = $pm->getDefaultsAssoc();
+				}
+			}
+
+			if (!empty($defaults) && is_array($defaults))
+				$objAddon->setParamsValues($defaults);
+
+			if (!empty($defaultItems))
+				$objAddon->setArrItems($defaultItems);
+		}
+	}
+
+	return $objAddon;
+}
 
 	protected function a____________SETTERS__________(){
 	}

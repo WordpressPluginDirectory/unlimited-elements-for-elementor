@@ -14,7 +14,9 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	const ITEMS_TYPE_DEFAULT = "default";
 	const ITEMS_TYPE_FORM = "form";
 	const ITEMS_TYPE_DATASET = "dataset";
-
+	const ITEMS_TYPE_POST = "post";
+	const ITEMS_TYPE_MULTISOURCE = "multisource";
+	
 	const FILENAME_ICON = "icon_addon.png";
 	const FILENAME_PREVIEW = "preview_addon";  //jpg,png,gif
 	const FILENAME_ICON_SVG = "preview_icon.svg";
@@ -1157,7 +1159,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get items params
 	 */
 	public function getParamsItems($filterType = null){
-
+	
 		if(empty($this->paramsItems))
 			return ($this->paramsItems);
 
