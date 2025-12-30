@@ -988,23 +988,49 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	/**
 	 * prepare css selector dimentions css
 	 */
-	private function prepareCSSSelectorDimentionsCSS($selectorValue, $value){
+    function prepareCSSSelectorDimentionsCSS($selectorValue, $value){
 
-		$top = UniteFunctionsUC::getVal($value, "top");
-		$right = UniteFunctionsUC::getVal($value, "right");
-		$bottom = UniteFunctionsUC::getVal($value, "bottom");
-		$left = UniteFunctionsUC::getVal($value, "left");
-		$unit = UniteFunctionsUC::getVal($value, "unit", "px");
+        $top    = UniteFunctionsUC::getVal($value, "top");
+        $right  = UniteFunctionsUC::getVal($value, "right");
+        $bottom = UniteFunctionsUC::getVal($value, "bottom");
+        $left   = UniteFunctionsUC::getVal($value, "left");
+        $unit   = UniteFunctionsUC::getVal($value, "unit", "px");
 
-		$css = $this->processCSSSelectorReplaces($selectorValue, array(
-			"{{top}}" => $top . $unit,
-			"{{right}}" => $right . $unit,
-			"{{bottom}}" => $bottom . $unit,
-			"{{left}}" => $left . $unit,
-		));
+        $rawSides = array($top, $right, $bottom, $left);
+        $hasValue = false;
 
-		return $css;
-	}
+        foreach ($rawSides as $sideValue) {
+            if ($sideValue !== '' && $sideValue !== null && $sideValue !== false) {
+                $sideValue = trim((string)$sideValue);
+                if ($sideValue !== '') {
+                    $hasValue = true;
+                    break;
+                }
+            }
+        }
+
+        if ($hasValue === false) return "";
+
+        $prepareSide = function($v) use ($unit) {
+            if ($v === '' || $v === null || $v === false)
+                return '';
+
+            $v = trim((string)$v);
+            if ($v === '')
+                return '';
+
+            return $v . $unit;
+        };
+
+        $css = $this->processCSSSelectorReplaces($selectorValue, array(
+            "{{top}}"    => $prepareSide($top),
+            "{{right}}"  => $prepareSide($right),
+            "{{bottom}}" => $prepareSide($bottom),
+            "{{left}}"   => $prepareSide($left),
+        ));
+
+        return $css;
+    }
 
 	/**
 	 * prepare css selector image css
@@ -1163,7 +1189,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$selectors = array_unique($selectors);
 
 		foreach($selectors as $index => $selector){
-			$selectors[$index] = "#" . $wrapperId . " " . trim($selector);
+			$selectors[$index] = "." . $wrapperId . " " . trim($selector);
 		}
 
 		return implode(",", $selectors);
@@ -1266,17 +1292,31 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
         // padding
         $padding = UniteFunctionsUC::getVal($paramsTmp, 'advanced_padding');
         if (is_array($padding)) {
+
+            $unit = !empty($padding['unit']) ? $padding['unit'] : 'px';
+
             if(!empty($padding['is_linked']) && $padding['is_linked'] && $padding['top'] !== '' && $padding['top'] !== null) {
                 $val = (string)$padding['top'];
-                if($val !== '' && $val !== null) {
-                    $advanced_styles .= 'padding: ' . $val . $padding['unit'] . '; ';
+                if ($val !== '' && $val !== null && $val !== false) {
+                    $val = trim((string)$val);
+                    if ($val !== '') {
+                        $advanced_styles .= 'padding: ' . $val . $unit . '; ';
+                    }
                 }
             } else {
                 foreach($sides as $side) {
                     $val = UniteFunctionsUC::getVal($padding, $side);
-                    if($val !== '' && $val !== null && $val !== false) {
-                        $advanced_styles .= 'padding-' . $side . ': ' . (string)$val . $padding['unit'] . '; ';
+
+                    if ($val === '' || $val === null || $val === false) {
+                        continue;
                     }
+
+                    $val = trim((string)$val);
+                    if ($val === '') {
+                        continue;
+                    }
+
+                    $advanced_styles .= 'padding-' . $side . ': ' . $val . $unit . '; ';
                 }
             }
         }
@@ -1482,7 +1522,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
         }
 
         if($advanced_styles != '') {
-            $styles .= "\n#" . $wrapperId . " {" . $advanced_styles . "}";
+            $styles .= "\n." . $wrapperId . " {" . $advanced_styles . "}";
         }
 
         // -------------------- RESPONSIVE VISIBILITY --------------------
@@ -1513,6 +1553,8 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
                 $styles .= "\n@media (max-width:767px){ #{$wrapperId}{ display:none !important; } }";
             }
         }
+
+        $styles .= ' /* debug 2 */';
 
         return $styles;
     }
@@ -1586,10 +1628,12 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		$styles .= $this->processItemsSelectors();
 
+        $styles .= ' /* debug 3 */';
+
 		if(empty($styles) === true)
 			return null;
 
-		UniteProviderFunctionsUC::printCustomStyle($styles);
+		// UniteProviderFunctionsUC::printCustomStyle($styles);
 
 		return $styles;
 	}
@@ -1622,6 +1666,8 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			$itemStyles = $this->processCSSSelectorReplaces($itemStyles, array("{{current_item}}" => ".elementor-repeater-item-" . $itemId));
 
 			$styles .= $itemStyles;
+
+            $styles .= ' /* debug 4 */';
 		}
 
 		return $styles;
@@ -1631,7 +1677,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * get selectors css
 	 */
 	public function getSelectorsCss(){
-				
+
 		$style = $this->processPreviewParamsSelectors();
 
 		return $style;
@@ -1661,6 +1707,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 		$htmlInlcudesJS = $this->getHtmlIncludes($arrIncludes,"js");
 
 		//process selectors only for preview (elementor output uses its own processing)
+
 		$this->processPreviewParamsSelectors();
 
 		$arrCssCustomStyles = UniteProviderFunctionsUC::getCustomStyles();
@@ -1920,7 +1967,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		return($html);
 	}
-	
+
 	/**
 	 * modify debug array - output for debug, fordebug
 	 */
@@ -1999,7 +2046,7 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * put debug data - posts
 	 */
 	private function putDebugDataHtml_posts($arrItemData){
-		
+
 		$numPosts = count($arrItemData);
 
 		$html = "";
@@ -2008,11 +2055,11 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 
 		if(empty($arrItemData))
 			return($html);
-		
+
 		$isShowMeta = ($this->debugDataType == "post_meta");
 
 		foreach($arrItemData as $index => $item){
-						
+
 			$isPost = false;
 			if($item instanceof WP_Post)
 				$isPost = true;
@@ -2035,9 +2082,9 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 			if($isPost == false){
 				
 				$item = UniteFunctionsUC::getVal($item, "item");
-								
+
 				$postData = UniteFunctionsUC::getArrFirstValue($item);
-									
+
 				$title = UniteFunctionsUC::getVal($postData, "title");
 				$alias = UniteFunctionsUC::getVal($postData, "alias");
 				$id = UniteFunctionsUC::getVal($postData, "id");
@@ -2131,20 +2178,19 @@ class UniteCreatorOutputWork extends HtmlOutputBaseUC{
 	 * put debug data
 	 */
 	private function putDebugDataHtml($arrData, $arrItemData){
-		
+
 		$html = "<div class='uc-debug-output' style='font-size:16px;color:black;text-decoration:none;background-color:white;padding:3px;'>";
-		
+
 		$html .= dmpGet("<b>Widget Debug Data</b> (turned on by setting in widget advanced section)<br>",true);
 
 		//get data from listing
 		$paramListing = $this->addon->getListingParamForOutput();
 		
 		if(!empty($paramListing) && $this->itemsType == "template"){
-			
+
 			$arrItemData = $this->putDebugDataHtml_getItemsFromListing($paramListing, $arrData);
 		}
-		
-		
+
 		switch($this->debugDataType){
 			case "post_titles":
 			case "post_meta":
@@ -2203,13 +2249,13 @@ $js
 		
 		if($isInsideEditor == true){
 			
-			$css = "#{$ucID}-root .uc-background-editor-placeholder{
+			$css = ".{$ucID}-root .uc-background-editor-placeholder{
 				font-size:12px;
 				padding:20px;
 				color:black;
 			}
 			
-			#{$ucID}-root{
+			.{$ucID}-root{
 				position:relative;
 				border:1px solid gray;
 				background-color:lightgray;
@@ -2231,7 +2277,7 @@ $js
 		
 		$css = "
 /* background wrapper */
-#{$ucID}-root.uc-background-active{
+.{$ucID}-root.uc-background-active{
 	position: absolute;
 	top:0px;
 	left:0px;
@@ -2542,7 +2588,7 @@ $css
 
                 $advancedAddClasses = UniteFunctionsUC::getVal($params, "advanced_css_classes");
 
-				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root " . esc_attr($advancedAddClasses) . "\" data-id=\"" . esc_attr($rootId) . "\">";
+				$output .= "\n<div id=\"" . esc_attr($id) . "\" class=\"ue-widget-root " . esc_attr($advancedAddClasses) . " " . esc_attr($id) . "\" data-id=\"" . esc_attr($rootId) . "\">";
 			}
 			
 			

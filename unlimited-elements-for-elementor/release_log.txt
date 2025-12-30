@@ -1,5 +1,22 @@
 
 
+
+version 2.0.2:
+
+* Feature: add google reviews from serp api feature
+* Fix - fixed double tax pricing in woocommerce variation
+* Fix - fixed the entrance animation together with load more issue
+* Fix - some blocks related bug fixes
+* Fix - fixed default items not loading js issues
+* Fix - fixed some small security issue
+
+
+version 2.0.1:
+
+* Fix: fixed some small secirity issue with the forms
+* Update: updated freemius sdk to 1.13.0
+
+
 version 2.0:
 
 * Feature: added schema options to posts and multisource widget types

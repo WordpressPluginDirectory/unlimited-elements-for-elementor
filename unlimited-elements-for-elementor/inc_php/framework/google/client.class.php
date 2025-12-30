@@ -61,7 +61,7 @@ abstract class UEGoogleAPIClient{
 	 * @throws Exception
 	 */
 	protected function get($endpoint, $params = array()){
-
+		
 		return $this->request(UEHttpRequest::METHOD_GET, $endpoint, $params);
 	}
 
@@ -107,7 +107,7 @@ abstract class UEGoogleAPIClient{
 
 		$url = $this->getBaseUrl() . $endpoint;
 		$query = ($method === UEHttpRequest::METHOD_GET) ? $params : array();
-		$body = ($method !== UEHttpRequest::METHOD_GET) ? $params : array();
+			$body = ($method !== UEHttpRequest::METHOD_GET) ? $params : array();
 
 		if(empty($params[self::PARAM_QUERY]) === false){
 			$query = array_merge($query, $params[self::PARAM_QUERY]);
@@ -149,6 +149,7 @@ abstract class UEGoogleAPIClient{
 				$this->throwError("$message ($status)");
 			}
 		});
+		
 		
 		$response = $request->request($method, $url);
 		$data = $response->json();

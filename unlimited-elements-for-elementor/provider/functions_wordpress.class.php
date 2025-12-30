@@ -211,7 +211,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			
 			return($title);
 		}
-
+		
 
 		/**
 		 *
@@ -3896,15 +3896,6 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		return ($arrShort);
 	}
 
-	/**
-	 * get all admin users
-	 */
-	public static function getAdminUsers(){
-		
-		$arrAdminUsers = get_users( array( 'role' => 'Administrator' ) );
-		
-		return($arrAdminUsers);
-	}
 	
 	/**
 	 * get users array short

@@ -2,6 +2,90 @@
 == Changelog ==
 
 
+version 2.0.2 2025-12-30 =
+
+Plugin Changes: 
+
+* Feature: add google reviews from serp api feature
+* Fix - fixed double tax pricing in woocommerce variation
+* Fix - fixed the entrance animation together with load more issue
+* Fix - some blocks related bug fixes
+* Fix - fixed default items not loading js issues
+* Fix - fixed some small security issue
+
+Widgets Changes:
+
+* Feature: Unlimited Grid (Pro) - Added Title HTML Tag option for better SEO and accessibility.
+* Feature: Content Carousel (Free) - Enhanced custom SVG icon support for navigation arrows, and added title and description text shadow options.
+* Feature: Content Slider (Free) - Added title HTML tag option, improved links by adding link attributes, and introduced Slide Border, Overlay Hover, and Overlay Hover Transition Duration options.
+* Feature: Video on Hover (Free) - Added a &quot;Schema&quot; option to enable schema markup support for better SEO and AI understand your content for increased visibility in AI powered search features.
+* Feature: Text Field (Free) - Introduced a dynamic URL Autopopulate feature, allowing fields to automatically retrieve and fill values from custom query string parameters upon page load
+* Feature: Off Canvas (Pro) - Added Background Color Hover and Text Color Hover options, allowing finer visual control over hover states and enabling consistent styling of the Trigger Button element.
+* Feature: Side Menu (Free) - Added support for the Conditions widget, enabling seamless control over the Side Menu by allowing it to be opened, closed, or toggled dynamically based on defined conditions
+* Feature: Conditions (Free) - Added three new actions — UE Open Side Menu, UE Close Side Menu, and UE Toggle Side Menu — allowing full programmatic control over the Side Menu widget behavior
+* Feature: Snow Background (Free) - Added Speed Mobile option, allowing precise control over animation and interaction speed specifically for mobile devices, ensuring smoother performance, better usability on smaller screens
+* Feature: Swipe Carousel (Pro) - Added Title Tag option, allowing users to define the HTML tag for the title element to better match the page structure, improve semantic markup, and enhance SEO and accessibility control.
+* Feature: Grid Gallery (Pro) - Added Enable Link On Main Image option, allowing the main image within each item to function as a clickable link.
+* Feature: Post Grid (Free) - Made the Title Spacing option fully responsive, allowing different spacing values to be applied across desktop, tablet, and mobile for more precise control of layout and typography.
+* Feature: Expanding Content Cards (Free) - Added Sub Title option, enabling users to include an additional descriptive text line beneath the main title.
+* Feature: Vertical Curved Timeline (Free) - Added &quot;Content Vertical Position&quot; option when the image option is enabled, also introduced &quot;Alternate Image Alignment&quot; option for improved design and customization.
+* Feature: Icon Accordion (Free) - Added multi-source support along with pagination and filtering features, and improved the item color options for easier styling.
+* Feature: Dynamic Post Popup (Pro) - Added Arrows Type option, introducing support for choosing between icon-based arrows and text-based arrows.
+* Feature: Portfolio Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked.
+* Feature: Overlay Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Material Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked.
+* Feature: Icon Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Unlimited Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked.
+* Feature: Logo Carousel (Free) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Woo Product Carousel (Free) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked.
+* Feature: Post Carousel (Free) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Repeater Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Flip Box Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Loop Carousel (Pro) - Added the Slides To Change option, which determines the exact number of carousel items moved when navigation arrows are clicked
+* Feature: Notification (Free) - The widget&#039;s accessibility was improved by replacing the close div with a semantic &lt;button&gt; element, adding the essential aria-label=&quot;Close Notification&quot; for screen reader clarity, applying role=&quot;status&quot; to the main container for conveying passive informative content.
+* Feature: Contact Form 7 (Free) - Improved accessibility of the widget by enabling proper keyboard navigation within form elements.
+* Feature: Fullscreen Menu (Free) - Added Expand Collapse Icon Spacing option, allowing users to precisely control the distance between the expand/collapse icon and the text.
+* Feature: Gradient Underline Text Effect (Free) - Made the Text Align option responsive, allowing different alignment settings for desktop, tablet, and mobile.
+* Feature: Post Accordion (Free) - Added Icon Spacing option — introduced a new control that allows adjusting the distance between the icon and its adjacent elements.
+* Feature: Team Member Carousel (Free) - Added Icon One, Icon Two, Icon Three, Icon Four and Link One, Link Two, Link Three, Link Four options to the Source options
+* Feature: Unlimited Google Maps (Free) - Added Scroll To Active Navigation Item option, ensuring that navigation automatically scrolls to keep the active item visible.
+* Feature: 360 Panorama Virtual Tour (Pro) - Enhanced the widget&#039;s accessibility by applying ARIA attributes (role, aria-label) and tabindex=&quot;0&quot; to interactive controls, allowing keyboard-only users to activate them by simulating a click using the Enter or Space key.
+* Fix: Repeater Table (Pro) - Accessibility for the widget was improved by implementing the scope=&quot;col&quot; attribute on all header cells to explicitly link data to headings
+* Fix: Restaurant Menu (Free) - Accessibility for the widget was improved by adding role=&quot;list&quot; and role=&quot;listitem&quot; for better navigation structure, converting the &quot;See More&quot; toggle into a keyboard-accessible button with aria-expanded states.
+* Fix: Loop Grid (Pro) - Fixed an issue where the “Empty Message Type: Template” was displayed even when the Loop Widget had successfully rendered items, causing the empty state template to appear incorrectly alongside actual content
+* Fix: Border Hero (Free) - The button field was incorrectly configured as a text field and has now been changed to a proper link field. A security vulnerability was also fixed to improve overall safety and stability.
+* Fix: Content Grid (Free) - Removed empty links to prevent rendering unnecessary anchor elements and to avoid potential accessibility and SEO issues when link fields are left blank
+* Fix: Comparison List (Pro) - Fixed an issue where column widths were not working correctly on mobile devices, and resolved RTL layout issues.
+* Fix: Horizontal Timeline (Free) - Removed empty links to prevent rendering unnecessary anchor elements and to avoid potential accessibility and SEO issues when link fields are left blank.
+* Fix: Price Range Filter (Pro) - Fixed an issue where slider thumbnail elements were displayed incorrectly on RTL (right-to-left) websites, ensuring proper alignment, order, and interaction consistency across all supported directions
+* Fix: Random Content (Free) - Accessibility for the Random Content widget was improved by converting the shuffle trigger into a semantic &lt;button&gt;, marking the shuffle icon as aria-hidden=&quot;true&quot; to avoid redundant noise, and applying aria-live=&quot;polite&quot; to the content container
+* Fix: Stacking Cards (Free) - Fixed an issue where the Alternate Page Position option was not functioning correctly on the live site and was only applied inside the Elementor editor
+* Fix: Protected Content (Free) - Accessibility for the Protected Content widget was improved by correcting the form structure to properly link the &lt;label&gt; (title) to the password &lt;input&gt; using the &quot;for&quot; and &quot;id&quot; attributes, adding aria-required=&quot;true&quot; to the input
+* Fix: Cookie Consent (Free) - Accessibility for the Cookie Consent widget was improved by switching interactive &lt;div&gt; elements to semantic &lt;button&gt; tags, and ensuring the main container dynamically uses role=&quot;dialog&quot; and aria-modal=&quot;true&quot; only when the banner is visible, thereby guiding keyboard and screen reader focus correctly.
+* Fix: Age Verification (Free) - The Age Verification widget&#039;s accessibility was improved by adding role=&quot;dialog&quot;, aria-modal=&quot;true&quot;, and descriptive aria-label attributes to all input fields and buttons for better screen reader and keyboard navigation
+* Fix: Content Tabs (Free) - Fixed an issue where theme-defined padding styles for ul elements were being unintentionally overridden by the widget’s CSS, ensuring better compatibility with various themes and preserving the original list spacing and layout as defined by the active theme
+* Fix: Image Tooltip (Free) - Added aria-describedby attribute to the main widget wrapper to improve accessibility, and included additional HTML attributes—such as alt for the image—to ensure better semantic structure, screen-reader support, and overall accessibility compliance
+* Fix: Event Box (Free) - Added ARIA attributes to interactive elements and link labels for improved screen reader compatibility.
+* Fix: Calendar (Pro) - Increased the CSS priority of the Event Title element, ensuring its styling reliably overrides conflicting theme rules and displays consistently across different layouts and environments.
+* Fix: Masonry &amp; Justified Gallery (Free) - Fixed an issue where the Tile Text Panel styling options were not appearing in the widget settings panel, ensuring all relevant controls are now properly displayed and accessible for customization.
+* Fix: Submit Button (Free) - Fixed issue where attempting to proceed to the next step of Multi Source widget from the first page without filling mandatory fields caused unwanted spacing to be repeatedly added to the form
+* Fix: Vertical Curved Timeline (Free) - Fixed an issue where &quot;Button Spacing&quot; option was not working.
+* Fix: Vertical Curved Timeline (Free) - Fixed issue where, when the image element was disabled and the content inside an item had a width below 100%, items with an even item count were not aligning correctly to the side, ensuring proper layout consistency across all configurations.
+* Fix: Justified Image Carousel (Pro) - Fixed an issue on touch devices where opening the lightbox required two taps instead of one, ensuring the lightbox now opens correctly on a single tap for a smoother and more responsive user experience.
+* Fix: QR Code (Pro) - Accessibility of the QR Code widget was improved by applying role=&quot;img&quot; to the SVG container to define it as a graphic and using aria-label to provide the visible title as the accessible name, ensuring screen readers can announce the image&#039;s content.
+* Fix: Animated Mouse Scroll Icon (Free) - The accessibility of the widget was improved by adding aria-label=&quot;Scroll Down&quot; and role=&quot;button&quot; to the link wrapper and using aria-hidden=&quot;true&quot; on the decorative animation elements
+* Fix: Vertical Curved Timeline (Free) - Fixed issue when button wasn&#039;t clickable for all items except last one.
+* Fix: Repeater Tabs (Free) - Fixed issue when Repeater Tabs couldn&#039;t display all content with JSON / CSV Repeater Source.
+* Fix: Social Share Buttons (Free) - Fixed an issue where the Telegram share option was redirecting to Xing instead of Telegram.
+* Release: Person Schema (Pro) - Person Schema adds structured data that defines an individual for search engines. Improve SEO by clearly connecting a person to content, roles, and social profiles.
+
+
+version 2.0.1 2025-11-26 =
+
+* Fix: fixed some small secirity issue with the forms
+* Update: updated freemius sdk to 1.13.0
+
+
 version 2.0: 2025-11-24 =
 
 Plugin Changes: 

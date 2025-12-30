@@ -1066,7 +1066,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
                         data-name="<?php echo esc_attr($name); ?>"
                         data-value="<?php echo esc_attr($itemValue); ?>"
 						class="unite-setting-tabs-item-label"
-						for="<?php echo esc_attr($itemId); ?>" onclick="console.log('Set Tab: <?= $itemValue ?>')"
+						for="<?php echo esc_attr($itemId); ?>")"
 					>                    
                         <input
                             id="<?php echo esc_attr($itemId); ?>"
@@ -2133,7 +2133,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 		$options = $this->getOptions();
         $strTemplateOptions = '';
         if (!empty($options)) {
-            $strTemplateOptions = '<template id="' . esc_attr($this->wrapperID) . '-options">'
+            $strTemplateOptions = '<template id="' . esc_attr($this->wrapperID) . '-options" class="tpl-options">'
                         . wp_json_encode($options, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                         . '</template>';
         }
@@ -2142,7 +2142,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
         $controls = $this->getControlsForJS();
         $controlsTemplateHTML = '';
         if (!empty($controls)) {
-            $controlsTemplateHTML = '<template id="' . esc_attr($this->wrapperID) . '-controls">'
+            $controlsTemplateHTML = '<template id="' . esc_attr($this->wrapperID) . '-controls" class="tpl-controls">'
                         . wp_json_encode($controls, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)
                         . '</template>';
         }

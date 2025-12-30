@@ -2,26 +2,12 @@ var uelm_WidgetSettingsCache = [];
 var uelm_WidgetSettingsCacheFlags = [];
 
 (function (wp) {
-    var g_debug = true;
+    
+	var g_debug = true;
+    
     function trace(str){ console.log(str); }
     function debug(){ if(!g_debug) return; console.log.apply(console, arguments); }
-
-    // ping editor to activate Save btn
-    function pingSaveButton(){
-        try{
-            const d = wp?.data?.dispatch('core/editor');
-            if (d?.editPost) { d.editPost({}); return; }
-        }catch(e){}
-        try{
-            const d = wp?.data?.dispatch('core/edit-site');
-            if (d?.setIsDirty) { d.setIsDirty(true); return; }
-        }catch(e){}
-        try{
-            const d = wp?.data?.dispatch('core/edit-widgets');
-            if (d?.setHasEdits) { d.setHasEdits(true); return; }
-        }catch(e){}
-    }
-
+    
     var wbe = wp.blockEditor;
     var wc  = wp.components;
     var wd  = wp.data;
@@ -44,33 +30,38 @@ var uelm_WidgetSettingsCacheFlags = [];
         if (previewUrl)
             return el("img", { src: previewUrl, style: { width: "100%", height: "auto" } });
 
-        var blockProps             = wbe.useBlockProps();
-        var widgetContentState     = we.useState(null);
-        var settingsVisibleState   = we.useState(false);
-        var settingsContentState   = we.useState(null);
-        var isLoadingSettingsState = we.useState(false);
+        const blockProps = wbe.useBlockProps();
 
-        var widgetRef              = we.useRef(null);
-        var widgetLoaderRef        = we.useRef(null);
-        var widgetRequestRef       = we.useRef(null);
+        // block options cache key
+        const cacheKeyBase = props.clientId || props.attributes._id;
 
-        var ucSettingsRef          = we.useRef(new UniteSettingsUC());
-        var ucHelperRef            = we.useRef(new UniteCreatorHelper());
+        // state
+        const [widgetContent,     setWidgetContent]     = we.useState(null);
+        const [settingsVisible,   setSettingsVisible]   = we.useState(false);
+        const [settingsContent,   setSettingsContent]   = we.useState(null);
+        const [isLoadingSettings, setIsLoadingSettings] = we.useState(false);
 
-        var settingsInitedRef            = we.useRef(false);
-        var initedSettingsElementRef     = we.useRef(null);
-        var lastSentDataRef              = we.useRef(null);
-        var settingsObserverRef          = we.useRef(null);
-        var settingsWatchdogTimerRef     = we.useRef(null);
+        // refs
+        const widgetRef         = we.useRef(null);
+        const widgetLoaderRef   = we.useRef(null);
+        const widgetRequestRef  = we.useRef(null);
 
-        var ucSettings = ucSettingsRef.current;
-        var ucHelper   = ucHelperRef.current;
+        const ucSettingsRef     = we.useRef(new UniteSettingsUC());
+        const ucHelperRef       = we.useRef(new UniteCreatorHelper());
+
+        const settingsInitedRef        = we.useRef(false);
+        const initedSettingsElementRef = we.useRef(null);
+        const lastSentDataRef          = we.useRef(null);
+        const settingsObserverRef      = we.useRef(null);
+
+        const ucSettings = ucSettingsRef.current;
+        const ucHelper   = ucHelperRef.current;
 
         // orchestrator refs
-        const didFirstPreviewRef    = we.useRef(false);  
-        const firstPreviewReadyRef  = we.useRef(false);   
-        const lastPreviewPayloadRef = we.useRef(null);   
-        const firstPreviewTimerRef  = we.useRef(null);  
+        const didFirstPreviewRef    = we.useRef(false);
+        const firstPreviewReadyRef  = we.useRef(false);
+        const lastPreviewPayloadRef = we.useRef(null);
+        const firstPreviewTimerRef  = we.useRef(null);
 
         function isSettingsReady() {
             return !!(settingsInitedRef.current &&
@@ -79,43 +70,26 @@ var uelm_WidgetSettingsCacheFlags = [];
                       ucSettings.isInited());
         }
 
-        // root block's element 
         function getWidgetRootEl(){
             const $root = jQuery(widgetRef.current);
-            // пробуем найти «внутренний» корень, если он помечен
+
             const $inner = $root.find('[data-uc-root]').first();
             return ($inner.length ? $inner : $root);
         }
 
-        function ensureStyleTag($root){
-            if ($root.find("[name=uc_selectors_css]").length === 0) {
-                $root.prepend('<style name="uc_selectors_css"></style>');
-            }
-            return $root.find("[name=uc_selectors_css]");
-        }
-
         function applyStylePreviewOnce(maxTries = 30, delay = 50){
+
+            if (!props.isSelected) {
+                return;
+            }
+
             let tries = 0;
             (function tick(){
                 const $root = jQuery(widgetRef.current);
                 const ready = isSettingsReady();
 
                 if ($root.length && ready) {
-                    ensureStyleTag($root);
-                    const css = (ucSettings.getSelectorsCss && ucSettings.getSelectorsCss()) || '';
-                    if (css && css !== lastSelectorsCssRef.current) {
-                        $root.find("[name=uc_selectors_css]").text(css);
-                        lastSelectorsCssRef.current = css;
-                    }
-
-                    const selIncludes = ucSettings.getSelectorsIncludes && ucSettings.getSelectorsIncludes();
-                    const selHash = stableStringify(selIncludes || {});
-                    if (selIncludes && selHash !== lastIncludesHashRef.current) {
-                        ucHelper.putIncludes(getPreviewWindowElement(), selIncludes);
-                        lastIncludesHashRef.current = selHash;
-                    }
-                    // одновременно прокинем box-model, если есть
-                    applyLiveBoxModelInline();
+                    updateSelectorsPreview();
                     return;
                 }
                 if (++tries < maxTries) setTimeout(tick, delay);
@@ -123,19 +97,15 @@ var uelm_WidgetSettingsCacheFlags = [];
         }
 
         // --- delay for color/range/dimensions ---
-        const DELAY_MS = 800;
         const saveDelayTimerRef = we.useRef(null);
-        const pendingSaveRef       = we.useRef(false);
         const lastChangeTypeRef    = we.useRef(null);
         const suppressNextReloadRef= we.useRef(false);
-        const pendingSuppressByDomRef = we.useRef(false);
-
-        const styleOnlyDirtyRef    = we.useRef(false);
 
         const lastSelectorsCssRef  = we.useRef('');
         const lastIncludesHashRef  = we.useRef('');
 
         function applyLiveBoxModelInline(){
+        	
             try{
                 if (!isSettingsReady()) return;
                 const vals = ucSettings.getSettingsValues ? ucSettings.getSettingsValues() : {};
@@ -168,18 +138,280 @@ var uelm_WidgetSettingsCacheFlags = [];
             }catch(e){}
         }
 
-        // общая функция обновления css + includes + live box-model
+        // update oldCss with props from newCss
+        function mergeCss(oldCss, newCss) {
+            function createEmptyMap() {
+                return {
+                    scopesOrder: [],         
+                    selectorsOrder: {},       
+                    rules: {}               
+                };
+            }
+
+            function ensureScope(map, scope) {
+                if (!map.rules[scope]) {
+                    map.rules[scope] = {};
+                    map.selectorsOrder[scope] = [];
+                    map.scopesOrder.push(scope);
+                }
+            }
+
+            function addRuleToMap(map, scope, selector, body) {
+                selector = selector && selector.trim();
+                if (!selector) return;
+
+                var decls = {};
+                var parts = body.split(';');
+                for (var i = 0; i < parts.length; i++) {
+                    var part = parts[i].trim();
+                    if (!part) continue;
+                    var colonPos = part.indexOf(':');
+                    if (colonPos === -1) continue;
+                    var prop = part.slice(0, colonPos).trim();
+                    var val  = part.slice(colonPos + 1).trim();
+                    if (!prop || !val) continue;
+                    decls[prop] = val;
+                }
+
+                if (!Object.keys(decls).length) return;
+
+                ensureScope(map, scope);
+                if (!map.rules[scope][selector]) {
+                    map.rules[scope][selector] = {};
+                    map.selectorsOrder[scope].push(selector);
+                }
+
+                var target = map.rules[scope][selector];
+                for (var p in decls) {
+                    target[p] = decls[p];
+                }
+            }
+
+            function parseSimpleRulesInto(map, scope, css) {
+                var len = css.length;
+                var i = 0;
+                while (i < len) {
+
+                    while (i < len && /\s|;/.test(css[i])) i++;
+                    if (i >= len) break;
+
+                    if (css[i] === '}') {
+                        i++;
+                        continue;
+                    }
+
+                    var selStart = i;
+                    while (i < len && css[i] !== '{' && css[i] !== '}') i++;
+                    if (i >= len || css[i] === '}') {
+                        i++;
+                        continue;
+                    }
+                    var selector = css.slice(selStart, i).trim();
+                    i++; 
+
+                    var bodyStart = i;
+                    var depth = 1;
+                    while (i < len && depth > 0) {
+                        if (css[i] === '{') depth++;
+                        else if (css[i] === '}') depth--;
+                        i++;
+                    }
+                    var body = css.slice(bodyStart, i - 1);
+
+                    addRuleToMap(map, scope, selector, body);
+                }
+            }
+
+            function parseCssToMap(css) {
+                var map = createEmptyMap();
+                if (!css) return map;
+
+                var len = css.length;
+                var i = 0;
+
+                while (i < len) {
+
+                    while (i < len && /\s|;/.test(css[i])) i++;
+                    if (i >= len) break;
+
+                    if (css[i] === '@') {
+                        var atStart = i;
+                        while (i < len && css[i] !== '{') i++;
+                        if (i >= len) break;
+                        var prelude = css.slice(atStart, i).trim(); 
+                        i++; // '{'
+
+                        var bodyStart = i;
+                        var depth = 1;
+                        while (i < len && depth > 0) {
+                            if (css[i] === '{') depth++;
+                            else if (css[i] === '}') depth--;
+                            i++;
+                        }
+                        var body = css.slice(bodyStart, i - 1);
+
+                        parseSimpleRulesInto(map, prelude, body);
+                    } else if (css[i] === '}') {
+                        i++;
+                        continue;
+                    } else {
+
+                        var selStart = i;
+                        while (i < len && css[i] !== '{' && css[i] !== '}') i++;
+                        if (i >= len || css[i] === '}') {
+                            i++;
+                            continue;
+                        }
+                        var selector = css.slice(selStart, i).trim();
+                        i++; 
+
+                        var bodyStart2 = i;
+                        var depth2 = 1;
+                        while (i < len && depth2 > 0) {
+                            if (css[i] === '{') depth2++;
+                            else if (css[i] === '}') depth2--;
+                            i++;
+                        }
+                        var body2 = css.slice(bodyStart2, i - 1);
+
+                        addRuleToMap(map, '', selector, body2);
+                    }
+                }
+
+                return map;
+            }
+
+            function mapToCss(map) {
+                var out = '';
+
+                for (var s = 0; s < map.scopesOrder.length; s++) {
+                    var scope = map.scopesOrder[s];
+                    var selectors = map.selectorsOrder[scope];
+                    if (!selectors || !selectors.length) continue;
+
+                    if (scope === '') {
+
+                        for (var i = 0; i < selectors.length; i++) {
+                            var sel = selectors[i];
+                            var props = map.rules[scope][sel];
+                            var keys = Object.keys(props);
+                            if (!keys.length) continue;
+                            out += sel + '{';
+                            for (var k = 0; k < keys.length; k++) {
+                                var prop = keys[k];
+                                out += prop + ':' + props[prop] + ';';
+                            }
+                            out += '}';
+                        }
+                    } else {
+
+                        var inner = '';
+                        for (var j = 0; j < selectors.length; j++) {
+                            var sel2 = selectors[j];
+                            var props2 = map.rules[scope][sel2];
+                            var keys2 = Object.keys(props2);
+                            if (!keys2.length) continue;
+                            inner += sel2 + '{';
+                            for (var k2 = 0; k2 < keys2.length; k2++) {
+                                var prop2 = keys2[k2];
+                                inner += prop2 + ':' + props2[prop2] + ';';
+                            }
+                            inner += '}';
+                        }
+                        if (inner) {
+                            out += scope + '{' + inner + '}';
+                        }
+                    }
+                }
+
+                return out;
+            }
+
+            var oldMap = parseCssToMap(oldCss || '');
+            var newMap = parseCssToMap(newCss || '');
+
+            for (var s = 0; s < newMap.scopesOrder.length; s++) {
+                var scope = newMap.scopesOrder[s];
+                var newSelectors = newMap.selectorsOrder[scope];
+                if (!newSelectors || !newSelectors.length) continue;
+
+                ensureScope(oldMap, scope);
+
+                for (var i = 0; i < newSelectors.length; i++) {
+                    var sel = newSelectors[i];
+                    var newProps = newMap.rules[scope][sel];
+
+                    if (!oldMap.rules[scope][sel]) {
+                        oldMap.rules[scope][sel] = {};
+                        oldMap.selectorsOrder[scope].push(sel);
+                    }
+
+                    var target = oldMap.rules[scope][sel];
+                    for (var p in newProps) {
+                        target[p] = newProps[p];
+                    }
+                }
+            }
+
+            return mapToCss(oldMap);
+        }
+
+       /**
+        * update selectors preview
+        */
         function updateSelectorsPreview() {
-            if (!isSettingsReady()) return;
+        	
+        	var isDetailedDebug = false;
+        	
+        	debug("run func: updateSelectorsPreview");
+        	                    	
+            if (!props.isSelected) {
+            	
+            	if(isDetailedDebug == true)
+            		trace("not selected, exit");
+            	
+                return;
+            }
+
+            if (!isSettingsReady()) {
+            	
+            	if(isDetailedDebug == true)
+            		trace("not ready, exit");
+            	
+                return;
+            }
             const $root = jQuery(widgetRef.current);
-            if ($root.length === 0) return;
-
-            ensureStyleTag($root);
-
+            if ($root.length === 0) {
+            	
+            	if(isDetailedDebug == true)
+            		trace("not root, exit");
+            	
+                return;
+            }
+                        
             const css = (ucSettings.getSelectorsCss && ucSettings.getSelectorsCss()) || '';
+            
             if (css && css !== lastSelectorsCssRef.current) {
-                $root.find('[name=uc_selectors_css]').text(css);
-                lastSelectorsCssRef.current = css;
+
+                if ($root.find("[name=uc_selectors_css]").length === 0) {
+                    $root.prepend('<style name="uc_selectors_css"></style>');
+                }
+                const $style = $root.find('[name=uc_selectors_css]');
+                const prevCss = $style.text() || '';
+
+                const mergedCss = mergeCss(prevCss, css);
+                
+                $style.text(mergedCss);
+                lastSelectorsCssRef.current = mergedCss;
+                
+            	if(isDetailedDebug == true)
+            		trace("merge css!");
+                
+            }else{
+            	
+            	if(isDetailedDebug == true)
+            		trace("not root, exit");
+            	
             }
 
             const includes = ucSettings.getSelectorsIncludes && ucSettings.getSelectorsIncludes();
@@ -189,10 +421,14 @@ var uelm_WidgetSettingsCacheFlags = [];
                 lastIncludesHashRef.current = includesHash;
             }
 
-            // и сразу инлайн-бокс-модель
             applyLiveBoxModelInline();
-        }
 
+        }
+        
+        /**
+         * flush save new
+         * @param typeOverride
+         */
         function flushSaveNow(typeOverride) {
             if (!isSettingsReady()) return;
             if (saveDelayTimerRef.current) {
@@ -211,8 +447,11 @@ var uelm_WidgetSettingsCacheFlags = [];
                 if (lastSentDataRef.current === mergedStr) return;
 
                 try {
-                    delete uelm_WidgetSettingsCache[props.attributes._id];
-                    uelm_WidgetSettingsCacheFlags[props.attributes._id] = false;
+                    delete uelm_WidgetSettingsCache[cacheKeyBase];
+                    delete uelm_WidgetSettingsCache[cacheKeyBase + '_settings'];
+
+                    uelm_WidgetSettingsCacheFlags[cacheKeyBase] = false;
+                    uelm_WidgetSettingsCacheFlags[cacheKeyBase + '_settings'] = false;
                 } catch(e){}
 
                 lastSentDataRef.current = mergedStr;
@@ -222,10 +461,8 @@ var uelm_WidgetSettingsCacheFlags = [];
                 suppressNextReloadRef.current = (tRaw == 'styles'); // suppress block reloading
 
                 props.setAttributes({ data: mergedStr });
-                styleOnlyDirtyRef.current = false;
-            } finally {
-                pendingSaveRef.current = false;
-            }
+
+            } finally { }
         }
 
         var isEditorSidebarOpened = wd.useSelect(function (select) {
@@ -242,25 +479,10 @@ var uelm_WidgetSettingsCacheFlags = [];
         var widgetId      = "ue-gutenberg-widget-"   + props.clientId;
         var settingsId    = "ue-gutenberg-settings-" + props.clientId;
         var settingsErrorId = settingsId + "-error";
-        var settingsVisible = settingsVisibleState[0];
-        var setSettingsVisible = settingsVisibleState[1];
-
-        var settingsContent = settingsContentState[0];
-        var setSettingsContent = settingsContentState[1];
-
-        var widgetContent = widgetContentState[0];
-        var setWidgetContent = widgetContentState[1];
-
-        var isLoadingSettings = isLoadingSettingsState[0];
-        var setIsLoadingSettings = isLoadingSettingsState[1];
 
         function stableStringify(obj){
             try { return JSON.stringify(obj, Object.keys(obj).sort()); }
             catch(e){ return ""; }
-        }
-        function deepEqual(a, b){
-            if (a === b) return true;
-            return stableStringify(a) === stableStringify(b);
         }
 
         var getSettings = function () {
@@ -274,51 +496,10 @@ var uelm_WidgetSettingsCacheFlags = [];
             return window.frames["editor-canvas"] || window;
         };
 
-        var saveSettingsIfChanged = function (explicitPatch, suppressReload) {
-            const currentObj = (function(){
-                try { return props.attributes.data ? JSON.parse(props.attributes.data) : {}; }
-                catch(e){ return {}; }
-            })();
-
-            const patch     = explicitPatch || ucSettings.getSettingsValues();
-            const mergedObj = { ...currentObj, ...patch };
-
-            if (deepEqual(currentObj, mergedObj)) {
-                updateSelectorsPreview();
-                return;
-            }
-
-            const mergedStr = JSON.stringify(mergedObj);
-
-            const isStyleOnly = !!suppressReload || !!pendingSuppressByDomRef.current;
-            if (isStyleOnly) {
-                pendingSuppressByDomRef.current = false;
-                styleOnlyDirtyRef.current = true;
-
-                updateSelectorsPreview();
-                pingSaveButton();
-                return;
-            }
-
-            if (lastSentDataRef.current === mergedStr) {
-                updateSelectorsPreview();
-                return;
-            }
-
-            try {
-                delete uelm_WidgetSettingsCache[props.attributes._id];
-                uelm_WidgetSettingsCacheFlags[props.attributes._id] = false;
-            } catch(e){}
-
-            lastSentDataRef.current = mergedStr;
-
-            props.setAttributes({
-                _rootId: ucHelper.getRandomString(5),
-                data: mergedStr,
-            });
-        };
-
         var initSettings = function () {
+        	
+        	debug("init settings!");
+        	
             var $settingsElement = getSettingsElement();
             if (!$settingsElement || $settingsElement.length === 0) return;
 
@@ -339,6 +520,9 @@ var uelm_WidgetSettingsCacheFlags = [];
             ucSettings.setResponsiveType(previewDeviceType.toLowerCase());
 
             function handleSettingsEvent(evt, payload) {
+
+                const name = (payload?.name ?? '').toString();
+
                 const type = (payload?.type ?? '').toString().toLowerCase().trim();
                 const STYLE_ONLY_TYPES = ['color','range','dimensions'];
                 const $c = jQuery('#' + settingsId +' [data-name="' + payload.name + '"] [data-selectors]');
@@ -347,14 +531,12 @@ var uelm_WidgetSettingsCacheFlags = [];
                     // style only fields
                     lastChangeTypeRef.current = 'styles';
 
-                    styleOnlyDirtyRef.current = true;
-
                     if (saveDelayTimerRef.current) {
                         clearTimeout(saveDelayTimerRef.current);
                         saveDelayTimerRef.current = null;
                     }
                     saveDelayTimerRef.current = setTimeout(() => {
-                        flushSaveNow(type); 
+                        flushSaveNow('styles'); 
                     }, 180);
                 } else {
                     // content fields (reload block preview)
@@ -366,22 +548,28 @@ var uelm_WidgetSettingsCacheFlags = [];
                     }
                     flushSaveNow(type); 
                 }
-
             }
-
+            
             ucSettings.setEventOnChange(handleSettingsEvent);
             if (typeof ucSettings.onEvent === 'function') {
                 ucSettings.onEvent('settings_instant_change', handleSettingsEvent);
             }
 
             ucSettings.setEventOnSelectorsChange(function () {
-                if (!isSettingsReady()) return;
+            	
+                if (!isSettingsReady()) 
+                	return;
+
                 updateSelectorsPreview();
+
+                lastChangeTypeRef.current = 'styles';
+
+                flushSaveNow('styles');
             });
 
             ucSettings.setEventOnResponsiveTypeChange(function (event, type) {
-                uelm_WidgetSettingsCacheFlags[props.attributes._id] = true;
-                uelm_WidgetSettingsCacheFlags[props.attributes._id + '_settings'] = true;
+                uelm_WidgetSettingsCacheFlags[cacheKeyBase] = true;
+                uelm_WidgetSettingsCacheFlags[cacheKeyBase + '_settings'] = true;
 
                 var deviceType = type.charAt(0).toUpperCase() + type.substring(1);
                 const editorStore = wp.editPost?.store || "core/edit-post";
@@ -402,10 +590,15 @@ var uelm_WidgetSettingsCacheFlags = [];
             settingsInitedRef.current = true;
         };
 
+        // init settings when panel visible + settings HTML ready + real DOM exists
         function maybeInitSettings(){
-            if (!settingsVisible) return;
-            if (!settingsContent) return;
-
+        	
+            if (!settingsVisible) 
+            	return;
+            
+            if (!settingsContent) 
+            	return;
+            
             var $settingsElement = getSettingsElement();
             if (!$settingsElement || $settingsElement.length === 0) return;
 
@@ -431,31 +624,9 @@ var uelm_WidgetSettingsCacheFlags = [];
             }
         }
 
-        function startSettingsWatchdog(){
-            stopSettingsWatchdog();
-            settingsWatchdogTimerRef.current = setInterval(function(){
-                if (!settingsVisible || !settingsContent) return;
-
-                var $settingsElement = getSettingsElement();
-                var elem = $settingsElement && $settingsElement[0];
-
-                if (!elem) return;
-
-                if (!ucSettings.isInited() || initedSettingsElementRef.current !== elem) {
-                    initSettings();
-                }
-            }, 2000);
-        }
-        function stopSettingsWatchdog(){
-            if (settingsWatchdogTimerRef.current) {
-                clearInterval(settingsWatchdogTimerRef.current);
-                settingsWatchdogTimerRef.current = null;
-            }
-        }
-
         // AJAX: load settings HTML
         var loadSettingsContent = function () {
-            var widgetCacheKey = props.attributes._id + '_settings';
+            var widgetCacheKey = cacheKeyBase + '_settings';
 
             setIsLoadingSettings(true);
 
@@ -479,7 +650,6 @@ var uelm_WidgetSettingsCacheFlags = [];
             };
             if (isTestFreeVersion) requestData.testfreeversion = true;
 
-            debug('Load get_addon_settings_html');
             g_ucAdmin.ajaxRequest("get_addon_settings_html", requestData, function (response) {
 
                 var html = g_ucAdmin.getVal(response, "html");
@@ -496,7 +666,7 @@ var uelm_WidgetSettingsCacheFlags = [];
 
         // AJAX: load widget HTML
         var loadWidgetContent = function (overrideSettings) {
-            var widgetCacheKey = props.attributes._id;
+            var widgetCacheKey = cacheKeyBase;
 
             if ( uelm_WidgetSettingsCache[widgetCacheKey] && uelm_WidgetSettingsCacheFlags[widgetCacheKey] ) {
                 uelm_WidgetSettingsCacheFlags[widgetCacheKey] = false;
@@ -506,16 +676,52 @@ var uelm_WidgetSettingsCacheFlags = [];
             }
 
             if (!widgetContent) {
-                // load existing widgets from the page
-                for (var index in g_gutenbergParsedBlocks) {
-                    var block = g_gutenbergParsedBlocks[index];
-                    if (block.name === props.name) {
+
+                if (typeof window.uelm_setBlocks === 'undefined') {
+                    window.uelm_setBlocks = new Set();
+                }
+                
+                var blockKey = props.name + '_' + props.clientId;
+
+                if (window.uelm_setBlocks.has(blockKey)) {
+                    // Block already processed, skipping
+                    return;
+                }
+                
+                for (var i = 0; i < g_gutenbergParsedBlocks.length; i++) {
+                    var block = g_gutenbergParsedBlocks[i];
+
+                    if (block && block.name === props.name && block.html) {
+                        
                         setWidgetContent(block.html);
-                        delete g_gutenbergParsedBlocks[index];
-                        debug('loadWidgetContent loaded from page content');
+
+                        try {
+                            if (isSettingsReady()) {
+                                var values = getSettings(); 
+                                if (values !== null) {
+                                    ucSettings.setCacheValues(values);
+                                }
+                            }
+                        } catch (e) {
+                            console.warn('Failed to sync ucSettings from data after load-from-page', e);
+                        }
+
+                        uelm_WidgetSettingsCache[widgetCacheKey] = {
+                            html: block.html,
+                            includes: {}   
+                        };
+                        uelm_WidgetSettingsCacheFlags[widgetCacheKey] = true;
+                        
+                        delete g_gutenbergParsedBlocks[i];
+                        
+                        window.uelm_setBlocks.add(blockKey);
+                        
+                        debug('loadWidgetContent loaded from page');
                         return;
                     }
                 }
+                
+                console.warn('No content found for block:', blockKey);
             }
 
             var settings = overrideSettings ?? getSettings();
@@ -526,7 +732,7 @@ var uelm_WidgetSettingsCacheFlags = [];
             var loaderElement = jQuery(widgetLoaderRef.current);
             loaderElement.show();
 
-            debug('loadWidgetContent load from server, uc_items length: ' + (settings?.uc_items?.length ?? 0));
+            debug('loadWidgetContent load from server');
 
             widgetRequestRef.current = g_ucAdmin.ajaxRequest("get_addon_output_data", {
                 id: props.attributes._id,
@@ -542,6 +748,7 @@ var uelm_WidgetSettingsCacheFlags = [];
             }).always(function () {
                 loaderElement.hide();
             });
+
         };
 
         var initWidget = function (response) {
@@ -568,7 +775,7 @@ var uelm_WidgetSettingsCacheFlags = [];
             jQuery("#unlimited-elements-styles").remove();
 
             attachSettingsObserver();
-            startSettingsWatchdog();
+            // startSettingsWatchdog();
 
             loadWidgetContent();
 
@@ -609,41 +816,45 @@ var uelm_WidgetSettingsCacheFlags = [];
 
         // mark color/range/dimensions to suppress reload
         we.useEffect(function () {
+
             debug('[effect 3]');
-            function markIfColorOrRange(e){
+
+            function checkEventType(e){
+
                 const t = e.target;
                 if (!t) return;
+
                 const settingsRoot = document.getElementById(settingsId);
                 if (!settingsRoot || !settingsRoot.contains(t)) return;
 
-                const type = (t.type || '').toLowerCase();
-                const hasColorClass = t.classList && t.classList.contains('unite-color-picker');
-                const isRange = type === 'range' || (t.classList && t.classList.contains('unite-range-slider'));
-                const isDimensions = !!(t.closest && t.closest('.unite-dimensions'));
+                const type         = (t.type || '').toLowerCase();
+                const hasColor     = t.classList?.contains('unite-color-picker');
+                const isRange      = type === 'range' || t.classList?.contains('unite-range-slider');
+                const isDimensions = !!t.closest?.('.unite-dimensions');
 
-                if (hasColorClass) {
+                if (hasColor) {
                     lastChangeTypeRef.current = 'color';
-                    pendingSuppressByDomRef.current = true;
-                    pingSaveButton();
                 } else if (isRange || isDimensions) {
                     lastChangeTypeRef.current = isDimensions ? 'dimensions' : 'range';
-                    pendingSuppressByDomRef.current = true;
-                    pingSaveButton();
                 }
             }
-            document.addEventListener('input',  markIfColorOrRange, true);
-            document.addEventListener('change', markIfColorOrRange, true);
+
+            document.addEventListener('input',  checkEventType, true);
+            document.addEventListener('change', checkEventType, true);
+
             return () => {
-                document.removeEventListener('input',  markIfColorOrRange, true);
-                document.removeEventListener('change', markIfColorOrRange, true);
+                document.removeEventListener('input',  checkEventType, true);
+                document.removeEventListener('change', checkEventType, true);
             };
         }, [settingsId]);
 
         // insert widget HTML into DOM
         we.useEffect(function () {
             debug('[effect 4]');
+
             if (!widgetContent) return;
             jQuery(widgetRef.current).html(widgetContent);
+
         }, [widgetContent]);
 
         // sidebar visibility logic
@@ -669,24 +880,26 @@ var uelm_WidgetSettingsCacheFlags = [];
         }, [previewDeviceType]);
 
         we.useEffect(function () {
-            debug('[effect 7]');
+            
+        	debug('[effect 7]');
+            
             maybeInitSettings();
-        }, [settingsVisible, settingsContent]);
+                        
+        }, [settingsVisible, settingsContent, previewDeviceType, props.attributes.data]);
 
         we.useEffect(function () {
+        	
             debug('[effect 8]');
-            maybeInitSettings();
-        }, [previewDeviceType, props.attributes.data]);
-
-        we.useEffect(function () {
-            debug('[effect 9]');
+            
             if (!settingsContent) return;
-            runFirstPreviewOnce();
+            	runFirstPreviewOnce();
+            
         }, [settingsContent]);
 
         we.useEffect(function () {
-            debug('[effect 10]');
-
+            
+        	debug('[effect 9]');
+        	
             if (!firstPreviewReadyRef.current) {
                 if (widgetContent) {
                     firstPreviewReadyRef.current = true;
@@ -694,11 +907,17 @@ var uelm_WidgetSettingsCacheFlags = [];
                     return;
                 }
             }
+            
+            debug("check the settings");
+            
             if (suppressNextReloadRef.current) {
 
                 suppressNextReloadRef.current = false;
 
+                debug("effect 9 - supress next reload");
+                
                 updateSelectorsPreview();
+                                
                 return;
             }
 
@@ -709,20 +928,28 @@ var uelm_WidgetSettingsCacheFlags = [];
                     return {}; 
                 }
             })();
+            
+            trace("the settings");
+            trace(settings);
+            
             const payloadStr = JSON.stringify(settings || {});
             if (payloadStr === lastPreviewPayloadRef.current) {
-                debug('[effect 10] [5]');
+            	
+            	debug("Update Selectors Preview");
+            	
                 updateSelectorsPreview();
                 return;
             }
             lastPreviewPayloadRef.current = payloadStr;
 
             loadWidgetContent(settings);
+
         }, [props.attributes.data]);
 
-        // fix changes on lost focus
+        // set focus and mouse events
         we.useEffect(function () {
-            debug('[effect 11]');
+        	
+            debug('[effect 10]');
 
             function onBlur(e){
                 const t = e.target;
@@ -732,42 +959,30 @@ var uelm_WidgetSettingsCacheFlags = [];
                     if (isSettingsReady()) flushSaveNow();
                 }
             }
-            document.addEventListener('blur', onBlur, true);
-            window.addEventListener('beforeunload', function(){ if (isSettingsReady()) flushSaveNow(); });
-            return () => {
-                document.removeEventListener('blur', onBlur, true);
-            };
-        }, []);
 
-        we.useEffect(function () {
-            debug('[effect 12]');
+            function onBeforeUnload() {
+                if (isSettingsReady()) flushSaveNow();
+            }
+
             function onPointerUpOrTouchEnd() {
                 const t = (lastChangeTypeRef.current || '').toLowerCase();
                 if (t === 'styles') {
                     flushSaveNow(t); 
                 }
             }
+
+            document.addEventListener('blur', onBlur, true);
+            window.addEventListener('beforeunload', onBeforeUnload);
             window.addEventListener('pointerup', onPointerUpOrTouchEnd, { passive: true });
             window.addEventListener('touchend',  onPointerUpOrTouchEnd, { passive: true });
+
             return () => {
                 window.removeEventListener('pointerup', onPointerUpOrTouchEnd);
                 window.removeEventListener('touchend',  onPointerUpOrTouchEnd);
+                window.removeEventListener('beforeunload', onBeforeUnload);
+                document.removeEventListener('blur', onBlur, true);
             };
         }, []);
-
-        // init settings when panel visible + settings HTML ready + real DOM exists
-        function maybeInitSettings(){
-            if (!settingsVisible) return;
-            if (!settingsContent) return;
-
-            var $settingsElement = getSettingsElement();
-            if (!$settingsElement || $settingsElement.length === 0) return;
-
-            var elem = $settingsElement[0];
-            if (!ucSettings.isInited() || initedSettingsElementRef.current !== elem) {
-                initSettings();
-            }
-        }
 
         function runFirstPreviewOnce(maxTries = 30, delay = 50) {
             if (didFirstPreviewRef.current) return;
@@ -813,6 +1028,7 @@ var uelm_WidgetSettingsCacheFlags = [];
                 }
 
                 lastPreviewPayloadRef.current = mergedStr;
+                
                 loadWidgetContent(merged); 
 
                 didFirstPreviewRef.current    = true;

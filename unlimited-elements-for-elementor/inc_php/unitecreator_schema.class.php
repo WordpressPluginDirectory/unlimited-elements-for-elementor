@@ -368,11 +368,13 @@ class UniteCreatorSchema {
 				$value = trim($value);
 			break;
 			case self::ROLE_IMAGE:
+				if($value == GlobalsUC::$url_no_image_placeholder)
+					$value = "";
 			case self::ROLE_LINK:
 				$value = UniteFunctionsUC::sanitize($value, UniteFunctionsUC::SANITIZE_URL);
 			break;
 		}
-		
+			
 		return($value);
 	}
 	

@@ -156,7 +156,7 @@ class UniteCreatorWpmlIntegrate{
 		
 		if(empty(self::$objWpmlSingleton->activeLanguage))
 			return($thumbID);
-			
+		
 		$current_lang = apply_filters( 'wpml_current_language', null );             
 		$default_lang = apply_filters( 'wpml_default_language', null );  
 		

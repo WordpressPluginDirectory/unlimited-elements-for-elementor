@@ -487,14 +487,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 			return($html);
 		}
-
-		protected function z_________PUTTERS_______(){}
+		
+		protected function z_________DEBUG_______(){}
 		
 		/**
 		 * put debug box
 		 */
 		public static function putHtmlDataDebugBox($data){
-						
+			
 			self::putHtmlDataDebugBox_start();
 			
 			if(is_array($data))
@@ -502,7 +502,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			
 			if(is_string($data))
 				$data = htmlspecialchars($data);
-							
+			
 			dmp($data);
 			
 			self::putHtmlDataDebugBox_end();
@@ -555,6 +555,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			
 			return($html);
 		}
+		
+		
+		protected function z_________PUTTERS_______(){}
+		
 		
 		
 		/**

@@ -8,7 +8,7 @@ function UEDynamicFilters(){
 	
 	var t = this;
 
-	var g_showDebug = false;
+	var g_showDebug = true;
 	var g_debugInitMode = false;
 	
 	var g_debugBeforeRefreshMode = false;	//debug filters state before refresh
@@ -461,7 +461,7 @@ function UEDynamicFilters(){
 				
 		if(!isInitAfter)
 			isInitAfter = isSpecialFilterInitAfter(objFilter, objGrid);
-				
+		
 		if(g_showDebug){
 			trace("init after: "+isInitAfter);
 		}
@@ -2274,9 +2274,9 @@ function UEDynamicFilters(){
 		
 		operateAjax_setHtmlSyngGrids(response, objGrid, isLoadMore);
 		
-		objGrid.trigger(g_vars.EVENT_AJAX_REFRESHED);
+		objGrid.trigger(g_vars.EVENT_AJAX_REFRESHED,[{isLoadMore:isLoadMore}]);
 		g_objBody.trigger(g_vars.EVENT_AJAX_REFRESHED_BODY, [objGrid]);
-
+		
 		//trigger body as well
 
 		//scroll to grid top
@@ -3762,10 +3762,10 @@ function UEDynamicFilters(){
 	 * check filters init after
 	 */
 	function isSpecialFilterInitAfter(objFilter, objGrid){
-
+		
 		var type = getFilterType(objFilter);
-
-		if(type != g_types.PAGINATION)
+				
+		if(type != g_types.PAGINATION && type != g_types.LOADMORE)
 			return(false);
 
 		var offsetPagination = objFilter.offset();
@@ -3774,7 +3774,7 @@ function UEDynamicFilters(){
 		if(offsetPagination.top < offsetGrid.top){
 
 			if(g_showDebug == true)
-				trace("Set pagination to ajax init");
+				trace("Set "+type+" to ajax init");
 
 			return(true);
 		}

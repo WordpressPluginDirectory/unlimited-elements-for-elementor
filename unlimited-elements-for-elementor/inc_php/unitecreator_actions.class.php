@@ -372,7 +372,7 @@ class UniteCreatorActions{
 					HelperProviderUC::verifyAdminPermission();
 
 					$addons->saveAddonDefaultsFromData($data);
-
+					
 					HelperUC::ajaxResponseSuccess(esc_html__("Saved", "unlimited-elements-for-elementor"));
 				break;
 				case "save_test_addon":

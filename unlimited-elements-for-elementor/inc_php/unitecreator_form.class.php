@@ -1949,17 +1949,21 @@ class UniteCreatorForm{
 			"archives" => array("tar", "zip", "gz", "gzip", "rar", "7z"),
 			"audios" => array("mp3", "aac", "wav", "ogg", "flac", "wma"),
 			"documents" => array("txt", "csv", "tsv", "pdf", "doc", "docx", "pot", "potx", "pps", "ppsx", "ppt", "pptx", "xls", "xlsx", "odt", "odp", "ods", "key", "pages"),
-			"images" => array("jpeg", "jpg", "png", "tif", "tiff", "svg", "webp", "gif", "bmp", "ico", "heic"),
+			"images" => array("jpeg", "jpg", "png", "tif", "tiff", "webp", "gif", "bmp", "ico", "heic"),
 			"videos" => array("wmv", "avi", "flv", "mov", "mpeg", "mp4", "ogv", "webm", "3gp", "3gpp"),
 			"custom" => $customAllowedTypes,
 		);
 
 		// merge wp mime types with the plugin mimes (in case of missing one)
 		// format: extension => mime
+		/*
 		$mimes = array_merge(wp_get_mime_types(), array(
 			"svg" => "image/svg+xml",
 		));
-
+		*/
+		
+		$mimes = wp_get_mime_types();
+		
 		$types = array();
 
 		foreach($allowedTypes as $type){

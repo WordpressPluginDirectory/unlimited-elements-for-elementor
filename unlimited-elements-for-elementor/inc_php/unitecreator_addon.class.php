@@ -2199,7 +2199,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 		if($isGutenbergEditorBG == true)
 			$objSettings->addGutenbergEditorBackgroundSection();
 		
-		
+					
 		//choose if add items chooser
 		
 		if(!empty($this->params) || $this->hasItems){
@@ -2222,7 +2222,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 
 			$objSettings->initByCreatorParams($arrParams, $this->paramsCats);
 		}
-
+		
 		
 		//add items repeater
 
@@ -3502,14 +3502,13 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * @param $num
 	 */
 	public function getTestData($num){
-
+		
 		$arrData = array();
 
 		$this->validateTestSlot($num);
 
 		$fieldName = "test_slot" . $num;
 		$jsonData = UniteFunctionsUC::getVal($this->data, $fieldName);
-
 
 		if(empty($jsonData))
 			return (null);
@@ -3519,7 +3518,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			if(empty($arrData))
 				$arrData = array();
 		}
-
+		
 		return ($arrData);
 	}
 
@@ -3529,7 +3528,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	public function getDefaultData(){
 
 		$arrData = $this->getTestData(2);
-
+				
 		return ($arrData);
 	}
 
@@ -3537,7 +3536,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 	 * get all test data in array
 	 */
 	public function getAllTestData($isJson = false){
-
+		
 		$arrData = array();
 
 		$testData1 = $this->getTestData(1);
@@ -3647,7 +3646,7 @@ class UniteCreatorAddonWork extends UniteElementsBaseUC{
 			$data["fonts"] = $arrFonts;
 
 		$data = $this->modifyAddonDataConvertToUrlAssets($data);
-
+				
 		$dataJson = json_encode($data);
 
 		$slotName = "test_slot" . $slotNum;

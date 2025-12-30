@@ -1013,7 +1013,7 @@ class UniteCreatorParamsProcessorWork{
 		//sanitize the url
 		if(!empty($imageUrl))
 			$imageUrl = UniteFunctionsUC::sanitize($imageUrl, UniteFunctionsUC::SANITIZE_URL);
-					
+		
 		$data[$name] = $imageUrl;
 
 		$sizeFilters = UniteFunctionsUC::getVal($param, "size_filters");
@@ -1825,7 +1825,8 @@ class UniteCreatorParamsProcessorWork{
 			break;
 			case "currency_api":
 			case "weather_api":
-				$data = UniteCreatorAPIIntegrations::getInstance()->addDataToParams($data, $name);
+			case "reviews":
+				$data = UniteCreatorAPIIntegrations::getInstance()->addDataToParams($data, $name, $type);
             break;
             case "rss_feed":
                 
@@ -1857,26 +1858,29 @@ class UniteCreatorParamsProcessorWork{
             	$data[$name."_settings"] = $arrValues;
             	
             break;
+            
 		}
 		return($data);
 	}
 
 	private function z__________VALUES_OUTPUT__________(){}
-
-
+	
+	
 	/**
 	 * get processe param data, function with override
 	 */
 	protected function getProcessedParamData($data, $value, $param, $processType){
 
-		
 		$type = UniteFunctionsUC::getVal($param, "type");
 		$name = UniteFunctionsUC::getVal($param, "name");
 
 		$isOutputProcessType = $this->isOutputProcessType($processType);
-
+		
 		//special params - all types
 		switch($type){
+			case UniteCreatorDialogParam::PARAM_TEXTFIELD:
+				$data = $this->maybeSanitizeLink($data, $name, $value);
+			break;
 			case UniteCreatorDialogParam::PARAM_DROPDOWN:
 			case UniteCreatorDialogParam::PARAM_NUMBER:
 				$data = $this->getProcessedParamsValue_responsive($data, $param);
@@ -1935,6 +1939,25 @@ class UniteCreatorParamsProcessorWork{
 		return($data);
 	}
 
+	/**
+	 * maybe sanitize link in text field
+	 */
+	protected function maybeSanitizeLink($data, $name, $value){
+		
+		if(strpos($name,"link_") === false && strpos($name,"_link") === false)
+			return($data);
+		$valueLow = strtolower($value);
+		if(strpos($valueLow,"javascript") === false)
+			return($data);
+		
+		//if it's a link
+		$value = UniteFunctionsUC::sanitize($value, UniteFunctionsUC::SANITIZE_URL);
+		
+		$data[$name] = $value;
+		
+		return($data);
+	}
+	
 
 	/**
 	 * sort params. special attributes first, for dynamic popup processing for example

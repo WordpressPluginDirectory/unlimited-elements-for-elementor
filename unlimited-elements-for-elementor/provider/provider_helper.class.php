@@ -1260,6 +1260,11 @@ class HelperProviderUC{
 			$paramDefault = isset($field["default"]) ? $field["default"] : "";
 			
 			switch($field["type"]){
+				case UniteCreatorDialogParam::PARAM_HR:
+					
+					$settingsManager->addHr($paramName, $params);
+					
+				break;
 				case UniteCreatorDialogParam::PARAM_STATIC_TEXT:
 					$settingsManager->addStaticText($field["text"], $paramName, $params);
 				break;

@@ -1456,17 +1456,14 @@ public function prepareAddonByData($addonData, $isForOutput = false){
 	 * get test addon data
 	 */
 	public function getTestAddonData($data){
-
+				
 		$objAddon = $this->initAddonByData($data);
 
 		$slotNum = UniteFunctionsUC::getVal($data, "slotnum");
 		$isCombine = UniteFunctionsUC::getVal($data, "combine");
 		$isCombine = UniteFunctionsUC::strToBool($isCombine);
 
-
 		$data = $objAddon->getTestData($slotNum);
-
-
 
 		if($isCombine === true){
 			$config = UniteFunctionsUC::getVal($data, "config", array());
@@ -1479,7 +1476,8 @@ public function prepareAddonByData($addonData, $isForOutput = false){
 
 			return $output;
 		}
-
+		
+		
 		return $data;
 	}
 

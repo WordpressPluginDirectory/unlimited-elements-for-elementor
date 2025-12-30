@@ -660,6 +660,7 @@ function UniteCreatorAddonConfig(){
 	 */
 	this.init = function(objWrapper, isPreviewMode){
 		
+		
 		if(g_objWrapper)
 			throw new Error("the config is alrady inited, can't init it twice");
 		
@@ -686,10 +687,10 @@ function UniteCreatorAddonConfig(){
 		var objOptions = g_objWrapper.data("options");
 		parseInputOptions(objOptions);
 		
-		
 		//set settings events
+		
 		g_objSettings.init(g_objSettingsContainer);
-								
+					
 		initEvens();
 				
 		initPreview();
