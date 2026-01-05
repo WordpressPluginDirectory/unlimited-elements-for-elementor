@@ -59,14 +59,14 @@ class UEGoogleAPIPlacesService extends UEGoogleAPIClient{
 	/**
 	 * get details using serp function
 	 */
-	public function getDetailsSerp($placeID, $apiKey, $params = array(),$showDebug = false){
+	public function getDetailsSerp($placeID, $apiKey, $params = array(),$showDebug = false, $cacheTime = 86400){
 
 		if(empty($apiKey))
 			UniteFunctionsUC::throwError("No serp api key");
 		
 		$this->isSerp = true;
 		
-		$cacheTime = 1440;	//day in minutes
+		//cache time is passed as parameter (default: 1 day in seconds)
 		
 		$params["place_id"] = $placeID;
 		$params["api_key"] = $apiKey;

@@ -58,8 +58,12 @@ class UniteCreatorAPIIntegrations{
 	const GOOGLE_REVIEWS_FIELD_CACHE_TIME = "google_reviews_cache_time";
 	const GOOGLE_REVIEWS_FIELD_LANG = "google_reviews_lang";
 	const GOOGLE_REVIEWS_FIELD_SHOW_DEBUG = "google_reviews_show_debug";
-	const GOOGLE_REVIEWS_SORT_BY = "google_reviews_sort_by";	
+	const GOOGLE_REVIEWS_SORT_BY = "google_reviews_sort_by";
+	const GOOGLE_REVIEWS_SERP_CACHE_TIME = "google_reviews_serp_cache_time";
 	const GOOGLE_REVIEWS_DEFAULT_CACHE_TIME = 10;
+	const GOOGLE_REVIEWS_CACHE_TIME_DAY = 86400; // 1 day in seconds
+	const GOOGLE_REVIEWS_CACHE_TIME_WEEK = 604800; // 1 week in seconds
+	const GOOGLE_REVIEWS_CACHE_TIME_MONTH = 2592000; // 1 month in seconds (30 days)
 	
 
 	const GOOGLE_SHEETS_FIELD_EMPTY_CREDENTIALS = "google_sheets_empty_credentials";
@@ -435,7 +439,7 @@ class UniteCreatorAPIIntegrations{
 	 * authorize google service
 	 */
 	private function authorizeGoogleService($service){
-
+		
 		try{
 			$service->setAccessToken(UEGoogleAPIHelper::getFreshAccessToken());
 		}catch(Exception $exception){
@@ -455,7 +459,7 @@ class UniteCreatorAPIIntegrations{
 	 * has google credentials
 	 */
 	private function hasGoogleCredentials(){
-
+		
 		try{
 			$token = UEGoogleAPIHelper::getFreshAccessToken();
 
@@ -484,7 +488,7 @@ class UniteCreatorAPIIntegrations{
 	 * validate google credentials
 	 */
 	private function validateGoogleCredentials(){
-
+		
 		$hasCredentials = $this->hasGoogleCredentials();
 
 		if($hasCredentials === false)
@@ -938,7 +942,23 @@ class UniteCreatorAPIIntegrations{
 		$reviewsSortBy = $this->getParam(self::GOOGLE_REVIEWS_SORT_BY);
 		$placeParams["sort_by"] = $reviewsSortBy;
 		
-		$place = $placesService->getDetailsSerp($placeId, $apiKey, $placeParams, $this->googleReviewsShowDebug);
+		//get cache time option and convert to seconds
+		$cacheTimeOption = $this->getParam(self::GOOGLE_REVIEWS_SERP_CACHE_TIME, "week");
+		$cacheTime = self::GOOGLE_REVIEWS_CACHE_TIME_WEEK; // default: 1 week in seconds
+		
+		switch($cacheTimeOption){
+			case "day":
+				$cacheTime = self::GOOGLE_REVIEWS_CACHE_TIME_DAY;
+				break;
+			case "week":
+				$cacheTime = self::GOOGLE_REVIEWS_CACHE_TIME_WEEK;
+				break;
+			case "month":
+				$cacheTime = self::GOOGLE_REVIEWS_CACHE_TIME_MONTH;
+				break;
+		}
+		
+		$place = $placesService->getDetailsSerp($placeId, $apiKey, $placeParams, $this->googleReviewsShowDebug, $cacheTime);
 		
 		return($place);
 	}
@@ -972,7 +992,7 @@ class UniteCreatorAPIIntegrations{
 					$message .= "<br> Output google reviews data using Official Google API";
 				
 				echo HelperHtmlUC::getDebugWarningMessageHtml($message);
-			}
+			} 
 		
 			$placeId = $this->getRequiredParam(self::GOOGLE_REVIEWS_FIELD_PLACE_ID, "Place ID");
 		
@@ -1072,7 +1092,7 @@ class UniteCreatorAPIIntegrations{
 		if($isSerpEnabled == false)
 			$text = sprintf(__("To get more then 5 reviews, enter %s key in general settings", "unlimited-elements-for-elementor"), "<a href='https://serpapi.com' target='_blank'>serpapi.com</a>");
 		else
-			$text = sprintf(__("Fetching google reviews using %s service. The cache time is 1 day.", "unlimited-elements-for-elementor"), "<a href='https://serpapi.com' target='_blank'>serpapi.com</a>");
+			$text = sprintf(__("Fetching google reviews using %s service.", "unlimited-elements-for-elementor"), "<a href='https://serpapi.com' target='_blank'>serpapi.com</a>");
 		
 		//if there is no option - no need for text
 		if(GlobalsUnlimitedElements::$enableSerpAPI == true){
@@ -1084,7 +1104,7 @@ class UniteCreatorAPIIntegrations{
 			);
 		}
 		
-		//for serp api the cache is 1 day
+		//for serp api the cache is configurable
 				
 		if($isSerpEnabled == false){
 			
@@ -1096,6 +1116,21 @@ class UniteCreatorAPIIntegrations{
 					"desc" => sprintf(__("Optional. You can specify the cache time of results in minutes. The default value is %d minutes.", "unlimited-elements-for-elementor"), self::GOOGLE_REVIEWS_DEFAULT_CACHE_TIME),
 					"default" => self::GOOGLE_REVIEWS_DEFAULT_CACHE_TIME,
 				);
+		}else{
+			
+			$fields[] = array(
+				"id" => self::GOOGLE_REVIEWS_SERP_CACHE_TIME,
+				"type" => UniteCreatorDialogParam::PARAM_DROPDOWN,
+				"text" => __("Cache Time", "unlimited-elements-for-elementor"),
+				"desc" => __("Select how often the reviews should be refreshed.", "unlimited-elements-for-elementor"),
+				"options" => array(
+					"day" => __("Once a day", "unlimited-elements-for-elementor"),
+					"week" => __("Once a week", "unlimited-elements-for-elementor"),
+					"month" => __("Once a month", "unlimited-elements-for-elementor"),
+				),
+				"default" => "week"
+			);
+			
 		}
 		
 		
@@ -1680,6 +1715,39 @@ class UniteCreatorAPIIntegrations{
 		}
 
 		return $fields;
+	}
+	
+	/**
+	 * output google reviews refresh button
+	 */
+	private function outputGoogleReviewsRefreshButton(){
+		
+		// Check if user is admin
+		if(!current_user_can('manage_options'))
+			return;
+		
+		$placeId = $this->getParam(self::GOOGLE_REVIEWS_FIELD_PLACE_ID);
+		
+		if(empty($placeId))
+			return;
+		
+		$ajaxUrl = admin_url('admin-ajax.php');
+		$nonce = wp_create_nonce('uc_refresh_google_reviews');
+		$widgetID = "uc_google_reviews_" . md5($placeId);
+		
+		$html = '<div class="uc-google-reviews-refresh-wrapper" style="margin: 10px 0; padding: 10px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 4px;">';
+		$html .= '<button type="button" class="uc-google-reviews-refresh-btn" ';
+		$html .= 'data-widget-id="' . esc_attr($widgetID) . '" ';
+		$html .= 'data-place-id="' . esc_attr($placeId) . '" ';
+		$html .= 'data-nonce="' . esc_attr($nonce) . '" ';
+		$html .= 'data-ajax-url="' . esc_attr($ajaxUrl) . '" ';
+		$html .= 'style="padding: 8px 16px; background: #0073aa; color: #fff; border: none; border-radius: 3px; cursor: pointer; font-size: 14px;">';
+		$html .= __('Manual Refresh Reviews', 'unlimited-elements-for-elementor');
+		$html .= '</button>';
+		$html .= '<span class="uc-google-reviews-refresh-status" style="margin-left: 10px; display: none;"></span>';
+		$html .= '</div>';
+		
+		echo $html;
 	}
 
 }

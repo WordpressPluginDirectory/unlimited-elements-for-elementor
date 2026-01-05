@@ -7,8 +7,8 @@ function UEDynamicFilters(){
 	var g_remote = null, g_lastSyncGrids, g_initFiltersCounter = 0;
 	
 	var t = this;
-
-	var g_showDebug = true;
+	
+	var g_showDebug = false;
 	var g_debugInitMode = false;
 	
 	var g_debugBeforeRefreshMode = false;	//debug filters state before refresh

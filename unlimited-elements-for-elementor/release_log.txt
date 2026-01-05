@@ -1,6 +1,11 @@
 
 
 
+version 2.0.3:
+
+* Fix: fixed SERP API cache time - changed from minutes to seconds 
+* Feature: added requests log view
+
 version 2.0.2:
 
 * Feature: add google reviews from serp api feature
