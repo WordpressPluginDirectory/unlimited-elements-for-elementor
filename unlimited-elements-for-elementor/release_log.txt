@@ -1,5 +1,17 @@
 
 
+version 2.0.5:
+
+* Fix: made some fix for wpml in main category
+* Fix: fixed special characters in google sheets
+* Fix: fixed filters "All" empty posts issue
+
+
+version 2.0.4:
+
+* Feautre - made functionality of load more before the grid
+* Feature - added authors filter functionality to post filters.
+
 
 version 2.0.3:
 

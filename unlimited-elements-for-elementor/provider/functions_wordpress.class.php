@@ -3880,6 +3880,29 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 	}
 
 	/**
+	 * get user names from list of user objects for debug
+	 * returns array of formatted strings: "Display Name (ID: X, Login: Y)"
+	 */
+	public static function getUsersNamesShort($arrUsers){
+		
+		if(empty($arrUsers))
+			return(array());
+		
+		$arrUserNames = array();
+		
+		foreach($arrUsers as $user){
+			
+			$userName = $user->display_name;
+			$userID = $user->ID;
+			$userLogin = $user->user_login;
+			
+			$arrUserNames[] = "$userName (ID: $userID, Login: $userLogin)";
+		}
+		
+		return($arrUserNames);
+	}
+
+	/**
 	 * get roles as name/value array
 	 */
 	public static function getRolesShort($addAll = false){

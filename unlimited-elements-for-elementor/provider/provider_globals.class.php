@@ -59,6 +59,7 @@ class GlobalsProviderUC{
 	
 	
 	public static $arrTestTermIDs = null;	//test term id's for render taxonomies under ajax
+	public static $arrTestAuthorIDs = null;	//test author id's for render authors under ajax
 	
 	public static $disablePostContentFiltering = false;
 	

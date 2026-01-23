@@ -353,7 +353,9 @@ var uelm_WidgetSettingsCacheFlags = [];
                 }
             }
 
-            return mapToCss(oldMap);
+            let ret = mapToCss(oldMap);
+
+            return ret;
         }
 
        /**
@@ -400,7 +402,7 @@ var uelm_WidgetSettingsCacheFlags = [];
                 const prevCss = $style.text() || '';
 
                 const mergedCss = mergeCss(prevCss, css);
-                
+
                 $style.text(mergedCss);
                 lastSelectorsCssRef.current = mergedCss;
                 
@@ -513,7 +515,38 @@ var uelm_WidgetSettingsCacheFlags = [];
                 ucSettings.destroy();
             }
 
-            ucSettings.init($settingsElement);
+            // get values before init
+            var values = getSettings();
+
+            if (values === null) {
+                try {
+                    // get defaults from data-itemvalues
+                    var defaultValues = {};
+                    
+                    $settingsElement.find('.unite-setting-repeater').each(function() {
+                        var $repeater = jQuery(this);
+                        var repeaterName = $repeater.attr('name') || $repeater.data('name');
+                        var defaultItems = $repeater.data('itemvalues');
+                        
+                        if (repeaterName && defaultItems && Array.isArray(defaultItems) && defaultItems.length > 0) {
+                            defaultValues[repeaterName] = defaultItems;
+                            debug('from integrate: loaded default items for', repeaterName);
+                            debug(defaultItems);
+                        }
+                    });
+                    
+                    // if defaults exists then use it
+                    if (Object.keys(defaultValues).length > 0) {
+                        values = defaultValues;
+                    }
+                    
+                } catch (e) {
+                    console.warn('Failed to get default settings before init', e);
+                    values = null;
+                }
+            }
+
+            ucSettings.init($settingsElement, { cacheValues: values });
             initedSettingsElementRef.current = elem;
 
             ucSettings.setSelectorWrapperID(widgetId);
@@ -582,10 +615,16 @@ var uelm_WidgetSettingsCacheFlags = [];
                 }
             });
 
-            var values = getSettings();
             if (values !== null) {
+                debug('from integrate: setting cache after init');
+                debug(values);
                 ucSettings.setCacheValues(values);
-            } 
+                
+                // save attrs for the new block
+                if (!props.attributes.data) {
+                    props.setAttributes({ data: JSON.stringify(values) });
+                }
+            }
 
             settingsInitedRef.current = true;
         };
@@ -775,8 +814,6 @@ var uelm_WidgetSettingsCacheFlags = [];
             jQuery("#unlimited-elements-styles").remove();
 
             attachSettingsObserver();
-            // startSettingsWatchdog();
-
             loadWidgetContent();
 
             return function () {

@@ -79,9 +79,8 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["origtype"] = UniteCreatorDialogParam::PARAM_RAW_HTML;
 		$params["html"] = "<div class='uc-edit-template-button'><a href='javascript:void(0)' class='uc-edit-template-button__link unite-setting-special-select' data-settingtype='template_button' style='display:none' data-selectid='{$name}_templateid' target='_blank'>Edit Template</a></div>";
 
-
-
-		$this->addTextBox($name."_templateid_button", "", $title , $params);
+        if(GlobalsProviderUC::$renderPlatform != GlobalsProviderUC::RENDER_PLATFORM_GUTENBERG)
+		    $this->addTextBox($name."_templateid_button", "", $title , $params);
 
 	}
 
@@ -2299,7 +2298,7 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$params["placeholder"] = __("Select one or more authors", "unlimited-elements-for-elementor");
 		$params["is_multiple"] = true;
 		$params["elementor_condition"] = $arrConditionIncludeAuthor;
-		
+
 		$this->addMultiSelect($name . "_excludeby_authors", $arrAuthors, __("Exclude By Author", "unlimited-elements-for-elementor"), "", $params);
 
 		//------- Exclude By --- OFFSET --------

@@ -137,7 +137,7 @@ class UniteSettingsOutputUCWork extends HtmlOutputBaseUC{
 				$value = json_encode($value);
 		}
 
-		uelm_echo(' data-default="' . esc_attr($defaultValue) . '" data-initval="' . esc_attr($value) . '" ');
+		uelm_echo(' data-test="' . esc_attr($defaultValue) . '" data-default="' . esc_attr($defaultValue) . '" data-initval="' . esc_attr($value) . '" ');
 
 		$this->getGroupSelectorAddAttr($setting);
 		$this->getSelectorsAddAttr($setting);

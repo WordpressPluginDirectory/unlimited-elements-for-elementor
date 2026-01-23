@@ -595,17 +595,21 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
         if(empty($hasSettings) && empty($hasConfig) && empty($hasElSettings)){
 
             $tmpAddon = $this->initAddonByData($addonData);
-
+			
+			if(method_exists($tmpAddon, "getParamsDefaults")){
+				$defaults = $tmpAddon->getParamsDefaults();
+			} elseif(method_exists($tmpAddon, "getParamsManager")
+					 && method_exists($tmpAddon->getParamsManager(), "getDefaultsAssoc")) {
+				$defaults = $tmpAddon->getParamsManager()->getDefaultsAssoc();
+			}
+			
+            // using test_slot2 for items only:  
             $td = $tmpAddon->getTestData(2);          
-            $defaults = UniteFunctionsUC::getVal($td, "config", array());
             $defaultItems = UniteFunctionsUC::getVal($td, "items");
-
-            if(empty($defaults)){
-                if(method_exists($tmpAddon, "getParamsDefaults")){
-                    $defaults = $tmpAddon->getParamsDefaults();
-                } elseif(method_exists($tmpAddon, "getParamsManager")
-                    && method_exists($tmpAddon->getParamsManager(), "getDefaultsAssoc")) {
-                    $defaults = $tmpAddon->getParamsManager()->getDefaultsAssoc();
+            $defaults_tst = UniteFunctionsUC::getVal($td, "config", array());
+            foreach($defaults_tst as $k => $v) {
+                if(substr($k, 0, 5) == 'post_') {
+                    $defaults[$k] = $v;
                 }
             }
 
@@ -835,10 +839,10 @@ public function prepareAddonByData($addonData, $isForOutput = false){
 		if ($noExplicitSettings) {
 			// 1) try defaults slot #2 (saved via saveAddonDefaultsFromData)
 			$td           = $objAddon->getTestData(2); // ['config'=>..., 'items'=>...]
-			$defaults     = UniteFunctionsUC::getVal($td, "config", array());
+			// using test_slot2 for items only: $defaults     = UniteFunctionsUC::getVal($td, "config", array());
 			$defaultItems = UniteFunctionsUC::getVal($td, "items");
 
-			// 2) if slot empty — take schema defaults
+			// 2) if slot empty take schema defaults
 			if (empty($defaults)) {
 				if (method_exists($objAddon, "getParamsDefaults")) {
 					$defaults = $objAddon->getParamsDefaults();
@@ -1500,10 +1504,10 @@ public function prepareAddonByData($addonData, $isForOutput = false){
 	 * export addon
 	 */
 	public function exportAddon($data){
-
+				
 		$addonType = $this->getAddonTypeFromData($data);
 		$isLayout = HelperUC::isLayoutAddonType($addonType);
-
+		
 		try{
 			if($isLayout == false){
 				$addon = $this->initAddonByData($data);

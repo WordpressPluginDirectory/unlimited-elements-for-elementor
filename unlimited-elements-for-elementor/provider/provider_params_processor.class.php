@@ -586,7 +586,11 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		
 		if(empty($mainCategoryID))
 			$mainCategoryID = UniteFunctionsUC::getVal($arrMeta, "rank_math_primary_category");
-				
+
+		if (!empty($mainCategoryID)) {
+	    	$mainCategoryID = apply_filters('wpml_object_id', $mainCategoryID, 'category', true);
+	    }		
+			
 		if(empty($mainCategoryID)){
 
 			unset($arrTerms["uncategorized"]);
@@ -2400,11 +2404,10 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		//---- disable other hooks:
 		
 		$disableOtherHooks = UniteFunctionsUC::getVal($value, "{$name}_disable_other_hooks");
-				
+		
 		//disable by url
 		if(GlobalsUC::$showQueryDebugByUrl == true && HelperUC::hasPermissionsFromQuery("uctestquery_clear"))
 			$disableOtherHooks = "yes";
-		
 		
 		if($disableOtherHooks === "yes" && GlobalsProviderUC::$isUnderAjax == true){
 			
@@ -2446,13 +2449,12 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			
 		}
 		
-		
 		//clear some hook by url - for debug
 				
 		if(GlobalsUC::$showQueryDebugByUrl == true){
 					
 			$filterToDisable = HelperUC::getQueryVarWithPermission("uctestquery_clearhook");
-						
+			
 			if(!empty($filterToDisable)){
 				
 				dmp("<b>Debug: clear filter:  $filterToDisable </b>");
@@ -4738,7 +4740,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			}
 
 			$arrTerms = UniteFunctionsWPUC::getTerms($taxonomy, $orderBy, $orderDir, $isHide, $arrExcludeSlugs, $params);
-
+			
 			if($showDebug == true){
 				echo "<div class='uc-div-ajax-debug'>";
 					dmp("The terms query is:");
@@ -4802,8 +4804,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get terms data
 	 */
 	public function getWPTermsData($value, $name, $processType, $param, $data){
-
-				
+		
 		$postType = UniteFunctionsUC::getVal($value, $name."_posttype","post");
 		$taxonomy =  UniteFunctionsUC::getVal($value, $name."_taxonomy","category");
 
@@ -4820,7 +4821,6 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		$showDebug = UniteFunctionsUC::getVal($value, $name."_show_query_debug");
 		$showDebug = UniteFunctionsUC::strToBool($showDebug);
 		
-
 		$queryDebugType = "";
 		if($showDebug == true)
 			$queryDebugType = UniteFunctionsUC::getVal($value, $name."_query_debug_type");
@@ -5353,10 +5353,17 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get users data
 	 */
 	public function getWPUsersData($value, $name, $processType, $param){
-
+		
 		$showDebug = UniteFunctionsUC::getVal($value, $name."_show_query_debug");
 		$showDebug = UniteFunctionsUC::strToBool($showDebug);
+		
+		$queryDebugType = "";
 
+		if(GlobalsUC::$showQueryDebugByUrl == true){
+			$showDebug = true;
+			$queryDebugType = "show_query";
+		}
+		
 		$selectType = UniteFunctionsUC::getVal($value, $name."_type");
 
 		$args = array();
@@ -5370,21 +5377,30 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 			$args["include"] = $arrIncludeUsers;
 
 		}else{
-
+			
+			if($showDebug == true){
+				dmp("users query values array");
+				dmp($value);
+			}
+			
 			//create the args
 			$strRoles = UniteFunctionsUC::getVal($value, $name."_role");
-
-			if(is_array($strRoles))
+			 
+			if(empty($strRoles)) {
+				$arrRoles = array("administrator");
+			} elseif(is_array($strRoles)) {
 				$arrRoles = $strRoles;
-			else
+			} else {
+				$strRoles = trim($strRoles);
 				$arrRoles = explode(",", $strRoles);
+			}
 
 			$arrRoles = UniteFunctionsUC::arrayToAssoc($arrRoles);
 			unset($arrRoles["__all__"]);
-
+			
 			if(!empty($arrRoles)){
 				$arrRoles = array_values($arrRoles);
-
+			
 				$args["role__in"] = $arrRoles;
 			}
 
@@ -5443,19 +5459,45 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 		//---- debug
 
 		if($showDebug == true){
+			echo "<div class='uc-div-ajax-debug'>";
 			dmp("The users query is:");
 			dmp($args);
 		}
 
 		HelperUC::addDebug("Get Users Args", $args);
 
-		$arrUsers = get_users($args);
+		$user_query = new WP_User_Query($args);
+		$arrUsers = $user_query->get_results();
 		
 		HelperUC::addDebug("Num Users fetched: ".count($arrUsers));
-
+ 
 		if($showDebug == true){
-			dmp("Num Users fetched: ".count($arrUsers));
+			dmp("users found: ".count($arrUsers));
+			 
+			//show user names
+			if(!empty($arrUsers)){
+				$arrUserNames = UniteFunctionsWPUC::getUsersNamesShort($arrUsers);
+				dmp("User names found:");
+				dmp($arrUserNames);
+			}
 		}
+
+		//user query debug
+ 
+		if($showDebug == true && $queryDebugType == "show_query"){
+
+			$originalQueryVars = $user_query->query_vars;
+			$originalQueryVars = UniteFunctionsWPUC::cleanQueryArgsForDebug($originalQueryVars);
+
+			dmp("The Query Request Is:");
+			dmp($user_query->request);
+
+			dmp("The finals query vars:");
+			dmp($originalQueryVars);
+		}
+
+		if($showDebug == true)
+			echo "</div>";
 
 		
 		if($isManualOrder == true){
@@ -5599,7 +5641,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * get post filter options
 	 */
 	private function modifyData_postFilterOptions($data, $filterType){
-
+				
 		$objFilters = new UniteCreatorFiltersProcess();
 
 		$data = $objFilters->addEditorFilterArguments($data, $filterType);
@@ -5612,7 +5654,7 @@ class UniteCreatorParamsProcessor extends UniteCreatorParamsProcessorWork{
 	 * modify data by special behaviour
 	 */
 	protected function modifyDataBySpecialAddonBehaviour($data){
-
+		
 		$special = $this->addon->getOption("special");
 		$specialData = $this->addon->getOption("special_data");
 

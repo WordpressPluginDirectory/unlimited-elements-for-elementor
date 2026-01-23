@@ -1231,6 +1231,77 @@ class UniteCreatorParamsProcessorWork{
 
 	private function z___________PARAMS_OUTPUT____________(){}
 
+	
+	/**
+	 * modify params by special addon behavior
+	 * for the post filters, modify the run of some requests of terms or authors
+	 */
+	protected function modifyParamsBySpecialAddonBehaviour($arrParams){
+		
+		if(is_array($arrParams) == false || empty($arrParams))
+			return($arrParams);
+		
+		$special = $this->addon->getOption("special");
+		
+		if(empty($special))
+			return($arrParams);
+		
+		
+		//do some operations for the filter special behaviour
+			
+		if($special != "post_filter")
+			return($arrParams);
+		
+		$filterSource = "";
+		foreach($arrParams as $param){
+			$name = UniteFunctionsUC::getVal($param, "name");
+			if($name !== "filter_source")
+				continue;
+			
+			$filterSource = UniteFunctionsUC::getVal($param, "value");
+			if($filterSource === "")
+				$filterSource = UniteFunctionsUC::getVal($param, "default_value");
+			
+			break;
+		}
+		
+		switch($filterSource){
+			case "terms":
+			case "authors":
+			break;
+			default:
+				return($arrParams);
+			break;
+		}
+		
+		if($filterSource === "")
+			return($arrParams);
+		
+		$isAuthors = ($filterSource == "authors");
+		$arrParamsNew = array();
+		
+		foreach($arrParams as $param){
+			$type = UniteFunctionsUC::getVal($param, "type");
+			$name = UniteFunctionsUC::getVal($param, "name");
+			
+			if($isAuthors == true){
+				if($type == UniteCreatorDialogParam::PARAM_POST_TERMS || $name == "taxonomy")
+					continue;
+			}else{
+				if($type == UniteCreatorDialogParam::PARAM_USERS || $name == "authors")
+					continue;
+			}
+			
+			$arrParamsNew[] = $param;
+		}
+		
+		return($arrParamsNew);
+	}
+	
+	
+	/**
+	 * modify addon special behaviour
+	 */
     protected function modifyDataBySpecialAddonBehaviour($data){
 
         if (!is_array($data)) {
@@ -1992,6 +2063,10 @@ class UniteCreatorParamsProcessorWork{
 
 		$data = array();
 
+		//modify some params, like in filter, if the source is authors - remove the terms param
+		//and if the source is terms, remove the users param
+		$arrParams = $this->modifyParamsBySpecialAddonBehaviour($arrParams);
+		
 		foreach($arrParams as $param){
 			$type = UniteFunctionsUC::getVal($param, "type");
 
@@ -2017,7 +2092,7 @@ class UniteCreatorParamsProcessorWork{
 		}
 
 		$data = $this->modifyDataBySpecialAddonBehaviour($data);
-
+		
 		return $data;
 	}
 

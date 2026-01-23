@@ -16,7 +16,6 @@ function UniteSettingsUC(){
 	var g_debug = false;
 	
 	var g_debug_selectors = null;
-	//var g_debug_selectors = "item_border_width";	//enter input name
 	
 	var g_vars = {
 		NOT_UPDATE_OPTION: "unite_settings_no_update_value",
@@ -91,7 +90,21 @@ function UniteSettingsUC(){
 	}
 
     this.setCacheValues = function(values){
-        g_temp.cacheValues = (values && typeof values === "object") ? values : {};
+
+        if (!this._instanceCache) {
+            // local cache for this settings instance (for each repeater item)
+            this._instanceCache = {};
+        }
+        if (values && typeof values === "object") {
+            jQuery.extend(true, this._instanceCache, values);
+        }
+        
+        if (!g_temp.cacheValues || typeof g_temp.cacheValues !== "object") {
+            g_temp.cacheValues = {};
+        }
+        if (values && typeof values === "object") {
+            jQuery.extend(true, g_temp.cacheValues, values);
+        }
     };
 
 	/**
@@ -116,8 +129,7 @@ function UniteSettingsUC(){
 	};
 
 
-    	this.__________OTHER_EXTERNAL__________ = function(){};
-
+    this.__________OTHER_EXTERNAL__________ = function(){};
 
 	/**
 	 * init tipsy
@@ -353,6 +365,12 @@ function UniteSettingsUC(){
         const name = getInputName(objInput);
         const type = getInputType(objInput);
 
+        // Instance cache (for repeater items)
+        if (t._instanceCache && Object.prototype.hasOwnProperty.call(t._instanceCache, name)) {
+            return forcePlannedValueByType(type, t._instanceCache[name], objInput, name);
+        }
+        
+        // Global cache
         if (g_temp.cacheValues && Object.prototype.hasOwnProperty.call(g_temp.cacheValues, name)) {
             return forcePlannedValueByType(type, g_temp.cacheValues[name], objInput, name);
         }
@@ -383,6 +401,11 @@ function UniteSettingsUC(){
 
 		if(!name)
 			return(g_vars.NOT_UPDATE_OPTION);
+
+        if (!isInputFullyInited(objInput)) {
+            // if not inited get from cache
+            return getPlannedInitValue(objInput);
+        }
 
 		var flagUpdate = true;
 
@@ -511,10 +534,8 @@ function UniteSettingsUC(){
 
             if (isInputFullyInited(objInput)) {
             	
-                if (objInput.closest(".unite-setting-row").hasClass("unite-setting-hidden") === true) {
-                    //console.log('hidden: ' + name);    
+                if (objInput.closest(".unite-setting-row").hasClass("unite-setting-hidden") === true) 
                     return;
-                }
 
                 value = getSettingInputValue(objInput);
                 if (value === g_vars.NOT_UPDATE_OPTION) return;
@@ -733,7 +754,20 @@ function UniteSettingsUC(){
 					g_temp.objItemsManager.clearItemsPanel();
 			break;
 			case "repeater":
-				setRepeaterValues(objInput, null, true);
+                var repeaterName = getInputName(objInput);
+                var hasCachedData = false;
+                
+                if (t._instanceCache && t._instanceCache.hasOwnProperty(repeaterName)) {
+                    var cachedValue = t._instanceCache[repeaterName];
+                    hasCachedData = Array.isArray(cachedValue) && cachedValue.length > 0;
+                } else if (g_temp.cacheValues && g_temp.cacheValues.hasOwnProperty(repeaterName)) {
+                    var cachedValue = g_temp.cacheValues[repeaterName];
+                    hasCachedData = Array.isArray(cachedValue) && cachedValue.length > 0;
+                }
+                
+                if (!hasCachedData) {
+                    setRepeaterValues(objInput, null, true);
+                }
 			break;
 			case "col_layout":
 				//don't clear col layout
@@ -917,7 +951,12 @@ function UniteSettingsUC(){
 				g_temp.objItemsManager.setItemsFromData(value);
 			break;
 			case "repeater":
-				setRepeaterValues(objInput, value);
+
+                if (!objInput.data('repeater-inited')) {
+                    initRepeater(objInput, t.onSettingChange);
+                }
+                
+                setRepeaterValues(objInput, value);
 			break;
 			case "multiselect":
 				value = multiSelectModifyForSet(value);
@@ -1018,7 +1057,6 @@ function UniteSettingsUC(){
 
 			if (objValues.hasOwnProperty(name)) {
 				var value = objValues[name];
-
 				setInputValue(objInput, value, objValues);
 			}
 		});
@@ -1294,18 +1332,13 @@ function UniteSettingsUC(){
         observer.observe(wrapper);
     }
 
-    /*
-    * init input once
-    */
     function initInputOnce(objInput, funcChange){
-    	
         if (_initedInputsOnce.has(objInput[0])) return;
 		
 		if (!funcChange)
 			funcChange = t.onSettingChange;
-		
+
 		var type = getInputType(objInput);
-				
 		var basicType = getInputBasicType(objInput);       
         
         if(g_debug == true){
@@ -1313,13 +1346,12 @@ function UniteSettingsUC(){
 	        trace(type);
 	        trace(objInput);
         }
-                
+		
         //no need to init items panel from here
         if(type == "items"){
             _initedInputsOnce.add(objInput[0]);
             return(false);
         }
-        
         
 		// init by type
 		switch (type) {
@@ -1414,29 +1446,36 @@ function UniteSettingsUC(){
 					});
 			break;
 		}
-		
 
         t.disableTriggerChange();
 
         try {
             const name = getInputName(objInput);
 
-            if (!g_temp.cacheValues || typeof g_temp.cacheValues !== 'object') {
-                g_temp.cacheValues = {};
+            var cacheToUse = t._instanceCache || g_temp.cacheValues;
+            
+            if (!cacheToUse || typeof cacheToUse !== 'object') {
+                if (!t._instanceCache) t._instanceCache = {};
+                cacheToUse = t._instanceCache;
             }
 
-            if (name && !Object.prototype.hasOwnProperty.call(g_temp.cacheValues, name)) {
+            if (name && !Object.prototype.hasOwnProperty.call(cacheToUse, name)) {
                 const plannedValue = getPlannedInitValue(objInput);
 
                 if (plannedValue !== g_vars.NOT_UPDATE_OPTION) {
-                    g_temp.cacheValues[name] = plannedValue;
+                    cacheToUse[name] = plannedValue;
                 }
             }
 
             clearInput(objInput, "initval", "initchecked", true);
 
-            if (name && Object.prototype.hasOwnProperty.call(g_temp.cacheValues, name)) {
-                setInputValue(objInput, g_temp.cacheValues[name], g_temp.cacheValues);
+            if (name && Object.prototype.hasOwnProperty.call(cacheToUse, name)) {
+                var cachedValue = cacheToUse[name];
+                var inputType = getInputType(objInput);
+                
+                if (inputType !== 'repeater' || !Array.isArray(cachedValue) || cachedValue.length !== 0) {
+                    setInputValue(objInput, cachedValue, cacheToUse);
+                }
             }
 
         } catch (e) {
@@ -1470,7 +1509,6 @@ function UniteSettingsUC(){
                 try {
 
                     let type = getInputType($input);
-                                        
                     if(type == 'repeater') {
                         initInputOnce($input, t.onSettingChange);
                     } else {
@@ -1765,10 +1803,21 @@ function UniteSettingsUC(){
 
         options = options || {};
 
+        if (!this._instanceCache) {
+            this._instanceCache = {};
+        }
+
+        // for repeater item
         if (options.cacheValues && typeof options.cacheValues === "object") {
-            g_temp.cacheValues = options.cacheValues;
-        } else {
-            g_temp.cacheValues = {}
+            jQuery.extend(true, this._instanceCache, options.cacheValues);
+        }
+
+        // for parent block
+        if (!options.isRepeaterItem && options.cacheValues) {
+            if (!g_temp.cacheValues || typeof g_temp.cacheValues !== "object") {
+                g_temp.cacheValues = {};
+            }
+            jQuery.extend(true, g_temp.cacheValues, options.cacheValues);
         }
 
 		g_objParent = objParent;
@@ -1812,7 +1861,6 @@ function UniteSettingsUC(){
 		initUnitsPicker();
 		initAnimationsSelector();
 		initGlobalEvents();
-
 
 		t.updateEvents();
 
@@ -1908,7 +1956,6 @@ function UniteSettingsUC(){
 	 */
 	function getRangeSliderValue(objWrapper) {
 		var data = {};
-
 		data["size"] = objWrapper.find(".unite-setting-range-input").val();
 		data["unit"] = getUnitsPickerValue(objWrapper);
 
@@ -3207,7 +3254,6 @@ function UniteSettingsUC(){
 		}
 
 		var objType = iconPicker_getObjIconsType(type);
-		// var isAddNew = g_ucAdmin.getVal(objType, "add_new");
 
 		var htmlDialog = "<div id=\"" + dialogID + "\" class=\"unite-iconpicker-dialog unite-inputs unite-picker-type-" + type + "\" style=\"display:none\">";
 		htmlDialog += "<div class=\"unite-iconpicker-dialog-top\">";
@@ -4062,7 +4108,7 @@ function UniteSettingsUC(){
 	 * init items panel setting
 	 */
 	function initItemsPanel(){
-				
+
 		var objItemsWrapper = g_objParent.find(".uc-setting-items-panel");
 		if(objItemsWrapper.length == 0)
 			return(false);
@@ -4279,22 +4325,25 @@ function UniteSettingsUC(){
 	/**
 	 * init repeaters
 	 */
-	function initRepeaters() {
-		var objRepeaters = g_objWrapper.find(".unite-setting-repeater");
+    function initRepeaters() {
+        var objRepeaters = g_objWrapper.find(".unite-setting-repeater");
 
-		if (objRepeaters.length === 0)
-			return;
+        if (objRepeaters.length === 0) 
+            return;
 
-		g_temp.isRepeaterExists = true;
-	}
+        g_temp.isRepeaterExists = true;
+    }
 
 	/**
 	 * init repeater
 	 */
-/**
-	 * init repeater
-	 */
 	function initRepeater(objWrapper, funcChange) {
+        if (objWrapper.data('repeater-inited')) {
+            return;
+        }
+        objWrapper.data('repeater-inited', true);
+
+        var name = getInputName(objWrapper);
 		
 		if (objWrapper && objWrapper.sortable && typeof objWrapper.sortable === 'function') {
 			objWrapper.sortable({
@@ -4347,7 +4396,9 @@ function UniteSettingsUC(){
         var name = getInputName(objWrapper);
         var cachedValue = null;
 
-        if (g_temp.cacheValues && g_temp.cacheValues.hasOwnProperty(name)) {
+        if (t._instanceCache && t._instanceCache.hasOwnProperty(name)) {
+            cachedValue = t._instanceCache[name];
+        } else if (g_temp.cacheValues && g_temp.cacheValues.hasOwnProperty(name)) {
             cachedValue = g_temp.cacheValues[name];
         }
 
@@ -4462,9 +4513,8 @@ function UniteSettingsUC(){
 
         // init item settings
         var objSettings = new UniteSettingsUC();
-        objSettings.init(objItemSettingsWrapper, { cacheValues: itemValues });
+        objSettings.init(objItemSettingsWrapper, { cacheValues: itemValues, isRepeaterItem: true });
         objSettings.setValues && objSettings.setValues(itemValues);
-
         objItem.data("objsettings", objSettings);
 
         // init item title change
@@ -4556,6 +4606,7 @@ function UniteSettingsUC(){
 	 * set repeater values
 	 */
 	function setRepeaterValues(objWrapper, values, useDefault) {
+
 		destroyRepeaterItems(objWrapper);
 
 		if (useDefault === true)
@@ -4599,10 +4650,10 @@ function UniteSettingsUC(){
 	function setSwitcherValue(objWrapper, value) {
 		var checkedValue = objWrapper.data("checkedvalue");
 
-		checkedValue = g_ucAdmin.strToBool(checkedValue);
-		value = g_ucAdmin.strToBool(value);
+		// checkedValue = g_ucAdmin.strToBool(checkedValue);
+		// value = g_ucAdmin.strToBool(value);
 
-		objWrapper.toggleClass("unite-checked", value === checkedValue);
+		objWrapper.toggleClass("unite-checked", value == checkedValue);
 	}
 
 
@@ -4645,8 +4696,10 @@ function UniteSettingsUC(){
 	 * get action of multiple parents
 	 */
 	function getControlActionMultiple(parent, control, arrParents) {
-		if (g_temp.cacheValues === null)
-			g_temp.cacheValues = t.getSettingsValues(true);
+		if (g_temp.cacheValues === null) {
+            g_temp.cacheValues = t.getSettingsValues();
+        }
+			
 
 		var action = null;
 		var mainAction = null;
@@ -4817,7 +4870,6 @@ function UniteSettingsUC(){
 
 						if (isShow === true && isHidden === true) {
 							value = objInput.data("previous-value") || value;
-
 							setInputValue(objInput, value);
 
 							return;
@@ -5014,14 +5066,14 @@ function UniteSettingsUC(){
 	 * get units picker for element
 	 */
 	function getUnitsPickerForElement(objElement) {
-		return objElement.closest(".unite-setting-row").find(".unite-units-picker");
+		return objElement.closest(".unite-setting-row, .unite-setting-range").find(".unite-units-picker");
 	}
 
 	/**
 	 * get units picker value for element
 	 */
 	function getUnitsPickerValue(objElement) {
-		return getUnitsPickerForElement(objElement).val() || "px";
+        return getUnitsPickerForElement(objElement).val() || "px";
 	}
 
 	/**
@@ -5095,7 +5147,6 @@ function UniteSettingsUC(){
 				break;
 			}
 			
-			
 			//-- debug selector css
 			
 			if(isDebugSelector(objInput) == true){
@@ -5124,7 +5175,7 @@ function UniteSettingsUC(){
 
 				if (g_selectorWrapperID) {
                     let selectorId = jQuery('#' + g_selectorWrapperID + ' .ue-widget-root').attr('id');
-                    selector = "." + selectorId + " " + selector;
+                    selector = ".ue-widget-root." + selectorId + " " + selector;
                 }
 					
 
@@ -5473,7 +5524,7 @@ function UniteSettingsUC(){
 		}
 		
 		var replaces = getInputSelectorReplaces(objInput, isDebug);
-		
+
 		if(isDebug){
 			trace("replacers");
 			trace(replaces);

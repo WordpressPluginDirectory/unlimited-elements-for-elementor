@@ -4104,10 +4104,15 @@ class UniteFunctionsUC{
 	public static function downloadFile($filepath, $filename = null){
 
 		UniteFunctionsUC::validateFilepath($filepath,"export file");
-
+		
 		if(empty($filename))
 			$filename = basename($filepath);
 
+		// Clear all output buffers to prevent any previous output from corrupting the file
+		while (ob_get_level()) {
+			ob_end_clean();
+		}
+ 		
 		header('Content-Description: File Transfer');
 		header('Content-Type: application/octet-stream');
 		header('Content-Disposition: attachment; filename="'.$filename.'"');

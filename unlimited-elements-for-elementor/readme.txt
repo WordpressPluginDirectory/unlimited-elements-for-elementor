@@ -940,6 +940,43 @@ The choice depends on your design preferences. If you want complete control, go 
 
 == Changelog ==
 
+version 2.0.5:
+
+
+= 2.0.5 - 2026-01-22 =
+
+* Fix: made some fix for wpml in main category
+* Fix: fixed special characters in google sheets
+* Fix: fixed filters "All" empty posts issue
+
+
+= 2.0.4 - 2026-01-19 =
+
+Plugin Changes:
+
+* Feature - made functionality of load more before the grid
+* Feature - added authors filter functionality to post filters.
+
+Widgets Changes: 
+
+* Feature: Event List (Pro) - A new Link Entire Item option has been introduced that allows the clickable area to encompass the entire element instead of just specific parts of the content
+* Feature: Toggle Box (Pro) - A new Show Back Button option has been added which allows for the inclusion of a dedicated button containing a specific link.
+* Feature: Unlimited Carousel (Pro) - Added Start Item Number option, allowing to start from a specific item.
+* Feature: File Field (Pro) - Added Required option allowing to make the File Field widget mandatory.
+* Feature: Conditions (Free) - Added three new actions - UE Open Liquid Menu, UE Close Liquid Menu, and UE Toggle Liquid Menu - allowing full programmatic control over the Liquid Menu widget behavior
+* Feature: Liquid Full Screen Menu (Free) - Added support for the Conditions widget, enabling seamless control over the Menu by allowing it to be opened, closed, or toggled dynamically based on defined conditions
+* Feature: Conditions (Free) - Added three new actions - UE Open Fullscreen Menu, UE Close Fullscreen Menu, and UE Toggle Fullscreen Menu - allowing full programmatic control over the Fullscreen Menu widget behavior
+* Feature: Fullscreen Menu (Free) - Added support for the Conditions widget, enabling seamless control over the Menu by allowing it to be opened, closed, or toggled dynamically based on defined conditions
+* Feature: Unlimited Carousel (Pro) - A new feature has been implemented that allows users to enable an Equalize Content Height option to ensure uniform dimensions across all elements.
+* Fix: Vertical Curved Timeline (Free) - An issue was resolved where HTML attributes were not being correctly applied to the link element.
+* Fix: Testimonial Carousel (Free) - An issue was resolved where the Show Arrows option only successfully hid the navigation arrows on desktop devices when set to false instead of applying the setting across all device types.
+* Fix: Google Reviews (Free) - An issue was resolved where the Show Arrows option only successfully hid the navigation arrows on desktop devices when set to false instead of applying the setting across all device types.
+* Fix: Unlimited Carousel (Pro) - An issue was resolved where certain links within cloned items remained non-functional and could not be clicked following the initial page load.
+* Fix: Stacking Cards (Free) - Fixed issue related to Image display with Alternate Position Image option.
+* Fix: Content Tabs (Free) - An issue was resolved where nested content tabs widgets failed to update the active state icons of inner accordion items when those items were activated.
+* Fix: Google Reviews (Free) - An issue has been resolved that previously prevented the remote connection options from functioning correctly when using the coverflow layout type.
+
+
 = 2.0.3 - 2026-01-04 =
 
 * Fix: fixed SERP API cache time - changed from minutes to seconds 

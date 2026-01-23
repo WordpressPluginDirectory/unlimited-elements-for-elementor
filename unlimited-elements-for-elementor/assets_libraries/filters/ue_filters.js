@@ -1314,7 +1314,7 @@ function UEDynamicFilters(){
 		event.preventDefault();
 
 		var objLink = jQuery(this);
-
+ 
 		if(objLink.hasClass("uc-grid-filter")){
 
 			var objTermsFilter = objLink;
@@ -1495,7 +1495,7 @@ function UEDynamicFilters(){
 		var filterType = objFilter.data("filtertype");
 
 		if(filterType != "general"){
-
+			
 			trace(objFilter);
 
 			throw new Error("Not a general filter on action: " + g_vars.ACTION_FILTER_CHANGE);
@@ -1861,25 +1861,47 @@ function UEDynamicFilters(){
 	function getFilterElementData(objElement){
 				
 		var id = objElement.data("id");
-		var slug = objElement.data("slug");
-		var taxonomy = objElement.data("taxonomy");
 		var title = objElement.data("title");
 		var key = objElement.data("key");
 		var type = objElement.data("type");
 		
-		if(!taxonomy)
+		if(!id && !key)
 			return(null);
-
-		var objTerm = {
-			"type": type,
-			"id": id,
-			"slug": slug,
-			"taxonomy": taxonomy,
-			"title": title,
-			"key": key
-		};
-
-		return(objTerm);
+		
+		
+		switch(type){
+		case "taxonomy":
+		default:
+			var slug = objElement.data("slug");
+			var taxonomy = objElement.data("taxonomy");
+			
+			var objTerm = {
+				"type": type,
+				"id": id,
+				"slug": slug,
+				"taxonomy": taxonomy,
+				"title": title,
+				"key": key
+			};
+			return(objTerm);
+			
+		break;
+		case "author":
+			
+			var username = objElement.data("username");
+			
+			var objAuthor = {
+					"type": type,
+					"id": id,
+					"username": username,
+					"title": title,
+					"key": key
+				};
+				return(objAuthor);
+			
+		break;
+		}
+		
 	}
 
 
@@ -3017,9 +3039,12 @@ function UEDynamicFilters(){
 		var numItems = null;
 		var arrTerms = [];
 		var objTaxIDs = {};
+		var objAuthorIDs = {};
 		var strSelectedTerms = "";
+		var strSelectedAuthors = "";
 		var search = "";
 		var price_from, price_to;
+		var arrAuthors = [];
 		var orderby = null;
 		var orderby_metaname = null;
 		var orderby_metatype = null;
@@ -3088,7 +3113,7 @@ function UEDynamicFilters(){
 
 			if(urlAdd)
 				urlAddFromFilters = addUrlParam(urlAddFromFilters, urlAdd);
-
+			
 			switch(type){
 				case g_types.PAGINATION:
 						
@@ -3119,7 +3144,21 @@ function UEDynamicFilters(){
 				break;
 				case g_types.LOADMORE:
 
-					if(isFiltersInitMode == true)
+					//check if loadmore is before grid in init mode
+					var isLoadMoreBeforeGrid = false;
+					if(isFiltersInitMode == true){
+						var offsetLoadMore = objFilter.offset();
+						var offsetGrid = objGrid.offset();
+						
+						if(offsetLoadMore.top < offsetGrid.top){
+							isLoadMoreBeforeGrid = true;
+							
+							if(g_showDebug == true)
+								trace("Loadmore before grid - process in init mode");
+						}
+					}
+					
+					if(isFiltersInitMode == true && isLoadMoreBeforeGrid == false)
 						return(true);
 
 					//run load more only if it's clicked, unless reset load more
@@ -3147,12 +3186,16 @@ function UEDynamicFilters(){
 
 					//if not init mode - take first item
 					var objTerm = getTermsListSelectedTerm(objFilter);
-					
+					var filterSource = objFilter.data("filtersource");
+										
 					if(objTerm){
 						
 						if(isFiltersInitMode == false){
 							
-							arrTerms.push(objTerm);
+							if(filterSource == "authors")
+								arrAuthors.push(objTerm);
+							else
+								arrTerms.push(objTerm);
 						}
 						else{
 							
@@ -3165,19 +3208,34 @@ function UEDynamicFilters(){
 							if(initModeChildrens == true && filterRole != "child")
 								arrTerms.push(objTerm);
 							else
-								if(isInit != true)
-									arrTerms.push(objTerm);
+								if(isInit != true){
+									
+									if(filterSource == "authors")
+										arrAuthors.push(objTerm);
+									else
+										arrTerms.push(objTerm);
+									
+								}
 							
 							//set selected terms string
-
+							
 							var termID = objTerm.id;
-							if(strSelectedTerms)
-								strSelectedTerms +=",";
-
-							strSelectedTerms += termID;
+							
+							if(filterSource == "authors"){
+								
+								if(strSelectedAuthors)
+									strSelectedAuthors +=",";
+								
+								strSelectedAuthors += termID;
+							}
+							else{
+								if(strSelectedTerms)
+									strSelectedTerms +=",";
+								
+								strSelectedTerms += termID;
+							}
 							
 						}
-
 					}
 
 					//replace mode
@@ -3227,7 +3285,7 @@ function UEDynamicFilters(){
 						return(true);
 					
 					var generalIsNoRefresh = objFilter.data("norefresh");
-
+					
 					if(generalIsNoRefresh === true)
 						isNoRefresh = true;
 					
@@ -3236,7 +3294,7 @@ function UEDynamicFilters(){
 					//add terms
 					
 					var dataTerms = getVal(filterData,"terms");
-
+					
 					if(dataTerms && dataTerms.length){	
 
 						var isOperatoeAdded = false;
@@ -3292,6 +3350,36 @@ function UEDynamicFilters(){
 									strSelectedTerms +=",";
 								
 								strSelectedTerms += termID;
+							});
+							
+						}
+					}
+					
+					//add authors
+					var dataAuthors = getVal(filterData,"authors");
+					
+					if(dataAuthors && dataAuthors.length){
+						
+						//gather authors list
+						jQuery.each(dataAuthors, function(index, author){
+							arrAuthors.push(author);
+						});
+						
+						//set selected authors string if init mode
+						
+						if(isFiltersInitMode == true){
+							
+							jQuery.each(dataAuthors, function(index, author){
+								
+								var authorID = getVal(author,"id");
+								
+								if(!authorID)
+									return(true);
+								
+								if(strSelectedAuthors)
+									strSelectedAuthors +=",";
+								
+								strSelectedAuthors += authorID;
 							});
 							
 						}
@@ -3399,7 +3487,13 @@ function UEDynamicFilters(){
 				var filterWidgetID = getElementWidgetID(objFilter);
 
 				//add test tax id's for init mode
-				objTaxIDs = getFilterTaxIDs(objFilter, objTaxIDs);
+				var filterSource = objFilter.data("filtersource");
+				if(filterSource == "authors" && isFiltersInitMode == true){
+					//add test author id's for init mode
+					objAuthorIDs = getFilterTaxIDs(objFilter, objAuthorIDs);
+				}else{
+					objTaxIDs = getFilterTaxIDs(objFilter, objTaxIDs);
+				}
 
 				if(strRefreshIDs)
 					strRefreshIDs += ",";
@@ -3437,10 +3531,11 @@ function UEDynamicFilters(){
 
 		var urlAddition_filtersTest = "";
 		var strTaxIDs = getTermDsList(objTaxIDs);
+		var strAuthorIDs = getTermDsList(objAuthorIDs);
 				
 		if(isFiltersInitMode == true){
 
-			if(!strTaxIDs && arrFiltersForInit.length == 0)
+			if(!strTaxIDs && !strAuthorIDs && arrFiltersForInit.length == 0)
 				urlAjax = null;
 			else{
 
@@ -3454,11 +3549,20 @@ function UEDynamicFilters(){
 		//test terms - only if there are terms in query, or mode init
 				
 		if(strTaxIDs && (search || arrTerms.length || isFiltersInitMode == true || wasInitMode === true) ){
-			
+			 
 			if(urlAddition_filtersTest)
 				urlAddition_filtersTest += "&";
 			
 			urlAddition_filtersTest += "testtermids="+strTaxIDs;
+		}
+		
+		//test authors - only if there are authors in query, or mode init (author mode)
+		if(strAuthorIDs && (search || arrAuthors.length || isFiltersInitMode == true || wasInitMode === true) ){
+			
+			if(urlAddition_filtersTest)
+				urlAddition_filtersTest += "&";
+			
+			urlAddition_filtersTest += "testauthorids="+strAuthorIDs;
 		}
 
 		g_lastSyncGrids = null;
@@ -3535,7 +3639,7 @@ function UEDynamicFilters(){
 
 		if(numItems)
 			urlAjax += "&uccount="+numItems;
-	
+				
 		if(arrTerms.length){
 			
 			var strTerms = buildTermsQuery(arrTerms);
@@ -3550,12 +3654,32 @@ function UEDynamicFilters(){
 			urlFilterString = addUrlParam(urlFilterString, "ucterms="+strTerms);
 		}
 		
+		//add authors
+		if(arrAuthors.length){
+			
+			var strAuthors = "";
+			jQuery.each(arrAuthors, function(index, author){
+				var authorID = getVal(author, "id");
+				if(authorID){
+					if(strAuthors)
+						strAuthors += ",";
+					strAuthors += authorID;
+				}
+			});
+			
+			if(strAuthors){
+				urlAjax += "&ucauthors="+strAuthors;
+				urlReplace = addUrlParam(urlReplace, "ucauthors="+strAuthors);
+				urlFilterString = addUrlParam(urlFilterString, "ucauthors="+strAuthors);
+			}
+		}
+		
 		 if(child_auto && arrTerms.length && childAutoString != ""){
 			 urlAjax += childAutoString;
 		 }
 
 		if(orderby){
-
+			
 			urlAjax += "&ucorderby="+orderby;
 			urlReplace = addUrlParam(urlReplace, "ucorderby="+orderby);
 
@@ -3577,9 +3701,11 @@ function UEDynamicFilters(){
 			urlReplace = addUrlParam(urlReplace, "ucorderdir="+orderdir);
 		}
 		
-		if(isFiltersInitMode && strSelectedTerms)
+		if(isFiltersInitMode && strSelectedTerms && strSelectedTerms !== "undefined")
 			urlAjax += "&ucinitselectedterms="+strSelectedTerms;
 		
+		if(isFiltersInitMode && strSelectedAuthors && strSelectedAuthors !== "undefined")
+			urlAjax += "&ucinitselectedauthors="+strSelectedAuthors;
 		
 		//add refresh ids
 		if(strRefreshIDs)
@@ -3875,6 +4001,7 @@ function UEDynamicFilters(){
 		//url keys
 
 		var objUrlKeys = getVal(g_filtersData, "urlkeys");
+		
 		var taxSap = getVal(objUrlKeys, "tax_sap");
 		if(taxSap)
 			g_options.urlkey_taxsap = taxSap;
@@ -4078,7 +4205,7 @@ function UEDynamicFilters(){
 
 			if(type == g_types.GENERAL){
 				var generalType = objFilter.data("generaltype");
-
+				
 				if(!generalType){
 					trace(objFilter);
 					throw new Error("The filter is missing generaltype data");
