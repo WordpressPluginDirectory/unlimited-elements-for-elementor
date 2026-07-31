@@ -160,7 +160,7 @@ class ProviderOperationsUC extends UCOperations{
 	 */
 	public function getTermsListForSelectFromData($data){
 
-		$limit = 10;
+		$limit = 60;
 		
 		$search = $this->getSearchFromData($data);
 		$taxonomy = UniteFunctionsUC::getVal($data, "taxonomy");
@@ -177,8 +177,6 @@ class ProviderOperationsUC extends UCOperations{
 		if(empty($taxonomy)){ 
 			
 			$taxonomy = get_taxonomies([], 'names');
-			
-
 		} 
 
 		$query["taxonomy"] = $taxonomy;
@@ -269,7 +267,7 @@ class ProviderOperationsUC extends UCOperations{
 	 */
 	public function getUsersListForSelectFromData($data){
 		
-		$limit = 50;
+		$limit = 60;
 		
 		$search = $this->getSearchFromData($data);
 
@@ -329,20 +327,27 @@ class ProviderOperationsUC extends UCOperations{
 
 		$tablePosts = UniteProviderFunctionsUC::$tablePosts;
 
-		$search = $db->escape($search);
+		global $wpdb;
 
 		$where = "post_type in ($strPostTypes)";
-		$where .= " and post_status in ('publish','draft','private')";
-
+		$where .= " and post_status in ('publish','draft')";
+		
 		$isStartWord = (strlen($search) == 1);
 
-		$whereStartWord = $where." and post_title like '$search%'";
+		$likeStart = $wpdb->esc_like($search) . '%';
+		$likeContains = '%' . $wpdb->esc_like($search) . '%';
 
-		$whereRegular = $where." and post_title like '%$search%'";
+		$sqlStartWord = $wpdb->prepare(
+			"select * from $tablePosts where $where and post_title like %s order by post_date desc limit %d",
+			$likeStart,
+			$limit
+		);
 
-		$sqlStartWord = "select * from $tablePosts where $whereStartWord order by post_date desc limit $limit";
-
-		$sql = "select * from $tablePosts where $whereRegular order by post_date desc limit $limit ";
+		$sql = $wpdb->prepare(
+			"select * from $tablePosts where $where and post_title like %s order by post_date desc limit %d",
+			$likeContains,
+			$limit
+		);
 
 		if($isStartWord == true){
 

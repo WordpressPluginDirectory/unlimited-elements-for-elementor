@@ -88,7 +88,8 @@ class UniteCreatorActions{
 		$addonType = $addons->getAddonTypeFromData($data);
 
 		$data = UniteProviderFunctionsUC::normalizeAjaxInputData($data);
-
+	
+				
 		try{
 
 			//protection - it's intended to logged in users only with the capabilities defined in the plugin
@@ -123,21 +124,26 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess(esc_html__("Order updated", "unlimited-elements-for-elementor"));
 				break;
 				case "get_category_settings_html":
-
+				
 					$manager = UniteCreatorManager::getObjManagerByAddonType($addonType);
 					$response = $manager->getCatSettingsHtmlFromData($data);
 
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_cat_addons":
-
+					
+					HelperProviderUC::verifyAdminPermission();
+					
+					if($addonType == "layout")
+						UniteFunctionsUC::throwError("get_cat_addons blocked for layout");
+					
 					$manager = UniteCreatorManager::getObjManagerByAddonType($addonType, $data);
 					$response = $manager->getCatAddonsHtmlFromData($data);
-
+					
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_layouts_params_settings_html":
-
+					
 					$manager = UniteCreatorManager::getObjManagerByAddonType($addonType, $data);
 					$response = $manager->getAddonPropertiesDialogHtmlFromData($data);
 
@@ -151,6 +157,9 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_layouts_categories":
+					
+					HelperProviderUC::verifyAdminPermission();
+					
 					$response = $categories->getLayoutsCatsListFromData($data);
 
 					HelperUC::ajaxResponseData($response);
@@ -340,9 +349,12 @@ class UniteCreatorActions{
 				break;
 				case "get_addon_settings_html":    //from elementor/gutenberg
 					
-					$html = $addons->getAddonSettingsHTMLFromData($data);
-					
-					HelperUC::ajaxResponseData(array("html" => $html));
+					// $html = $addons->getAddonSettingsHTMLFromData($data);
+					// HelperUC::ajaxResponseData(array("html" => $html));
+
+                    $json = $addons->getAddonSettingsJSONFromData($data);
+                    HelperUC::ajaxResponseData(array("json" => $json));
+
 				break;
 				case "get_addon_item_settings_html":  //from elementor
 
@@ -572,12 +584,6 @@ class UniteCreatorActions{
 						HelperUC::ajaxResponseSuccess(esc_html__("Widget Updated", "unlimited-elements-for-elementor"));
 
 				break;
-				case "save_screenshot":
-
-					$response = $operations->saveScreenshotFromData($data);
-
-					HelperUC::ajaxResponseSuccess(esc_html__("Screenshot Saved", "unlimited-elements-for-elementor"), $response);
-				break;
 				case "save_section_tolibrary":
 
 					HelperProviderUC::verifyAdminPermission();
@@ -587,6 +593,8 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess(esc_html__("Section Saved", "unlimited-elements-for-elementor"), $response);
 				break;
 				case "get_grid_import_layout_data":
+					
+					HelperProviderUC::verifyAdminPermission();
 
 					$response = $layouts->getLayoutGridDataForEditor($data);
 
@@ -601,42 +609,64 @@ class UniteCreatorActions{
 					HelperUC::ajaxResponseSuccess(esc_html__("Settings Saved", "unlimited-elements-for-elementor"));
 				break;
 				case "get_link_autocomplete":
+					
+					HelperProviderUC::verifyAdminPermission();
+
 					$response = $operations->getLinkAutocompleteFromData($data);
 
 					HelperUC::ajaxResponseData($response);
 				break;
 				case "get_users_list_forselect":
+					
+					HelperProviderUC::verifyAdminPermission();
+					
 					$arrUsersList = $operations->getUsersListForSelectFromData($data);
 
 					HelperUC::ajaxResponseData($arrUsersList);
 				break;
 				case "get_terms_list_forselect":
 					
+					HelperProviderUC::verifyAdminPermission();
+					
 					$arrTermsList = $operations->getTermsListForSelectFromData($data);
 
 					HelperUC::ajaxResponseData($arrTermsList);
 				break;
 				case "get_posts_list_forselect":
+					
+					HelperProviderUC::verifyAdminPermission();
+
 					$arrPostList = $operations->getPostListForSelectFromData($data);
 
 					HelperUC::ajaxResponseData($arrPostList);
 				break;
 				case "get_select2_post_titles":
+					
+					HelperProviderUC::verifyAdminPermission();
+
 					$arrData = $operations->getSelect2PostTitles($data);
 
 					HelperUC::ajaxResponseData(array("select2_data" => $arrData));
 				break;
 				case "get_select2_terms_titles":
+					
+					HelperProviderUC::verifyAdminPermission();
+
 					$arrData = $operations->getSelect2TermsTitles($data);
 
 					HelperUC::ajaxResponseData(array("select2_data" => $arrData));
 				break;
 				case "get_select2_users_titles":
+					
+					HelperProviderUC::verifyAdminPermission();
+
 					$arrData = $operations->getSelect2UsersTitles($data);
 
 					HelperUC::ajaxResponseData(array("select2_data" => $arrData));
 				break;
 				case "get_post_child_params":
+					
+					HelperProviderUC::verifyAdminPermission();
 
 					$response = $operations->getPostAttributesFromData($data);
 

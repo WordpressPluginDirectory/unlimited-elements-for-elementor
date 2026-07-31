@@ -87,7 +87,10 @@ class UniteCreatorForm{
 			">=" => ">= (more or equal)",
 			"<" => "< (less)",
 			"<=" => "<= (less or equal)",
-			"!=" => "!= (not equal)");
+			"!=" => "!= (not equal)",
+			"like" => "like",
+			"not_like" => "not like"
+		);
 
 		$arrOptions = array_flip($arrOptions);
 
@@ -182,6 +185,10 @@ class UniteCreatorForm{
 				$fieldValue = UniteFunctionsUC::getVal($arrFiles, $fieldId, array());
 				$fieldParams["allowed_types"] = $this->prepareFilesFieldAllowedTypes($fieldSettings);
 			}else{
+				// Sanitize user input to prevent stored XSS in form entries
+				if (is_string($fieldValue)) {
+					$fieldValue = sanitize_textarea_field($fieldValue);
+				}
 				$fieldValue = $this->prettifyFieldValue($fieldType, $fieldValue);
 			}
 			

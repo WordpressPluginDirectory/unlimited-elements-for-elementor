@@ -134,6 +134,33 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 			return $placeholders;
 		}
+		
+		/**
+		 * sanitize and validate post types
+		 */
+		public static function sanitizePostTypes($postTypes, $arrFallback = array("post")){
+			
+			if(is_array($postTypes) == false)
+				$postTypes = array($postTypes);
+			
+			$arrPostTypes = array();
+			foreach($postTypes as $postType){
+				$postType = sanitize_key($postType);
+				if(empty($postType))
+					continue;
+				
+				if(post_type_exists($postType) == false)
+					continue;
+				
+				$arrPostTypes[] = $postType;
+			}
+			
+			$arrPostTypes = array_unique($arrPostTypes);
+			if(empty($arrPostTypes))
+				$arrPostTypes = $arrFallback;
+			
+			return($arrPostTypes);
+		}
 
 		/**
 		 * process the transaction
@@ -1685,7 +1712,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 				$arr[self::SORTBY_SALES] = __("Number of Sales (WooCommerce)", "unlimited-elements-for-elementor");
 				$arr[self::SORTBY_RATING] = __("Rating (WooCommerce)", "unlimited-elements-for-elementor");
 			}
-
+			
 			$arr[self::SORTBY_SLUG] = __("Slug", "unlimited-elements-for-elementor");
 			$arr[self::SORTBY_AUTHOR] = __("Author", "unlimited-elements-for-elementor");
 			$arr[self::SORTBY_LAST_MODIFIED] = __("Last Modified", "unlimited-elements-for-elementor");
@@ -1694,7 +1721,10 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			$arr[self::SORTBY_NONE] = __("Unsorted", "unlimited-elements-for-elementor");
 			$arr[self::SORTBY_MENU_ORDER] = __("Menu Order", "unlimited-elements-for-elementor");
 			$arr[self::SORTBY_PARENT] = __("Parent Post", "unlimited-elements-for-elementor");
-
+			
+			if(UniteCreatorPluginIntegrations::isWPPopularPostsExists() === true)
+				$arr["popular_wpp"] = __("Popular Posts", "unlimited-elements-for-elementor");
+			
 			if($forFilter !== true){
 				
 				$arr["post__in"] = __("Preserve Posts In Order", "unlimited-elements-for-elementor");
@@ -1702,7 +1732,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 				$arr[self::SORTBY_META_VALUE] = __("Meta Field Value", "unlimited-elements-for-elementor");
 				$arr[self::SORTBY_META_VALUE_NUM] = __("Meta Field Value (numeric)", "unlimited-elements-for-elementor");
 			}
-
+	
 			return($arr);
 		}
 
@@ -2345,15 +2375,26 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		$arrQuery = $wp_query->query;
 		$titleFilter = UniteFunctionsUC::getVal($arrQuery, "title_filter");
 
-		if(!empty($titleFilter)){
-			if(!empty($where))
-				$where .= " AND";
-
-			$where .= " wp_posts.post_title like '%$titleFilter%'";
+		if ( ! is_string( $titleFilter ) ) {
+			return $where;
 		}
+		
+		$titleFilter = UniteFunctionsUC::sanitize( $titleFilter, UniteFunctionsUC::SANITIZE_SQL_INJECTS );
+		
+		if ( $titleFilter !== '' ) {
+			if ( ! empty( $where ) ) {
+				$where .= ' AND';
+			}
 
+			// esc_like: % _ \ are literal in LIKE; prepare: value is bound (no SQL injection).
+			$like = '%' . $wpdb->esc_like( $titleFilter ) . '%';
+			$where .= $wpdb->prepare( " {$wpdb->posts}.post_title LIKE %s", $like );
+		}
+		
+		
 		return ($where);
 	}
+	
 
 	/**
 	 *
@@ -2675,7 +2716,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			$args["orderby"] = $orderby;
 
 		if($orderby == self::SORTBY_META_VALUE || $orderby == self::SORTBY_META_VALUE_NUM)
-			$args["meta_key"] = UniteFunctionsUC::getVal($filters, "meta_key");
+			$args["meta_key"] = UniteFunctionsUC::getVal($filters, "orderby_meta_key");
 
 		$isProduct = ($postType == "product");
 
@@ -3625,6 +3666,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 	 */
 	public static function isCurrentUserHasPermissions(){
 		
+		if (!function_exists('wp_get_current_user'))
+			return false;
+
 		if(function_exists("current_user_can") == false)
 			return(false);
 		
@@ -3934,9 +3978,11 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 			return (self::$cacheAuthorsShort);
 		}
-
-		$args = array("role__not_in" => array("subscriber", "customer"));
-
+		
+		$args = array(
+			"role__in" => array("administrator", "editor", "author"),
+			"number"   => 200
+		);
 		$arrUsers = get_users($args);
 
 		$arrUsersShort = array();
@@ -4127,6 +4173,83 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		}
 
 		return ($argsNew);
+	}
+	
+	/**
+	 * Expand tax_query terms for debug output (avoid fatals if missing).
+	 * Adds readable info (name/slug) alongside numeric term IDs.
+	 */
+	public static function expandTaxQueryTermsForDebug($args){
+		
+		if(empty($args) || is_array($args) == false)
+			return($args);
+		
+		$taxQuery = UniteFunctionsUC::getVal($args, "tax_query");
+		if(empty($taxQuery) || is_array($taxQuery) == false)
+			return($args);
+		
+		foreach($taxQuery as $index => $clause){
+			
+			if(is_array($clause) == false)
+				continue;
+			
+			$terms = UniteFunctionsUC::getVal($clause, "terms");
+			if(empty($terms) || is_array($terms) == false)
+				continue;
+			
+			$taxonomy = UniteFunctionsUC::getVal($clause, "taxonomy");
+			if(empty($taxonomy))
+				continue;
+			
+			$field = UniteFunctionsUC::getVal($clause, "field");
+			if(empty($field))
+				$field = "term_id";
+			
+			//expand only numeric IDs
+			if($field !== "term_id" && $field !== "id")
+				continue;
+			
+			$arrExpanded = array();
+			foreach($terms as $termID){
+				
+				if(is_numeric($termID) == false){
+					$arrExpanded[] = $termID;
+					continue;
+				}
+				
+				$termID = (int)$termID;
+				$objTerm = get_term($termID, $taxonomy);
+				if(empty($objTerm) || is_wp_error($objTerm)){
+					$arrExpanded[] = $termID;
+					continue;
+				}
+				
+				$slug = UniteFunctionsUC::getVal($objTerm, "slug");
+				$name = UniteFunctionsUC::getVal($objTerm, "name");
+				
+				$str = $termID;
+				if(!empty($slug) || !empty($name)){
+					$str .= " (";
+					if(!empty($slug))
+						$str .= "slug:{$slug}";
+					if(!empty($name)){
+						if(!empty($slug))
+							$str .= ", ";
+						$str .= "name:{$name}";
+					}
+					$str .= ")";
+				}
+				
+				$arrExpanded[] = $str;
+			}
+			
+			$clause["terms"] = $arrExpanded;
+			$taxQuery[$index] = $clause;
+		}
+		
+		$args["tax_query"] = $taxQuery;
+		
+		return($args);
 	}
 
 	/**
@@ -4431,7 +4554,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		}
 	
 		// Register and enqueue dummy script
-		wp_register_script($handle, '', array(), null, true);
+		wp_register_script($handle, '', ["jquery"]);
 		wp_add_inline_script($handle, $script);
 		wp_enqueue_script($handle);
 	
@@ -4912,6 +5035,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 	public static function onFrontInit(){
 		
 		add_action('wp_print_scripts', array('UniteFunctionsWPUC', 'onStylesAndScriptsDeregister'), PHP_INT_MAX);
+
+        add_action('wp_after_insert_post', function ($post_id, $post, $update) { GlobalsUC::$hideDebug = true; }, 10, 3);
 		
 	}
 	

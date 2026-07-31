@@ -632,22 +632,22 @@ class UniteCreatorTemplateEngineWork{
 	 * filter uc date, clear html first, then replace the date
 	 */
 	public function filterUCDate($dateStamp, $format = "", $formatDateFrom = "d/m/Y"){
-				
+		
 		//get the time ago string
-
+		
 		if($format === "time_ago"){
 			$strTimeAgo = UniteFunctionsUC::getTimeAgoString($dateStamp);
 
 			return($strTimeAgo);
 		}
-
+		
 		if($format === "time_ago_short"){
 
 			$strTimeAgo = UniteFunctionsUC::getTimeAgoString($dateStamp, "short");
 
 			return($strTimeAgo);
 		}
-
+		
 
 		if(empty($format))
 			$format = get_option("date_format");
@@ -1169,6 +1169,31 @@ class UniteCreatorTemplateEngineWork{
 
 		return($arrOutput);
 	}
+	
+	
+	/**
+	 * make fitler post time ago output
+	 */
+	public function filterPostTimeAgo($arrPost){
+		
+		//dmp($arrPost);
+		
+		// Always use post creation date (never modified date).
+		$timeStamp = UniteFunctionsUC::getVal($arrPost, "date_gmt");
+		
+		if(UniteFunctionsUC::isTimeStamp($timeStamp) == false)
+			$timeStamp = UniteFunctionsUC::getVal($arrPost, "date");
+		
+		if(UniteFunctionsUC::isTimeStamp($timeStamp) == false)
+			return("");
+		
+		$strTimeAgo = UniteFunctionsUC::getTimeAgoString((int)$timeStamp);
+		
+		//dmp($timeStamp);
+		//dmp($strTimeAgo);
+
+		return($strTimeAgo);
+	}
 
 
 	/**
@@ -1571,7 +1596,7 @@ class UniteCreatorTemplateEngineWork{
 			case "get_encoded_image":
 
 				$content = HelperUC::$operations->getLocalFileContentsByUrl($arg1);
-
+				
 				if(empty($content))
 					return(null);
 
@@ -1848,7 +1873,8 @@ class UniteCreatorTemplateEngineWork{
 		$filterPriceNumberFormat = new Twig\TwigFilter("price_number_format", array($this, "filterPriceNumberFormat"));
 		$filterWcPrice = new Twig\TwigFilter("wc_price", array($this, "filterWcPrice"));
 		$filterJsonDecode = new Twig\TwigFilter("json_decode", array($this, "filterJsonDecode"));
-
+		$filterTimeAgo = new Twig\TwigFilter("time_ago", array($this, "filterPostTimeAgo"));
+		
 		$putTestHtml = new Twig\TwigFunction('putTestHTML', array($this,"putTestHTML"));
 
 		//override filters
@@ -1914,6 +1940,7 @@ class UniteCreatorTemplateEngineWork{
 		$this->twig->addFilter($filterPriceNumberFormat);
 		$this->twig->addFilter($filterWcPrice);
 		$this->twig->addFilter($filterJsonDecode);
+		$this->twig->addFilter($filterTimeAgo);
 
 		//pro functions
 		$this->twig->addFunction($doAction);

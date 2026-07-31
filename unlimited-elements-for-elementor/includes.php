@@ -12,11 +12,11 @@ if(!defined('UNLIMITED_ELEMENTS_INC'))
 if ( ! defined( 'ABSPATH' ) ) exit;
 
 if(!defined("UNLIMITED_ELEMENTS_VERSION"))
-	define("UNLIMITED_ELEMENTS_VERSION", "2.0.5");
+	define("UNLIMITED_ELEMENTS_VERSION", "2.0.16");
+
 
 //disable elementor support for debugging purposes. keep it commented
 //define("UE_DISABLE_ELEMENTOR_SUPPORT", true);
-
 
 $currentFile = __FILE__;
 $currentFolder = dirname($currentFile);

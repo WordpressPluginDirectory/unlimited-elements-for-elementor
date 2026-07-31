@@ -218,17 +218,23 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		//set addon type - if specific category - no need
 		if(is_numeric($catID) == false || empty($catID) || $catID === "all")
 			$arrWhere[] = $this->db->getSqlAddonType($addonType);
-
+		
+		//sanitize sql inject
 		$filterSearch = UniteFunctionsUC::getVal($extra, "filter_search");
+				
 		$filterSearch = trim($filterSearch);
-
+		
+		$filterSearch = UniteFunctionsUC::sanitize($filterSearch, UniteFunctionsUC::SANITIZE_SQL_INJECTS);
+		
 		if(!empty($filterSearch)){
-			$filterSearch = $this->db->escape($filterSearch);
+			global $wpdb;
+			
 			$filterSearch = strtolower($filterSearch);
-
-			$arrWhere[] = "title like '%$filterSearch%'";
+			
+			$arrWhere[] = $wpdb->prepare("title like %s", '%' . $wpdb->esc_like($filterSearch) . '%');
 		}
-
+				
+		
 		$where = "";
 		if(!empty($arrWhere))
 			$where = implode(" and ", $arrWhere);
@@ -552,7 +558,7 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		$outputId = $objOutput->getWidgetID();
 
 		$arr = array();
-		$arr["html"] = $html;
+		$arr["html"] = UniteFunctionsUC::minifyHTML($html);
 		$arr["includes"] = $includes;
 
 		if($includeSelectors === true)
@@ -681,6 +687,23 @@ class UniteCreatorAddons extends UniteElementsBaseUC{
 		$html = UniteFunctionsUC::minifyHTML($html);
 		
 		return ($html);
+	}
+
+	/**
+	 * get addon settings as json-serializable array
+	 * analog of getAddonSettingsHTMLFromData
+	 */
+	public function getAddonSettingsJSONFromData($data){
+
+		$this->checkInitAddonGlobalVars($data);
+
+		$objAddon = $this->initAddonByData($data);
+
+		GlobalsProviderUC::$activeAddonForSettings = $objAddon;
+
+		$json = $objAddon->getJsonConfig();
+
+		return ($json);
 	}
 
 	/**

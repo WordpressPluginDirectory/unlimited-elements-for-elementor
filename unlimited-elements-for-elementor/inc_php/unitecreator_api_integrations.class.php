@@ -14,7 +14,7 @@ class UniteCreatorAPIIntegrations{
 	const FORMAT_DATE = "d.m.Y";
 	const FORMAT_DATETIME = "d.m.Y H:i";
 	const FORMAT_MYSQL_DATETIME = "Y-m-d H:i:s";
-
+	
 	const TYPE_CURRENCY_EXCHANGE = "currency_exchange";
 	const TYPE_GOOGLE_EVENTS = "google_events";
 	const TYPE_GOOGLE_REVIEWS = "google_reviews";
@@ -42,6 +42,7 @@ class UniteCreatorAPIIntegrations{
 	const GOOGLE_EVENTS_FIELD_ORDER = "google_events_order";
 	const GOOGLE_EVENTS_FIELD_LIMIT = "google_events_limit";
 	const GOOGLE_EVENTS_FIELD_CACHE_TIME = "google_events_cache_time";
+	const GOOGLE_EVENTS_FIELD_REQUIRE_TITLE = "google_events_require_title";
 	const GOOGLE_EVENTS_DEFAULT_LIMIT = 250;
 	const GOOGLE_EVENTS_DEFAULT_CACHE_TIME = 10;
 	const GOOGLE_EVENTS_RANGE_UPCOMING = "upcoming";
@@ -60,6 +61,10 @@ class UniteCreatorAPIIntegrations{
 	const GOOGLE_REVIEWS_FIELD_SHOW_DEBUG = "google_reviews_show_debug";
 	const GOOGLE_REVIEWS_SORT_BY = "google_reviews_sort_by";
 	const GOOGLE_REVIEWS_SERP_CACHE_TIME = "google_reviews_serp_cache_time";
+	const GOOGLE_REVIEWS_SHOW_DEMO_DATA = "google_reviews_show_demo_data";
+	const GOOGLE_REVIEWS_SERP_NUM_REVIEWS = "google_reviews_serp_num_reviews";
+	const GOOGLE_REVIEWS_SERP_DEFAULT_NUM_REQUESTS = 2;
+
 	const GOOGLE_REVIEWS_DEFAULT_CACHE_TIME = 10;
 	const GOOGLE_REVIEWS_CACHE_TIME_DAY = 86400; // 1 day in seconds
 	const GOOGLE_REVIEWS_CACHE_TIME_WEEK = 604800; // 1 week in seconds
@@ -223,6 +228,12 @@ class UniteCreatorAPIIntegrations{
 			case self::TYPE_GOOGLE_REVIEWS:
 				$data = UniteFunctionsUC::getVal($data, "reviews");
 			break;
+			case self::TYPE_YOUTUBE_PLAYLIST:
+				$data = UniteFunctionsUC::getVal($data, "videos");
+			break;
+			case self::TYPE_GOOGLE_EVENTS:
+				$data = UniteFunctionsUC::getVal($data, "events");
+			break;
 		}
 
 		return $data;
@@ -236,6 +247,15 @@ class UniteCreatorAPIIntegrations{
 	public function addDataToParams($data, $name, $paramType = null){
 
 		$params = UniteFunctionsUC::getVal($data, $name, array());
+
+		if(!is_array($params))
+			$params = array();
+
+		foreach($data as $key => $value){
+			if(is_string($key) && strpos($key, $name."_") === 0 && !array_key_exists($key, $params))
+				$params[$key] = $value;
+		}
+
 		$params = UniteFunctionsUC::clearKeysFirstUnderscore($params);
 				
 		try{
@@ -249,6 +269,12 @@ class UniteCreatorAPIIntegrations{
 				switch($paramType){
 					case "reviews":
 						$apiType = "google_reviews";
+					break;
+					case "youtube_playlist":
+						$apiType = "youtube_playlist";
+					break;
+					case "google_events":
+						$apiType = "google_events";
 					break;
 				}
 			}
@@ -359,6 +385,7 @@ class UniteCreatorAPIIntegrations{
 			"google_events:order" => self::GOOGLE_EVENTS_FIELD_ORDER,
 			"google_events:limit" => self::GOOGLE_EVENTS_FIELD_LIMIT,
 			"google_events:cache_time" => self::GOOGLE_EVENTS_FIELD_CACHE_TIME,
+			"google_events:require_title" => self::GOOGLE_EVENTS_FIELD_REQUIRE_TITLE,
 
 			"google_reviews:place_id" => self::GOOGLE_REVIEWS_FIELD_PLACE_ID,
 			"google_reviews:cache_time" => self::GOOGLE_REVIEWS_FIELD_CACHE_TIME,
@@ -601,6 +628,13 @@ class UniteCreatorAPIIntegrations{
 				"default" => self::GOOGLE_EVENTS_DEFAULT_LIMIT,
 			),
 			array(
+				"id" => self::GOOGLE_EVENTS_FIELD_REQUIRE_TITLE,
+				"type" => UniteCreatorDialogParam::PARAM_RADIOBOOLEAN,
+				"text" => __("Hide Events Without Title", "unlimited-elements-for-elementor"),
+				"desc" => __("Skip events that have no title in the calendar.", "unlimited-elements-for-elementor"),
+				"default" => true,
+			),
+			array(
 				"id" => self::GOOGLE_EVENTS_FIELD_TIMEZONE,
 				"type" => UniteCreatorDialogParam::PARAM_TEXTFIELD,
 				"text" => __("Timezone", "unlimited-elements-for-elementor"),
@@ -641,6 +675,7 @@ class UniteCreatorAPIIntegrations{
 				"text" => __("Playlist ID", "unlimited-elements-for-elementor"),
 				// translators: %1$s is page url, %2$s is page url
 				"desc" => sprintf(__("You can find the playlist ID in a YouTube URL: <br />— %1\$s<br />— %2\$s", "unlimited-elements-for-elementor"), "https://youtube.com/playlist?list=<b>[YOUR_PLAYLIST_ID]</b>", "https://youtube.com/watch?v=aBC-123xYz&list=<b>[YOUR_PLAYLIST_ID]</b>"),
+				"default" => "PLRz741VTawEo"
 			),
 			array(
 				"id" => self::YOUTUBE_PLAYLIST_FIELD_ORDER,
@@ -762,8 +797,10 @@ class UniteCreatorAPIIntegrations{
 			$this->validateGoogleCredentials();
 		else
 			$this->validateGoogleApiKey();
+		
 
 		$calendarId = $this->getRequiredParam(self::GOOGLE_EVENTS_FIELD_CALENDAR_ID, "Calendar ID");
+
 		$eventsRange = $this->getParam(self::GOOGLE_EVENTS_FIELD_RANGE);
 		$eventsRange = $this->getGoogleEventsDatesRange($eventsRange);
 		$eventsOrder = $this->getParam(self::GOOGLE_EVENTS_FIELD_ORDER);
@@ -771,6 +808,9 @@ class UniteCreatorAPIIntegrations{
 		$eventsLimit = intval($eventsLimit);
 		$cacheTime = $this->getCacheTimeParam(self::GOOGLE_EVENTS_FIELD_CACHE_TIME, self::GOOGLE_EVENTS_DEFAULT_CACHE_TIME);
 		$timezone = $this->getParam(self::GOOGLE_EVENTS_FIELD_TIMEZONE);
+		$requireTitle = $this->getParam(self::GOOGLE_EVENTS_FIELD_REQUIRE_TITLE, true);
+		$requireTitle = UniteFunctionsUC::strToBool($requireTitle);
+
 				
 		$orderFieldMap = array(
 			self::GOOGLE_EVENTS_ORDER_DATE_ASC => "date",
@@ -808,14 +848,27 @@ class UniteCreatorAPIIntegrations{
 		$events = $calendarService->getEvents($calendarId, $eventsParams, $timezone);
 		
 		foreach($events as $event){
+
+			if($requireTitle === true && $event->getTitle() === "")
+				continue;
+
 			$orderValue = ($orderField === "date")
 				? $event->getStartDate(self::FORMAT_MYSQL_DATETIME)
 				: null;
+
+			$startMysql = $event->getStartDate(self::FORMAT_MYSQL_DATETIME);
+			$endMysql = $event->getEndDate(self::FORMAT_MYSQL_DATETIME);
+			$startStamp = empty($startMysql) ? "" : strtotime($startMysql);
+			$endStamp = empty($endMysql) ? "" : strtotime($endMysql);
 
 			$data[] = array(
 				"id" => $event->getId(),
 				"start_date" => $event->getStartDate(self::FORMAT_DATETIME),
 				"end_date" => $event->getEndDate(self::FORMAT_DATETIME),
+				"start_date_stamp" => $startStamp,
+				"end_date_stamp" => $endStamp,
+				"start_time" => $event->getStartDate("H:i"),
+				"end_time" => $event->getEndDate("H:i"),
 				"title" => $event->getTitle(),
 				"description" => $event->getDescription(true),
 				"location" => $event->getLocation(),
@@ -826,7 +879,9 @@ class UniteCreatorAPIIntegrations{
 
 		$data = $this->sortData($data, $orderDirection);
 
-		return $data;
+		return array(
+			"events" => $data,
+		);
 	}
 
 	/**
@@ -933,7 +988,7 @@ class UniteCreatorAPIIntegrations{
 		$placesService = new UEGoogleAPIPlacesService();
 
 		$placeParams = array();
-				
+		
 		$apiKey = $this->getSerpAPIKey();
 		
 		$reviewsLanguage = $this->getParam(self::GOOGLE_REVIEWS_FIELD_LANG);
@@ -958,8 +1013,18 @@ class UniteCreatorAPIIntegrations{
 				break;
 		}
 		
-		$place = $placesService->getDetailsSerp($placeId, $apiKey, $placeParams, $this->googleReviewsShowDebug, $cacheTime);
+		$showDemoData = $this->getParam(self::GOOGLE_REVIEWS_SHOW_DEMO_DATA, false);
+
+		$numRequests = (int)$this->getParam(self::GOOGLE_REVIEWS_SERP_NUM_REVIEWS, self::GOOGLE_REVIEWS_SERP_DEFAULT_NUM_REQUESTS);
+		if($numRequests < 1)
+			$numRequests = self::GOOGLE_REVIEWS_SERP_DEFAULT_NUM_REQUESTS;
 		
+		if($showDemoData == true && GlobalsProviderUC::$isInsideEditor == true){
+			$place = $placesService->getDetailsDemo();
+		}else{
+			$place = $placesService->getDetailsSerp($placeId, $apiKey, $placeParams, $this->googleReviewsShowDebug, $cacheTime, $numRequests);
+		}
+
 		return($place);
 	}
 	
@@ -1002,7 +1067,10 @@ class UniteCreatorAPIIntegrations{
 			else
 				$place = $this->getGoogleReviewsData_serp($placeId);
 		
-		
+			if(empty($place))
+				return(array());
+			
+			
 		//add api source
 			
 			$apiSourceText = ($isSerp == true)?"serp":"official";
@@ -1034,12 +1102,17 @@ class UniteCreatorAPIIntegrations{
 			
 			$arrReviewsOutput = array();
 			
-			foreach($arrReviews as $review){
+			foreach($arrReviews as $index=>$review){
 				
 				if($isSerp == true)
 					$review->setSerpSource();
+
+				// Skip rating-only reviews with no written text
+				$textPlain = trim(strip_tags((string)$review->getText(false)));
+				if($textPlain === "")
+					continue;
 				
-				$arrReviewsOutput[] = array(
+				$arrReview = array(
 					"id" => $review->getId(),
 					"date" => $review->getDate(self::FORMAT_DATETIME),
 					"time_ago" => $review->getTimeAgoText(),
@@ -1048,7 +1121,8 @@ class UniteCreatorAPIIntegrations{
 					"author_name" => $review->getAuthorName(),
 					"author_photo" => $review->getAuthorPhotoUrl(),
 				);
-				
+ 
+				$arrReviewsOutput[] = $arrReview;
 			}
 			
 			$data["reviews"] = $arrReviewsOutput;
@@ -1130,9 +1204,16 @@ class UniteCreatorAPIIntegrations{
 				),
 				"default" => "week"
 			);
+
+			$fields[] = array(
+				"id" => self::GOOGLE_REVIEWS_SHOW_DEMO_DATA,
+				"type" => UniteCreatorDialogParam::PARAM_RADIOBOOLEAN,
+				"text" => __("Show Demo Data in Editor", "unlimited-elements-for-elementor"),
+				"desc" => __("Show demo data in editor to save serp credits.", "unlimited-elements-for-elementor"),
+				"default" => "false"
+			);
 			
 		}
-		
 		
 		$fields[] = array(
 				"id" => self::GOOGLE_REVIEWS_FIELD_LANG,
@@ -1156,10 +1237,18 @@ class UniteCreatorAPIIntegrations{
 				),
 				"default" => "qualityScore"
 			);
-			
+
+			$fields[] = array(
+				"id" => self::GOOGLE_REVIEWS_SERP_NUM_REVIEWS,
+				"type" => UniteCreatorDialogParam::PARAM_NUMBER,
+				"text" => __("Number of API Requests", "unlimited-elements-for-elementor"),
+				// translators: %d is a number
+				"desc" => sprintf(__("Not the number of reviews. This is how many Serp API calls to make. The first request returns about 8 reviews; each extra request loads up to 20 more. Default is %d (~28 reviews), maximum is 5. Use the widget Max Reviews Number to limit how many are shown. Reviews without text are skipped. Each request uses Serp API quota.", "unlimited-elements-for-elementor"), self::GOOGLE_REVIEWS_SERP_DEFAULT_NUM_REQUESTS),
+				"default" => self::GOOGLE_REVIEWS_SERP_DEFAULT_NUM_REQUESTS,
+			);
 		}
 		
-		
+
 		//add fields for single mode
 		
 		if($isSingle == true){
@@ -1626,7 +1715,9 @@ class UniteCreatorAPIIntegrations{
 
 		$data = $this->sortData($data, $orderDirection);
 
-		return $data;
+		return array(
+			"videos" => $data,
+		);
 	}
 
 	/**

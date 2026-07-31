@@ -201,22 +201,8 @@ class UniteCreatorElementorIntegrate{
 			}else{
 				$name = $addon->getName();
 			}
-
-			//help save action and skip addons that not exists in layout
-			if(self::$isSaveBuilderMode == true){
-
-				$arrWidgetsNames = HelperProviderCoreUC_EL::getWidgetNamesFromElementorContent(self::$arrSaveBuilderContent);
-
-				$nameForCheck = str_replace("_elementor", "", $name);
-
-				if(!isset($arrWidgetsNames[$nameForCheck])){
-
-					continue;
-				}
-			}
-
-
-
+			
+			
 			if($isEnoughtMemory == false){
 
 				self::logMemoryUsage("Skip widget register (no memory): ".$name.", counter: ".self::$counterWidgets, true);
@@ -614,7 +600,7 @@ class UniteCreatorElementorIntegrate{
 				$this->objBackgroundWidget = new UniteCreatorElementorBackgroundWidget();
 
 			$arrAddonValues = $this->objBackgroundWidget->getBGSettings($settings, $backgroundType);
-
+			
 			if(!empty($arrAddonValues))
 				$objAddon = $this->objBackgroundWidget->setAddonSettingsFromElementorSettings($objAddon, $arrAddonValues);
 			
@@ -1602,6 +1588,78 @@ class UniteCreatorElementorIntegrate{
 		
 		return($objWidget);
 	}
+
+
+	/**
+	 * Filter/search AJAX: merge Elementor parse_dynamic_settings() into addon params (same as get_settings_for_display() on front-end).
+	 *
+	 * @param UniteCreatorAddon $addon
+	 * @param int|string|null $layoutPostID Document post ID from layoutid request (improves post-id and other document-based tags).
+	 * @return bool True if values were merged.
+	 */
+	public function mergeElementorDynamicSettingsIntoAddon(UniteCreatorAddon $addon, $layoutPostID = null){
+
+		if($addon->hasElementorDynamicSettings() == false)
+			return(false);
+
+		$switchedDocument = false;
+		$previousDocument = null;
+
+		try{
+
+			if(!empty($layoutPostID) && class_exists('\Elementor\Plugin') && !empty(\Elementor\Plugin::$instance->documents)){
+
+				$layoutPostID = (int)$layoutPostID;
+
+				if($layoutPostID > 0 && class_exists('\ElementorPro\Plugin')){
+
+					$document = \Elementor\Plugin::$instance->documents->get($layoutPostID);
+
+					if(!empty($document)){
+
+						$previousDocument = \ElementorPro\Plugin::elementor()->documents->get_current();
+
+						\ElementorPro\Plugin::elementor()->documents->switch_to_document($document);
+						$switchedDocument = true;
+					}
+				}
+			}
+
+			$objWidget = $this->getWidgetFromAddon($addon);
+
+			if(empty($objWidget))
+				return(false);
+
+			$arrResolved = $objWidget->ueGetDynamicSettingsValues(true);
+
+			if(empty($arrResolved) || is_array($arrResolved) == false)
+				return(false);
+
+			$arrValues = $addon->getOriginalValues();
+
+			if(empty($arrValues))
+				$arrValues = array();
+
+			foreach($arrResolved as $key => $val){
+
+				if($key === '__dynamic__')
+					continue;
+
+				$arrValues[$key] = $val;
+			}
+
+			$addon->setParamsValues($arrValues);
+
+			return(true);
+
+		}finally{
+
+			if($switchedDocument == true && $previousDocument !== null && class_exists('\ElementorPro\Plugin')){
+
+				\ElementorPro\Plugin::elementor()->documents->switch_to_document($previousDocument);
+			}
+		}
+	}
 	
 	
 	/**
@@ -1777,8 +1835,10 @@ class UniteCreatorElementorIntegrate{
     	self::$isEditMode = HelperUC::isEditMode();
 		
     	//if turn it on - please do good QA - it's for saving resources on save builder action
-    	//self::$isSaveBuilderMode = $this->isSaveBuilderAction();
+    	self::$isSaveBuilderMode = $this->isSaveBuilderAction();
 		
+    	GlobalsUC::$isSaveBuilderMode = self::$isSaveBuilderMode;
+    	
     	GlobalsProviderUC::$isInsideEditor = self::$isEditMode;
 		
     	$arrSettingsValues = HelperProviderCoreUC_EL::getGeneralSettingsValues();

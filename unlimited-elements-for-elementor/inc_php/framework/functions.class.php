@@ -19,8 +19,10 @@ class UniteFunctionsUC{
 	const SANITIZE_VIMEO = "sanitize_vimeo";
 	const SANITIZE_WISTIA = "sanitize_wistia";
 	const SANITIZE_URL = "sanitize_url";
+	const SANITIZE_URL_TRAVERSE = "sanitize_url_traverse";
 	const SANITIZE_ATTR = "sanitize_attr";
 	const SANITIZE_HTML = "sanitize_html";
+	const SANITIZE_SQL_INJECTS = "SQL_INJECTS";
 	
 	
 	private static $serial = 0;
@@ -73,7 +75,7 @@ class UniteFunctionsUC{
 		try{
 			throw new Exception("Show me the trace");
 		}catch(Exception $e){
-
+			
 			$trace = $e->getTraceAsString();
 			dmp($trace);
 
@@ -1358,6 +1360,7 @@ class UniteFunctionsUC{
 		$arrSanitize[self::SANITIZE_KEY] = __("Sanitize KEY", "unlimited-elements-for-elementor");
 		$arrSanitize[self::SANITIZE_TEXT_FIELD] = __("Sanitize Text Field", "unlimited-elements-for-elementor");
 		$arrSanitize[self::SANITIZE_NOTHING] = __("No Sanitize (not recomended)", "unlimited-elements-for-elementor");
+		$arrSanitize[self::SANITIZE_SQL_INJECTS] = __("Sanitize SQL injects (title search)", "unlimited-elements-for-elementor");
 
 		return($arrSanitize);
 	}
@@ -2737,11 +2740,17 @@ class UniteFunctionsUC{
 			case self::SANITIZE_URL:
 				$str = self::sanitizeSecuredUrl($str);
 			break;
+			case self::SANITIZE_URL_TRAVERSE:
+				$str = self::sanitizeUrlTraverse($str);
+			break;
 			case self::SANITIZE_ATTR:
 				$str = self::sanitizeSecuredAttribute($str);
 			break;
 			case self::SANITIZE_HTML:
 				$str = self::sanitizeHTMLRemoveJS($str);
+			break;
+			case self::SANITIZE_SQL_INJECTS:
+				$str = self::sanitizeSqlInjects($str);
 			break;
 			default:
 				self::throwError("Sanitize string error: wrong type: $type");
@@ -2752,6 +2761,20 @@ class UniteFunctionsUC{
 			dmp("sanitize output: $str");
 		
 		return($str);
+	}
+
+	/**
+	 * Strip characters unsuitable for plain title / LIKE search (defense in depth; use with wpdb::prepare).
+	 */
+	public static function sanitizeSqlInjects($str){
+
+		if ( is_string( $str ) == false ) {
+			return '';
+		}
+
+		$stripped = preg_replace( '/[^\p{L}\p{N}\s\'.,&\x{2019}-]+/u', '', $str );
+
+		return is_string( $stripped ) ? trim( $stripped ) : '';
 	}
 
 	/**
@@ -2808,15 +2831,26 @@ class UniteFunctionsUC{
         // Remove all event handlers that start with 'javascript:'
         $html = preg_replace('/\s*on\w+\s*=\s*["\']?\s*javascript\s*:[^"\'>]*["\']?/i', '', $html);
 
-		// Remove all event handlers, even if malformed (e.g., <iframe/onload=...>)
-        $html = preg_replace('/\s*\/?on\w+\s*=\s*["\']?[^"\'>]*["\']?/i', '', $html);
+		// Remove event handlers (incl. chained/malformed: onerror/onload="", onerror/**/=, etc.)
+		$eventHandlerPattern = '/\s*\/?on\w+(?:\s*\/\s*on\w+)*[^>]*?=\s*["\']?[^"\'>]*["\']?/i';
+		$prevHtml = null;
+		$maxPasses = 10;
+		while($html !== $prevHtml && $maxPasses-- > 0){
+			$prevHtml = $html;
+			$html = preg_replace($eventHandlerPattern, '', $html);
+		}
+
+		// Remove leftover JS call debris from collapsed malformed handlers (e.g. <img src="x"=alert(1)>)
+		$html = preg_replace('/=\s*(?:alert|confirm|prompt|eval)\s*\(\s*[^)]*\s*\)/i', '', $html);
         
         // Remove javascript: URLs in href/src/xlink:href/etc.
         $html = preg_replace('/\s*(href|src|xlink:href)\s*=\s*["\']?\s*javascript\s*:[^"\'>]*["\']?/i', '', $html);
 
         // Remove potentially harmful attributes
-        $html = preg_replace('/\s*(autofocus|formaction|fscommand|seekSegmentTime|xmlns)\s*=\s*["\'][^"\']*["\']?/i', '', $html);
-        
+        $html = preg_replace('/\s*(autofocus|formaction|fscommand|seekSegmentTime|xmlns)\s*=\s*["\'][^"\']*["\']?/i', '', $html);		
+
+		//$html = wp_kses_post( $html );	//harm gallery output, will think later where to put it
+		
         return trim($html);		
 	}
 
@@ -2839,7 +2873,6 @@ class UniteFunctionsUC{
     	return($str);
     }
 	
-    
 	/**
 	 * sanitize color string
 	 */
@@ -2853,6 +2886,49 @@ class UniteFunctionsUC{
 	
 	
 	/**
+	 * Whether the URL string contains a path traversal segment (e.g. ../).
+	 */
+	private static function urlHasPathTraversal($url){
+
+		if(empty($url))
+			return(false);
+
+		$decodedUrl = self::urlDecode($url);
+		$normalized = str_replace('\\', '/', $decodedUrl);
+
+		if(strpos($normalized, '../') !== false)
+			return(true);
+
+		$patterns = array(
+			'/\.\.(?:[\/\\\\]|%2[fF]|%5[cC])/i',
+			'/(?:^|[\/\\\\]|%2[fF]|%5[cC])(?:%2[eE]\.|\.%2[eE]|%2[eE]%2[eE])(?:[\/\\\\]|%2[fF]|%5[cC])/i',
+		);
+
+		foreach($patterns as $pattern){
+			if(preg_match($pattern, $decodedUrl))
+				return(true);
+		}
+
+		return(false);
+	}
+
+
+	/**
+	 * Reject URLs whose path contains traversal (../). Otherwise same as esc_url().
+	 */
+	public static function sanitizeUrlTraverse($url){
+
+		if(empty($url))
+			return($url);
+
+		if(self::urlHasPathTraversal($url))
+			return("");
+
+		return(esc_url($url));
+	}
+
+
+	/**
 	 * Sanitizes a URL by detecting malicious payloads.
 	 * Returns an empty string if the URL contains potential threats.
 	 */
@@ -2860,6 +2936,9 @@ class UniteFunctionsUC{
 		
 		if(empty($url))
 			return($url);
+
+		if(self::urlHasPathTraversal($url))
+			return("");
 	    			
 	    // Trim and decode the URL for better detection
 	    $decodedUrl = self::urlDecode($url);
@@ -3406,9 +3485,14 @@ class UniteFunctionsUC{
 	 * check if path under base path
 	 */
 	public static function isPathUnderBase($path, $basePath){
+				
 		$path = self::pathToUnix($path);
 		$basePath = self::pathToUnix($basePath);
-
+		
+		//check path traversal
+		if(strpos($path, '../') !== false)
+			return(false);
+		
 		if(strpos($path, $basePath) === 0)
 			return(true);
 
@@ -3522,13 +3606,20 @@ class UniteFunctionsUC{
 
 	public static function z___________TIME_AND_DATE__________(){}
 
-
+	
 	/**
 	 * get time ago since now
 	 */
 	public static function getTimeAgoString($time_stamp, $textFormat="long"){
 		
-		$time_difference = strtotime('now') - $time_stamp;
+		$now = time();
+		
+		if ( $time_stamp > $now ) {
+					
+			return self::getTimeFromNowString( $time_stamp, $textFormat );
+		}
+		
+		$time_difference = $now - $time_stamp;
 				
 		$textHours = __('hours',"unlimited-elements-for-elementor"); 
 		$textHour = __('hour',"unlimited-elements-for-elementor");
@@ -3550,7 +3641,6 @@ class UniteFunctionsUC{
 			$textMunites = __('min',"unlimited-elements-for-elementor");
 			$textMunite = __('min',"unlimited-elements-for-elementor");
 		}
-		
 		
 		//year
 		if ($time_difference >= 60 * 60 * 24 * 365.242199)
@@ -3582,7 +3672,7 @@ class UniteFunctionsUC{
 	 */
 	private static function getTimeAgoStringUnit($time_stamp, $divisor, $strUnit, $strUnitSingle){
 
-		$time_difference = strtotime("now") - $time_stamp;
+		$time_difference = time() - $time_stamp;
 		$time_units      = floor($time_difference / $divisor);
 
 		settype($time_units, 'string');
@@ -3598,6 +3688,93 @@ class UniteFunctionsUC{
 		$output = apply_filters("ue_modify_time_ago_string", $output);
 		
 		return($output);
+	}
+
+
+	/**
+	 * Relative time for future timestamps (e.g. scheduled posts): "in 2 hours", not "-120 minutes ago".
+	 */
+	private static function getTimeFromNowString( $time_stamp, $textFormat = "long" ) {
+
+		$time_difference = $time_stamp - time();
+
+		$textHours = __( 'hours', 'unlimited-elements-for-elementor' );
+		$textHour  = __( 'hour', 'unlimited-elements-for-elementor' );
+
+		$textMunites = __( 'minutes', 'unlimited-elements-for-elementor' );
+		$textMunite  = __( 'minute', 'unlimited-elements-for-elementor' );
+
+		$textYears = __( 'years', 'unlimited-elements-for-elementor' );
+		$textYear  = __( 'year', 'unlimited-elements-for-elementor' );
+
+		$textWeeks = __( 'weeks', 'unlimited-elements-for-elementor' );
+		$textWeek  = __( 'week', 'unlimited-elements-for-elementor' );
+
+		if ( $textFormat == 'short' ) {
+
+			$textHours   = __( 'h', 'unlimited-elements-for-elementor' );
+			$textHour    = __( 'h', 'unlimited-elements-for-elementor' );
+			$textMunites = __( 'min', 'unlimited-elements-for-elementor' );
+			$textMunite  = __( 'min', 'unlimited-elements-for-elementor' );
+		}
+
+		if ( $time_difference >= 60 * 60 * 24 * 365.242199 ) {
+			return self::getTimeFromNowStringUnit( $time_stamp, 60 * 60 * 24 * 365.242199, $textYears, $textYear );
+		}
+
+		if ( $time_difference >= 60 * 60 * 24 * 30.4368499 ) {
+			return self::getTimeFromNowStringUnit( $time_stamp, 60 * 60 * 24 * 30.4368499, __( 'months', 'unlimited-elements-for-elementor' ), __( 'month', 'unlimited-elements-for-elementor' ) );
+		}
+
+		if ( $time_difference >= 60 * 60 * 24 * 7 ) {
+			return self::getTimeFromNowStringUnit( $time_stamp, 60 * 60 * 24 * 7, $textWeeks, $textWeek );
+		}
+
+		if ( $time_difference >= 60 * 60 * 24 ) {
+			return self::getTimeFromNowStringUnit( $time_stamp, 60 * 60 * 24, __( 'days', 'unlimited-elements-for-elementor' ), __( 'day', 'unlimited-elements-for-elementor' ) );
+		}
+
+		if ( $time_difference >= 60 * 60 ) {
+			return self::getTimeFromNowStringUnit( $time_stamp, 60 * 60, $textHours, $textHour );
+		}
+
+		return self::getTimeFromNowStringUnit( $time_stamp, 60, $textMunites, $textMunite );
+	}
+
+
+	/**
+	 * Format a future interval as "in N unit(s)".
+	 */
+	private static function getTimeFromNowStringUnit( $time_stamp, $divisor, $strUnit, $strUnitSingle ) {
+
+		$time_difference = $time_stamp - time();
+		$time_units      = floor( $time_difference / $divisor );
+
+		settype( $time_units, 'string' );
+
+		if ( $time_units === '0' ) {
+			$time_units = 1;
+		}
+
+		if ( $time_units == 1 ) {
+			$output = sprintf(
+				/* translators: 1: number (typically 1), 2: time unit singular, e.g. "minute" */
+				__( 'in %1$s %2$s', 'unlimited-elements-for-elementor' ),
+				$time_units,
+				$strUnitSingle
+			);
+		} else {
+			$output = sprintf(
+				/* translators: 1: number, 2: time unit plural, e.g. "minutes" */
+				__( 'in %1$s %2$s', 'unlimited-elements-for-elementor' ),
+				$time_units,
+				$strUnit
+			);
+		}
+
+		$output = apply_filters( 'ue_modify_time_ago_string', $output );
+
+		return $output;
 	}
 
 
@@ -4391,30 +4568,65 @@ class UniteFunctionsUC{
 	/**
      * HTML-minifyer
     */
-	public static function minifyHTML($html) {
-		// skip <pre>, <code>, <textarea>
-		preg_match_all('#<(pre|code|textarea)\b[^>]*>.*?</\1>#si', $html, $matches);
-		$placeholders = [];
-		foreach ($matches[0] as $i => $block) {
-			$placeholder = "___HTML_BLOCK_" . $i . "___";
-			$placeholders[$placeholder] = $block;
-			$html = str_replace($block, $placeholder, $html);
-		}
+    public static function minifyHTML($html) {
+        if (empty($html)) return $html;
 
-		// minifying
-		$html = preg_replace('/\>[^\S ]+/s', '>', $html);
-		$html = preg_replace('/[^\S ]+\</s', '<', $html);
-		$html = preg_replace('/(\s)+/s', ' ', $html);
-		$html = preg_replace('/[\r\n\t]+/s', '', $html);
-		$html = trim($html);
+        $blocks = [];
 
-		// return textarea
-		foreach ($placeholders as $placeholder => $block) {
-			$html = str_replace($placeholder, $block, $html);
-		}
+        $html = preg_replace_callback('/<(script|style)[^>]*>.*?<\/\\1>/is', function($match) use (&$blocks) {
+            $id = "@@@UELM_BLOCK_" . count($blocks) . "@@@";
+            $blocks[$id] = $match[0];
+            return $id;
+        }, $html);
 
-		return $html;
-	}
-	
+        $html = preg_replace('/\s+/', ' ', $html);
+        
+        $html = str_replace('> <', '><', $html);
+
+        foreach ($blocks as $id => $content) {
+            if (strpos($content, '<script') === 0) {
+                $minified = self::processJS($content);
+            } elseif (strpos($content, '<style') === 0) {
+                $minified = self::processCSS($content);
+            } else {
+                $minified = $content;
+            }
+            
+            $html = str_replace($id, $minified, $html);
+        }
+
+        return trim($html);
+    }
+
+    private static function processJS($scriptTag) {
+        if (preg_match('/^(<script[^>]*>)(.*?)(<\/script>)$/is', $scriptTag, $m)) {
+            $header = $m[1];
+            $code = $m[2];
+            $footer = $m[3];
+
+            if(class_exists("JShrink\\Minifier") == false)
+                return $scriptTag;
+
+            try {
+                $minifiedCode = \JShrink\Minifier::minify($code);
+                return $header . $minifiedCode . $footer;
+            } catch (\Throwable $e) {
+                return $scriptTag;
+            }
+        }
+        return $scriptTag;
+    }
+
+    private static function processCSS($styleTag) {
+        if (preg_match('/^(<style[^>]*>)(.*?)(<\/style>)$/is', $styleTag, $m)) {
+            $css = $m[2];
+            $css = preg_replace('!/\*.*?\*/!s', '', $css); 
+            $css = preg_replace('/\s*([\{\};:,])\s*/', '$1', $css); 
+            $css = str_replace(';}', '}', $css); 
+            $css = preg_replace('/\s+/', ' ', $css);
+            return $m[1] . trim($css) . $m[3];
+        }
+        return $styleTag;
+    }
 
 }

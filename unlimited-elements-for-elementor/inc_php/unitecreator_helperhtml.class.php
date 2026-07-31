@@ -199,7 +199,14 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			//output elementor icons
 			$jsonElementorIcons = UniteFontManagerUC::elementor_getJsonIcons();
 			$js .= self::TAB2.'var g_ucElIcons = '.$jsonElementorIcons.';'.self::BR;
-
+			// output google fonts data (used by settings scripts)
+			$fontData = HelperUC::getFontPanelData();
+			$googleFonts = UniteFunctionsUC::getVal($fontData, "arrGoogleFonts");
+			$googleFontsBaseUrl = HelperHtmlUC::getGoogleFontBaseUrl();
+			$js .= self::TAB2.'if(typeof g_ucGoogleFonts === "undefined"){ var g_ucGoogleFonts = '.UniteFunctionsUC::jsonEncodeForClientSide(array(
+				"fonts" => $googleFonts,
+				"base_url" => $googleFontsBaseUrl,
+			)).'; }'.self::BR;
 
 			//get nonce
 			if(method_exists("UniteProviderFunctionsUC", "getNonce"))
@@ -233,7 +240,9 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 
 		/**
-		 * get version text
+		 * get version text:
+		 * - always include the first 3 changelog sections
+		 * - if combined text is under 400 characters, also include up to 2 more (max 5 total)
 		 */
 		public static function getVersionText(){
 
@@ -244,10 +253,111 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			
 			$content = UniteFunctionsUC::fileGetContents($filepath);
 			$content = trim($content);
-			
-			$content = substr($content, 0, 4000);
-			
-			return ($content);
+
+			$firstSection = self::getFirstChangelogVersionSection($content);
+			if($firstSection !== null)
+				return $firstSection;
+
+			return substr($content, 0, 7000);
+		}
+
+		/**
+		 * Extract first changelog sections from `changelog.txt` (readme-style lines: "= 1.2.3 - date =").
+		 * Always returns at least the first 3 sections (if available).
+		 * If the combined text of the first 3 sections is under 400 characters, append up to 2 more sections.
+		 *
+		 * @param string $content
+		 * @return string|null
+		 */
+		private static function getFirstChangelogVersionSection($content){
+
+			$normalized = str_replace("\r\n", "\n", $content);
+			$lines = explode("\n", $normalized);
+			$versionLinePattern = '/^= .+ =\s*$/';
+
+			$startIndex = null;
+			foreach($lines as $i => $line){
+				if(preg_match($versionLinePattern, $line)){
+					$startIndex = (int) $i;
+					break;
+				}
+			}
+
+			if($startIndex === null)
+				return null;
+
+			$count = count($lines);
+
+			$minSections = 3;
+			$maxSections = 5;
+			$maxCharsAfterMin = 5000;
+
+			$arrSectionsText = array();
+			$nextSectionStartIndex = $startIndex;
+
+			// 1) Always pull first N sections (default 3)
+			for($secIndex = 0; $secIndex < $minSections; $secIndex++){
+				if($nextSectionStartIndex === null)
+					break;
+
+				$section = self::extractSingleChangelogVersionSection($lines, $count, $versionLinePattern, $nextSectionStartIndex);
+				if(!empty($section["text"]))
+					$arrSectionsText[] = $section["text"];
+
+				$nextSectionStartIndex = $section["next_heading_index"];
+			}
+
+			if(empty($arrSectionsText))
+				return null;
+
+			$joinedText = implode("\n\n", $arrSectionsText);
+			$joinedLen = function_exists("mb_strlen") ? mb_strlen($joinedText, "UTF-8") : strlen($joinedText);
+
+			// If we couldn't collect enough sections, just return what we have.
+			if(count($arrSectionsText) < $minSections)
+				return $joinedText;
+
+			// 2) If short enough, append up to (max - min) more sections (default +2)
+			if($joinedLen < $maxCharsAfterMin){
+				for($secIndex = count($arrSectionsText); $secIndex < $maxSections; $secIndex++){
+					if($nextSectionStartIndex === null)
+						break;
+
+					$section = self::extractSingleChangelogVersionSection($lines, $count, $versionLinePattern, $nextSectionStartIndex);
+					if(!empty($section["text"]))
+						$arrSectionsText[] = $section["text"];
+
+					$nextSectionStartIndex = $section["next_heading_index"];
+				}
+			}
+
+			return implode("\n\n", $arrSectionsText);
+		}
+
+		/**
+		 * @param array $lines
+		 * @param int $lineCount
+		 * @param string $versionLinePattern
+		 * @param int $sectionStartIndex
+		 * @return array
+		 */
+		private static function extractSingleChangelogVersionSection($lines, $lineCount, $versionLinePattern, $sectionStartIndex){
+
+			$sectionLines = array($lines[$sectionStartIndex]);
+			$nextHeadingIndex = null;
+
+			for($j = $sectionStartIndex + 1; $j < $lineCount; $j++){
+				if(preg_match($versionLinePattern, $lines[$j])){
+					$nextHeadingIndex = $j;
+					break;
+				}
+				$sectionLines[] = $lines[$j];
+			}
+
+			return array(
+				"text" => trim(implode("\n", $sectionLines)),
+				"next_heading_index" => $nextHeadingIndex,
+			);
 		}
 
 		/**

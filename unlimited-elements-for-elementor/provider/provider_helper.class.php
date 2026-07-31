@@ -137,6 +137,41 @@ class HelperProviderUC{
 
 
 	/**
+	 * get meta select repeater default values
+	 */
+	public static function getMetaSelectDefaultValues(){
+
+		return(array());
+	}
+
+
+	/**
+	 * get meta select repeater fields
+	 */
+	public static function getMetaSelectRepeaterFields(){
+
+		$settings = new UniteCreatorSettings();
+
+		$params = array();
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
+
+		$settings->addTextBox("title", "", __("Title", "unlimited-elements-for-elementor"), $params);
+
+		$params = array();
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
+
+		$settings->addTextBox("meta_key", "", __("Meta Key", "unlimited-elements-for-elementor"), $params);
+
+		$params = array();
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_TEXTFIELD;
+
+		$settings->addTextBox("meta_value", "", __("Meta Value", "unlimited-elements-for-elementor"), $params);
+
+		return($settings);
+	}
+
+
+	/**
 	 * get data for meta compare select
 	 */
 	public static function getArrMetaCompareSelect(){
@@ -587,15 +622,20 @@ class HelperProviderUC{
 	
 	/**
 	 * get repeater items - from json
+	 *
+	 * @param mixed $httpContext Optional context for getUrlContents HTTP hooks (ue_http_pre_request / ue_http_response).
 	 */
-	public static function getRepeaterItems_json($arrValues, $name, $showDebugData = false, $showDebugContent = false){
+	public static function getRepeaterItems_json($arrValues, $name, $showDebugData = false, $showDebugContent = false, $httpContext = null){
+		
+		$showDebugData = ($showDebugData == true && HelperUC::canShowDebugOutput());
+		$showDebugContent = ($showDebugContent == true && HelperUC::canShowDebugOutput());
 		
 		$contentLocation = UniteFunctionsUC::getVal($arrValues, $name."_json_csv_location");
-
+		
 		if($contentLocation == "url"){
 
 			$url = UniteFunctionsUC::getVal($arrValues, $name."_json_csv_url");
-
+			
 			if(empty($url)){
 
 				if($showDebugData)
@@ -604,7 +644,7 @@ class HelperProviderUC{
 				return(null);
 			}
 			
-			$dynamicFieldValue = HelperUC::$operations->getUrlContents($url, $showDebugData);
+			$dynamicFieldValue = HelperUC::$operations->getUrlContents($url, $showDebugData, false, $httpContext);
 			
 		}else{
 			$dynamicFieldValue = UniteFunctionsUC::getVal($arrValues, $name."_json_csv_dynamic_field");
@@ -1278,6 +1318,11 @@ class HelperProviderUC{
 					
 					$settingsManager->addTextBox($paramName, $paramDefault, $field["text"], $params);
 				break;
+				case UniteCreatorDialogParam::PARAM_NUMBER:
+					$params["origtype"] = UniteCreatorDialogParam::PARAM_NUMBER;
+					$params["add_dynamic"] = true;
+					$settingsManager->addTextBox($paramName, $paramDefault, $field["text"], $params);
+				break;
 				case UniteCreatorDialogParam::PARAM_DROPDOWN:
 					$params["add_dynamic"] = true;
 					$settingsManager->addSelect($paramName, array_flip($field["options"]), $field["text"], $paramDefault, $params);
@@ -1620,20 +1665,35 @@ class HelperProviderUC{
 
 	/**
 	 * check if user has some operations permissions
+	 * return true/false
 	 */
 	public static function isUserHasOperationsPermissions(){
-
+		
 		$permission = HelperProviderCoreUC_EL::getGeneralSetting("edit_permission");
-
+		
 		$capability = "manage_options";
 		if($permission == "editor")
 			$capability = "edit_pages";
 		
 		$isUserHasPermission = current_user_can($capability);
-
+		
+		if($isUserHasPermission == false)
+			return(false);
+		
+		//check by specific roles
+				
+		$user = wp_get_current_user();
+		if (!$user || empty($user->roles))
+			return false;		
+		
+		$roles = (array) $user->roles;
+			if (in_array('contributor', $roles, true) || in_array('author', $roles, true))
+				return false;		
+			
 		return($isUserHasPermission);
 	}
 
+	
 	/**
 	 * verify admin permisison of the plugin, use it before ajax actions
 	 */
@@ -2054,6 +2114,34 @@ class HelperProviderUC{
 		dmp("Post Terms for post <b>$postTitle</b>: ");
 		dmp($arrTermsTitles);
 		
+	}
+	
+	/**
+	 * show current post Elementor data debug (decoded _elementor_data via core helper)
+	 */
+	public static function showElementorDataDebug(){
+		
+		$post = get_post();
+		
+		if(empty($post))
+			return(false);
+		
+		$postTitle = $post->post_title;
+		$postID = $post->ID;
+		
+		$arrData = HelperProviderCoreUC_EL::getElementorContentByPostID($postID);
+		
+		if(empty($arrData)){
+			return(false);
+		}
+		
+		dmp("Elementor data (_elementor_data) for post: <b>$postTitle</b>, post id: $postID");
+		
+		$arrForShow = UniteFunctionsUC::modifyDataArrayForShow($arrData);
+		
+		dmp($arrForShow);
+		
+		return(true);
 	}
 	
 	/**

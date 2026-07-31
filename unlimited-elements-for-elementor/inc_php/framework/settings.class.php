@@ -38,6 +38,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 		const TYPE_BUTTON = "button";
 		const TYPE_LINK = "link";
 		const TYPE_IMAGE = "image";
+		const TYPE_FILE = "file";
 		const TYPE_BOOLEAN = "boolean";
 		const TYPE_EDITOR = "editor";
 		const TYPE_MP3 = "mp3";
@@ -754,6 +755,16 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			$this->add($name, $defaultValue, $text, self::TYPE_IMAGE, $arrParams);
 		}
 
+	/**
+	 * add file chooser setting
+	 */
+	public function addFile($name, $defaultValue = "", $text = "", $arrParams = array()){
+
+		$arrParams["label_block"] = true;
+
+		$this->add($name, $defaultValue, $text, self::TYPE_FILE, $arrParams);
+	}
+
 		/**
 		 * add image chooser setting
 		 */
@@ -881,7 +892,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			}
 
 			$setting["id"] = $this->idPrefix.$itemName;
-			$setting["id_row"] = $setting["id"]."_row";
+			// $setting["id_row"] = $setting["id"]."_row";
 			$setting["name"] = $itemName;
 
 			//add sap key
@@ -922,7 +933,7 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 			$setting["id"] = $this->idPrefix.$itemName;
 			$setting["name"] = $itemName;
-			$setting["id_row"] = $setting["id"]."_row";
+			// $setting["id_row"] = $setting["id"]."_row";
 			$setting["text"] = $text;
 
 			$this->checkAddBulkControl($itemName);
@@ -1134,8 +1145,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 			$this->checkAddBulkControl($name);
 
 			$setting["id"] = $this->idPrefix.$name;
-			$setting["id_service"] = $setting["id"]."_service";
-			$setting["id_row"] = $setting["id"]."_row";
+			// $setting["id_service"] = $setting["id"]."_service";
+			// $setting["id_row"] = $setting["id"]."_row";
 
 			//add sap key and sap keys
 
@@ -1437,8 +1448,22 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 				if(empty($addSettingName))
 					continue;
+				
+				$addSettingNames = array();
+				if(is_array($addSettingName)){
+					$addSettingNames = $addSettingName;
+				}else{
+					$addSettingNames = explode(",", $addSettingName);
+				}
+				
+				$addSettingNames = array_map("trim", $addSettingNames);
+				$addSettingNames = array_filter($addSettingNames, function($value){
+					return $value !== "";
+				});
 
-				$this->updateSettingProperty($addSettingName, self::PARAM_NODRAW, true);
+				foreach($addSettingNames as $addSettingSingleName){
+					$this->updateSettingProperty($addSettingSingleName, self::PARAM_NODRAW, true);
+				}
 			}
 
 		}
@@ -1826,8 +1851,8 @@ if ( ! defined( 'ABSPATH' ) ) exit;
 
 				$setting["sap"]        = $sapNew;
 				$setting["id"]         = $this->idPrefix.$name;
-				$setting["id_service"] = $setting["id"]."_service";
-				$setting["id_row"]     = $setting["id"]."_row";
+				// $setting["id_service"] = $setting["id"]."_service";
+				// $setting["id_row"]     = $setting["id"]."_row";
 
 				$this->arrSettings[]    = $setting;
 				$this->arrIndex[$name]  = count($this->arrSettings) - 1;

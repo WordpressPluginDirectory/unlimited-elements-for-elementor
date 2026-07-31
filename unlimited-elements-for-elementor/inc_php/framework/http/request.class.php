@@ -220,13 +220,20 @@ class UEHttpRequest{
 			$requestResponse = UniteProviderFunctionsUC::getTransient($cacheKey);
 			
 			if(!empty($requestResponse)){
-								
-				if($this->isDebug() == true){
-					dmp("get the response from cache");
-					$this->printResponseDebug($requestResponse);
+				
+				$cachedBody = UniteFunctionsUC::getVal($requestResponse, "body");
+				
+				if($this->isCacheableResponseBody($cachedBody) === true){
+					
+					if($this->isDebug() == true){
+						dmp("get the response from cache");
+						$this->printResponseDebug($requestResponse);
+					}
+					
+					return new UEHttpResponse($requestResponse);
 				}
 				
-				return new UEHttpResponse($requestResponse);
+				delete_transient($cacheKey);
 			}
 			
 		}
@@ -291,7 +298,7 @@ class UEHttpRequest{
 			$cacheTime = 10;
 		}
 		
-		if($cacheTime > 0)
+		if($cacheTime > 0 && $this->isCacheableResponseBody($body) === true)
 			UniteProviderFunctionsUC::setTransient($cacheKey, $requestResponse, $cacheTime);
 		
 		return new UEHttpResponse($requestResponse);
@@ -380,6 +387,31 @@ class UEHttpRequest{
 		}
 
 		return $this->body;
+	}
+
+	/**
+	 * Check if the response body should be cached (skip API error payloads).
+	 *
+	 * @param string $body
+	 *
+	 * @return bool
+	 */
+	private function isCacheableResponseBody($body){
+		
+		if(empty($body))
+			return true;
+		
+		$data = UniteFunctionsUC::maybeJsonDecode($body);
+		
+		if(is_array($data) === false)
+			return true;
+		
+		$error = UniteFunctionsUC::getVal($data, "error");
+		
+		if(!empty($error))
+			return false;
+		
+		return true;
 	}
 
 	/**

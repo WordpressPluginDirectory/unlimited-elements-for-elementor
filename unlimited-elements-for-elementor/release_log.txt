@@ -1,5 +1,102 @@
 
 
+version 2.0.16:
+
+* Feature: added option for youtube playlist
+* Feature: added option for google calendar
+* Feature: added option for filter by meta 
+* Fix: fixed some security issue
+
+version 2.0.15:
+
+* Feature: added option for youtube playlist
+* Fix: fixed one security issue
+* Change: updated freemius framework to latest version
+
+
+version 2.0.14:
+
+* Feature: added option: number of requests for serp api
+* Fix: fixed dynamic controls color for dynamic loop
+* Fix: fixed "and" clouser inside a filter checkbox group
+* Fix: fixed the "get_items" bug for ajax 
+* Fix: fixed the response code issue in ajax calls 
+
+
+version 2.0.13:
+
+* Fix: fixed gallery output
+* Fix: fixed small security issue
+
+version 2.0.12:
+
+* Fix: improved api requests. it should not cache the requests if some error response. 
+* Change: increased the limit of get selected terms option to 60 from 10 inside the editor
+* Change: streighten some security related places functions. 
+
+
+version 2.0.11:
+
+* Fix - checkbox filter logic or/end fix
+* Fix - fixed some gallery item output issues
+* fix - fixed some small security issues 
+* Change - chaned to the new google places api
+* Change - removed the mootools library from the plugin at all. it's legacy
+* Change - make some adjustment to sync with the blocks version
+* Change - updated owl carousel js script with some enhancements
+
+
+version 2.0.10:
+
+* Fix - fixed the pro version missing files
+
+version 2.0.9:
+
+* Fix: added translation for sorting filter fields for wpml
+* Fix: fixed some filter tabs security issues
+* Fix: fixed the hard coded wpp orderby
+* Feature: added option to show demo data in google reviews to save serp api credits
+
+
+version 2.0.8:
+
+* Fix: fixed some more security issues with addons search
+* Fix: fixed the time ago string, use it from date and not from modified date of the post
+* Fix: in google reviews - don't run the serp request
+
+
+version 2.0.7:
+
+* Fix: fixed some search related bug
+* Feature: added "view objects" page in settings->troubleshooter
+* Feature: added action and filter for request in get repeater from url
+* Fix: improved the time ago string
+* Fix: set the elementor dynamic settings under ajax
+* Fix: fixed the typography fatal error with new elementor editor
+* Fix: main role filter was inited after load in some cases. 
+* Fix: fixed bug with synced grids inside simple popup widget
+* Fix: image title get from "alt" when the caption is empty
+* Fix: fixed some security issues with repeater url
+* Fix: fixed some security issues get addons ajax url
+
+
+version 2.0.6:
+
+* Feature: added new option: allow empty in items settings
+* Feature: Added "File" attribute
+* Feature: added option in general settings: "allow upload file types"
+* Feature: added order by functionality in the most popular posts plugin
+* Feature: added one more schema type: News Article
+* Feature: added autocorrection option in ajax search
+* Feature: added support for popular posts plugin for the sorting filter
+* Fix: make sure that gallery has item title always, in product item also
+* Fix: fixed some logical bug with the filters
+* Fix: fixed mini cart pricing issue
+* Fix: fixed some small form related vulnurability
+* Fix: fixed the authors fetch, to get only author roles and not all roles with exclude
+* Fix: fixed some breadcrumbs issues
+
+
 version 2.0.5:
 
 * Fix: made some fix for wpml in main category

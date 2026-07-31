@@ -415,6 +415,29 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		$this->addSelect($name."_depth", $arrDepth, __("Max Depth", "unlimited-elements-for-elementor"), $depth, $params);
 
 	}
+	
+	private function __________META_______(){}
+
+	/**
+	 * add meta select settings
+	 */
+	protected function addMetaSelectPicker($name, $value, $title, $extra){
+
+		$params = array();
+		$params["origtype"] = UniteCreatorDialogParam::PARAM_REPEATER;
+		$params["hide_label"] = true;
+		$params["title_field"] = "{{{title}}} ({{{meta_key}}}:{{{meta_value}}})";
+
+		$settingsItems = HelperProviderUC::getMetaSelectRepeaterFields();
+
+		$settingsValues = UniteFunctionsUC::getVal($value, $name."_items");
+		if(empty($settingsValues))
+			$settingsValues = HelperProviderUC::getMetaSelectDefaultValues();
+
+		$repeaterTitle = !empty($title) ? $title : __("MetaSelect Items", "unlimited-elements-for-elementor");
+
+		$this->addRepeater($name."_items", $settingsItems, $settingsValues, $repeaterTitle, $params);
+	}
 
 	private function __________TERMS_______(){}
 
@@ -2070,15 +2093,8 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		// --------- most viewed range -------------
 		if($isWPPExists === true){
-			$arrItems = array_flip(array(
-				"last30days" => "Last 30 Days",
-				"last7days" => "Last 7 Days",
-				"last24hours" => "Last 24 Hours",
-				"daily" => "Daily",
-				"weekly" => "Weekly",
-				"monthly" => "Monthly",
-				"all" => "All",
-			));
+			$arrItems = UniteCreatorPluginIntegrations::WPP_getRangeSelect();
+			$arrItems = array_flip($arrItems);
 
 			$params = array();
 			$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
@@ -2406,6 +2422,11 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 
 		//----- orderby --------
 		$arrOrder = UniteFunctionsWPUC::getArrSortBy($isForWooProducts);
+		
+		$isWPPExists = UniteCreatorPluginIntegrations::isWPPopularPostsExists();
+		if($isWPPExists === true)
+			$arrOrder["popular_wpp"] = __("Popular Posts", "unlimited-elements-for-elementor");
+
 		$arrOrder = array_flip($arrOrder);
 
 		$arrDir = UniteFunctionsWPUC::getArrSortDirection();
@@ -2420,6 +2441,21 @@ class UniteCreatorSettings extends UniteCreatorSettingsWork{
 		//$params["description"] = esc_html__("Select how you wish to order posts", "unlimited-elements-for-elementor");
 
 		$this->addSelect($name . "_orderby", $arrOrder, __("Order By", "unlimited-elements-for-elementor"), $orderBY, $params);
+
+		//--- WPP orderby range ---
+		if($isWPPExists === true){
+			$arrConditionWppOrder = array();
+			$arrConditionWppOrder[$name . "_orderby"] = "popular_wpp";
+			
+			$arrItems = UniteCreatorPluginIntegrations::WPP_getRangeSelect();
+			$arrItems = array_flip($arrItems);
+			
+			$params = array();
+			$params["origtype"] = UniteCreatorDialogParam::PARAM_DROPDOWN;
+			$params["elementor_condition"] = $arrConditionWppOrder;
+			
+			$this->addSelect($name . "_orderby_wpp_range", $arrItems, __("&nbsp;&nbsp;Popular Posts Time Range", "unlimited-elements-for-elementor"), "last30days", $params);
+		}
 
 		//--- meta value param -------
 		$arrCondition = array();
